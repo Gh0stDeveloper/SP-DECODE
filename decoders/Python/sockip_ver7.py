@@ -22,9 +22,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import sys
 from argparse import ArgumentParser
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 try:
     from .sockip import (
@@ -245,6 +246,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    import sys
-
     raise SystemExit(main())
