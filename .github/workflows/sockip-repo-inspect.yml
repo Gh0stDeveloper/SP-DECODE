@@ -1,0 +1,195 @@
+name: SocksIP repository inspection
+
+on:
+  push:
+    branches:
+      - analysis/sockip-ver7
+    paths:
+      - .github/workflows/sockip-repo-inspect.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: analysis/sockip-ver7
+          fetch-depth: 1
+
+      - name: Inspect repository for SocksIP artifacts
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from __future__ import annotations
+
+          import base64
+          import hashlib
+          import json
+          import math
+          import os
+          import zipfile
+          from pathlib import Path
+
+          ROOT = Path.cwd()
+          OUT = ROOT / "analysis" / "sockip-repo-scan.txt"
+          AES_KEY = bytes.fromhex("192e04080804040905592959385f5417")
+
+          def entropy(data: bytes) -> float:
+              if not data:
+                  return 0.0
+              counts = [0] * 256
+              for value in data:
+                  counts[value] += 1
+              total = len(data)
+              result = 0.0
+              for count in counts:
+                  if count:
+                      p = count / total
+                      result -= p * math.log2(p)
+              return result
+
+          def ascii_preview(data: bytes, limit: int = 160) -> str:
+              return ''.join(chr(b) if 32 <= b < 127 else '.' for b in data[:limit])
+
+          def classify_header(data: bytes) -> str:
+              if data.startswith(b"VER7"):
+                  return "VER7"
+              if data.startswith(b"\xac\xed\x00\x05"):
+                  return "JAVA_SERIALIZATION"
+              if data.startswith(b"PK\x03\x04"):
+                  return "ZIP"
+              if data.startswith(b"\x1f\x8b"):
+                  return "GZIP"
+              if data.startswith(b"\x78\x01") or data.startswith(b"\x78\x9c") or data.startswith(b"\x78\xda"):
+                  return "ZLIB"
+              if data.startswith(b"{\")"):
+                  return "JSONISH"
+              return "UNKNOWN"
+
+          def outer_decode(raw: bytes):
+              encoded = b"".join(raw.split())
+              encoded += b"=" * ((4 - len(encoded) % 4) % 4)
+              encrypted = base64.b64decode(encoded, validate=True)
+              if not encrypted or len(encrypted) % 16:
+                  raise ValueError(f"AES ciphertext length {len(encrypted)} is not block aligned")
+              try:
+                  from Crypto.Cipher import AES
+                  from Crypto.Util.Padding import unpad
+                  plain = unpad(AES.new(AES_KEY, AES.MODE_ECB).decrypt(encrypted), 16)
+              except Exception:
+                  from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+                  decryptor = Cipher(algorithms.AES(AES_KEY), modes.ECB()).decryptor()
+                  padded = decryptor.update(encrypted) + decryptor.finalize()
+                  pad = padded[-1]
+                  if not 1 <= pad <= 16 or padded[-pad:] != bytes([pad]) * pad:
+                      raise ValueError("invalid PKCS7")
+                  plain = padded[:-pad]
+              return encrypted, plain
+
+          lines = [
+              "SP-DECODE SOCKSIP REPOSITORY ARTIFACT SCAN\n",
+              "Branch inspected: analysis/sockip-ver7 (from master)\n\n",
+          ]
+
+          all_files = [p for p in ROOT.rglob('*') if p.is_file() and '.git' not in p.parts]
+          lines.append(f"Total repository files: {len(all_files)}\n")
+
+          candidates = []
+          for path in all_files:
+              rel = path.relative_to(ROOT)
+              name = path.name.lower()
+              suffix = path.suffix.lower()
+              if suffix in {'.sip', '.apk', '.zip', '.xapk', '.apks'} or 'sock' in name or 'sip' in name or 'ver7' in name:
+                  candidates.append(path)
+
+          lines.append(f"Candidate SocksIP-related artifacts: {len(candidates)}\n")
+          for path in sorted(candidates):
+              rel = path.relative_to(ROOT)
+              raw = path.read_bytes()
+              lines.append("\n" + "=" * 90 + "\n")
+              lines.append(f"FILE {rel}\n")
+              lines.append(f"size={len(raw)} sha256={hashlib.sha256(raw).hexdigest()}\n")
+              lines.append(f"head_hex={raw[:96].hex()}\n")
+              lines.append(f"head_ascii={ascii_preview(raw)}\n")
+              lines.append(f"raw_entropy={entropy(raw):.5f}\n")
+              lines.append(f"raw_VER7_count={raw.count(b'VER7')}\n")
+
+              if path.suffix.lower() == '.sip':
+                  try:
+                      encrypted, plain = outer_decode(raw)
+                      lines.append("outer_decode=SUCCESS\n")
+                      lines.append(f"ciphertext_len={len(encrypted)} ciphertext_entropy={entropy(encrypted):.5f}\n")
+                      lines.append(f"plaintext_len={len(plain)} plaintext_kind={classify_header(plain)} plaintext_entropy={entropy(plain):.5f}\n")
+                      lines.append(f"plaintext_head_hex={plain[:256].hex()}\n")
+                      lines.append(f"plaintext_head_ascii={ascii_preview(plain, 256)}\n")
+                      lines.append(f"plaintext_VER7_count={plain.count(b'VER7')}\n")
+                      # Look for common nested encodings without assuming they are correct.
+                      tail = plain[4:] if plain.startswith(b'VER7') else plain
+                      stripped = b''.join(tail.split())
+                      for offset in range(min(32, len(tail))):
+                          segment = b''.join(tail[offset:].split())
+                          if len(segment) < 16:
+                              continue
+                          padded = segment + b'=' * ((4 - len(segment) % 4) % 4)
+                          try:
+                              nested = base64.b64decode(padded, validate=True)
+                          except Exception:
+                              continue
+                          if len(nested) >= 8:
+                              lines.append(
+                                  f"nested_base64_candidate offset={offset} len={len(nested)} "
+                                  f"kind={classify_header(nested)} entropy={entropy(nested):.5f} head={nested[:48].hex()}\n"
+                              )
+                              break
+                  except Exception as exc:
+                      lines.append(f"outer_decode=FAILED {type(exc).__name__}: {exc}\n")
+
+              if path.suffix.lower() in {'.apk', '.zip', '.xapk', '.apks'}:
+                  try:
+                      with zipfile.ZipFile(path) as zf:
+                          names = zf.namelist()
+                          lines.append(f"zip_entries={len(names)}\n")
+                          ver_hits = []
+                          for entry in names:
+                              if entry.endswith('/'):
+                                  continue
+                              try:
+                                  blob = zf.read(entry)
+                              except Exception:
+                                  continue
+                              count = blob.count(b'VER7')
+                              if count:
+                                  ver_hits.append((entry, count))
+                          lines.append(f"zip_VER7_entries={len(ver_hits)}\n")
+                          for entry, count in ver_hits[:100]:
+                              lines.append(f"  VER7 {entry} count={count}\n")
+                  except Exception as exc:
+                      lines.append(f"zip_scan=FAILED {type(exc).__name__}: {exc}\n")
+
+          # Also record tracked .sip files from Git metadata, in case name filters missed a case.
+          lines.append("\n=== TRACKED FILES ENDING IN .sip ===\n")
+          for path in sorted(p for p in all_files if p.suffix.lower() == '.sip'):
+              lines.append(str(path.relative_to(ROOT)) + "\n")
+
+          OUT.parent.mkdir(parents=True, exist_ok=True)
+          OUT.write_text(''.join(lines), encoding='utf-8')
+          print(''.join(lines))
+          PY
+
+      - name: Commit inspection report
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add analysis/sockip-repo-scan.txt
+          if git diff --cached --quiet; then
+            echo "No report changes"
+          else
+            git commit -m "Record isolated SocksIP repository scan"
+            git push origin HEAD:analysis/sockip-ver7
+          fi
