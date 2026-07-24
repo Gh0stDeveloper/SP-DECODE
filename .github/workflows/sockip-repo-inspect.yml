@@ -1,0 +1,62 @@
+name: SocksIP VER7 validation
+
+on:
+  push:
+    branches:
+      - analysis/sockip-ver7
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install Python dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Validate Python syntax
+        run: |
+          python -m py_compile decoders/Python/sockip.py tests/test_sockip_ver7_probe.py
+
+      - name: Run SocksIP VER7 probe tests
+        run: python -m unittest tests.test_sockip_ver7_probe -v
+
+      - name: Run project validation
+        run: python validate_project.py
+
+      - name: Run full unit test suite
+        run: python -m unittest discover -s tests -v
+
+      - name: Inventory SocksIP artifacts in repository
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path.cwd()
+          candidates = []
+          for path in root.rglob('*'):
+              if not path.is_file() or '.git' in path.parts:
+                  continue
+              suffix = path.suffix.lower()
+              name = path.name.lower()
+              if suffix in {'.sip', '.apk', '.zip', '.xapk', '.apks'} or 'sockip' in name or 'ver7' in name:
+                  candidates.append(path.relative_to(root))
+
+          print(f'Candidate artifacts: {len(candidates)}')
+          for path in sorted(candidates):
+              print(path)
+          PY
