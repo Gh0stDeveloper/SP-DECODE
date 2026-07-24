@@ -1,0 +1,46 @@
+name: SocksIP VER7 XOR validation
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - decoders/Python/sockip_ver7.py
+      - tests/test_sockip_ver7_xor.py
+      - analysis/SOCKSIP_VER7_XOR_HYPOTHESIS.md
+      - .github/workflows/sockip-ver7-xor-validation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-xor-hypothesis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: python -m pip install -r requirements.txt
+
+      - name: Compile SocksIP modules
+        run: |
+          python -m py_compile \
+            decoders/Python/sockip.py \
+            decoders/Python/sockip_ver7.py \
+            tests/test_sockip_ver7_xor.py
+
+      - name: Run XOR hypothesis tests
+        run: python -m unittest tests.test_sockip_ver7_xor -v
+
+      - name: Run existing SocksIP probe tests
+        run: python -m unittest tests.test_sockip_ver7_probe -v
+
+      - name: Run project validation
+        run: python validate_project.py
