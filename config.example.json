@@ -1,0 +1,21 @@
+{
+    "bot": {
+        "token": "PUT_YOUR_TELEGRAM_BOT_TOKEN_HERE"
+    },
+    "access": {
+        "admins": [
+            123456789
+        ],
+        "allowed_groups": [
+            -1001234567890
+        ]
+    },
+    "runtime": {
+        "downloads_dir": "Downloads",
+        "results_dir": "Results",
+        "decoder_timeout_seconds": 90,
+        "max_file_size_mb": 25,
+        "text_session_timeout_seconds": 600,
+        "text_session_max_chars": 250000
+    }
+}

@@ -1,0 +1,11 @@
+{
+  "repo_url": "https://github.com/Gh0stDeveloper/SP-DECODE",
+  "default_branch": "main",
+  "secrets_file": ".nexora-secrets.env",
+  "secret_names": {
+    "keystore": "KEYSTORE_BASE64",
+    "store_password": "KEYSTORE_PASSWORD",
+    "key_alias": "KEY_ALIAS",
+    "key_password": "KEY_PASSWORD"
+  }
+}

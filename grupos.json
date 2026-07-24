@@ -1,0 +1,30 @@
+{
+    "-1002068726651": {
+        "id": -1002068726651,
+        "tipo": "supergroup",
+        "nombre": "CodeBreakers",
+        "alias": "@CodeBreakersHub",
+        "descripcion": null
+    },
+    "6680882430": {
+        "id": 6680882430,
+        "tipo": "private",
+        "nombre": "N/A",
+        "alias": "@godlikefeature",
+        "descripcion": null
+    },
+    "-1002436266634": {
+        "id": -1002436266634,
+        "tipo": "supergroup",
+        "nombre": "\ud835\udc04-\ud835\udc0f\ud835\udc11\ud835\udc0e-\ud835\udc03\ud835\udc04\ud835\udc02\ud835\udc11\ud835\udc18\ud835\udc0f\ud835\udc13\ud835\udc04\ud835\udc11\ud835\udc12",
+        "alias": "@ePorDecrypters",
+        "descripcion": null
+    },
+    "-1002011528930": {
+        "id": -1002011528930,
+        "tipo": "supergroup",
+        "nombre": "\ud835\udc7a\ud835\udc7b\ud835\udc76\ud835\udc79\ud835\udc74 \ud835\udc7a\ud835\udc75\ud835\udc70\ud835\udc6d\ud835\udc6d",
+        "alias": "@stnxcp",
+        "descripcion": null
+    }
+}

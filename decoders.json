@@ -1,0 +1,304 @@
+{
+    "decoders": {
+        "hat": {
+            "script": "decoders/JavaScript/hat.js",
+            "runtime": "node",
+            "name": "HA Tunnel Plus"
+        },
+        "xscks": {
+            "script": "decoders/Python/xscks.py",
+            "runtime": "python",
+            "name": "X-Socks"
+        },
+        "phc": {
+            "script": "decoders/Python/phc.py",
+            "runtime": "python",
+            "name": "PHC Tunnel"
+        },
+        "ehil": {
+            "script": "decoders/Python/HTTPINJECTORLITE.py",
+            "runtime": "python",
+            "name": "HTTP Injector Lite"
+        },
+        "mina": {
+            "script": "decoders/Python/mina.py",
+            "runtime": "python",
+            "name": "MinaProNet"
+        },
+        "at": {
+            "script": "decoders/Python/at.py",
+            "runtime": "python",
+            "name": "ASH tunnel"
+        },
+        "gold": {
+            "script": "decoders/Python/gold.py",
+            "runtime": "python",
+            "name": "Gold Tunnel"
+        },
+        "nm": {
+            "script": "decoders/Python/nms.py",
+            "runtime": "python",
+            "name": "NetMod"
+        },
+        "npv4": {
+            "script": "decoders/Python/NPVTUNNEL.py",
+            "runtime": "python",
+            "name": "NPV Tunnel v4"
+        },
+        "ht": {
+            "script": "decoders/Python/HTTPTWEAK.py",
+            "runtime": "python",
+            "name": "HTTP Tweak"
+        },
+        "htb": {
+            "script": "decoders/Python/HTTPTWEAK.py",
+            "runtime": "python",
+            "name": "HTTP Tweak"
+        },        
+        "npvt": {
+            "script": "decoders/Python/NPVTUNNEL.py",
+            "runtime": "python",
+            "name": "NPV Tunnel v4"
+        },                
+        "tnl": {
+            "script": "decoders/Python/tnl.py",
+            "runtime": "python",
+            "name": "Tunnel"
+        },
+        "tls": {
+            "script": "decoders/Python/TLS.py",
+            "runtime": "python",
+            "name": "TLS Tunnel"
+        },
+        "v2": {
+            "script": "decoders/Python/EV2RAY.py",
+            "runtime": "python",
+            "name": "e-V2Ray"
+        },
+        "ziv": {
+            "script": "decoders/Python/ziv.py",
+            "runtime": "python",
+            "name": "ZIVPN"
+        },
+        "pb": {
+            "script": "decoders/Python/pb.py",
+            "runtime": "python",
+            "name": "XrayPB"
+        },
+        "rez": {
+            "script": "decoders/JavaScript/rez.js",
+            "runtime": "node",
+            "name": "Rez Tunnel"
+        },
+        "sks": {
+            "script": "decoders/JavaScript/sks.js",
+            "runtime": "node",
+            "name": "SocksIP"
+        },
+        "stk": {
+            "script": "decoders/JavaScript/stk.js",
+            "runtime": "node",
+            "name": "Stark VPN"
+        },
+        "pcx": {
+            "script": "decoders/Python/pcx.py",
+            "runtime": "python",
+            "name": "PCX Tunnel"
+        },
+        "ssh": {
+            "script": "decoders/Python/ssh.py",
+            "runtime": "python",
+            "name": "SSH Injector"
+        },
+        "nt": {
+            "script": "decoders/Python/nt.py",
+            "runtime": "python",
+            "name": "Net Tunnel"
+        },
+        "vpnlite": {
+            "script": "decoders/Python/vpnlite.py",
+            "runtime": "python",
+            "name": "VPN Lite"
+        },
+        "sut": {
+            "script": "decoders/Python/sut.py",
+            "runtime": "python",
+            "name": "SUT Tunnel"
+        },
+        "maya": {
+            "script": "decoders/Python/maya.py",
+            "runtime": "python",
+            "name": "Maya Tunnel"
+        },
+        "xui": {
+            "script": "decoders/Python/xui.py",
+            "runtime": "python",
+            "name": "XUI Tunnel"
+        },
+        "sip": {
+            "script": "decoders/Python/sockip.py",
+            "runtime": "python",
+            "name": "SocksIP Tunnel"
+        },
+        "fɴ": {
+            "script": "decoders/Python/multides.py",
+            "runtime": "python",
+            "name": "FN Tunnel"
+        },
+        "mij": {
+            "script": "decoders/Python/mij.py",
+            "runtime": "python",
+            "name": "MIJ Tunnel"
+        },
+        "mtl": {
+            "script": "decoders/Python/mtl.py",
+            "runtime": "python",
+            "name": "MTL Tunnel"
+        },
+        "fnnetwork": {
+            "script": "decoders/Python/fnnetwork.py",
+            "runtime": "python",
+            "name": "FN Network"
+        },
+        "mrc": {
+            "script": "decoders/Python/mrc.py",
+            "runtime": "python",
+            "name": "MRC Tunnel"
+        },
+        "sksrv": {
+            "script": "decoders/Python/sksrv.py",
+            "runtime": "python",
+            "name": "SKS Server"
+        },
+        "sksrv.png": {
+            "script": "decoders/Python/sksrv.py",
+            "runtime": "python",
+            "name": "SKS Server"
+        },
+        "v2i": {
+            "script": "decoders/Python/multides.py",
+            "runtime": "python",
+            "name": "V2Ray Injector"
+        },
+        "agn": {
+            "script": "decoders/Python/multides.py",
+            "runtime": "python",
+            "name": "AGN Injector"
+        },
+        "jvi": {
+            "script": "decoders/Python/multides.py",
+            "runtime": "python",
+            "name": "JVI Tunnel"
+        },
+        "jvc": {
+            "script": "decoders/Python/multides.py",
+            "runtime": "python",
+            "name": "JVC Tunnel"
+        },
+        "aro": {
+            "script": "decoders/Python/aro.py",
+            "runtime": "python",
+            "name": "ARMOD"
+        },
+        "cloudy": {
+            "script": "decoders/Python/cloudy.py",
+            "runtime": "python",
+            "name": "Cloudy Inject"
+        },
+        "epro": {
+            "script": "decoders/JavaScript/modulepro.js",
+            "runtime": "node",
+            "name": "ePro Tunnel"
+        },
+        "cly": {
+            "script": "decoders/Python/multides.py",
+            "runtime": "python",
+            "name": "Cloudy"
+        },
+        "xtp": {
+            "script": "decoders/Python/xtproy.py",
+            "runtime": "python",
+            "name": "XTProy"
+        },
+        "roy": {
+            "script": "decoders/Python/xtproy.py",
+            "runtime": "python",
+            "name": "Royal Tunnel"
+        },
+        "ipt": {
+            "script": "decoders/Python/ipt.py",
+            "runtime": "python",
+            "name": "WeTunnel"
+        },
+        "rezl": {
+            "script": "decoders/JavaScript/rez.js",
+            "runtime": "node",
+            "name": "Rez Tunnel Lite"
+        },
+        "tvt": {
+            "script": "decoders/JavaScript/rez.js",
+            "runtime": "node",
+            "name": "TV Tunnel"
+        },
+        "uwu": {
+            "script": "decoders/Python/uwu.py",
+            "runtime": "python",
+            "name": "UWU Tunnel"
+        },
+        "npv2": {
+            "script": "decoders/JavaScript/chicosp.js",
+            "runtime": "node",
+            "name": "NPV Tunnel v2"
+        },
+        "dark": {
+            "script": "decoders/Python/DARKTUNNEL.py",
+            "runtime": "python",
+            "name": "Dark Tunnel"
+        },
+        "npv4": {
+            "script": "decoders/Python/NPVTUNNEL.py",
+            "runtime": "python",
+            "name": "NPV Tunnel v4"
+        },
+        "ost": {
+            "script": "decoders/Python/ost.py",
+            "runtime": "python",
+            "name": "OUSS Tunnel"
+        },
+        "sbr": {
+            "script": "decoders/Python/sbr.py",
+            "runtime": "python",
+            "name": "SBR Injector"
+        },
+        "sksplus": {
+            "script": "decoders/PHP/sksplus.php",
+            "runtime": "php",
+            "name": "SocksIP Plus"
+        },
+        "jez": {
+            "script": "decoders/PHP/jez.php",
+            "runtime": "php",
+            "name": "JEZ Tunnel"
+        },
+        "hrt": {
+            "script": "decoders/PHP/hrt.php",
+            "runtime": "php",
+            "name": "HRT Tunnel"
+        },
+        "hc": {
+            "script": "decoders/Python/HTTPCUSTOM.py",
+            "runtime": "python",
+            "name": "HTTP Custom"
+        },
+        "ehi": {
+            "script": "decoders/Python/HTTPINJECTOR.py",
+            "runtime": "python",
+            "name": "HTTP Injector"
+        },
+        "ssc": {
+            "script": "decoders/Python/SSCCUSTOM.py",
+            "runtime": "python",
+            "name": "SSC Custom"
+        }
+    }
+}
