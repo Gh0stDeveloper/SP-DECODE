@@ -1,0 +1,35 @@
+# Credenciales locales
+config.json
+.env
+.env.*
+
+# Archivos temporales generados por el bot
+Downloads/
+Results/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Pruebas y herramientas
+.coverage
+htmlcov/
+.pytest_cache/
+
+
+github-actions-android-signing-example.yml
+nexora_git_manager.py
+nexora-secrets..env
+
+# Nexora Git Manager - archivos sensibles
+.nexora-secrets.env
+.nexora-secrets.env.*.bak
+
+crafternexora-release.jks
+crafternexora-release.jks.base64.txt

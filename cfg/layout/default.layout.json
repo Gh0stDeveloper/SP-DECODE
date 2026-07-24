@@ -1,0 +1,11 @@
+{
+    "comment":[
+        "This is the layout for the response content",
+        "header - text shown at the start of the message",
+        "footer - text shown at the end of the message",
+        "propertyIndicator - shown before property text"
+    ],
+    "propertyIndicator":"│[۞]",
+    "header":"\n┌───────────────\n│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 \n│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu\n├───────────────\n",
+    "footer":"├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+}
