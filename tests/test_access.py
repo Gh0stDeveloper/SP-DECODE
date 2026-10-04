@@ -12,11 +12,12 @@ from spdecode.access import is_admin, is_authorized, require_authorized
 from spdecode.config import AppConfig, load_config
 
 
-def _settings() -> AppConfig:
+def _settings(*, allow_all_groups: bool = False) -> AppConfig:
     return AppConfig(
         token="test-token",
         admins=frozenset({101}),
         allowed_groups=frozenset({-202}),
+        allow_all_groups=allow_all_groups,
         downloads_dir=Path("Downloads"),
         results_dir=Path("Results"),
         decoder_timeout_seconds=90,
@@ -30,7 +31,7 @@ class AccessPolicyTests(unittest.TestCase):
     def test_admin_is_authorized_in_private_chat(self):
         message = SimpleNamespace(
             from_user=SimpleNamespace(id=101),
-            chat=SimpleNamespace(id=101),
+            chat=SimpleNamespace(id=101, type="private"),
         )
         self.assertTrue(is_admin(101, _settings()))
         self.assertTrue(is_authorized(message, _settings()))
@@ -38,14 +39,27 @@ class AccessPolicyTests(unittest.TestCase):
     def test_member_is_authorized_only_in_allowed_group(self):
         allowed = SimpleNamespace(
             from_user=SimpleNamespace(id=303),
-            chat=SimpleNamespace(id=-202),
+            chat=SimpleNamespace(id=-202, type="supergroup"),
         )
         denied = SimpleNamespace(
             from_user=SimpleNamespace(id=303),
-            chat=SimpleNamespace(id=-404),
+            chat=SimpleNamespace(id=-404, type="supergroup"),
         )
         self.assertTrue(is_authorized(allowed, _settings()))
         self.assertFalse(is_authorized(denied, _settings()))
+
+    def test_allow_all_groups_accepts_group_but_not_private_chat(self):
+        group = SimpleNamespace(
+            from_user=SimpleNamespace(id=303),
+            chat=SimpleNamespace(id=-999, type="group"),
+        )
+        private = SimpleNamespace(
+            from_user=SimpleNamespace(id=303),
+            chat=SimpleNamespace(id=303, type="private"),
+        )
+        settings = _settings(allow_all_groups=True)
+        self.assertTrue(is_authorized(group, settings))
+        self.assertFalse(is_authorized(private, settings))
 
     def test_authorization_decorator_is_marked_for_validation(self):
         @require_authorized("Prueba")
@@ -58,7 +72,11 @@ class AccessPolicyTests(unittest.TestCase):
     def test_environment_token_overrides_placeholder(self):
         config = {
             "bot": {"token": "PUT_YOUR_TELEGRAM_BOT_TOKEN_HERE"},
-            "access": {"admins": [101], "allowed_groups": [-202]},
+            "access": {
+                "admins": [101],
+                "allow_all_groups": True,
+                "allowed_groups": [-202],
+            },
             "runtime": {},
         }
         with tempfile.TemporaryDirectory() as directory:
@@ -67,6 +85,7 @@ class AccessPolicyTests(unittest.TestCase):
             with patch.dict(os.environ, {"SPDECODE_BOT_TOKEN": "from-environment"}):
                 loaded = load_config(path)
         self.assertEqual(loaded.token, "from-environment")
+        self.assertTrue(loaded.allow_all_groups)
 
 
 if __name__ == "__main__":
