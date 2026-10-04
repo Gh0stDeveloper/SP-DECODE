@@ -260,12 +260,17 @@ def show_status(message):
 
     session = get_session(message, settings.text_session_timeout_seconds)
     session_status = _protocol_label(session.protocol) if session is not None else "ninguna"
+    group_access = (
+        "todos los grupos y supergrupos"
+        if settings.allow_all_groups
+        else f"{len(settings.allowed_groups)} grupo(s) seleccionado(s)"
+    )
     bot.reply_to(
         message,
         "<b>Estado de SP-DECODE</b>\n"
         "Estado: <b>activo</b>\n"
         f"Administradores: <b>{len(settings.admins)}</b>\n"
-        f"Grupos permitidos: <b>{len(settings.allowed_groups)}</b>\n"
+        f"Acceso de grupos: <b>{html_pre(group_access)}</b>\n"
         f"Decodificadores registrados: <b>{len(DECODER_REGISTRY)}</b>\n"
         f"Sesión multipart para este usuario/chat: <b>{html_pre(session_status)}</b>\n"
         f"Timeout de decodificadores: <b>{settings.decoder_timeout_seconds}s</b>",
