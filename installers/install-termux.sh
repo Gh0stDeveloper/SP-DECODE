@@ -18,7 +18,14 @@ echo "[1/8] Updating Termux packages..."
 pkg update -y
 
 echo "[2/8] Installing runtimes and build dependencies..."
-pkg install -y git python php nodejs-lts clang make pkg-config libffi openssl
+pkg install -y git python php clang make pkg-config libffi openssl rust
+
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+    echo "Node.js/npm not detected; installing the Termux LTS package..."
+    pkg install -y nodejs-lts
+else
+    echo "Node.js $(node --version) and npm $(npm --version) already available."
+fi
 
 if [[ -f "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." 2>/dev/null && pwd)/main.py" ]]; then
     PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
