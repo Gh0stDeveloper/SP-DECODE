@@ -2,9 +2,18 @@
 set -Eeuo pipefail
 
 REPO_URL="https://github.com/Gh0stDeveloper/SP-DECODE.git"
-TARGET_DIR="${SPDECODE_HOME:-$HOME/SP-DECODE}"
 SERVICE_NAME="${SPDECODE_SERVICE:-spdecode}"
-CALLER_USER="${SUDO_USER:-$USER}"
+CALLER_USER="${SUDO_USER:-$(id -un)}"
+CALLER_HOME="$(getent passwd "$CALLER_USER" 2>/dev/null | cut -d: -f6)"
+CALLER_HOME="${CALLER_HOME:-$HOME}"
+TARGET_DIR="${SPDECODE_HOME:-$CALLER_HOME/SP-DECODE}"
+
+if [[ "${EUID:-$(id -u)}" -eq 0 && -n "${SUDO_USER:-}" && "${SUDO_USER}" != "root" ]]; then
+    echo "ERROR: do not run the whole installer with sudo."
+    echo "Run: bash installers/install-vps.sh"
+    echo "The installer requests sudo only for system package/service operations."
+    exit 2
+fi
 
 run_root() {
     if [[ "${EUID:-$(id -u)}" -eq 0 ]]; then
@@ -24,22 +33,40 @@ if command -v apt-get >/dev/null 2>&1; then
     run_root env DEBIAN_FRONTEND=noninteractive apt-get install -y \
         git curl ca-certificates \
         python3 python3-venv python3-pip \
-        php-cli nodejs npm \
+        php-cli \
         build-essential pkg-config libffi-dev libssl-dev
 elif command -v dnf >/dev/null 2>&1; then
     run_root dnf install -y \
         git curl ca-certificates \
         python3 python3-pip \
-        php-cli nodejs npm \
+        php-cli \
         gcc gcc-c++ make pkgconf-pkg-config libffi-devel openssl-devel
 elif command -v yum >/dev/null 2>&1; then
     run_root yum install -y \
         git curl ca-certificates \
         python3 python3-pip \
-        php-cli nodejs npm \
+        php-cli \
         gcc gcc-c++ make pkgconfig libffi-devel openssl-devel
 else
     echo "ERROR: unsupported package manager. Debian/Ubuntu, Fedora/RHEL and compatible systems are supported."
+    exit 1
+fi
+
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+    echo "Node.js/npm not detected; installing distribution packages..."
+    if command -v apt-get >/dev/null 2>&1; then
+        run_root env DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs npm
+    elif command -v dnf >/dev/null 2>&1; then
+        run_root dnf install -y nodejs npm
+    else
+        run_root yum install -y nodejs npm
+    fi
+else
+    echo "Node.js $(node --version) and npm $(npm --version) already available."
+fi
+
+if ! command -v systemctl >/dev/null 2>&1; then
+    echo "ERROR: systemd/systemctl is required by the VPS activator."
     exit 1
 fi
 
