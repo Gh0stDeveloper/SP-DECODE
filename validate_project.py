@@ -4,6 +4,7 @@ from __future__ import annotations
 import ast
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -361,25 +362,59 @@ def validate_authorization_integration(project_dir: Path) -> list[str]:
     return errors
 
 
+def _tracked_files(project_dir: Path) -> list[Path] | None:
+    """Devuelve archivos seguidos por Git; None si no hay un checkout Git utilizable."""
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(project_dir), "ls-files", "-z"],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return None
+
+    return [
+        project_dir / item.decode("utf-8", errors="surrogateescape")
+        for item in result.stdout.split(b"\0")
+        if item
+    ]
+
+
 def validate_secret_hygiene(project_dir: Path) -> list[str]:
     errors: list[str] = []
-    if (project_dir / "config.json").exists():
-        errors.append("config.json no debe distribuirse; usa config.example.json")
-    if (project_dir / "node_modules").exists():
-        errors.append("node_modules no debe distribuirse; se reconstruye con npm ci")
+    tracked = _tracked_files(project_dir)
 
-    telegram_token = re.compile(r"(?<![A-Za-z0-9_-])\d{8,12}:[A-Za-z0-9_-]{30,}(?![A-Za-z0-9_-])")
-    for path in sorted(project_dir.rglob("*")):
-        if not path.is_file() or any(part in {".git", "__pycache__"} for part in path.parts):
+    if tracked is not None:
+        tracked_relative = {path.relative_to(project_dir).as_posix() for path in tracked}
+        if "config.json" in tracked_relative:
+            errors.append("config.json no debe estar versionado; usa config.example.json")
+        candidates = tracked
+    else:
+        # En instalaciones sin .git, config.json y node_modules son archivos locales válidos.
+        candidates = [
+            path
+            for path in project_dir.rglob("*")
+            if path.is_file()
+            and path.name != "config.json"
+            and "node_modules" not in path.parts
+            and ".git" not in path.parts
+            and "__pycache__" not in path.parts
+        ]
+
+    telegram_token = re.compile(
+        r"(?<![A-Za-z0-9_-])\d{8,12}:[A-Za-z0-9_-]{30,}(?![A-Za-z0-9_-])"
+    )
+    for path in sorted(candidates):
+        if not path.is_file():
             continue
         try:
             source = path.read_text(encoding="utf-8")
-        except UnicodeDecodeError:
+        except (UnicodeDecodeError, OSError):
             continue
         if telegram_token.search(source):
             errors.append(f"Posible token de Telegram incluido en {path.relative_to(project_dir)}")
     return errors
-
 
 def validate_pinned_dependencies(project_dir: Path) -> list[str]:
     errors: list[str] = []
