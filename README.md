@@ -21,6 +21,9 @@ A structured, extensible decoder platform for processing supported configuration
 
 </div>
 
+> [!WARNING]
+> **Maintenance notice:** not every legacy decoder has been fully revalidated against the latest versions of the applications it targets. Some formats may fail or behave differently depending on the exporting app version. If you find a broken decoder, please report it in the [Telegram community](https://t.me/CodeBreakersHub), the [Telegram channel](https://t.me/GhostDeveloperSpy), or directly to [@Gh0stDeveloper](https://t.me/Gh0stDeveloper).
+
 ---
 
 ## Overview
@@ -168,6 +171,13 @@ SP-DECODE/
 │   ├── Python/
 │   ├── JavaScript/
 │   └── PHP/
+├── installers/
+│   ├── configure.py
+│   ├── install-termux.sh
+│   └── install-vps.sh
+├── scripts/
+│   ├── spdecode-termux.sh
+│   └── spdecode-vps.sh
 ├── spdecode/
 │   ├── access.py
 │   ├── config.py
@@ -213,7 +223,92 @@ Recommended runtime versions:
 
 ---
 
-## Installation
+## Automated installers
+
+SP-DECODE includes dedicated installers for **Termux** and **Linux VPS** environments. They install the required runtimes, Python dependencies, Node.js packages, create the local configuration, ask for the Telegram bot token, configure administrators/groups and start the bot automatically.
+
+> **Why Node.js is installed:** JavaScript decoders require an actual Node.js runtime. The repository intentionally does not ship `node_modules`; the installer detects/installs Node.js when needed and runs `npm ci`.
+
+### Termux
+
+From a cloned repository:
+
+```bash
+bash installers/install-termux.sh
+```
+
+Or install directly from GitHub:
+
+```bash
+pkg install -y curl
+curl -fsSL https://raw.githubusercontent.com/Gh0stDeveloper/SP-DECODE/main/installers/install-termux.sh -o install-spdecode.sh
+bash install-spdecode.sh
+```
+
+The Termux installer:
+
+- installs Python, PHP, Node.js, Git and native build dependencies;
+- creates an isolated Python virtual environment;
+- installs PyCryptodome, pyTelegramBotAPI, Argon2, MessagePack and Requests;
+- installs Node.js decoder dependencies with `npm ci`;
+- runs the validator and unit tests;
+- launches an interactive setup for the Telegram token and access policy;
+- creates the `spdecode` management command;
+- starts the bot automatically in the background.
+
+Available commands:
+
+```bash
+spdecode status
+spdecode start
+spdecode stop
+spdecode restart
+spdecode logs
+spdecode config
+spdecode update
+spdecode validate
+```
+
+For reliable long-running operation on Android, disable battery optimization for Termux.
+
+### VPS / Linux server
+
+Supported installers currently target Debian/Ubuntu and Fedora/RHEL-compatible systems using `apt`, `dnf` or `yum`.
+
+From a cloned repository:
+
+```bash
+bash installers/install-vps.sh
+```
+
+Or install directly from GitHub:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Gh0stDeveloper/SP-DECODE/main/installers/install-vps.sh -o /tmp/install-spdecode.sh
+bash /tmp/install-spdecode.sh
+```
+
+Do **not** run the entire VPS installer with `sudo`; it requests elevated permissions only when system packages or the `systemd` service need them.
+
+The VPS installer creates and enables a persistent `systemd` service named `spdecode`, starts it immediately and installs the same `spdecode` management command globally.
+
+### Interactive access configuration
+
+During installation, the setup wizard securely asks for:
+
+1. the Telegram bot token;
+2. administrator Telegram user IDs;
+3. either:
+   - specific allowed group IDs, or
+   - **all groups/supergroups** where the bot is present.
+
+The **all groups** option does not make private chats public. Private protected actions still require an administrator ID.
+
+The generated `config.json` remains local, is ignored by Git and is written with restrictive file permissions where supported.
+
+---
+
+## Manual installation
 
 ### 1. Clone the repository
 
@@ -263,7 +358,8 @@ Edit `config.json` and configure:
 
 - Telegram bot token.
 - Administrator user IDs.
-- Allowed Telegram group IDs.
+- Access mode: selected groups or all groups/supergroups.
+- Allowed Telegram group IDs when selected-group mode is used.
 - Runtime limits and temporary directories.
 
 For server deployments, the bot token may instead be supplied through:
