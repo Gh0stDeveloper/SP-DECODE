@@ -6,6 +6,7 @@
         "admins": [
             123456789
         ],
+        "allow_all_groups": false,
         "allowed_groups": [
             -1001234567890
         ]
