@@ -51,6 +51,11 @@ The previous Python script's white-box tables and generation-1 derivation
 were tested against this export's salt and wrapped key. Both table variants
 fail ChaCha20-Poly1305 authentication. The generation-2 native routine uses
 a different table set: its loader reads `rt.dat` and selects 14 rounds.
+The asset is 749617 bytes: 16 bytes of nonce, 749569 bytes of encrypted
+tables, and 32 bytes of authentication data. The native loader verifies the
+asset before decrypting table ranges using its AES-256-CTR routine. Its
+table-access routine uses 13 middle rounds and a final round; the size
+equation in that routine matches 749569 exactly.
 There is no evidence that the exporter's optional usage password is an
 input to `appKeyGen2Kdk` or the import call chain.
 
