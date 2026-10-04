@@ -16,6 +16,7 @@ class AppConfig:
     token: str
     admins: frozenset[int]
     allowed_groups: frozenset[int]
+    allow_all_groups: bool
     downloads_dir: Path
     results_dir: Path
     decoder_timeout_seconds: int
@@ -53,6 +54,16 @@ def _normalize_id_list(value: Any, field_name: str) -> frozenset[int]:
         except (TypeError, ValueError) as exc:
             raise ValueError(f"ID inválido en '{field_name}': {item!r}") from exc
     return frozenset(normalized)
+
+
+def _normalize_bool(value: Any, field_name: str) -> bool:
+    if isinstance(value, bool):
+        return value
+    if value in (None, 0, "0", "false", "False", "no", "No", ""):
+        return False
+    if value in (1, "1", "true", "True", "yes", "Yes"):
+        return True
+    raise ValueError(f"'{field_name}' debe ser true o false.")
 
 
 def _resolve_project_path(value: Any, default: str) -> Path:
@@ -93,6 +104,10 @@ def load_config(path: Path = CONFIG_PATH) -> AppConfig:
     admins = list(access_config.get("admins", data.get("admins", [])) or [])
     allowed_groups = access_config.get(
         "allowed_groups", data.get("grupos_permitidos_ids", [])
+    )
+    allow_all_groups = _normalize_bool(
+        access_config.get("allow_all_groups", False),
+        "access.allow_all_groups",
     )
 
     legacy_private_admin = data.get("chat_privado_especial_id")
@@ -139,6 +154,7 @@ def load_config(path: Path = CONFIG_PATH) -> AppConfig:
         token=token.strip(),
         admins=_normalize_id_list(admins, "access.admins"),
         allowed_groups=_normalize_id_list(allowed_groups, "access.allowed_groups"),
+        allow_all_groups=allow_all_groups,
         downloads_dir=_resolve_project_path(runtime_config.get("downloads_dir"), "Downloads"),
         results_dir=_resolve_project_path(runtime_config.get("results_dir"), "Results"),
         decoder_timeout_seconds=timeout,
