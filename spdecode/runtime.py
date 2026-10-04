@@ -18,8 +18,9 @@ settings.results_dir.mkdir(parents=True, exist_ok=True)
 
 bot = telebot.TeleBot(settings.token)
 
+group_mode = "todos" if settings.allow_all_groups else str(len(settings.allowed_groups))
 logger.info(
-    "Configuración cargada: %d admin(s), %d grupo(s) permitido(s).",
+    "Configuración cargada: %d admin(s), grupos=%s.",
     len(settings.admins),
-    len(settings.allowed_groups),
+    group_mode,
 )
