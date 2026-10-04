@@ -14,6 +14,7 @@ __pycache__/
 venv/
 
 # Node.js
+node_modules/
 npm-debug.log*
 
 # Tests and tooling
