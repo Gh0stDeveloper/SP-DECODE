@@ -197,4 +197,4 @@ for key in additional_keys:
     value = json.loads(result_from_first_decryption).get(key)
     if value is not None:
         print(f"│[۞] [{key}]: {value}")
-print("├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n")  
+print("├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n")  

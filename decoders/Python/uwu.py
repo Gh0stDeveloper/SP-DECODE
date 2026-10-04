@@ -50,7 +50,7 @@ def filter_uwu_content(contents):
                 else:
                     key = key_value[0]
                     filtered_contents += f"│[۞] {key}: ***\n"
-        filtered_contents += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+        filtered_contents += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
         return filtered_contents
     except Exception as e:
         return f"Error: {e}"

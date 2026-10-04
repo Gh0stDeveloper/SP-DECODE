@@ -104,7 +104,7 @@ def process_received_file(message):
                 f"Archivo: {file_name}\n"
                 f"Formato: .{file_extension}\n"
                 f"Usuario: @{username}\n"
-                "@GhostDeveloperSpy | @CodeBreakersHub"
+                "@GhostDeve | @CodeBreakersHub"
             )
             bot.send_document(
                 chat_id=message.chat.id,

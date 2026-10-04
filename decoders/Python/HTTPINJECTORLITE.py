@@ -340,7 +340,7 @@ class HTTPInjectorLiteDecryptor:
             f"{_format_top_level_json(parsed)}\n\n"
             "├───────────────\n"
             "│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n"
-            "│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n"
+            "│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n"
             "└───────────────\n"
         )
 

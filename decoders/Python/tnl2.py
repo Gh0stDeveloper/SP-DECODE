@@ -93,7 +93,7 @@ def main():
                 if value != "" and value != "0" and value != "*******":
                     message += f"│[۞] {label}: {value}\n"
 
-        message += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+        message += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
         print(message)
 
 if __name__ == '__main__':

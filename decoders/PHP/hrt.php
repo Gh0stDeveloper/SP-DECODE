@@ -82,7 +82,7 @@ function main($argc, $argv) {
 
                 $formatted_result .= "├───────────────\n";
                 $formatted_result .= "│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n";
-                $formatted_result .= "│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n";
+                $formatted_result .= "│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n";
                 $formatted_result .= "└───────────────\n";
 
                 echo $formatted_result;

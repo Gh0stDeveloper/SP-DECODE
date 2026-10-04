@@ -200,4 +200,4 @@ console.log("│[۞] Is WS: " + data.isWS);
 console.log("│[۞] Is DNS: " + data.isDNS);
 if (data.Server) console.log("│[۞] Server Date: " + data.Server);
 
-console.log('├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n');
+console.log('├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n');

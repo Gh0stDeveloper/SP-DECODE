@@ -30,7 +30,7 @@ def format_result(data):
             result += f"│[۞] {key}:\n{format_common_data(value)}"
         else:
             result += f"│[۞] {key}: {value}\n"
-    result += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+    result += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
     return result
 
 def process_encrypted_content(encrypted_content):

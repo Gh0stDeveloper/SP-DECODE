@@ -445,12 +445,12 @@ def handle_message(message):
             f"```SP-DECODE\nvmess://{encoded_config}```\n"
             f"├───────────────\n"
             f"│[[۞]] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n"
-            f"│[[۞]] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n"
+            f"│[[۞]] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n"
             f"└───────────────"
         )
         bot.send_message(
             chat_id, 
-            f"[SP-DECODE](https://t.me/GhostDeveloperSpy)\n{Anal}\n"
+            f"[SP-DECODE](https://t.me/GhostDeve)\n{Anal}\n"
             "🧿 **Thank you for using the best Bot** 🥳\n"
             "🧑🏻‍💻 **Websites, Telegram bots, WhatsApp bots, Scripts with different types of functions and among other things are created. For more information contact  [SP-FUCKER](https://t.me/Gh0stDeveloper) now**",
             parse_mode="Markdown",
@@ -504,12 +504,12 @@ def decrypted_config(message):
                     f'┌───────────────\n│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 ({protocol})\n│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu\n├───────────────\n'
                     f'│[[۞]] Decoded Config:\n```JSON\n{json_output}```\n'
                     f'│[[۞]] Encoded Config:\n```SP-DECODE\n{protocol}://{encoded_config}```\n'
-                    '├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n'
+                    '├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n'
                 )
                 bot.reply_to(message, response_message, parse_mode= 'Markdown')
             except json.JSONDecodeError:
                 obfuscated_decrypted = obfuscate_text(decrypt_text)
-                bot.reply_to(message, f'┌┌───────────────\n│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 ({protocol})\n│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu\n├───────────────\n```JSON\n{obfuscated_decrypted}```\n├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n', parse_mode= 'Markdown')
+                bot.reply_to(message, f'┌┌───────────────\n│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 ({protocol})\n│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu\n├───────────────\n```JSON\n{obfuscated_decrypted}```\n├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n', parse_mode= 'Markdown')
         else:
             bot.reply_to(message, "Please enter a valid format.")
     except Exception as e:
@@ -540,7 +540,7 @@ def decodificar_vmess(message):
                          f"{json_formatted}\n"
                          "├───────────────\n"
                          "│[[۞]] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n"
-                         "│[[۞]] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n"
+                         "│[[۞]] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n"
                          "└───────────────\n")
         bot.reply_to(message, mensaje_final, parse_mode='Markdown')
 
@@ -600,7 +600,7 @@ def handle_decryption(message):
         final_message = (
             '┌───────────────\n│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (zivpn-??)\n│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu\n├───────────────\n' +
             GhostDeveloper +
-            '├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n'
+            '├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n'
         )
         bot.reply_to(message, final_message)
     except Exception as error:
@@ -647,7 +647,7 @@ def nmqwd_ksmns(message):
             json_data = json.loads(decrypted_data)
             response_message = f"┌───────────────\n│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘\n│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu\n├───────────────\n"
             response_message += format_output(json_data)
-            response_message += "\n├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────"
+            response_message += "\n├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────"
         else:
             response_message = "Ocurrió un error: Los datos descifrados no son un JSON válido."
 
@@ -693,7 +693,7 @@ def dec_ssh_command(message):
                                       f"│[[۞]] Password: `{password}`\n"
                                       f"├───────────────\n"
                                       f"│[[۞]] SSH: `{ip_or_domain}@{user}:{password}`\n"
-                                      f"├───────────────\n│[[۞]] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[[۞]] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n", parse_mode= "Markdown")
+                                      f"├───────────────\n│[[۞]] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[[۞]] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n", parse_mode= "Markdown")
             else:
                 bot.reply_to(message, "Error decoding user or password. Please check the input.")
         except Exception as e:
@@ -798,7 +798,7 @@ def decode_v2box(message):
         X = ""
         for key, value in params.items():
             X += f"│[۞] {key}: {', '.join(value)}\n"
-        Z = "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+        Z = "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
 
         response = f"{Y}\n{X}{Z}"
         bot.reply_to(message, response)

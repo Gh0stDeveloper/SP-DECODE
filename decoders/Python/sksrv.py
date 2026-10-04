@@ -56,7 +56,7 @@ def filter_sksrv_content(contents):
                 elif "Arquivo de Configuração" not in line:  # Excluir líneas que contengan "Arquivo de Configuração"
                     filtered_line = line.replace("<comment/>", "").replace("</entry>", "")  # Eliminar '<comment/>' y '</entry>'
                     filtered_contents += filtered_line + "\n"
-        filtered_contents += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"           
+        filtered_contents += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"           
         return filtered_contents
     except Exception as e:
         return f"Error: {e}"

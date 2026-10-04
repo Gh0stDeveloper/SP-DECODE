@@ -225,7 +225,7 @@ if (jsonData) {
 
     console.log('├───────────────');
     console.log('│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub');
-    console.log('│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy');
+    console.log('│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve');
     console.log('└───────────────\n');
 } else {
     console.log("[ERROR] JSON could not be parsed even after attempting to clean the string.");

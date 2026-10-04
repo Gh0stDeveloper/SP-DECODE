@@ -22,7 +22,7 @@ def decode_v2box(message):
         X = ""
         for key, value in params.items():
             X += f"│[۞] {key}: {', '.join(value)}\n"
-        Z = "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+        Z = "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub \n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
 
         response = f"{Y}\n{X}{Z}"
         bot.reply_to(message, response)

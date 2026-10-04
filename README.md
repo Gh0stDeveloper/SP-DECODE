@@ -15,14 +15,14 @@ A structured, extensible decoder platform for processing supported configuration
 
 <p>
   <a href="https://github.com/Gh0stDeveloper"><img src="https://img.shields.io/badge/GitHub-Gh0stDeveloper-181717?style=flat-square&logo=github" alt="GitHub" /></a>
-  <a href="https://t.me/GhostDeveloperSpy"><img src="https://img.shields.io/badge/Telegram-Channel-26A5E4?style=flat-square&logo=telegram&logoColor=white" alt="Telegram channel" /></a>
+  <a href="https://t.me/GhostDeve"><img src="https://img.shields.io/badge/Telegram-Channel-26A5E4?style=flat-square&logo=telegram&logoColor=white" alt="Telegram channel" /></a>
   <a href="https://t.me/CodeBreakersHub"><img src="https://img.shields.io/badge/Telegram-Community-26A5E4?style=flat-square&logo=telegram&logoColor=white" alt="Telegram community" /></a>
 </p>
 
 </div>
 
 > [!WARNING]
-> **Maintenance notice:** not every legacy decoder has been fully revalidated against the latest versions of the applications it targets. Some formats may fail or behave differently depending on the exporting app version. If you find a broken decoder, please report it in the [Telegram community](https://t.me/CodeBreakersHub), the [Telegram channel](https://t.me/GhostDeveloperSpy), or directly to [@Gh0stDeveloper](https://t.me/Gh0stDeveloper).
+> **Maintenance notice:** not every legacy decoder has been fully revalidated against the latest versions of the applications it targets. Some formats may fail or behave differently depending on the exporting app version. If you find a broken decoder, please report it in the [Telegram community](https://t.me/CodeBreakersHub), the [Telegram channel](https://t.me/GhostDeve), or directly to [@Gh0stDeveloper](https://t.me/Gh0stDeveloper).
 
 ---
 
@@ -482,7 +482,7 @@ The project also relies on the open-source ecosystems around Python, Node.js, PH
 | Channel | Link |
 |---|---|
 | Developer | [@Gh0stDeveloper](https://t.me/Gh0stDeveloper) |
-| Telegram channel | [@GhostDeveloperSpy](https://t.me/GhostDeveloperSpy) |
+| Telegram channel | [@GhostDeve](https://t.me/GhostDeve) |
 | Community | [@CodeBreakersHub](https://t.me/CodeBreakersHub) |
 | GitHub | [github.com/Gh0stDeveloper](https://github.com/Gh0stDeveloper) |
 | Website | [GhostDeveloper.vercel.app](https://GhostDeveloper.vercel.app) |

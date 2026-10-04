@@ -264,7 +264,7 @@ def run(file_bytes: bytes) -> Optional[str]:
         f"{_format_top_level_json(result)}\n"
         "├───────────────\n"
         "│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n"
-        "│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n"
+        "│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n"
         "└───────────────\n"
     )
 

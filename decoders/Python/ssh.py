@@ -54,7 +54,7 @@ def ssh_injector(file):
             unlock_keys_message.append(f"│[{random_emoji}] {key}: ***")
 
     # Agregar los datos de unlockKeys debajo del encabezado correspondiente
-    result_str = principio_result_str + '\n'.join(sorted_result[:6]) + '\n' + '\n'.join(unlock_keys_message) + '\n' + '\n'.join(sorted_result[6:]) + f"\n├───────────────\n│[{random_emoji}] 𝗚𝗥𝗢𝗨𝗣 : CodeBreakersHub\n├───────────────\n│[{random_emoji}] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+    result_str = principio_result_str + '\n'.join(sorted_result[:6]) + '\n' + '\n'.join(unlock_keys_message) + '\n' + '\n'.join(sorted_result[6:]) + f"\n├───────────────\n│[{random_emoji}] 𝗚𝗥𝗢𝗨𝗣 : CodeBreakersHub\n├───────────────\n│[{random_emoji}] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
 
     return result_str
 

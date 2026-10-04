@@ -51,7 +51,7 @@ def print_result(config, file_extension, file_name):
 
     for key, value in configdict.items():
         result_str += f"│[۞] {key}: {value}\n"
-    result_str += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+    result_str += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
     return result_str 
 def decrypt_and_print_cyan(input_filepath):
     encrypted_contents = read_file(input_filepath)   

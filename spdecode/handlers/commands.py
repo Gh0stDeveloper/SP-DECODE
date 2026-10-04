@@ -81,7 +81,7 @@ def _main_keyboard() -> InlineKeyboardMarkup:
     keyboard.add(
         InlineKeyboardButton("Formatos de archivo", callback_data="show_files"),
         InlineKeyboardButton("Protocolos de texto", callback_data="show_texts"),
-        InlineKeyboardButton("Canal", url="https://t.me/GhostDeveloperSpy"),
+        InlineKeyboardButton("Canal", url="https://t.me/GhostDeve"),
         InlineKeyboardButton("Grupo", url="https://t.me/CodeBreakersHub"),
         InlineKeyboardButton("Desarrollador", url="https://t.me/Gh0stDeveloper"),
         InlineKeyboardButton("GitHub", url="https://github.com/Gh0stDeveloper"),
@@ -285,7 +285,7 @@ def about(message):
         "<b>SP-DECODE</b>\n"
         "Bot modular para procesar configuraciones mediante decodificadores Python, Node.js y PHP.\n\n"
         "Desarrollador: @Gh0stDeveloper\n"
-        "Canal: @GhostDeveloperSpy\n"
+        "Canal: @GhostDeve\n"
         "Grupo: @CodeBreakersHub",
         parse_mode="HTML",
         reply_markup=_main_keyboard(),

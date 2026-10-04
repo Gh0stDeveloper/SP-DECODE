@@ -145,7 +145,7 @@ filtered_info = "\n┌───────────────\n│𝗦𝗣
 decoded_res = json.loads(res)
 for key, value in decoded_res.items():
     filtered_info += f"│[۞] {key} : {value}\n"
-filtered_info += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+filtered_info += "├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
 
 print(filtered_info)
     

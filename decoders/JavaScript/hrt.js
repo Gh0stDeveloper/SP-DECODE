@@ -83,7 +83,7 @@ function main(args) {
 
                 formattedResult += "├───────────────\n";
                 formattedResult += "│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n";
-                formattedResult += "│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n";
+                formattedResult += "│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n";
                 formattedResult += "└───────────────\n";
 
                 console.log(formattedResult);

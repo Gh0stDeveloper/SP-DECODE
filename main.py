@@ -23,7 +23,7 @@ def print_banner() -> None:
     print(f"{'SP-DECODE BOT ACTIVO':^50}")
     print("=" * 50)
     print(f"{'Desarrollado por:':<18} @Gh0stDeveloper")
-    print(f"{'Canal de Telegram:':<18} https://t.me/GhostDeveloperSpy")
+    print(f"{'Canal de Telegram:':<18} https://t.me/GhostDeve")
     print(f"{'Página web:':<18} https://GhostDeveloper.vercel.app")
     print(f"{'Admins:':<18} {len(settings.admins)}")
     group_mode = "todos los grupos" if settings.allow_all_groups else str(len(settings.allowed_groups))

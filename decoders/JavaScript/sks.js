@@ -147,7 +147,7 @@ function parseConfig(data) {
         if (!!data.configProtect.hideMessageServer) {
             console.log(`│[۞] Hide Server Message: ${data.configProtect.hideMessageServer}`);
         }
-        console.log('├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n');
+        console.log('├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n');
         return;
     }
 }

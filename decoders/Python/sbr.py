@@ -31,7 +31,7 @@ def apply_filter(contents, file_extension):
             if len(key_value) > 1:
                 key, value = key_value
                 filtered_contents += f"│[۞] {key}: {value}\n"
-    filtered_contents += f"├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n"
+    filtered_contents += f"├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
     return filtered_contents
 
 def decrypt_file(input_file, passwords):

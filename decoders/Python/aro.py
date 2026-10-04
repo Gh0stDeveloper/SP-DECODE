@@ -87,7 +87,7 @@ def main():
         for key, value in config["CONFIG"].items():
             print(f"│[۞] {key}: {value}")
 
-        print("├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeveloperSpy\n└───────────────\n")  
+        print("├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n")  
 
     except Exception as e:
         print(f"Error: {e}")
