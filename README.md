@@ -34,7 +34,7 @@ The project separates configuration, authorization, decoder registration, runtim
 
 ### Core features
 
-- **59 registered file extensions/suffixes**.
+- **60 registered file extensions/suffixes**, including one diagnostic-only format.
 - Python, Node.js and PHP decoder runtimes.
 - Centralized decoder registry through `decoders.json`.
 - Telegram file processing with automatic format detection.
@@ -86,6 +86,7 @@ The following extensions are currently registered in `decoders.json`. Detection 
 | Gold Tunnel | `.gold` | Python |
 | NetMod | `.nm` | Python |
 | NPV Tunnel v4 | `.npv4`, `.npvt` | Python |
+| NPV Tunnel v5 (diagnostic only; no decryption yet) | `.npvs` | Python |
 | HTTP Tweak | `.ht`, `.htb` | Python |
 | Tunnel | `.tnl` | Python |
 | TLS Tunnel | `.tls` | Python |
@@ -134,7 +135,13 @@ The following extensions are currently registered in `decoders.json`. Detection 
 | HTTP Injector | `.ehi` | Python |
 | SSC Custom | `.ssc` | Python |
 
-> The registry currently contains **59 distinct supported suffixes**. Some applications intentionally map more than one extension to the same decoder.
+> The registry currently contains **60 distinct suffixes**. The `.npvs` entry only checks the container structure and explains why its encrypted content cannot yet be opened. It does not recover configurations or verify the signature. Some applications intentionally map more than one extension to the same decoder.
+
+### NPV Tunnel `.npvs` status
+
+NPV Tunnel 124.0.37 exports a binary `NPVS` v5 envelope with a compact header, a 12-byte nonce, a framed `NPF1` body and a 64-byte signature. The `decoders/Python/NPVS.py` script parses the appKey generation and encrypted metadata length in addition to the frame. Run `python decoders/Python/NPVS.py your-file.npvs` to inspect an export without printing its encrypted contents.
+
+The provided export uses **appKey generation 2**. During import the application derives its document key through `libnpvtunnel.so` and `assets/rt.dat`, opens the compact metadata, and then opens the `NPF1` document. A creator's optional password controls use of the imported configuration; it is not required for this import. The earlier generation-1 white-box tables do not authenticate the new key wrap. The sample has **not** been decrypted, and this entry remains diagnostic until the native derivation and `NPF1` opening path are implemented. See [the v5 import analysis](docs/npvs-v5-analysis.md) for field offsets and the call chain. Keep exports out of public test fixtures.
 
 ---
 
