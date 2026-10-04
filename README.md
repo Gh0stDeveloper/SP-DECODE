@@ -284,7 +284,7 @@ python main.py
 
 At startup, SP-DECODE validates the decoder registry and checks that every registered decoder script exists before beginning Telegram long polling.
 
-Administrators may use protected decoding features from any chat. Regular users are authorized only inside the configured allowed groups.
+Administrators may use protected decoding features from any chat. Regular users are authorized inside explicitly configured groups, or inside every group/supergroup when `access.allow_all_groups` is enabled.
 
 ---
 
