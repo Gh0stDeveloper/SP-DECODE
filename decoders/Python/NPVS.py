@@ -40,7 +40,7 @@ class CompactHeader:
     config_id: bytes
     creator_public_key: bytes
     recipient_kind: int
-    passphrase_length: int
+    recipient_data_length: int
     app_key: AppKeyRecord | None
     encrypted_metadata: bytes
 
@@ -65,13 +65,13 @@ def parse_compact_header(raw: bytes) -> CompactHeader:
     config_id = raw[1:17]
     creator_public_key = raw[17:50]
     recipient_kind = raw[50]
-    passphrase_length = int.from_bytes(raw[51:53], "big")
-    if recipient_kind > 2 or passphrase_length > 1024:
+    recipient_data_length = int.from_bytes(raw[51:53], "big")
+    if recipient_kind > 2 or recipient_data_length > 1024:
         raise NPVSFormatError("Selector de destinatario o longitud no válida.")
-    if recipient_kind == 0 and passphrase_length == 0:
+    if recipient_kind == 0 and recipient_data_length == 0:
         raise NPVSFormatError("La cabecera carece de destinatario.")
 
-    cursor = COMPACT_PREFIX_SIZE + passphrase_length
+    cursor = COMPACT_PREFIX_SIZE + recipient_data_length
     if cursor > len(raw):
         raise NPVSFormatError("Datos de destinatario truncados.")
     app_key = None
@@ -95,7 +95,7 @@ def parse_compact_header(raw: bytes) -> CompactHeader:
         config_id=config_id,
         creator_public_key=creator_public_key,
         recipient_kind=recipient_kind,
-        passphrase_length=passphrase_length,
+        recipient_data_length=recipient_data_length,
         app_key=app_key,
         encrypted_metadata=raw[cursor:],
     )
