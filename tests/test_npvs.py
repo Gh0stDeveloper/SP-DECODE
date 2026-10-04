@@ -6,7 +6,17 @@ import unittest
 from decoders.Python.NPVS import NPVSFormatError, describe, inspect
 
 
-def frame(header: bytes = b"\x01" + b"h" * 32, body: bytes = b"NPF\x01" + b"b" * 20) -> bytes:
+def compact_header() -> bytes:
+    return (
+        b"\x01" + b"i" * 16 + b"p" * 33 + b"\x02" + b"\x00\x00"
+        + b"\x00\x02" + b"k" * 16 + b"w" * 60
+        + struct.pack(">I", 20) + b"m" * 20
+    )
+
+
+def frame(header: bytes | None = None, body: bytes = b"NPF\x01" + b"b" * 20) -> bytes:
+    if header is None:
+        header = compact_header()
     return (
         b"NPVS\x05"
         + struct.pack(">I", len(header))
@@ -21,11 +31,22 @@ def frame(header: bytes = b"\x01" + b"h" * 32, body: bytes = b"NPF\x01" + b"b" *
 class NPVSInspectTests(unittest.TestCase):
     def test_v5_frame_reports_encrypted_status_without_body(self):
         result = inspect(frame())
-        self.assertEqual((result.version, result.header_length, result.body_length), (5, 33, 24))
+        self.assertEqual((result.version, result.header_length, result.body_length), (5, 155, 24))
         self.assertEqual(result.body_marker, "NPF1")
+        self.assertEqual(result.compact_header.app_key.generation, 2)
+        self.assertEqual(result.compact_header.config_id, b"i" * 16)
+        self.assertEqual(result.compact_header.app_key.salt, b"k" * 16)
         output = describe(result)
         self.assertIn("contenido cifrado", output)
+        self.assertIn("appKey, generación 2", output)
+        self.assertNotIn("contraseña del exportador", output)
         self.assertNotIn("bbbb", output)
+
+    def test_rejects_mismatched_compact_metadata(self):
+        raw = bytearray(compact_header())
+        raw[131:135] = struct.pack(">I", 21)
+        with self.assertRaises(NPVSFormatError):
+            inspect(frame(bytes(raw)))
 
     def test_rejects_trailing_data_and_truncation(self):
         for data in (frame() + b"x", frame()[:-1], frame()[:17]):

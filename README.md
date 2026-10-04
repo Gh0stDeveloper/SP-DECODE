@@ -139,9 +139,9 @@ The following extensions are currently registered in `decoders.json`. Detection 
 
 ### NPV Tunnel `.npvs` status
 
-NPV Tunnel 124.0.37 exports a binary `NPVS` v5 envelope with a framed header, a 12-byte nonce, a framed body and a 64-byte signature. The `decoders/Python/NPVS.py` script checks lengths and identifies the nested `NPF1` body marker locally. Run `python decoders/Python/NPVS.py your-file.npvs` to inspect an export without printing its encrypted contents.
+NPV Tunnel 124.0.37 exports a binary `NPVS` v5 envelope with a compact header, a 12-byte nonce, a framed `NPF1` body and a 64-byte signature. The `decoders/Python/NPVS.py` script parses the appKey generation and encrypted metadata length in addition to the frame. Run `python decoders/Python/NPVS.py your-file.npvs` to inspect an export without printing its encrypted contents.
 
-The APK's import path opens the content key through an export passphrase, an authorized recipient's private key or an app-local key. The APK does not contain those per-export/per-device secrets. The provided sample was recognized structurally, but has **not** been decrypted; a complete decoder still needs the applicable credential and implementation of the compact v5 envelope opening path. Do not publish configuration files or private keys as test fixtures.
+The provided export uses **appKey generation 2**. During import the application derives its document key through `libnpvtunnel.so` and `assets/rt.dat`, opens the compact metadata, and then opens the `NPF1` document. A creator's optional password controls use of the imported configuration; it is not required for this import. The earlier generation-1 white-box tables do not authenticate the new key wrap. The sample has **not** been decrypted, and this entry remains diagnostic until the native derivation and `NPF1` opening path are implemented. See [the v5 import analysis](docs/npvs-v5-analysis.md) for field offsets and the call chain. Keep exports out of public test fixtures.
 
 ---
 
