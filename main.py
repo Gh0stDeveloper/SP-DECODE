@@ -26,7 +26,8 @@ def print_banner() -> None:
     print(f"{'Canal de Telegram:':<18} https://t.me/GhostDeveloperSpy")
     print(f"{'Página web:':<18} https://GhostDeveloper.vercel.app")
     print(f"{'Admins:':<18} {len(settings.admins)}")
-    print(f"{'Grupos permitidos:':<18} {len(settings.allowed_groups)}")
+    group_mode = "todos los grupos" if settings.allow_all_groups else str(len(settings.allowed_groups))
+    print(f"{'Acceso grupos:':<18} {group_mode}")
     print(f"{'Decodificadores:':<18} {len(DECODER_REGISTRY)}")
     print("=" * 50)
 
