@@ -45,6 +45,11 @@
             "runtime": "python",
             "name": "NPV Tunnel v4"
         },
+        "npvs": {
+            "script": "decoders/Python/NPVS.py",
+            "runtime": "python",
+            "name": "NPV Tunnel v5 (solo diagnóstico, sin descifrado)"
+        },
         "ht": {
             "script": "decoders/Python/HTTPTWEAK.py",
             "runtime": "python",

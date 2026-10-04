@@ -34,7 +34,7 @@ The project separates configuration, authorization, decoder registration, runtim
 
 ### Core features
 
-- **59 registered file extensions/suffixes**.
+- **60 registered file extensions/suffixes**, including one diagnostic-only format.
 - Python, Node.js and PHP decoder runtimes.
 - Centralized decoder registry through `decoders.json`.
 - Telegram file processing with automatic format detection.
@@ -86,6 +86,7 @@ The following extensions are currently registered in `decoders.json`. Detection 
 | Gold Tunnel | `.gold` | Python |
 | NetMod | `.nm` | Python |
 | NPV Tunnel v4 | `.npv4`, `.npvt` | Python |
+| NPV Tunnel v5 (diagnostic only; no decryption yet) | `.npvs` | Python |
 | HTTP Tweak | `.ht`, `.htb` | Python |
 | Tunnel | `.tnl` | Python |
 | TLS Tunnel | `.tls` | Python |
@@ -134,7 +135,13 @@ The following extensions are currently registered in `decoders.json`. Detection 
 | HTTP Injector | `.ehi` | Python |
 | SSC Custom | `.ssc` | Python |
 
-> The registry currently contains **59 distinct supported suffixes**. Some applications intentionally map more than one extension to the same decoder.
+> The registry currently contains **60 distinct suffixes**. The `.npvs` entry only checks the container structure and explains why its encrypted content cannot yet be opened. It does not recover configurations or verify the signature. Some applications intentionally map more than one extension to the same decoder.
+
+### NPV Tunnel `.npvs` status
+
+NPV Tunnel 124.0.37 exports a binary `NPVS` v5 envelope with a framed header, a 12-byte nonce, a framed body and a 64-byte signature. The `decoders/Python/NPVS.py` script checks lengths and identifies the nested `NPF1` body marker locally. Run `python decoders/Python/NPVS.py your-file.npvs` to inspect an export without printing its encrypted contents.
+
+The APK's import path opens the content key through an export passphrase, an authorized recipient's private key or an app-local key. The APK does not contain those per-export/per-device secrets. The provided sample was recognized structurally, but has **not** been decrypted; a complete decoder still needs the applicable credential and implementation of the compact v5 envelope opening path. Do not publish configuration files or private keys as test fixtures.
 
 ---
 
