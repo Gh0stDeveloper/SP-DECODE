@@ -47,6 +47,9 @@ jobs:
       - name: Validate project
         run: python validate_project.py
 
+      - name: A.2.3 batch-five synthetic reference probe (non-secret)
+        run: PYTHONPATH=. python -m tests.golden.a23_batch5_probe
+
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
 
