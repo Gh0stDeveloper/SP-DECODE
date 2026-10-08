@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.1.0",
+  "documentationVersion": "1.2.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -32,11 +32,15 @@
       "status": "in_progress",
       "subphases": {
         "A.1": "documented",
-        "A.2": "inventory_complete_validation_pending",
+        "A.2": "static_inventory_and_dependency_audit_verified_golden_fixtures_pending",
         "A.3": "documented",
         "A.4": "documented",
         "A.5": "documented",
-        "A.6": "documented"
+        "A.6": "documented",
+        "A.2.1": "verified",
+        "A.2.2": "verified_static_findings_remediation_pending",
+        "A.2.3": "not_started",
+        "A.2.4": "not_started"
       }
     },
     "B": {
@@ -61,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Finalize A.2 functional audit and fixture plan; then B.1 Android shell and early C.4 Chaquopy/ABI spike.",
+  "nextAction": "Finish A.2.3 safe positive/negative fixtures and A.2.4 Linux goldens; then B.1 shell and C.4 runtime spike.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
   "notes": "Planning only. No real Android decoder tested.",
@@ -82,5 +86,52 @@
     "decoderOutputTranslated": false,
     "decoderOutputMutationAllowed": false,
     "localizationImplementationStatus": "documented_not_implemented"
-  }
+  },
+  "a2": {
+    "baseCommit": "39118010f24bac95aea6c3299fc1523a4c9e0522",
+    "branch": "feat/android-a2-decoder-audit",
+    "staticScriptsReviewed": 48,
+    "registeredSuffixesReviewed": 59,
+    "missingScriptPaths": 0,
+    "pythonRunFunctionsDetected": 12,
+    "linuxSyntheticDecoderTestsPresent": [
+      "TLS.py",
+      "EV2RAY.py"
+    ],
+    "androidVerifiedSuffixes": 0,
+    "functionalGoldenStatus": "pending",
+    "securityReviewOpen": [
+      "NPVTUNNEL pickle of embedded constant",
+      "Node config file mutation",
+      "unused requests import",
+      "Crypto/cryptography/argon2/msgpack Android ABI wheels"
+    ],
+    "artifacts": [
+      "docs/android/DECODER_AUDIT.md",
+      "docs/android/A2_FIXTURE_POLICY.md",
+      "docs/android/audit_decoders.py",
+      "tests/test_android_a2_audit.py"
+    ],
+    "recommendation": "Collect authorized golden fixtures and portability evidence; do not label any decoder Android verified.",
+    "staticAnalysisCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484",
+    "staticAnalysisRunId": 37835155484,
+    "staticAnalysisRunConclusion": "success",
+    "testsInCi": 12,
+    "newTests": 5,
+    "networkImportCandidates": 1,
+    "networkCallCandidates": 0,
+    "pickleCandidates": 1,
+    "knownAssetScriptCount": 5,
+    "auditArtifactUrl": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484/artifacts/11574907879"
+  },
+  "lastVerifiedCi": [
+    {
+      "name": "Validate SP-DECODE",
+      "runId": 37835155484,
+      "conclusion": "success",
+      "headSha": "6619b6c6527faf5f1eca55373241e7ca50f91ed9",
+      "url": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484",
+      "scope": "bot regression + A2 static inventory + documentation; NOT Android execution"
+    }
+  ]
 }
