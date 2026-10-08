@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.3.0",
+  "documentationVersion": "1.4.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -39,7 +39,7 @@
         "A.6": "documented",
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
-        "A.2.3": "in_progress_6_synthetic_linux_cases_5_of_59_suffixes",
+        "A.2.3": "in_progress_9_synthetic_linux_cases_8_of_59_suffixes",
         "A.2.4": "not_started"
       }
     },
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "A.2.3: obtain authorized/synthetic positive + negative fixtures for remaining 54 suffixes; A.2.4 compare Android adapter raw text; B.1 and C.4 can proceed in parallel.",
+  "nextAction": "Continue A.2.3 with ehi/npv4/npvt/hat authorized synthetic or vendor-version fixtures; keep A.2.4/Android runtime separate.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
   "notes": "Planning only. No real Android decoder tested.",
@@ -99,7 +99,7 @@
       "EV2RAY.py"
     ],
     "androidVerifiedSuffixes": 0,
-    "functionalGoldenStatus": "partial_linux_golden_5_of_59_suffixes",
+    "functionalGoldenStatus": "partial_linux_golden_8_of_59_suffixes",
     "securityReviewOpen": [
       "NPVTUNNEL pickle of embedded constant",
       "Node config file mutation",
@@ -128,18 +128,27 @@
       "v2",
       "ehil",
       "ssc",
-      "dark"
+      "dark",
+      "ht",
+      "htb",
+      "hc"
     ],
-    "linuxGoldenCases": 6,
-    "linuxGoldenScriptCount": 5,
-    "missingPositiveFixtureSuffixes": 54,
-    "goldenBranch": "feat/android-a2-3-golden-fixtures",
+    "linuxGoldenCases": 9,
+    "linuxGoldenScriptCount": 7,
+    "missingPositiveFixtureSuffixes": 51,
+    "goldenBranch": "feat/android-a23-batch2-ht-hc",
     "goldenManifest": "tests/golden/manifest.json",
     "goldenGenerators": "tests/golden/a23_generators.py",
     "goldenReport": "tests/golden/a23_report.py",
     "goldenExporter": "tests/golden/a23_export.py",
     "goldenDocumentation": "docs/android/A23_GOLDEN_CORPUS.md",
-    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37841390180"
+    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37854337089",
+    "nextGoldenPriority": [
+      "ehi",
+      "npv4",
+      "npvt",
+      "hat"
+    ]
   },
   "lastVerifiedCi": [
     {

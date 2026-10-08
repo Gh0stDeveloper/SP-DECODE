@@ -75,6 +75,42 @@
       "androidGolden": "not_started",
       "inputSha256": "e57d14c3179ab208d25f1ebb45a3a6b0fc30e06d21152c7f8c1c7123f34319dd",
       "expectedRawUtf8Sha256": "08d2a52ca01275281681c50a3b8341fdad14668ce194198982020124f48b1d4a"
+    },
+    {
+      "id": "httptweak-v1-ht",
+      "generator": "httptweak_bytes_1",
+      "expectedRawText": "tests/golden/expected/httptweak-v1-ht.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "5cfd75fde9370f2daae7b533e9f373fd8aa36f5a763efd9ab18c9adb6fa7ea45",
+      "expectedRawUtf8Sha256": "5f21d9ed1d69dee07a5414c6144296377408228490106149f5d7e13d72a43e75"
+    },
+    {
+      "id": "httptweak-v2-htb",
+      "generator": "httptweak_bytes_2",
+      "expectedRawText": "tests/golden/expected/httptweak-v2-htb.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "95b9ab6651fb2bb8e2ec28a09ac250e0be180b0234394d1c92873ed560350aff",
+      "expectedRawUtf8Sha256": "5f21d9ed1d69dee07a5414c6144296377408228490106149f5d7e13d72a43e75"
+    },
+    {
+      "id": "httpcustom-chacha-rst",
+      "generator": "httpcustom_bytes",
+      "expectedRawText": "tests/golden/expected/httpcustom-chacha-rst.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "97e423ca6978123703c4d3f24ab7f0df2805f04a0449668918fd546b0031a94b",
+      "expectedRawUtf8Sha256": "34838f10fcdf6bcf646bdbf63c1a0d5fe3dbc3df3f32bfcc7c75da9e67e7280b"
     }
   ],
   "extensions": [
@@ -203,8 +239,10 @@
       "suffix": "hc",
       "script": "decoders/Python/HTTPCUSTOM.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "httpcustom-chacha-rst"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -221,8 +259,10 @@
       "suffix": "ht",
       "script": "decoders/Python/HTTPTWEAK.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "httptweak-v1-ht"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -230,8 +270,10 @@
       "suffix": "htb",
       "script": "decoders/Python/HTTPTWEAK.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "httptweak-v2-htb"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },

@@ -1,0 +1,11 @@
+┌───────────────
+│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (.ht/.htb)
+│[۞] Aplicación: HTTP Tweak
+├───────────────
+{
+    "name": "A23 offline synthetic",
+    "server": "example.org",
+    "port": 443,
+    "enabled": true
+}
+└───────────────

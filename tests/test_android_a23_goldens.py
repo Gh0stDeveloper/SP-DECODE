@@ -20,14 +20,19 @@ from decoders.Python.EV2RAY import run as decode_ev2ray
 from decoders.Python.SSCCUSTOM import run as decode_ssc
 from decoders.Python.TLS import run as decode_tls
 from decoders.Python.HTTPINJECTORLITE import run as decode_ehil
+from decoders.Python.HTTPCUSTOM import run as decode_hc
+from decoders.Python.HTTPTWEAK import run as decode_ht, decode_profile as decode_ht_profile
 from spdecode.registry import get_supported_extension
-from tests.golden.a23_generators import SYNTHETIC_GENERATORS
+from tests.golden.a23_generators import SYNTHETIC_GENERATORS, TWEAK_PROFILE
 
 ROOT = Path(__file__).resolve().parents[1]
 GOLDEN = ROOT / "tests" / "golden"
 MANIFEST = GOLDEN / "manifest.json"
 REFERENCE_FUNCTIONS = {
     "tls-aesgcm": decode_tls,
+    "httptweak-v1-ht": decode_ht,
+    "httptweak-v2-htb": decode_ht,
+    "httpcustom-chacha-rst": decode_hc,
     "ehil-aescbc-double": decode_ehil,
     "ev2ray-plain": decode_ev2ray,
     "ev2ray-aes128": decode_ev2ray,
@@ -36,6 +41,9 @@ REFERENCE_FUNCTIONS = {
 }
 CLI_SCRIPTS = {
     "tls-aesgcm": "decoders/Python/TLS.py",
+    "httptweak-v1-ht": "decoders/Python/HTTPTWEAK.py",
+    "httptweak-v2-htb": "decoders/Python/HTTPTWEAK.py",
+    "httpcustom-chacha-rst": "decoders/Python/HTTPCUSTOM.py",
     "ehil-aescbc-double": "decoders/Python/HTTPINJECTORLITE.py",
     "ev2ray-plain": "decoders/Python/EV2RAY.py",
     "ev2ray-aes128": "decoders/Python/EV2RAY.py",
@@ -44,6 +52,9 @@ CLI_SCRIPTS = {
 }
 CASE_SUFFIXES = {
     "tls-aesgcm": "tls",
+    "httptweak-v1-ht": "ht",
+    "httptweak-v2-htb": "htb",
+    "httpcustom-chacha-rst": "hc",
     "ehil-aescbc-double": "ehil",
     "ev2ray-plain": "v2",
     "ev2ray-aes128": "v2",
@@ -130,12 +141,20 @@ class A23GoldenFixtureTests(unittest.TestCase):
                     expected = (GOLDEN / "expected" / f"{case_id}.txt").read_bytes()
                     self.assertEqual(completed.returncode, 0, completed.stderr.decode("utf-8", errors="replace"))
                     self.assertEqual(completed.stderr, b"")
-                    self.assertEqual(completed.stdout, expected + b"\n")
+                    if case_id.startswith("httptweak-"):
+                        self.assertEqual(completed.stdout, (json.dumps(TWEAK_PROFILE, indent=4, ensure_ascii=False) + "\n").encode("utf-8"))
+                        self.assertEqual(decode_ht_profile(generator()), TWEAK_PROFILE)
+                    else:
+                        self.assertEqual(completed.stdout, expected + b"\n")
 
     def test_05_corrupt_inputs_fail_safely(self):
         """Negative fixture corpus verifies no false 'success' for malformed input."""
         cases = [
             ("tls-empty", decode_tls, b""),
+            ("hc-empty", decode_hc, b""),
+            ("hc-malformed", decode_hc, b"not a http custom config"),
+            ("ht-empty", decode_ht, b""),
+            ("ht-unknown-variant", decode_ht, base64.b64encode(b"\xff" + bytes(48))),
             ("ehil-empty", decode_ehil, b""),
             ("ehil-wrong-magic", decode_ehil, b"\x00\x04invalid"),
             ("tls-malformed", decode_tls, b"tls://!invalid??"),
@@ -174,7 +193,7 @@ class A23GoldenFixtureTests(unittest.TestCase):
                 self.assertEqual(get_supported_extension(filename), expected)
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
         unresolved = [r for r in manifest["extensions"] if not r["caseIds"]]
-        self.assertEqual(len(unresolved), 54)
+        self.assertEqual(len(unresolved), 51)
 
     def test_08_snapshot_paths_are_only_repo_owned(self):
         for record in fixture_case_records():

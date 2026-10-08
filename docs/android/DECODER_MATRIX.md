@@ -17,8 +17,8 @@
 | .gold | Gold Tunnel | python | decoders/Python/gold.py | Sin fixture | No verificado | D |
 | .nm | NetMod | python | decoders/Python/nms.py | Sin fixture | No verificado | D |
 | .npv4 | NPV Tunnel v4 | python | decoders/Python/NPVTUNNEL.py | Sin fixture | No verificado | D |
-| .ht | HTTP Tweak | python | decoders/Python/HTTPTWEAK.py | Sin fixture | No verificado | D |
-| .htb | HTTP Tweak | python | decoders/Python/HTTPTWEAK.py | Sin fixture | No verificado | D |
+| .ht | HTTP Tweak | python | decoders/Python/HTTPTWEAK.py | 1 caso | No verificado | D |
+| .htb | HTTP Tweak | python | decoders/Python/HTTPTWEAK.py | 1 caso | No verificado | D |
 | .npvt | NPV Tunnel v4 | python | decoders/Python/NPVTUNNEL.py | Sin fixture | No verificado | D |
 | .tnl | Tunnel | python | decoders/Python/tnl.py | Sin fixture | No verificado | D |
 | .tls | TLS Tunnel | python | decoders/Python/TLS.py | 1 caso | No verificado | D |
@@ -64,7 +64,7 @@
 | .sksplus | SocksIP Plus | php | decoders/PHP/sksplus.php | Sin fixture | No verificado | E |
 | .jez | JEZ Tunnel | php | decoders/PHP/jez.php | Sin fixture | No verificado | E |
 | .hrt | HRT Tunnel | php | decoders/PHP/hrt.php | Sin fixture | No verificado | E |
-| .hc | HTTP Custom | python | decoders/Python/HTTPCUSTOM.py | Sin fixture | No verificado | D |
+| .hc | HTTP Custom | python | decoders/Python/HTTPCUSTOM.py | 1 caso | No verificado | D |
 | .ehi | HTTP Injector | python | decoders/Python/HTTPINJECTOR.py | Sin fixture | No verificado | D |
 | .ssc | SSC Custom | python | decoders/Python/SSCCUSTOM.py | 1 caso | No verificado | D |
 
