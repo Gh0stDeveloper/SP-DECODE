@@ -11,8 +11,10 @@
       "inputSource": "generated_deterministic",
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
-      "linuxGolden": "pending_ci",
-      "androidGolden": "not_started"
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "0fcfadea01f6d12735d4fb58183f7af84220fed1722e05244cc4d2f2dd4d9b99",
+      "expectedRawUtf8Sha256": "0fe06debc477a5e1a55b61b0f0fcef1cdf93f26dddfe66db07d4dc9b6fcb88a3"
     },
     {
       "id": "ev2ray-plain",
@@ -21,8 +23,10 @@
       "inputSource": "generated_deterministic",
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
-      "linuxGolden": "pending_ci",
-      "androidGolden": "not_started"
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "668c0920f200b083ba2b54396b9cc78fd73e580d1d6d9756416cf7d4a6e410e7",
+      "expectedRawUtf8Sha256": "a579a76486e8b1d1c47dc39d7813939d0db833906eae475000ae60b27bcc3261"
     },
     {
       "id": "ev2ray-aes128",
@@ -31,8 +35,10 @@
       "inputSource": "generated_deterministic",
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
-      "linuxGolden": "pending_ci",
-      "androidGolden": "not_started"
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "e4d1ad847361fbc272f9b13d7115816b7da79d43be09f1c3510d5598e17aa4e4",
+      "expectedRawUtf8Sha256": "1f4e406f25fe10522ffacbfd9f145a9d327ef34a2b2e85ca891305cca6882f85"
     },
     {
       "id": "ssc-chacha20",
@@ -41,8 +47,10 @@
       "inputSource": "generated_deterministic",
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
-      "linuxGolden": "pending_ci",
-      "androidGolden": "not_started"
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "9ba6949af73dfbbc8da8b54758368c8f7e14c74bbf106617726b8542c8ecc5b8",
+      "expectedRawUtf8Sha256": "b295af004227611161d939773054bb83167d0c15bd74234390c9c1160cb4ad1d"
     },
     {
       "id": "dark-aescfb-msgpack",
@@ -51,8 +59,10 @@
       "inputSource": "generated_deterministic",
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
-      "linuxGolden": "pending_ci",
-      "androidGolden": "not_started"
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "684fbc1aa1a5912477208cccda12f647c62f31faea239e3c0d1324140f7f6007",
+      "expectedRawUtf8Sha256": "35fcad3f2d2b1357e9959ae11f8efabf817e4c570666a83db052dee24a2b91a6"
     },
     {
       "id": "ehil-aescbc-double",
@@ -61,8 +71,10 @@
       "inputSource": "generated_deterministic",
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
-      "linuxGolden": "pending_ci",
-      "androidGolden": "not_started"
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "e57d14c3179ab208d25f1ebb45a3a6b0fc30e06d21152c7f8c1c7123f34319dd",
+      "expectedRawUtf8Sha256": "08d2a52ca01275281681c50a3b8341fdad14668ce194198982020124f48b1d4a"
     }
   ],
   "extensions": [
@@ -115,7 +127,7 @@
       "suffix": "dark",
       "script": "decoders/Python/DARKTUNNEL.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "dark-aescfb-msgpack"
       ],
@@ -135,7 +147,7 @@
       "suffix": "ehil",
       "script": "decoders/Python/HTTPINJECTORLITE.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "ehil-aescbc-double"
       ],
@@ -470,7 +482,7 @@
       "suffix": "ssc",
       "script": "decoders/Python/SSCCUSTOM.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "ssc-chacha20"
       ],
@@ -508,7 +520,7 @@
       "suffix": "tls",
       "script": "decoders/Python/TLS.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "tls-aesgcm"
       ],
@@ -546,7 +558,7 @@
       "suffix": "v2",
       "script": "decoders/Python/EV2RAY.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "ev2ray-plain",
         "ev2ray-aes128"
