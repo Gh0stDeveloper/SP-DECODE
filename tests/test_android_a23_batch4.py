@@ -96,8 +96,6 @@ class A23Batch4GoldenTests(unittest.TestCase):
         for case_id, generate in BATCH4_GENERATORS.items():
             with self.subTest(case=case_id):
                 row = cases[case_id]
-                if row["linuxGolden"] == "pending_ci":
-                    continue
                 self.assertEqual(row["linuxGolden"], "verified_linux_ci")
                 self.assertEqual(hashlib.sha256(generate()).hexdigest(), row["inputSha256"])
                 golden = (EXPECTED / (case_id + ".txt")).read_bytes()
