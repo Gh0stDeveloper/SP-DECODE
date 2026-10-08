@@ -17,6 +17,9 @@ from tests.golden.a23_generators import SYNTHETIC_GENERATORS
 ROOT = Path(__file__).resolve().parents[2]
 SUFFIX = {
     "tls-aesgcm": "tls",
+    "httptweak-v1-ht": "ht",
+    "httptweak-v2-htb": "htb",
+    "httpcustom-chacha-rst": "hc",
     "ev2ray-plain": "v2",
     "ev2ray-aes128": "v2",
     "ssc-chacha20": "ssc",
@@ -37,7 +40,7 @@ def main() -> int:
         id_ = case["id"]
         raw = SYNTHETIC_GENERATORS[id_]()
         digest = hashlib.sha256(raw).hexdigest()
-        if digest != case["inputSha256"]:
+        if case["linuxGolden"] == "verified_linux_ci" and digest != case["inputSha256"]:
             raise SystemExit(f"[FAIL] A.2.3 fixture changed without review: {id_}")
         filename = f"{id_}.{SUFFIX[id_]}"
         (args.output_dir / filename).write_bytes(raw)

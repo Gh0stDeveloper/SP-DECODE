@@ -1,0 +1,12 @@
+┌───────────────
+│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (.hc)
+│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu
+├───────────────
+│[۞] Protections: {}
+│[۞] Config: {"payload":"GET","proxy":"example.org","lockAllConfig":"false","blockedByRoot":"true","expiryTime":"0"}
+
+├───────────────
+│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub
+│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve
+└───────────────
+ 

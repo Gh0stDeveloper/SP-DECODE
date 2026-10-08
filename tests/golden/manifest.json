@@ -75,6 +75,36 @@
       "androidGolden": "not_started",
       "inputSha256": "e57d14c3179ab208d25f1ebb45a3a6b0fc30e06d21152c7f8c1c7123f34319dd",
       "expectedRawUtf8Sha256": "08d2a52ca01275281681c50a3b8341fdad14668ce194198982020124f48b1d4a"
+    },
+    {
+      "id": "httptweak-v1-ht",
+      "generator": "httptweak_bytes_1",
+      "expectedRawText": "tests/golden/expected/httptweak-v1-ht.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started"
+    },
+    {
+      "id": "httptweak-v2-htb",
+      "generator": "httptweak_bytes_2",
+      "expectedRawText": "tests/golden/expected/httptweak-v2-htb.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started"
+    },
+    {
+      "id": "httpcustom-chacha-rst",
+      "generator": "httpcustom_bytes",
+      "expectedRawText": "tests/golden/expected/httpcustom-chacha-rst.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started"
     }
   ],
   "extensions": [
@@ -203,8 +233,10 @@
       "suffix": "hc",
       "script": "decoders/Python/HTTPCUSTOM.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "httpcustom-chacha-rst"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -221,8 +253,10 @@
       "suffix": "ht",
       "script": "decoders/Python/HTTPTWEAK.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "httptweak-v1-ht"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -230,8 +264,10 @@
       "suffix": "htb",
       "script": "decoders/Python/HTTPTWEAK.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "httptweak-v2-htb"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
