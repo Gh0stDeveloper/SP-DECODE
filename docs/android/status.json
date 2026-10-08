@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.7.0",
+  "documentationVersion": "1.8.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -39,7 +39,7 @@
         "A.6": "documented",
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
-        "A.2.3": "in_progress_39_synthetic_linux_cases_38_of_59_suffixes",
+        "A.2.3": "in_progress_49_synthetic_linux_cases_48_of_59_suffixes",
         "A.2.4": "not_started"
       }
     },
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "A.2.3: 21 suffixes lack positive fixture; next difficult NPV4/NPVT (embedded constant pickle trust boundary), EHI XXTEA/Argon2, Node shared config and .tvt mismatch. A.2.4 Android parity pending.",
+  "nextAction": "Continue A.2.3 with 11 remaining suffixes; preserve honest exporter and Android verification gates; address GCM authentication in at and legacy CLI security before production",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
   "notes": "Planning only. No real Android decoder tested.",
@@ -99,7 +99,7 @@
       "EV2RAY.py"
     ],
     "androidVerifiedSuffixes": 0,
-    "functionalGoldenStatus": "partial_linux_golden_38_of_59_suffixes",
+    "functionalGoldenStatus": "partial_linux_golden_48_of_59_suffixes",
     "securityReviewOpen": [
       "NPVTUNNEL pickle of embedded constant",
       "Node config file mutation",
@@ -161,18 +161,28 @@
       "mrc",
       "mtl",
       "mina",
-      "tnl"
+      "tnl",
+      "nm",
+      "pb",
+      "pcx",
+      "nt",
+      "ziv",
+      "vpnlite",
+      "sip",
+      "at",
+      "ipt",
+      "stk"
     ],
-    "linuxGoldenCases": 39,
-    "linuxGoldenScriptCount": 30,
-    "missingPositiveFixtureSuffixes": 21,
-    "goldenBranch": "feat/android-a23-batch5-ten-formats",
+    "linuxGoldenCases": 49,
+    "linuxGoldenScriptCount": 40,
+    "missingPositiveFixtureSuffixes": 11,
+    "goldenBranch": "feat/android-a23-batch6-ten-suffixes",
     "goldenManifest": "tests/golden/manifest.json",
     "goldenGenerators": "tests/golden/a23_generators.py",
     "goldenReport": "tests/golden/a23_report.py",
     "goldenExporter": "tests/golden/a23_export.py",
     "goldenDocumentation": "docs/android/A23_GOLDEN_CORPUS.md",
-    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37858741421",
+    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37861105855",
     "nextGoldenPriority": [
       "ehi",
       "npv4",
@@ -180,10 +190,11 @@
       "npv2",
       "epro",
       "tvt",
-      "ipt",
       "gold",
-      "pb",
-      "pcx"
+      "roy",
+      "ssh",
+      "sut",
+      "xtp"
     ],
     "goldenBatch3": {
       "suffixes": [
@@ -262,6 +273,42 @@
         "No Android runtime"
       ],
       "exporterVersion": "not_verified"
+    },
+    "goldenBatch6": {
+      "suffixes": [
+        "nm",
+        "pb",
+        "pcx",
+        "nt",
+        "ziv",
+        "vpnlite",
+        "sip",
+        "at",
+        "ipt",
+        "stk"
+      ],
+      "positiveCliCases": 10,
+      "newScriptAdapters": [
+        "decoders/Python/at.py"
+      ],
+      "keyAliasFixes": [
+        "decoders/Python/nt.py"
+      ],
+      "runtimes": [
+        "python",
+        "node"
+      ],
+      "independentVectorExceptions": [
+        "ipt",
+        "stk"
+      ],
+      "knownLimitations": [
+        "SocksIP VER7 not supported by SIP fixture",
+        "ASH Tunnel GCM historical source ignores integrity tags",
+        "TEA cipher generators self-roundtrip, not independent",
+        "No Android device or exporter validation"
+      ],
+      "positiveExploratoryCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37861105855"
     }
   },
   "lastVerifiedCi": [
