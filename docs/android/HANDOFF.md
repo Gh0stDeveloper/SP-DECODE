@@ -15,7 +15,7 @@ Este archivo es el punto de entrada para reanudar SP-DECODE Android en otro chat
 ## Orden de recuperación (obligatorio)
 
 1. Usar conector GitHub, revisar main y PRs/ramas Android abiertos.
-2. Leer docs/android/README.md, PRODUCT_REQUIREMENTS.md, DESIGN_SYSTEM.md, ARCHITECTURE.md, DECODER_MATRIX.md, DECODER_AUDIT.md, A2_FIXTURE_POLICY.md, SECURITY_AND_QA.md, ROADMAP.md, ADR.md, status.json y este HANDOFF.md.
+2. Leer docs/android/README.md, PRODUCT_REQUIREMENTS.md, DESIGN_SYSTEM.md, ARCHITECTURE.md, DECODER_MATRIX.md, DECODER_AUDIT.md, A2_FIXTURE_POLICY.md, A23_GOLDEN_CORPUS.md, SECURITY_AND_QA.md, ROADMAP.md, ADR.md, status.json y este HANDOFF.md.
 3. Mirar commits/runs de CI. Distinguir documentado / implementado / probado / publicado.
 4. Identificar primera subfase realmente pendiente en ROADMAP. No reabrir fases cerradas salvo defectos.
 5. Trabajar en rama y PR; no reescribir main ni lógica del bot innecesariamente.
@@ -27,9 +27,9 @@ Este archivo es el punto de entrada para reanudar SP-DECODE Android en otro chat
 - Proyecto Android: **NO implementado**.
 - APK: **NO generada**.
 - A.1, A.3, A.4, A.5 y A.6: especificaciones redactadas.
-- A.2: conteo y matriz generados; **pendiente auditoría funcional real y fixtures de los 48 scripts**.
+- A.2: 48/48 scripts auditados estáticamente; en A.2.3 hay **6 casos golden sintéticos para 5 sufijos**, 54 sin positivo; validación externa/Android todavía pendiente.
 - B, C, D, E, F, G, H: sin iniciar.
-- **A.2 auditoría estática verificada (A.2.1 y A.2.2), A.2 general ABIERTA:** rama `feat/android-a2-decoder-audit`. Se revisaron las 48 fuentes, se creó `docs/android/audit_decoders.py`, pruebas y salidas CI `spdecode-android-a2-audit` (sin ejecutar los decoders). Ver [DECODER_AUDIT.md](DECODER_AUDIT.md) y [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md). CI [success](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484): 12 unit tests, auditoría de 48 scripts y subida de [artefacto](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484/artifacts/11574907879). A.2.3 y A.2.4 requieren corpus/paridad. No marcar A.2 complete sin cumplir alcance.
+- **A.2 auditoría estática verificada (A.2.1 y A.2.2), A.2 general ABIERTA:** rama `feat/android-a2-decoder-audit`. Se revisaron las 48 fuentes, se creó `docs/android/audit_decoders.py`, pruebas y salidas CI `spdecode-android-a2-audit` (sin ejecutar los decoders). Ver [DECODER_AUDIT.md](DECODER_AUDIT.md) y [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md). CI [success](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484): 12 unit tests, auditoría de 48 scripts y subida de [artefacto](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484/artifacts/11574907879). A.2.3 tiene 6 casos Linux para 5 sufijos (rama de trabajo `feat/android-a2-3-golden-fixtures`), pero aún requiere 54 positivos faltantes; A.2.4 requiere paridad Android. **Leer [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md), manifest.json y snapshots sin cambiar las salidas originales**. No marcar A.2 complete sin cumplir alcance.
 - Formatos: 59 sufijos (48 Python, 8 Node, 3 PHP); scripts distintos 39 Python + 6 JS + 3 PHP.
 - Todos los 59 formatos Android: «no verificado». No se han probado wheels nativos, ABI o compilación.
 - CI de la rama main existente: validate.yml del bot. No workflow Android.
@@ -62,7 +62,7 @@ Continúa el proyecto Gh0stDeveloper/SP-DECODE, producto SP-DECODE Android.
 Utiliza el conector de GitHub para consultar main, PRs y ramas Android.
 Lee TODOS los archivos de docs/android/, especialmente README.md,
 DESIGN_SYSTEM.md, LOCALIZATION.md, ARCHITECTURE.md, PRODUCT_REQUIREMENTS.md,
-DECODER_MATRIX.md, DECODER_AUDIT.md, A2_FIXTURE_POLICY.md, ROADMAP.md, SECURITY_AND_QA.md, ADR.md,
+DECODER_MATRIX.md, DECODER_AUDIT.md, A2_FIXTURE_POLICY.md, A23_GOLDEN_CORPUS.md, ROADMAP.md, SECURITY_AND_QA.md, ADR.md,
 HANDOFF.md, LOCALIZATION.md y status.json. Interfaz traducida en es/en/pt-BR/ar; árabe con RTL; **resultado de decodificadores sin traducir ni modificar**. Conserva EXACTAMENTE el concepto visual
 aprobado y las maquetas docs/android/design/home-dark.svg y
 docs/android/design/result-dark.svg; no cambies el diseño sin ADR.
