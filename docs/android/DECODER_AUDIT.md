@@ -142,3 +142,7 @@ Desde la auditoría inicial se integraron **19 casos Linux exactos para 18 de lo
 ### Actualización del corpus, lote 4 — 2026-10-08
 
 Se añadieron diez casos golden sintéticos Linux: .hat, .sks, .sksplus, .cloudy, .mij, .fnnetwork, .uwu, .phc, .ost, .sbr. **Cobertura acumulada 29 casos/28 sufijos; 31 sin positivos.** Incluye Node.js, PHP y Python; ninguna validación Android. Rótulos heredados incorrectos: cloudy aparece como .aro, uwu/ost como .tnl. Conservados por paridad del raw output, revisar en fase D/E sin normalizar silenciosamente. Ver [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
+
+### Lote A.2.3.5 — nuevos golden Linux verificados
+
+Diez sufijos adicionales (.jez, .hrt, .rez, .rezl, .maya, .xui, .mrc, .mtl, .mina, .tnl) tienen prueba sintética con stdout exacto, datos inválidos y SHA-256 fijo. Total **39 casos para 38/59 sufijos**; quedan 21 sin positivo. El script `rez.js` rechaza `.tvt` aunque esté registrado, y `.rezl` imprime `(.rez)`. La muestra de REZ usa el encryptor original (self-roundtrip, sin verificación independiente). Android continúa 0/59. Ver [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).

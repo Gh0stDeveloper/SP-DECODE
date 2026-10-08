@@ -1,0 +1,20 @@
+┌───────────────
+│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (.rez)
+│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu
+├───────────────
+│[۞] PS Install: A23 synthetic
+│[۞] Block Root: false
+│[۞] Mobile Data: true
+│[۞] Expire Date: none
+│[۞] Message: offline
+│[۞] Payload: GET
+│[۞] Is Direct: true
+│[۞] Is SSL: false
+│[۞] Is WS: false
+│[۞] Is DNS: false
+│[۞] Server Date: example.org
+├───────────────
+│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub
+│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve
+└───────────────
+

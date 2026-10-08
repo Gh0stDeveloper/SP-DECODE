@@ -1,0 +1,11 @@
+┌───────────────
+│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (.maya)
+│[۞] Aplicación: Maya Tunnel
+├───────────────
+{
+    "Host": "example.org",
+    "Port": 443,
+    "Note": "A23 synthetic"
+}
+└───────────────
+

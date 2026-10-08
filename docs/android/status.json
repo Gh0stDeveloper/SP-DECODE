@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.6.0",
+  "documentationVersion": "1.7.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -39,7 +39,7 @@
         "A.6": "documented",
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
-        "A.2.3": "in_progress_29_synthetic_linux_cases_28_of_59_suffixes",
+        "A.2.3": "in_progress_39_synthetic_linux_cases_38_of_59_suffixes",
         "A.2.4": "not_started"
       }
     },
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Continue A.2.3 in batches up to ten suffixes while requiring golden output parity and version-provenance; A.2.4 Android bridge still missing.",
+  "nextAction": "A.2.3: 21 suffixes lack positive fixture; next difficult NPV4/NPVT (embedded constant pickle trust boundary), EHI XXTEA/Argon2, Node shared config and .tvt mismatch. A.2.4 Android parity pending.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
   "notes": "Planning only. No real Android decoder tested.",
@@ -99,7 +99,7 @@
       "EV2RAY.py"
     ],
     "androidVerifiedSuffixes": 0,
-    "functionalGoldenStatus": "partial_linux_golden_28_of_59_suffixes",
+    "functionalGoldenStatus": "partial_linux_golden_38_of_59_suffixes",
     "securityReviewOpen": [
       "NPVTUNNEL pickle of embedded constant",
       "Node config file mutation",
@@ -151,29 +151,39 @@
       "uwu",
       "phc",
       "ost",
-      "sbr"
+      "sbr",
+      "jez",
+      "hrt",
+      "rez",
+      "rezl",
+      "maya",
+      "xui",
+      "mrc",
+      "mtl",
+      "mina",
+      "tnl"
     ],
-    "linuxGoldenCases": 29,
-    "linuxGoldenScriptCount": 21,
-    "missingPositiveFixtureSuffixes": 31,
-    "goldenBranch": "feat/android-a23-batch4-ten-suffixes",
+    "linuxGoldenCases": 39,
+    "linuxGoldenScriptCount": 30,
+    "missingPositiveFixtureSuffixes": 21,
+    "goldenBranch": "feat/android-a23-batch5-ten-formats",
     "goldenManifest": "tests/golden/manifest.json",
     "goldenGenerators": "tests/golden/a23_generators.py",
     "goldenReport": "tests/golden/a23_report.py",
     "goldenExporter": "tests/golden/a23_export.py",
     "goldenDocumentation": "docs/android/A23_GOLDEN_CORPUS.md",
-    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37857077862",
+    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37858741421",
     "nextGoldenPriority": [
       "ehi",
       "npv4",
       "npvt",
       "npv2",
       "epro",
-      "rez",
-      "rezl",
       "tvt",
-      "jez",
-      "hrt"
+      "ipt",
+      "gold",
+      "pb",
+      "pcx"
     ],
     "goldenBatch3": {
       "suffixes": [
@@ -222,6 +232,36 @@
         "mij and fnnetwork share synthetic GCM envelope"
       ],
       "limitation": "Synthetic Linux CLI parity only; vendor versions and Android all unverified"
+    },
+    "goldenBatch5": {
+      "suffixes": [
+        "jez",
+        "hrt",
+        "rez",
+        "rezl",
+        "maya",
+        "xui",
+        "mrc",
+        "mtl",
+        "mina",
+        "tnl"
+      ],
+      "positiveCliCases": 10,
+      "uniqueAdditionalScripts": 9,
+      "runtimes": [
+        "php",
+        "node",
+        "python"
+      ],
+      "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37858741421",
+      "knownLimitations": [
+        "REZ encrypt uses same source method as decoder; self-roundtrip, not independent test",
+        "rezl header prints .rez",
+        "rez.js rejects .tvt despite registry",
+        "NoobCrypt simple root fields only",
+        "No Android runtime"
+      ],
+      "exporterVersion": "not_verified"
     }
   },
   "lastVerifiedCi": [
