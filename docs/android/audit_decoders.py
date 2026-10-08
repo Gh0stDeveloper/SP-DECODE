@@ -135,8 +135,6 @@ def _script_inspection(script: str, runtime: str, suffixes: list[str]) -> dict[s
     elif runtime == "node":
         imports = sorted(set(re.findall(
             r"\brequire\s*\(\s*['\"]([^'\"]+)['\"]\s*\)", src
-        ) | set())) if False else sorted(set(re.findall(
-            r"\brequire\s*\(\s*['\"]([^'\"]+)['\"]\s*\)", src
         )))
         # Include dynamic local dependencies in the written report only by name;
         # do not attempt to evaluate require expressions or load user content.
