@@ -124,8 +124,10 @@ process.stdout.write(ctx.Tea.encrypt(process.argv[2],process.argv[3]));
 """
     run = subprocess.run(
         ["node", "-e", runner, str(path), plaintext, password],
-        cwd=ROOT, capture_output=True, check=True, timeout=12
+        cwd=ROOT, capture_output=True, check=False, timeout=12
     )
+    if run.returncode:
+        raise RuntimeError(f"TEA synthetic generation failed: {run.stderr.decode(\'utf-8\', \'replace\')[-1800:]}")
     return run.stdout
 
 
