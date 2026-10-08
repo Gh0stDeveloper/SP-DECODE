@@ -34,7 +34,7 @@ La **UI propuesta anteriormente en este proyecto es un requisito de producto**, 
 5. [DECODER_MATRIX.md](DECODER_MATRIX.md): inventario exacto de los 59 sufijos de main y pendientes de pruebas.
    - [DECODER_AUDIT.md](DECODER_AUDIT.md): **auditoría A.2 de los 48 scripts**, riesgos técnicos, recursos y preparación Android.
    - [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md): muestras seguras, plan de fixtures y pruebas golden por sufijo.
-   - [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md): **9 golden cases Linux, 8 sufijos, 51 pendientes**, generadores, hashes y exportador sintético.
+   - [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md): **19 golden cases Linux, 18 sufijos, 41 pendientes**, generadores, hashes y exportador sintético.
    - [audit_decoders.py](audit_decoders.py): herramienta estática de solo lectura, ejecutada en CI.
 6. [SECURITY_AND_QA.md](SECURITY_AND_QA.md): privacidad, amenazas, pruebas y reglas de release.
 7. [ROADMAP.md](ROADMAP.md): fases A–H, subfases y puertas de calidad.
@@ -71,7 +71,7 @@ Los archivos [design/home-dark.svg](design/home-dark.svg) y [design/result-dark.
 
 ## Auditoría de decodificadores — Fase A.2
 
-La auditoría A.2.1/A.2.2 cubrió estáticamente 48 scripts/59 sufijos. En A.2.3 se construyeron **9 casos golden sintéticos completos para 8 sufijos** (.tls, .v2, .ehil, .ssc, .dark, .ht, .htb, .hc), con pruebas de CLI, negativos y hashes. **51/59 sufijos siguen sin fixture positivo**, y **0/59 están verificados en Android**. El corpus se describe en [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md); los riesgos técnicos están en [DECODER_AUDIT.md](DECODER_AUDIT.md). Ningún fixture sintético equivale a compatibilidad probada con versiones actuales de apps externas.
+La auditoría A.2.1/A.2.2 cubrió estáticamente 48 scripts/59 sufijos. En A.2.3 se construyeron **19 casos golden sintéticos completos para 18 sufijos** (.tls, .v2, .ehil, .ssc, .dark, .ht, .htb, .hc y diez sufijos adicionales; ver corpus), con pruebas de CLI, negativos y hashes. **41/59 sufijos siguen sin fixture positivo**, y **0/59 están verificados en Android**. El corpus se describe en [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md); los riesgos técnicos están en [DECODER_AUDIT.md](DECODER_AUDIT.md). Ningún fixture sintético equivale a compatibilidad probada con versiones actuales de apps externas.
 
 ## Estado de entrega
 

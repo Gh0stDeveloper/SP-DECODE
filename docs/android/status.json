@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.4.0",
+  "documentationVersion": "1.5.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -39,7 +39,7 @@
         "A.6": "documented",
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
-        "A.2.3": "in_progress_9_synthetic_linux_cases_8_of_59_suffixes",
+        "A.2.3": "in_progress_19_synthetic_linux_cases_18_of_59_suffixes",
         "A.2.4": "not_started"
       }
     },
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Continue A.2.3 with ehi/npv4/npvt/hat authorized synthetic or vendor-version fixtures; keep A.2.4/Android runtime separate.",
+  "nextAction": "Continue A.2.3 in batches up to ten new suffixes; verify distinct exporter key variants for MultiDES aliases and Android only after C.4 bridge/ABI tests.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
   "notes": "Planning only. No real Android decoder tested.",
@@ -99,7 +99,7 @@
       "EV2RAY.py"
     ],
     "androidVerifiedSuffixes": 0,
-    "functionalGoldenStatus": "partial_linux_golden_8_of_59_suffixes",
+    "functionalGoldenStatus": "partial_linux_golden_18_of_59_suffixes",
     "securityReviewOpen": [
       "NPVTUNNEL pickle of embedded constant",
       "Node config file mutation",
@@ -131,24 +131,60 @@
       "dark",
       "ht",
       "htb",
-      "hc"
+      "hc",
+      "agn",
+      "cly",
+      "fɴ",
+      "jvc",
+      "jvi",
+      "v2i",
+      "sksrv",
+      "sksrv.png",
+      "xscks",
+      "aro"
     ],
-    "linuxGoldenCases": 9,
-    "linuxGoldenScriptCount": 7,
-    "missingPositiveFixtureSuffixes": 51,
-    "goldenBranch": "feat/android-a23-batch2-ht-hc",
+    "linuxGoldenCases": 19,
+    "linuxGoldenScriptCount": 11,
+    "missingPositiveFixtureSuffixes": 41,
+    "goldenBranch": "feat/android-a23-batch3-ten-suffixes",
     "goldenManifest": "tests/golden/manifest.json",
     "goldenGenerators": "tests/golden/a23_generators.py",
     "goldenReport": "tests/golden/a23_report.py",
     "goldenExporter": "tests/golden/a23_export.py",
     "goldenDocumentation": "docs/android/A23_GOLDEN_CORPUS.md",
-    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37854337089",
+    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37855854741",
     "nextGoldenPriority": [
       "ehi",
       "npv4",
       "npvt",
-      "hat"
-    ]
+      "hat",
+      "npv2",
+      "sks",
+      "rez",
+      "rezl",
+      "tvt",
+      "sksplus"
+    ],
+    "goldenBatch3": {
+      "suffixes": [
+        "agn",
+        "cly",
+        "fɴ",
+        "jvc",
+        "jvi",
+        "v2i",
+        "sksrv",
+        "sksrv.png",
+        "xscks",
+        "aro"
+      ],
+      "positiveCliCases": 10,
+      "uniqueAdditionalScripts": 4,
+      "sharedDESKeyAliasCount": 6,
+      "sharedSKSRVEnvelopeAliasCount": 2,
+      "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37855854741",
+      "limitation": "Synthetic Linux CLI parity only; vendor export/version and Android all unverified"
+    }
   },
   "lastVerifiedCi": [
     {

@@ -1,51 +1,64 @@
-# A.2.3 — Corpus golden incremental y soporte comprobable
+# A.2.3 — Corpus de pruebas golden reproducibles
 
-> **Estado (2026-10-08): A.2.3 en progreso.** Hay **9 casos sintéticos con salida íntegra y hashes SHA-256 para 8 de 59 sufijos**; **51 sufijos** continúan sin caso positivo. Compatibilidad Android: **0/59 verificados**. No se han ensayado muestras exportadas por versiones actuales de aplicaciones externas.
+> **Estado al 2026-10-08:** A.2.3 está **EN PROGRESO**. Hay **19 fixtures positivos sintéticos con salida íntegra y SHA-256 para 18 de 59 extensiones**. Quedan **41 extensiones sin caso positivo**. En Android se han verificado **0/59** y ninguna versión reciente de las aplicaciones exportadoras ha sido certificada.
 
-## Alcance y seguridad
+## 1. Alcance verificado frente a soporte de producto
 
-Los casos se construyen con datos falsos (dominios reservados, identificadores sintéticos) y algoritmos de empaquetado derivados del código de referencia actual. **No son archivos producidos por los clientes VPN reales**; demuestran que las rutas de descifrado del repositorio funcionan con contenedores sintéticos y que su salida no cambia en Linux. No garantizan compatibilidad con versiones modernas de exportadores. No se exponen contraseñas operativas ni servicios reales.
+El proyecto genera perfiles falsos localmente para alimentar el **script existente de Linux**, comprueba la salida completa y la congela como `expectedRawUtf8Sha256`. Este método demuestra regresión del algoritmo y la ruta de entrada, no interoperabilidad con archivos exportados en versiones actuales de otras aplicaciones. Los archivos usan exclusivamente dominios reservados y datos artificiales; jamás archivos de clientes ni credenciales reales.
 
-La app Android sigue planificada como totalmente offline, sin login ni Telegram. Los cuatro idiomas afectan **solo la interfaz**; `rawText` de los decodificadores conserva exactamente etiquetas, orden, mayúsculas, Unicode y saltos de línea sin traducción.
+El futuro producto Android conserva `rawText` **sin traducción**, aunque la UI esté en español, inglés, portugués o árabe. Sigue sin implementarse un motor Android: **ninguna extensión puede aparecer como verificada en Android**.
 
-## Casos que tienen golden Linux
+## 2. Cobertura Linux por bloques
 
-| ID | Sufijo | Decoder | Construcción y ruta ejercitada |
+| Bloque | Casos | Extensiones nuevas | Scripts implicados |
+|---|---:|---|---|
+| A.2.3 lote 1 | 6 | `.tls`, `.v2`, `.ehil`, `.ssc`, `.dark` (5) | TLS, EV2RAY, HTTPINJECTORLITE, SSCCUSTOM, DARKTUNNEL |
+| A.2.3 lote 2 | 3 | `.ht`, `.htb`, `.hc` (3) | HTTPTWEAK, HTTPCUSTOM |
+| **A.2.3 lote 3** | **10** | **`.agn`, `.cly`, `.fɴ`, `.jvc`, `.jvi`, `.v2i`, `.sksrv`, `.sksrv.png`, `.xscks`, `.aro`** | multides, sksrv, xscks, aro |
+| **Total** | **19** | **18 de 59** | **11 scripts únicos** |
+
+### Detalle técnico del lote 3
+
+| Extensión | Método del script | Evidencia que cubre el golden | Limitación |
 |---|---|---|---|
-| `tls-aesgcm` | `.tls` | TLS.py | TLS URI y AES-GCM, reconstrucción de segmentos |
-| `ev2ray-plain` | `.v2` | EV2RAY.py | cuerpo eV2Ray decodificado |
-| `ev2ray-aes128` | `.v2` | EV2RAY.py | AES-128-ECB, Base64 y XOR |
-| `ehil-aescbc-double` | `.ehil` | HTTPINJECTORLITE.py | contenedor binario EHIL, doble AES-CBC |
-| `ssc-chacha20` | `.ssc` | SSCCUSTOM.py | ChaCha20 y JSON |
-| `dark-aescfb-msgpack` | `.dark` | DARKTUNNEL.py | MsgPack y AES-CFB |
-| `httptweak-v1-ht` | `.ht` | HTTPTWEAK.py | **variante 1:** tablas de sustitución, 12 rondas, CBC, zlib y Base64 |
-| `httptweak-v2-htb` | `.htb` | HTTPTWEAK.py | **variante 2:** tablas distintas del mismo cifrador, CBC, zlib y Base64 |
-| `httpcustom-chacha-rst` | `.hc` | HTTPCUSTOM.py | **new-format**: XOR inicial, ChaCha20 y payload RST/AES-ECB |
+| .agn | DES-ECB | XML sintético importado por multides.py vía archivo .agn | clave compartida de la primera entrada, **no** la clave específica del exportador .agn |
+| .cly | DES-ECB | XML sintético por ruta .cly | no existe entrada diferenciada .cly en el mapa PASSWORDS; no se valida formato vendor |
+| .fɴ | DES-ECB | Unicode de extensión y salida CLI exacta | clave compartida, no exportador |
+| .jvc | DES-ECB | ruta .jvc y descifrado de la primera clave común | **no** confirma el cifrado específico de .jvc |
+| .jvi | DES-ECB | ruta .jvi y salida completa | clave compartida; no exportador |
+| .v2i | DES-ECB | ruta .v2i y descifrado de su primera clave | no exportador actual |
+| .sksrv | PBKDF2-SHA256 + AES-GCM | XML artificial con tag autenticado y salida original CLI | no versión exportadora |
+| .sksrv.png | mismo contenedor SKSRV | extensión **compuesta longest-match** y salida completa | no se valida una imagen PNG real; este es un archivo sintético con nombre compuesto |
+| .xscks | SHA-256 + AES-CBC | JSON artificial cifrado y formato CLI original | clave existente en script, sin verificación externa |
+| .aro | Base64 + transformación byte -18 | JSON con `CONFIG` artificial; inversa del formato local | no se verifica exportación vigente |
 
-**Total:** nueve casos, ocho sufijos, siete scripts principales distintos; 51 sufijos y 41 scripts distintos no cuentan con golden positivo. Los sufijos `.ht` y `.htb` comparten script, pero requieren pruebas individuales. La presencia del golden no autoriza publicar el formato como «Android verified».
+**Limitación crítica:** los seis casos de `multides.py` reproducen el **mismo ciphertext** porque su código intenta la clave DES inicial para todos los sufijos. Son seis pruebas de **enrutamiento por extensión**, no seis familias de cifrado verificadas de forma independiente. Los dos casos SKSRV comparten el mismo contenedor AES-GCM. **No confundir 10 sufijos añadidos con 10 motores independientes**.
 
-## Evidencias de verificación
+Para los formatos previamente cubiertos, e-V2Ray tiene dos variantes (texto plano/AES-128), HTTP Tweak dos variantes de tablas (HT y HTB). La consola de HTTP Tweak devuelve JSON sin banner aunque su función `run` añada cabecera; ambos contratos siguen comprobados por separado.
 
-La suite `tests/test_android_a23_goldens.py` comprueba:
-- coincidencia de **todo el texto original**, carácter por carácter, contra `tests/golden/expected/*.txt`;
-- SHA-256 congelados del input y del output UTF-8;
-- generación determinista y reportes de cobertura que fallan ante una modificación no autorizada;
-- CLI para los nueve casos. **Excepción consciente:** `HTTPTWEAK.py` imprime JSON limpio desde `main()`, mientras que su `run()` devuelve una cabecera y pie adicionales. Ambas rutas se prueban contra sus expectativas reales, no se equiparan artificialmente;
-- inputs corruptos o vacíos, autenticación TLS manipulada, sufijos simples/compuestos y variantes.
+## 3. Qué se prueba automáticamente
 
-**CI de referencia para el bloque 2 (antes de congelar hashes):** [GitHub Actions #37854337089](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37854337089) — 20 tests correctos, nueve muestras positivas, ocho sufijos, 51 pendientes; los hashes del bloque nuevo se congelaron en `manifest.json`. El commit final debe repetir CI antes de fusionarse.
+1. **Paridad literal**: se compara `stdout` completo y UTF-8 contra `tests/golden/expected/<caso>.txt`, incluidos saltos de línea, banners, nombres, puntuación y orden original del decoder. En scripts con función `run(bytes)`, se compara también el retorno completo.
+2. **Integridad de prueba**: generadores deterministas y `inputSha256` + `expectedRawUtf8Sha256` fijados en `tests/golden/manifest.json`; cualquier cambio de bytes hace fallar CI.
+3. **Enrutamiento**: los 59 sufijos deben existir en el registro y los diez nuevos pasan por archivos con su extensión real. Se comprueba `.sksrv.png` por coincidencia más larga y Unicode `.fɴ`.
+4. **Entradas inválidas**: smoke tests negativos, asegurando que no aparezca un perfil ficticio de éxito; esto no reemplaza fuzzing exhaustivo por formato.
+5. **Ejecución reproducible**: 19 archivos de prueba sintéticos exportables para una futura app local, sin servidores ni descargas.
 
-## Fuente versionada y comandos
+## 4. Archivos, generación y CI
 
-| Ruta | Propósito |
+| Archivo | Función |
 |---|---|
-| `tests/golden/manifest.json` | inventario de los 59, estados honestos, SHA-256 de nueve casos |
-| `tests/golden/a23_generators.py` | generar contenedores sintéticos reproducibles |
-| `tests/golden/expected/*.txt` | nueve snapshots de resultado bruto (no traducción) |
-| `tests/test_android_a23_goldens.py` | pruebas golden, negativos, CLI, sufijos |
-| `tests/golden/a23_report.py` | reporte de cobertura y hashes sin datos sensibles |
-| `tests/golden/a23_export.py` | exportar nueve archivos físicos sintéticos, con sumas SHA-256 |
-| `docs/android/HANDOFF.md` | continuidad verificada entre chats |
+| `tests/golden/a23_generators.py` | generadores del corpus original y registro global |
+| `tests/golden/a23_batch3.py` | construcción determinista de los diez perfiles nuevos |
+| `tests/golden/expected/*.txt` | 19 salidas golden originales congeladas |
+| `tests/golden/manifest.json` | 59 entradas, 19 casos, 18 con fixture positivo y 41 sin positivo |
+| `tests/test_android_a23_goldens.py` | suite histórica para los primeros 9 casos |
+| `tests/test_android_a23_batch3.py` | paridad CLI y negativos de los 10 nuevos |
+| `tests/golden/a23_report.py` | metadatos y hashes, nunca volcado de secretos |
+| `tests/golden/a23_export.py` | archivos ficticios con nombres/extensiones y `SHA256.json` |
+| `.github/workflows/validate.yml` | suite Linux + artifact `spdecode-android-a23-golden-coverage` |
+
+Comandos locales desde la raíz del repositorio, con dependencias del bot instaladas:
 
 ```bash
 python -m unittest discover -s tests -v
@@ -53,15 +66,14 @@ PYTHONPATH=. python tests/golden/a23_report.py --output out/a23/coverage.json
 PYTHONPATH=. python tests/golden/a23_export.py --output-dir out/a23/samples
 ```
 
-La configuración del workflow `.github/workflows/validate.yml` conserva las pruebas del bot y adjunta el artefacto `spdecode-android-a23-golden-coverage` con JSON de cobertura y samples ficticios. La evidencia en Actions tiene retención temporal, pero los generadores/snapshots de Git persisten.
+**Evidencia preliminar del lote 3:** [CI #37855854741](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37855854741) — 24 tests en success con diez pruebas CLI positivas y negativas. Los SHA-256 se congelaron posteriormente; verificar CI del commit final antes del merge.
 
-## Qué falta y próximos lotes
+## 5. Estado y siguientes diez extensiones
 
-- **51 sufijos sin muestras positivas**; su estado sigue siendo `fixture_missing`. Casos con mayor prioridad: `.ehi`, `.npv4`, `.npvt`, `.hat`; después scripts PHP/Node y los restantes.
-- Versiones actuales de aplicaciones exportadoras no verificadas en ningún golden.
-- Auditar entradas negativas por variante. Los casos genéricos vacíos/corruptos no reemplazan la matriz completa.
-- **A.2.4/C.4:** todavía no existe bridge Python Android ni tests ARM64, ABI/16 KB, modo avión o APK funcional.
-- Las variantes HT actuales son específicas de las tablas probadas. No indicar que funciona el formato XV5 autenticado que el código rechaza explícitamente.
-- Solo se pueden pasar los formatos a «verificado Android» con paridad funcional de importación, adaptación, seguridad y dispositivo real.
+- **A.2.3 continúa IN PROGRESS:** solo 18/59 sufijos tienen golden sintético. 41 sin fixture positivo, y las variantes especiales requieren muestras diferenciadas.
+- **A.2.4 continúa NOT STARTED:** sin prueba binaria Android, sin ARM64/16 KB y sin adaptación local Node/PHP/Python.
+- **Próxima prioridad técnica:** `.ehi`, `.npv4`, `.npvt`, `.hat`, `.npv2`, `.sks`, `.rez`, `.rezl`, `.tvt`, `.sksplus`; solo incorporarlas al corpus si pueden producir salidas reales positivas y reproducibles.
+- Para elevar el nivel de los alias MultiDES, conseguir fixtures autorizados de las aplicaciones correspondientes y probar específicamente las claves/versiones; no asumirlo a partir de un ejemplo de clave compartida.
+- La validación completa del bot Linux no certifica la futura APK ni el comportamiento de los exportadores externos.
 
-**Cierre honesto:** se integró otro lote progresivo de goldens Linux; A.2.3 y A.2 general **permanecen abiertas**.
+**Regla de cierre:** una extensión solo se marca Android verificada tras importación offline en dispositivo, paridad literal con el golden, pruebas de seguridad y cobertura de las versiones que se anuncien.

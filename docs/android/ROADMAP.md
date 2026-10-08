@@ -29,7 +29,7 @@ flowchart LR
 | A.5 | Seguridad: red nula, secretos, backups, amenazas y pruebas | SECURITY_AND_QA |
 | A.6 | Continuidad: branch, docs, README y registros de fase | HANDOFF + status.json |
 
-**Resultado actual:** A.1/A.3/A.4/A.5/A.6 documentadas; A.2.1 y A.2.2 verificadas por CI. **A.2.3 inició corpus real de pruebas Linux: 9 casos sintéticos con golden raw exacto, en 8 sufijos; faltan 51 sufijos**. **A.2.4 paridad Android pendiente**. A sigue abierta.
+**Resultado actual:** A.1/A.3/A.4/A.5/A.6 documentadas; A.2.1 y A.2.2 verificadas por CI. **A.2.3 inició corpus real de pruebas Linux: 19 casos sintéticos con golden raw exacto, en 18 sufijos; faltan 41 sufijos**. **A.2.4 paridad Android pendiente**. A sigue abierta.
 
 ### Subfases internas A.2 para seguimiento preciso
 
@@ -37,7 +37,7 @@ flowchart LR
 |---|---|---|
 | A.2.1 Inventario de 59 registros, 48 scripts y análisis sintáctico estático | verificado (CI success) | `audit_decoders.py`, 48 filas, 0 rutas faltantes, tests |
 | A.2.2 Dependencias/recursos, I/O, riesgos para port Android | verificado estáticamente; riesgos documentados | DECODER_AUDIT.md, reportes CI y remediation list |
-| A.2.3 Corpus y golden fixtures seguros (positivos/negativos) | **en progreso: 9 casos exactos para 8/59 sufijos, 51 sin positivo** | [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md), manifest/hashes, generación local y CI |
+| A.2.3 Corpus y golden fixtures seguros (positivos/negativos) | **en progreso: 19 casos exactos para 18/59 sufijos, 41 sin positivo** | [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md), manifest/hashes, generación local y CI |
 | A.2.4 Paridad de salida bot vs adapter; versión de formatos | pendiente | Linux goldens, ABI arm64 y pruebas C/D/E posteriores |
 
 La fuente permanente de hallazgos está en [DECODER_AUDIT.md](DECODER_AUDIT.md), la política de muestras en [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md) y el corpus en [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).

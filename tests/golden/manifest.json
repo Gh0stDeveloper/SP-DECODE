@@ -111,6 +111,146 @@
       "androidGolden": "not_started",
       "inputSha256": "97e423ca6978123703c4d3f24ab7f0df2805f04a0449668918fd546b0031a94b",
       "expectedRawUtf8Sha256": "34838f10fcdf6bcf646bdbf63c1a0d5fe3dbc3df3f32bfcc7c75da9e67e7280b"
+    },
+    {
+      "id": "multides-agn",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-agn.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific",
+      "inputSha256": "76e0ab9b2b1e719a00a9fda037e4cbd4f53090a7bd60a21f8356c5498f3cb2c4",
+      "expectedRawUtf8Sha256": "c670fb31d3359a1644fc3ecefd65edfa9c9d571587115f574a531ebd3347aee1"
+    },
+    {
+      "id": "multides-cly",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-cly.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific",
+      "inputSha256": "76e0ab9b2b1e719a00a9fda037e4cbd4f53090a7bd60a21f8356c5498f3cb2c4",
+      "expectedRawUtf8Sha256": "c670fb31d3359a1644fc3ecefd65edfa9c9d571587115f574a531ebd3347aee1"
+    },
+    {
+      "id": "multides-fɴ",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-fɴ.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific",
+      "inputSha256": "76e0ab9b2b1e719a00a9fda037e4cbd4f53090a7bd60a21f8356c5498f3cb2c4",
+      "expectedRawUtf8Sha256": "c670fb31d3359a1644fc3ecefd65edfa9c9d571587115f574a531ebd3347aee1"
+    },
+    {
+      "id": "multides-jvc",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-jvc.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific",
+      "inputSha256": "76e0ab9b2b1e719a00a9fda037e4cbd4f53090a7bd60a21f8356c5498f3cb2c4",
+      "expectedRawUtf8Sha256": "c670fb31d3359a1644fc3ecefd65edfa9c9d571587115f574a531ebd3347aee1"
+    },
+    {
+      "id": "multides-jvi",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-jvi.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific",
+      "inputSha256": "76e0ab9b2b1e719a00a9fda037e4cbd4f53090a7bd60a21f8356c5498f3cb2c4",
+      "expectedRawUtf8Sha256": "c670fb31d3359a1644fc3ecefd65edfa9c9d571587115f574a531ebd3347aee1"
+    },
+    {
+      "id": "multides-v2i",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-v2i.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific",
+      "inputSha256": "76e0ab9b2b1e719a00a9fda037e4cbd4f53090a7bd60a21f8356c5498f3cb2c4",
+      "expectedRawUtf8Sha256": "c670fb31d3359a1644fc3ecefd65edfa9c9d571587115f574a531ebd3347aee1"
+    },
+    {
+      "id": "sksrv-sksrv",
+      "generator": "sksrv_xml_bytes",
+      "expectedRawText": "tests/golden/expected/sksrv-sksrv.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_sksrv_envelope",
+      "inputSha256": "a9e8162ce1c3c28ca3c2f68315609207ee7aa39784596d42c1de1fa88de8080c",
+      "expectedRawUtf8Sha256": "c3c878beaac8069ebd319ca5ebfa2ece13107f8de2be70ad16183c47eeb15ed6"
+    },
+    {
+      "id": "sksrv-sksrv-png",
+      "generator": "sksrv_xml_bytes",
+      "expectedRawText": "tests/golden/expected/sksrv-sksrv-png.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_sksrv_envelope",
+      "inputSha256": "a9e8162ce1c3c28ca3c2f68315609207ee7aa39784596d42c1de1fa88de8080c",
+      "expectedRawUtf8Sha256": "c3c878beaac8069ebd319ca5ebfa2ece13107f8de2be70ad16183c47eeb15ed6"
+    },
+    {
+      "id": "xscks-aescbc",
+      "generator": "xscks_json_bytes",
+      "expectedRawText": "tests/golden/expected/xscks-aescbc.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "single_synthetic_envelope",
+      "inputSha256": "d790bbbfc53e5e3d917c07e3f898cda53fdc00c608cc9d084e958685459c6ddc",
+      "expectedRawUtf8Sha256": "b65c80f9bb1d521595619897e23e825806dcd17c5fa5576caa2282de218d833e"
+    },
+    {
+      "id": "aro-minus18",
+      "generator": "aro_json_bytes",
+      "expectedRawText": "tests/golden/expected/aro-minus18.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "single_synthetic_envelope",
+      "inputSha256": "e34804311811e4ba2589ee48ed85bb91c94f76ae041067bb8bbf673c75264ae5",
+      "expectedRawUtf8Sha256": "a9ab8f03ac4cd0bb71ac794214dd2b514105bfe812f0b14100635e77e4060884"
     }
   ],
   "extensions": [
@@ -118,8 +258,10 @@
       "suffix": "agn",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "multides-agn"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -127,8 +269,10 @@
       "suffix": "aro",
       "script": "decoders/Python/aro.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "aro-minus18"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -154,8 +298,10 @@
       "suffix": "cly",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "multides-cly"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -212,8 +358,10 @@
       "suffix": "fɴ",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "multides-fɴ"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -299,8 +447,10 @@
       "suffix": "jvc",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "multides-jvc"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -308,8 +458,10 @@
       "suffix": "jvi",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "multides-jvi"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -506,8 +658,10 @@
       "suffix": "sksrv",
       "script": "decoders/Python/sksrv.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "sksrv-sksrv"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -515,8 +669,10 @@
       "suffix": "sksrv.png",
       "script": "decoders/Python/sksrv.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "sksrv-sksrv-png"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -612,8 +768,10 @@
       "suffix": "v2i",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "multides-v2i"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -630,8 +788,10 @@
       "suffix": "xscks",
       "script": "decoders/Python/xscks.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "xscks-aescbc"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
