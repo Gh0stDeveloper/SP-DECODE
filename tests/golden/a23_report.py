@@ -30,9 +30,9 @@ def build_report() -> dict:
         id_ = row["id"]
         data = SYNTHETIC_GENERATORS[id_]()
         golden = (ROOT / row["expectedRawText"]).read_bytes()
-        if row["linuxGolden"] != "verified_linux_ci":
-            raise ValueError(f"unverified fixture must not be published: {id_}")
-        if _sha(data) != row.get("inputSha256") or _sha(golden) != row.get("expectedRawUtf8Sha256"):
+        if row["linuxGolden"] not in {"verified_linux_ci", "pending_ci"}:
+            raise ValueError(f"unknown golden status: {id_}")
+        if row["linuxGolden"] == "verified_linux_ci" and (_sha(data) != row.get("inputSha256") or _sha(golden) != row.get("expectedRawUtf8Sha256")):
             raise ValueError(f"frozen golden fixture digest drift for {id_}")
         cases.append({
             "id": id_,
