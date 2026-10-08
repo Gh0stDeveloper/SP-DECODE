@@ -1,6 +1,6 @@
 # A.2.3 — Corpus de pruebas golden reproducibles
 
-> **Estado 2026-10-08: EN PROGRESO.** Hay **39 casos sintéticos positivos con salida íntegra congelada en 38 de 59 extensiones**. Faltan **21 extensiones sin muestra positiva**. Ninguna extensión está verificada en Android y ninguna prueba demuestra compatibilidad con versiones modernas de las apps exportadoras.
+> **Estado 2026-10-08: EN PROGRESO.** Hay **49 casos sintéticos positivos con salida íntegra congelada en 48 de 59 extensiones**. Faltan **11 extensiones sin muestra positiva**. Ninguna extensión está verificada en Android y ninguna prueba demuestra compatibilidad con versiones modernas de las apps exportadoras.
 
 ## 1. Evidencia y alcance
 
@@ -17,7 +17,8 @@ Los tests comparan el **`stdout` original byte por byte**, sin traducción ni no
 | 3 | 10 | 10: .agn, .cly, .fɴ, .jvc, .jvi, .v2i, .sksrv, .sksrv.png, .xscks, .aro | 4 |
 | **4** | **10** | **10: .hat, .sks, .sksplus, .cloudy, .mij, .fnnetwork, .uwu, .phc, .ost, .sbr** | **10** |
 | 5 | 10 | 10: .jez, .hrt, .rez, .rezl, .maya, .xui, .mrc, .mtl, .mina, .tnl | 9 |
-| **Total** | **39** | **38 de 59** | **30** |
+| 6 | 10 | 10: .nm, .pb, .pcx, .nt, .ziv, .vpnlite, .sip, .at, .ipt, .stk | 10 |
+| **Total** | **49** | **48 de 59** | **40** |
 
 ### Detalle del lote 4
 
@@ -72,7 +73,7 @@ La comparación golden usa la salida UTF-8 íntegra **producida por el ejecutabl
 
 | Ruta | Propósito |
 |---|---|
-| `tests/golden/manifest.json` | inventario íntegro: 59 sufijos, 39 casos Linux exactos, 21 sin prueba positiva |
+| `tests/golden/manifest.json` | inventario íntegro: 59 sufijos, 49 casos Linux exactos, 11 sin prueba positiva |
 | `tests/golden/a23_generators.py` | punto de unión de los generadores |
 | `tests/golden/a23_batch3.py` | diez fixtures Linux del lote 3 |
 | `tests/golden/a23_batch4.py` | diez fixtures Linux del lote 4 (Python, Node y PHP) |
@@ -80,11 +81,11 @@ La comparación golden usa la salida UTF-8 íntegra **producida por el ejecutabl
 | `tests/golden/a23_batch5_rez.cjs` | reutilización restringida del Tea.encrypt histórico, solo tests |
 | `tests/test_android_a23_batch5.py` | exactitud de diez stdout, casos inválidos y hashes lote 5 |
 | `tests/golden/a23_batch5_probe.py` | utilidad manual de referencia sintética, **no se ejecuta en CI normal** |
-| `tests/golden/expected/*.txt` | 39 salidas originales byte-exact |
+| `tests/golden/expected/*.txt` | 49 salidas originales byte-exact |
 | `tests/test_android_a23_goldens.py` | nueve fixtures de los lotes 1 y 2 |
 | `tests/test_android_a23_batch3.py` | diez casos de CLI lote 3 |
 | `tests/test_android_a23_batch4.py` | diez casos de CLI lote 4 |
-| `tests/golden/a23_export.py` | genera 39 archivos ficticios físicos y SHA256.json |
+| `tests/golden/a23_export.py` | genera 49 archivos ficticios físicos y SHA256.json |
 | `tests/golden/a23_report.py` | metadatos de los 59 y SHA-256 sin salida sensible |
 | `.github/workflows/validate.yml` | tests del bot + artefacto de muestras y auditoría |
 
@@ -98,10 +99,33 @@ PYTHONPATH=. python tests/golden/a23_export.py --output-dir out/a23/samples
 
 ## 5. Problemas y continuación
 
-**A.2.3 permanece ABIERTA:** 21 sufijos sin golden positivo. Los próximos candidatos más difíciles son `.ehi`, `.npv4`, `.npvt`, `.npv2`, `.epro` y `.tvt`; requieren trabajo separado de XXTEA/Argon2, whitebox, ruta Node con estado compartido y errores de selección de extensión. Continuar con un máximo de diez por PR **sin forzar pases**. Estos scripts aún no cuentan con pruebas para las versiones actuales de sus aplicaciones.
+**A.2.3 permanece ABIERTA:** 11 sufijos sin golden positivo. Los próximos candidatos más difíciles son `.ehi`, `.npv4`, `.npvt`, `.npv2`, `.epro` y `.tvt`; requieren trabajo separado de XXTEA/Argon2, whitebox, ruta Node con estado compartido y errores de selección de extensión. Continuar con un máximo de diez por PR **sin forzar pases**. Estos scripts aún no cuentan con pruebas para las versiones actuales de sus aplicaciones.
 
 **A.2.4 pendiente:** aún no existe bridge Android, ni APK, ni prueba arm64/16 KB/RTL de resultados crudos. El soporte real de una extensión debe anunciarse únicamente cuando se haya confirmado en Android y para las versiones explícitas de exportador cubiertas.
 
 **Bugs heredados por resolver durante portabilidad:** cabeceras `(.aro)` para .cloudy y `(.tnl)` para .uwu/.ost, particularidades de espacios/saltos de línea. Durante esta auditoría se conservan tal como los imprime la implementación de referencia para no disfrazar la paridad.
 
 Los generadores y esta documentación deben mantenerse sincronizados en cada PR junto a `status.json` y `HANDOFF.md`.
+
+## 6. Lote 6 — diez extensiones Linux con goldens íntegros
+
+| Sufijo | Motor | Método comprobado | Limitación |
+|---|---|---|---|
+| `.nm` | Python | AES-ECB/Base64 + JSON | solo primera clave histórica sintetizada |
+| `.pb` | Python | PBKDF2-SHA256 + AES-GCM | contraseñas externas no verificadas |
+| `.pcx` | Python | PBKDF2-SHA256 + AES-GCM | versión exportadora desconocida |
+| `.nt` | Python | PBKDF2-SHA256 + AES-GCM | la fuente tenía solo clave `.NT`; corregido alias minúsculo |
+| `.ziv` | Python | PBKDF2-SHA256 + AES-GCM | probada primera de dos claves históricas |
+| `.vpnlite` | Python | SHA-256 + AES-CBC/PKCS7 | XML/JSON artificial simplificado |
+| `.sip` | Python | AES-ECB + Java Serialization sintética | prueba solo contenedor Java simple; no resuelve VER7 |
+| `.at` | Python | dos capas AES-GCM | añadido CLI `run/main`; parche estricto de autenticación de ambas etiquetas GCM con pruebas de manipulación |
+| `.ipt` | Python | XXTEA de la fuente histórica | generador usa `Tea.encrypt` de STK, self-roundtrip sin independencia |
+| `.stk` | Node.js | XXTEA de la fuente histórica | generador usa `Tea.encrypt` del mismo script, self-roundtrip |
+
+Los diez tienen `expectedRawText` byte-exact, `inputSha256` y `expectedRawUtf8Sha256`, verificaciones de registro, pruebas de determinismo y entradas corruptas en `tests/test_android_a23_batch6.py`. La generación TEA usa un contexto aislado CommonJS con datos ficticios. **Ninguna de estas pruebas demuestra exportación compatible con clientes actuales ni APK Android.**
+
+### Casos expresamente pendientes
+
+**11 sufijos pendientes:** `.ehi`, `.epro`, `.gold`, `.npv2`, `.npv4`, `.npvt`, `.roy`, `.ssh`, `.sut`, `.tvt`, `.xtp`. Requieren pruebas de rutas de red inexistentes, capas whitebox, contenedores complejos, fuentes con aleatoriedad o formatos no despachados correctamente. No usar pruebas de error como golden positivo.
+
+**Evidencia de exploración (10 salidas positivas):** [GitHub Actions 37861105855](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37861105855). El CI final tras congelar hashes es la fuente autorizada para fusionar este lote.

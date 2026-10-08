@@ -531,6 +531,166 @@
       "exporterVersion": "not_verified",
       "inputSha256": "3b8cc31c57fb7d5401e9eacc476650133508873b3925e6cd236197d362c8a1b8",
       "expectedRawUtf8Sha256": "00f67455f89a7c7646f55d997fe8948c273c84f07cabfa6e5a0b56e6333bcd0c"
+    },
+    {
+      "id": "batch6-nm",
+      "generator": "nm_file",
+      "expectedRawText": "tests/golden/expected/batch6-nm.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "1953657c818f973be71a5f20f4dc51856c3ef0b19b4ae141a7f5a88759b9ff0e",
+      "expectedRawUtf8Sha256": "824c47f05de78970e38bf03342657240b6fe4f260a812e0897ff8fb49e3c2cce",
+      "independentVector": true,
+      "limitation": "Linux synthetic only"
+    },
+    {
+      "id": "batch6-pb",
+      "generator": "pb_file",
+      "expectedRawText": "tests/golden/expected/batch6-pb.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "0a7fe5c1d0f6558bba53aa6d51e4cf028120a24ffd1bc1977d85157cae571939",
+      "expectedRawUtf8Sha256": "e91ce50fe0e4010f8be5bb9c97c1e8d0f4f2bccaf2101878612af512f192338e",
+      "independentVector": true,
+      "limitation": "Linux synthetic only"
+    },
+    {
+      "id": "batch6-pcx",
+      "generator": "pcx_file",
+      "expectedRawText": "tests/golden/expected/batch6-pcx.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "a241ef1cb4f198a335ce5c6d3137b052b7971bcfa84a0909b927762948d2069d",
+      "expectedRawUtf8Sha256": "a90fd72014842501c9d24ac517568105fe8ed41dda16d417dd8e1cea12070e34",
+      "independentVector": true,
+      "limitation": "Linux synthetic only"
+    },
+    {
+      "id": "batch6-nt",
+      "generator": "nt_file",
+      "expectedRawText": "tests/golden/expected/batch6-nt.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "496ee818514a43e480f9e11b6fa1a7904e19d99d2862f0b4826d4897d5b45bb5",
+      "expectedRawUtf8Sha256": "3b9d708dc5f30416077ba08827062380fc17753a2b9a3c525ce4a47eddc4a330",
+      "independentVector": true,
+      "limitation": "Linux synthetic only"
+    },
+    {
+      "id": "batch6-ziv",
+      "generator": "ziv_file",
+      "expectedRawText": "tests/golden/expected/batch6-ziv.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "e5792a3a7d191cc45d6da31cd782f49b2d31f4847d6e606cf667a44609bbb425",
+      "expectedRawUtf8Sha256": "bce7aa51c43976bc2daa85434869393865db44c16b20d146a263ed2173529bc2",
+      "independentVector": true,
+      "limitation": "Linux synthetic only"
+    },
+    {
+      "id": "batch6-vpnlite",
+      "generator": "vpnlite_file",
+      "expectedRawText": "tests/golden/expected/batch6-vpnlite.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "e483ac05f5f2d1eeda9ed382acb8095885393736e244a903fd25a3a3f0c8170b",
+      "expectedRawUtf8Sha256": "df64e81e56a3b9fadd16fea5742fe337a391b875dd71f25403f824675c8ce417",
+      "independentVector": true,
+      "limitation": "Linux synthetic only"
+    },
+    {
+      "id": "batch6-sip",
+      "generator": "sip_file",
+      "expectedRawText": "tests/golden/expected/batch6-sip.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "05d80fcec6eac3d3220da6b4879da16256cb0fbda6ff498b15f61bb69b77be66",
+      "expectedRawUtf8Sha256": "20bf00043102793218bd7aa7b965687e9e3f75450ac9b6cd9c0093f7c9220b4d",
+      "independentVector": true,
+      "limitation": "Synthetic Java serialization not a real app exporter profile"
+    },
+    {
+      "id": "batch6-at",
+      "generator": "at_file",
+      "expectedRawText": "tests/golden/expected/batch6-at.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "81cfb93218d94f6a7b93844ae901e9ae4eaf2fe085b840544507189280ed0034",
+      "expectedRawUtf8Sha256": "824c47f05de78970e38bf03342657240b6fe4f260a812e0897ff8fb49e3c2cce",
+      "independentVector": true,
+      "limitation": "Linux synthetic only"
+    },
+    {
+      "id": "batch6-ipt",
+      "generator": "ipt_file",
+      "expectedRawText": "tests/golden/expected/batch6-ipt.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "e80c5e240cdad3e634c095c6f95a806ecebcb5041e6c606320f53217e1d1deca",
+      "expectedRawUtf8Sha256": "66e5883c6cd57a8b3bf80d9e877006e054fe848b8135eee9465f8153d0d68665",
+      "independentVector": false,
+      "limitation": "Legacy TEA source encrypt/decrypt self-roundtrip, not independent interoperability"
+    },
+    {
+      "id": "batch6-stk",
+      "generator": "stk_file",
+      "expectedRawText": "tests/golden/expected/batch6-stk.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "98a2795e710da824763f07399d045ebe2cced62bfa0ca79568faebc5adc234d8",
+      "expectedRawUtf8Sha256": "8b05bd24621e6ac49e5d28967c2d719667168f1a1c63499b3e695aba1a73e77e",
+      "independentVector": false,
+      "limitation": "Legacy TEA source encrypt/decrypt self-roundtrip, not independent interoperability"
     }
   ],
   "extensions": [
@@ -560,8 +720,10 @@
       "suffix": "at",
       "script": "decoders/Python/at.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-at"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -717,8 +879,10 @@
       "suffix": "ipt",
       "script": "decoders/Python/ipt.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-ipt"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -814,8 +978,10 @@
       "suffix": "nm",
       "script": "decoders/Python/nms.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-nm"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -850,8 +1016,10 @@
       "suffix": "nt",
       "script": "decoders/Python/nt.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-nt"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -870,8 +1038,10 @@
       "suffix": "pb",
       "script": "decoders/Python/pb.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-pb"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -879,8 +1049,10 @@
       "suffix": "pcx",
       "script": "decoders/Python/pcx.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-pcx"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -941,8 +1113,10 @@
       "suffix": "sip",
       "script": "decoders/Python/sockip.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-sip"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -1014,8 +1188,10 @@
       "suffix": "stk",
       "script": "decoders/JavaScript/stk.js",
       "runtime": "node",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-stk"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -1097,8 +1273,10 @@
       "suffix": "vpnlite",
       "script": "decoders/Python/vpnlite.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-vpnlite"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -1137,8 +1315,10 @@
       "suffix": "ziv",
       "script": "decoders/Python/ziv.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch6-ziv"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     }

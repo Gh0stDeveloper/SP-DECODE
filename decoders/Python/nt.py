@@ -62,6 +62,7 @@ PASSWORDS = {
     '.hq': b'Ed',
     '.bdi': b'@technore 2022',
     '.NT': b'0x0',
+    '.nt': b'0x0',  # registry uses lowercase .nt; historical map only had .NT
     '.pcx': b'cinbdf665$4'
 }
 

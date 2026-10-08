@@ -146,3 +146,9 @@ Se añadieron diez casos golden sintéticos Linux: .hat, .sks, .sksplus, .cloudy
 ### Lote A.2.3.5 — nuevos golden Linux verificados
 
 Diez sufijos adicionales (.jez, .hrt, .rez, .rezl, .maya, .xui, .mrc, .mtl, .mina, .tnl) tienen prueba sintética con stdout exacto, datos inválidos y SHA-256 fijo. Total **39 casos para 38/59 sufijos**; quedan 21 sin positivo. El script `rez.js` rechaza `.tvt` aunque esté registrado, y `.rezl` imprime `(.rez)`. La muestra de REZ usa el encryptor original (self-roundtrip, sin verificación independiente). Android continúa 0/59. Ver [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
+
+### A.2.3 lote 6 — 2026-10-08
+
+Diez nuevos casos Linux positivos: .nm, .pb, .pcx, .nt, .ziv, .vpnlite, .sip, .at, .ipt, .stk. **49 casos/48 extensiones** con snapshots y hashes, **11** sin positivos, **0 Android**. Nota: corregida clave minúscula .nt; añadió CLI .at; los tags GCM del algoritmo .at no se autentican por la fuente, requiere hardening; .ipt/.stk self-roundtrip TEA no es interoperabilidad independiente, .sip no cubre VER7. Consultar [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
+
+**Lote 6, corrección AES-GCM `.at`:** `decoders/Python/at.py` pasó de cifrado sin validación de autenticidad a `decrypt_and_verify` para **ambas** capas GCM; pruebas de manipulación de tag y ciphertext en `tests/test_android_a23_batch6.py`. La prueba positiva usa tags sintéticos válidos. No reemplaza validación de versiones de exportador.

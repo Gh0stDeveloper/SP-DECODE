@@ -76,7 +76,7 @@ class A23Batch4GoldenTests(unittest.TestCase):
                 self.assertEqual(cases[case_id]["goldenOutputKind"], "cli_stdout_exact")
                 self.assertIn(cases[case_id]["linuxGolden"],
                     {"pending_ci", "verified_linux_ci"})
-        self.assertEqual(len([x for x in manifest["extensions"] if not x["caseIds"]]), 21)
+        self.assertEqual(len([x for x in manifest["extensions"] if not x["caseIds"]]), 11)
 
     def test_03_negative_corrupt_files_never_create_profile(self):
         with tempfile.TemporaryDirectory(prefix="a23-batch4-bad-") as folder_name:
