@@ -8,14 +8,17 @@ from __future__ import annotations
 
 import base64
 import json
+import struct
 from typing import Callable
 
 from Crypto.Cipher import AES, ChaCha20
+from Crypto.Util.Padding import pad
 import msgpack
 
 from decoders.Python.EV2RAY import AES_KEYS, DELIMITER, XOR_KEY
 from decoders.Python.SSCCUSTOM import SSCConstants
 from decoders.Python.DARKTUNNEL import DTConstants
+from decoders.Python.HTTPINJECTORLITE import HTTPInjectorLiteConstants
 from tests.test_current_decoders import _tls_fixture
 
 FIXTURE_DOMAIN = "example.org"  # RFC 2606 reserved domain
@@ -77,8 +80,31 @@ def dark_bytes() -> bytes:
     )
 
 
+
+def ehil_bytes() -> bytes:
+    """Full synthetic EHIL binary container with two AES-CBC ciphertext layers."""
+    constants = HTTPInjectorLiteConstants
+    plain = json.dumps(
+        {"configSalt": "EVZJNI", "profileName": "A23 synthetic", "serverPort": 443},
+        ensure_ascii=False, separators=(",", ":"),
+    ).encode("utf-8")
+    second_layer = AES.new(
+        constants.LAYER_TWO_KEYS[0], AES.MODE_CBC, constants.IVS[0]
+    ).encrypt(pad(plain, 16))
+    envelope = b"prefix:" + base64.b64encode(second_layer)
+    first_layer = AES.new(
+        constants.LAYER_ONE_KEYS[0], AES.MODE_CBC, constants.IVS[0]
+    ).encrypt(pad(envelope, 16))
+    extra = b"synthetic"
+    return (
+        struct.pack(">H", 4) + b"ehil" + bytes(8)
+        + struct.pack(">H", len(extra)) + extra + bytes(8)
+        + struct.pack(">I", len(first_layer)) + bytes(8) + first_layer
+    )
+
 SYNTHETIC_GENERATORS: dict[str, Callable[[], bytes]] = {
     "tls-aesgcm": tls_bytes,
+    "ehil-aescbc-double": ehil_bytes,
     "ev2ray-plain": lambda: ev2ray_profile(encrypted=False),
     "ev2ray-aes128": lambda: ev2ray_profile(encrypted=True),
     "ssc-chacha20": ssc_bytes,

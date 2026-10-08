@@ -19,6 +19,7 @@ from decoders.Python.DARKTUNNEL import run as decode_dark
 from decoders.Python.EV2RAY import run as decode_ev2ray
 from decoders.Python.SSCCUSTOM import run as decode_ssc
 from decoders.Python.TLS import run as decode_tls
+from decoders.Python.HTTPINJECTORLITE import run as decode_ehil
 from spdecode.registry import get_supported_extension
 from tests.golden.a23_generators import SYNTHETIC_GENERATORS
 
@@ -27,6 +28,7 @@ GOLDEN = ROOT / "tests" / "golden"
 MANIFEST = GOLDEN / "manifest.json"
 REFERENCE_FUNCTIONS = {
     "tls-aesgcm": decode_tls,
+    "ehil-aescbc-double": decode_ehil,
     "ev2ray-plain": decode_ev2ray,
     "ev2ray-aes128": decode_ev2ray,
     "ssc-chacha20": decode_ssc,
@@ -34,6 +36,7 @@ REFERENCE_FUNCTIONS = {
 }
 CLI_SCRIPTS = {
     "tls-aesgcm": "decoders/Python/TLS.py",
+    "ehil-aescbc-double": "decoders/Python/HTTPINJECTORLITE.py",
     "ev2ray-plain": "decoders/Python/EV2RAY.py",
     "ev2ray-aes128": "decoders/Python/EV2RAY.py",
     "ssc-chacha20": "decoders/Python/SSCCUSTOM.py",
@@ -41,6 +44,7 @@ CLI_SCRIPTS = {
 }
 CASE_SUFFIXES = {
     "tls-aesgcm": "tls",
+    "ehil-aescbc-double": "ehil",
     "ev2ray-plain": "v2",
     "ev2ray-aes128": "v2",
     "ssc-chacha20": "ssc",
@@ -127,6 +131,8 @@ class A23GoldenFixtureTests(unittest.TestCase):
         """Negative fixture corpus verifies no false 'success' for malformed input."""
         cases = [
             ("tls-empty", decode_tls, b""),
+            ("ehil-empty", decode_ehil, b""),
+            ("ehil-wrong-magic", decode_ehil, b"\x00\x04invalid"),
             ("tls-malformed", decode_tls, b"tls://!invalid??"),
             ("ev2ray-empty", decode_ev2ray, b""),
             ("ev2ray-truncated", decode_ev2ray, b"incorrect-profile"),
@@ -163,7 +169,7 @@ class A23GoldenFixtureTests(unittest.TestCase):
                 self.assertEqual(get_supported_extension(filename), expected)
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
         unresolved = [r for r in manifest["extensions"] if not r["caseIds"]]
-        self.assertEqual(len(unresolved), 55)
+        self.assertEqual(len(unresolved), 54)
 
     def test_08_snapshot_paths_are_only_repo_owned(self):
         for record in fixture_case_records():

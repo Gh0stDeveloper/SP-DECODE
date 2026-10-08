@@ -53,6 +53,16 @@
       "outputEncoding": "utf-8",
       "linuxGolden": "pending_ci",
       "androidGolden": "not_started"
+    },
+    {
+      "id": "ehil-aescbc-double",
+      "generator": "ehil_bytes",
+      "expectedRawText": "tests/golden/expected/ehil-aescbc-double.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started"
     }
   ],
   "extensions": [
@@ -125,8 +135,10 @@
       "suffix": "ehil",
       "script": "decoders/Python/HTTPINJECTORLITE.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "ehil-aescbc-double"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
