@@ -251,6 +251,126 @@
       "keyVariantEvidence": "single_synthetic_envelope",
       "inputSha256": "e34804311811e4ba2589ee48ed85bb91c94f76ae041067bb8bbf673c75264ae5",
       "expectedRawUtf8Sha256": "a9ab8f03ac4cd0bb71ac794214dd2b514105bfe812f0b14100635e77e4060884"
+    },
+    {
+      "id": "batch4-hat",
+      "generator": "hat_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-hat.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
+    },
+    {
+      "id": "batch4-sks",
+      "generator": "sks_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-sks.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
+    },
+    {
+      "id": "batch4-sksplus",
+      "generator": "sksplus_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-sksplus.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
+    },
+    {
+      "id": "batch4-cloudy",
+      "generator": "cloudy_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-cloudy.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
+    },
+    {
+      "id": "batch4-mij",
+      "generator": "mij_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-mij.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
+    },
+    {
+      "id": "batch4-fnnetwork",
+      "generator": "fnnetwork_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-fnnetwork.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
+    },
+    {
+      "id": "batch4-uwu",
+      "generator": "uwu_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-uwu.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
+    },
+    {
+      "id": "batch4-phc",
+      "generator": "phc_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-phc.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
+    },
+    {
+      "id": "batch4-ost",
+      "generator": "ost_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-ost.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
+    },
+    {
+      "id": "batch4-sbr",
+      "generator": "sbr_bytes",
+      "expectedRawText": "tests/golden/expected/batch4-sbr.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified"
     }
   ],
   "extensions": [
@@ -289,8 +409,10 @@
       "suffix": "cloudy",
       "script": "decoders/Python/cloudy.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-cloudy"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -349,8 +471,10 @@
       "suffix": "fnnetwork",
       "script": "decoders/Python/fnnetwork.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-fnnetwork"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -378,8 +502,10 @@
       "suffix": "hat",
       "script": "decoders/JavaScript/hat.js",
       "runtime": "node",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-hat"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -478,8 +604,10 @@
       "suffix": "mij",
       "script": "decoders/Python/mij.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-mij"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -559,8 +687,10 @@
       "suffix": "ost",
       "script": "decoders/Python/ost.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-ost"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -586,8 +716,10 @@
       "suffix": "phc",
       "script": "decoders/Python/phc.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-phc"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -622,8 +754,10 @@
       "suffix": "sbr",
       "script": "decoders/Python/sbr.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-sbr"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -640,8 +774,10 @@
       "suffix": "sks",
       "script": "decoders/JavaScript/sks.js",
       "runtime": "node",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-sks"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -649,8 +785,10 @@
       "suffix": "sksplus",
       "script": "decoders/PHP/sksplus.php",
       "runtime": "php",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-sksplus"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -747,8 +885,10 @@
       "suffix": "uwu",
       "script": "decoders/Python/uwu.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "batch4-uwu"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
