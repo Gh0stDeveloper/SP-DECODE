@@ -88,7 +88,7 @@ class A23GoldenFixtureTests(unittest.TestCase):
             self.assertEqual(row["runtime"], registered[suffix]["runtime"])
             self.assertEqual(row["androidVerification"], "not_started")
             if row["caseIds"]:
-                self.assertIn(row["fixtureStatus"], {"synthetic_linux_golden_verified", "synthetic_positive_planned_ci"})
+                self.assertEqual(row["fixtureStatus"], "synthetic_linux_golden_verified")
             else:
                 self.assertEqual(row["fixtureStatus"], "fixture_missing")
         cases = manifest["fixtureCaseDefinitions"]
@@ -96,7 +96,7 @@ class A23GoldenFixtureTests(unittest.TestCase):
         self.assertEqual(set(REFERENCE_FUNCTIONS), set(SYNTHETIC_GENERATORS))
         for row in cases:
             self.assertEqual(row["sourceKind"], "synthetic")
-            self.assertIn(row["linuxGolden"], {"verified_linux_ci", "pending_ci"})
+            self.assertEqual(row["linuxGolden"], "verified_linux_ci")
             self.assertEqual(row["androidGolden"], "not_started")
 
     def test_02_exact_golden_raw_output(self):
@@ -111,12 +111,11 @@ class A23GoldenFixtureTests(unittest.TestCase):
                 self.assertEqual(actual, expected, f"Golden output drift: {case_id}")
                 self.assertEqual(actual.encode("utf-8"), expected.encode("utf-8"))
                 frozen = next(c for c in fixture_case_records() if c["id"] == case_id)
-                if frozen["linuxGolden"] == "verified_linux_ci":
-                    self.assertEqual(sha256_bytes(data), frozen["inputSha256"])
-                    self.assertEqual(
-                        sha256_bytes(expected.encode("utf-8")),
-                        frozen["expectedRawUtf8Sha256"],
-                    )
+                self.assertEqual(sha256_bytes(data), frozen["inputSha256"])
+                self.assertEqual(
+                    sha256_bytes(expected.encode("utf-8")),
+                    frozen["expectedRawUtf8Sha256"],
+                )
 
     def test_03_synthetic_inputs_are_deterministic(self):
         for case_id, generator in SYNTHETIC_GENERATORS.items():

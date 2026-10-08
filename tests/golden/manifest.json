@@ -83,8 +83,10 @@
       "inputSource": "generated_deterministic",
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
-      "linuxGolden": "pending_ci",
-      "androidGolden": "not_started"
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "5cfd75fde9370f2daae7b533e9f373fd8aa36f5a763efd9ab18c9adb6fa7ea45",
+      "expectedRawUtf8Sha256": "5f21d9ed1d69dee07a5414c6144296377408228490106149f5d7e13d72a43e75"
     },
     {
       "id": "httptweak-v2-htb",
@@ -93,8 +95,10 @@
       "inputSource": "generated_deterministic",
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
-      "linuxGolden": "pending_ci",
-      "androidGolden": "not_started"
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "95b9ab6651fb2bb8e2ec28a09ac250e0be180b0234394d1c92873ed560350aff",
+      "expectedRawUtf8Sha256": "5f21d9ed1d69dee07a5414c6144296377408228490106149f5d7e13d72a43e75"
     },
     {
       "id": "httpcustom-chacha-rst",
@@ -103,8 +107,10 @@
       "inputSource": "generated_deterministic",
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
-      "linuxGolden": "pending_ci",
-      "androidGolden": "not_started"
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "97e423ca6978123703c4d3f24ab7f0df2805f04a0449668918fd546b0031a94b",
+      "expectedRawUtf8Sha256": "34838f10fcdf6bcf646bdbf63c1a0d5fe3dbc3df3f32bfcc7c75da9e67e7280b"
     }
   ],
   "extensions": [
@@ -233,7 +239,7 @@
       "suffix": "hc",
       "script": "decoders/Python/HTTPCUSTOM.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "httpcustom-chacha-rst"
       ],
@@ -253,7 +259,7 @@
       "suffix": "ht",
       "script": "decoders/Python/HTTPTWEAK.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "httptweak-v1-ht"
       ],
@@ -264,7 +270,7 @@
       "suffix": "htb",
       "script": "decoders/Python/HTTPTWEAK.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "httptweak-v2-htb"
       ],
