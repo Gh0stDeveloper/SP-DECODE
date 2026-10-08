@@ -24,6 +24,7 @@ REQUIRED = (
     "DECODER_MATRIX.md",
     "DECODER_AUDIT.md",
     "A2_FIXTURE_POLICY.md",
+    "A23_GOLDEN_CORPUS.md",
     "audit_decoders.py",
     "SECURITY_AND_QA.md",
     "ROADMAP.md",

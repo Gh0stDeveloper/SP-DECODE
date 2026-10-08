@@ -29,7 +29,7 @@ flowchart LR
 | A.5 | Seguridad: red nula, secretos, backups, amenazas y pruebas | SECURITY_AND_QA |
 | A.6 | Continuidad: branch, docs, README y registros de fase | HANDOFF + status.json |
 
-**Resultado actual:** A.1/A.3/A.4/A.5/A.6 documentadas; **A.2.1 revisión estática y A.2.2 inventario de dependencias/recursos** implementadas y sometidas a CI; **A.2.3 fixtures/vectores seguros y A.2.4 paridad y compatibilidad actual** permanecen pendientes. A sigue abierta.
+**Resultado actual:** A.1/A.3/A.4/A.5/A.6 documentadas; A.2.1 y A.2.2 verificadas por CI. **A.2.3 inició corpus real de pruebas Linux: 6 casos sintéticos con golden raw exacto, en 5 sufijos; faltan 54 sufijos**. **A.2.4 paridad Android pendiente**. A sigue abierta.
 
 ### Subfases internas A.2 para seguimiento preciso
 
@@ -37,10 +37,10 @@ flowchart LR
 |---|---|---|
 | A.2.1 Inventario de 59 registros, 48 scripts y análisis sintáctico estático | verificado (CI success) | `audit_decoders.py`, 48 filas, 0 rutas faltantes, tests |
 | A.2.2 Dependencias/recursos, I/O, riesgos para port Android | verificado estáticamente; riesgos documentados | DECODER_AUDIT.md, reportes CI y remediation list |
-| A.2.3 Corpus y golden fixtures seguros (positivos/negativos) | pendiente | A2_FIXTURE_POLICY.md, muestras por formato, procedencia y hash |
+| A.2.3 Corpus y golden fixtures seguros (positivos/negativos) | **en progreso: 6 casos exactos para 5/59 sufijos, 54 sin positivo** | [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md), manifest/hashes, generación local y CI |
 | A.2.4 Paridad de salida bot vs adapter; versión de formatos | pendiente | Linux goldens, ABI arm64 y pruebas C/D/E posteriores |
 
-La fuente permanente de hallazgos está en [DECODER_AUDIT.md](DECODER_AUDIT.md) y la política de pruebas en [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md).
+La fuente permanente de hallazgos está en [DECODER_AUDIT.md](DECODER_AUDIT.md), la política de muestras en [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md) y el corpus en [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
 
 ## Fase B — Proyecto Android nativo
 

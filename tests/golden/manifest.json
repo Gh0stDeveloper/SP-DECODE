@@ -1,0 +1,624 @@
+{
+  "schemaVersion": 1,
+  "baselineCommit": "a8291a78f4800e0f767c88a1452f01b497ee964c",
+  "license": "synthetic-test-input-only",
+  "policy": "No real credentials, identifiers, or third-party files; never translate decoder raw output",
+  "fixtureCaseDefinitions": [
+    {
+      "id": "tls-aesgcm",
+      "generator": "tls_bytes",
+      "expectedRawText": "tests/golden/expected/tls-aesgcm.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "0fcfadea01f6d12735d4fb58183f7af84220fed1722e05244cc4d2f2dd4d9b99",
+      "expectedRawUtf8Sha256": "0fe06debc477a5e1a55b61b0f0fcef1cdf93f26dddfe66db07d4dc9b6fcb88a3"
+    },
+    {
+      "id": "ev2ray-plain",
+      "generator": "ev2ray_profile_plain",
+      "expectedRawText": "tests/golden/expected/ev2ray-plain.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "668c0920f200b083ba2b54396b9cc78fd73e580d1d6d9756416cf7d4a6e410e7",
+      "expectedRawUtf8Sha256": "a579a76486e8b1d1c47dc39d7813939d0db833906eae475000ae60b27bcc3261"
+    },
+    {
+      "id": "ev2ray-aes128",
+      "generator": "ev2ray_profile_aes128",
+      "expectedRawText": "tests/golden/expected/ev2ray-aes128.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "e4d1ad847361fbc272f9b13d7115816b7da79d43be09f1c3510d5598e17aa4e4",
+      "expectedRawUtf8Sha256": "1f4e406f25fe10522ffacbfd9f145a9d327ef34a2b2e85ca891305cca6882f85"
+    },
+    {
+      "id": "ssc-chacha20",
+      "generator": "ssc_bytes",
+      "expectedRawText": "tests/golden/expected/ssc-chacha20.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "9ba6949af73dfbbc8da8b54758368c8f7e14c74bbf106617726b8542c8ecc5b8",
+      "expectedRawUtf8Sha256": "b295af004227611161d939773054bb83167d0c15bd74234390c9c1160cb4ad1d"
+    },
+    {
+      "id": "dark-aescfb-msgpack",
+      "generator": "dark_bytes",
+      "expectedRawText": "tests/golden/expected/dark-aescfb-msgpack.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "684fbc1aa1a5912477208cccda12f647c62f31faea239e3c0d1324140f7f6007",
+      "expectedRawUtf8Sha256": "35fcad3f2d2b1357e9959ae11f8efabf817e4c570666a83db052dee24a2b91a6"
+    },
+    {
+      "id": "ehil-aescbc-double",
+      "generator": "ehil_bytes",
+      "expectedRawText": "tests/golden/expected/ehil-aescbc-double.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "inputSha256": "e57d14c3179ab208d25f1ebb45a3a6b0fc30e06d21152c7f8c1c7123f34319dd",
+      "expectedRawUtf8Sha256": "08d2a52ca01275281681c50a3b8341fdad14668ce194198982020124f48b1d4a"
+    }
+  ],
+  "extensions": [
+    {
+      "suffix": "agn",
+      "script": "decoders/Python/multides.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "aro",
+      "script": "decoders/Python/aro.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "at",
+      "script": "decoders/Python/at.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "cloudy",
+      "script": "decoders/Python/cloudy.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "cly",
+      "script": "decoders/Python/multides.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "dark",
+      "script": "decoders/Python/DARKTUNNEL.py",
+      "runtime": "python",
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "dark-aescfb-msgpack"
+      ],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "ehi",
+      "script": "decoders/Python/HTTPINJECTOR.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "ehil",
+      "script": "decoders/Python/HTTPINJECTORLITE.py",
+      "runtime": "python",
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "ehil-aescbc-double"
+      ],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "epro",
+      "script": "decoders/JavaScript/modulepro.js",
+      "runtime": "node",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "fnnetwork",
+      "script": "decoders/Python/fnnetwork.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "fɴ",
+      "script": "decoders/Python/multides.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "gold",
+      "script": "decoders/Python/gold.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "hat",
+      "script": "decoders/JavaScript/hat.js",
+      "runtime": "node",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "hc",
+      "script": "decoders/Python/HTTPCUSTOM.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "hrt",
+      "script": "decoders/PHP/hrt.php",
+      "runtime": "php",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "ht",
+      "script": "decoders/Python/HTTPTWEAK.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "htb",
+      "script": "decoders/Python/HTTPTWEAK.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "ipt",
+      "script": "decoders/Python/ipt.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "jez",
+      "script": "decoders/PHP/jez.php",
+      "runtime": "php",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "jvc",
+      "script": "decoders/Python/multides.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "jvi",
+      "script": "decoders/Python/multides.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "maya",
+      "script": "decoders/Python/maya.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "mij",
+      "script": "decoders/Python/mij.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "mina",
+      "script": "decoders/Python/mina.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "mrc",
+      "script": "decoders/Python/mrc.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "mtl",
+      "script": "decoders/Python/mtl.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "nm",
+      "script": "decoders/Python/nms.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "npv2",
+      "script": "decoders/JavaScript/chicosp.js",
+      "runtime": "node",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "npv4",
+      "script": "decoders/Python/NPVTUNNEL.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "npvt",
+      "script": "decoders/Python/NPVTUNNEL.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "nt",
+      "script": "decoders/Python/nt.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "ost",
+      "script": "decoders/Python/ost.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "pb",
+      "script": "decoders/Python/pb.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "pcx",
+      "script": "decoders/Python/pcx.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "phc",
+      "script": "decoders/Python/phc.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "rez",
+      "script": "decoders/JavaScript/rez.js",
+      "runtime": "node",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "rezl",
+      "script": "decoders/JavaScript/rez.js",
+      "runtime": "node",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "roy",
+      "script": "decoders/Python/xtproy.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "sbr",
+      "script": "decoders/Python/sbr.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "sip",
+      "script": "decoders/Python/sockip.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "sks",
+      "script": "decoders/JavaScript/sks.js",
+      "runtime": "node",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "sksplus",
+      "script": "decoders/PHP/sksplus.php",
+      "runtime": "php",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "sksrv",
+      "script": "decoders/Python/sksrv.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "sksrv.png",
+      "script": "decoders/Python/sksrv.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "ssc",
+      "script": "decoders/Python/SSCCUSTOM.py",
+      "runtime": "python",
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "ssc-chacha20"
+      ],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "ssh",
+      "script": "decoders/Python/ssh.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "stk",
+      "script": "decoders/JavaScript/stk.js",
+      "runtime": "node",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "sut",
+      "script": "decoders/Python/sut.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "tls",
+      "script": "decoders/Python/TLS.py",
+      "runtime": "python",
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "tls-aesgcm"
+      ],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "tnl",
+      "script": "decoders/Python/tnl.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "tvt",
+      "script": "decoders/JavaScript/rez.js",
+      "runtime": "node",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "uwu",
+      "script": "decoders/Python/uwu.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "v2",
+      "script": "decoders/Python/EV2RAY.py",
+      "runtime": "python",
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "ev2ray-plain",
+        "ev2ray-aes128"
+      ],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "v2i",
+      "script": "decoders/Python/multides.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "vpnlite",
+      "script": "decoders/Python/vpnlite.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "xscks",
+      "script": "decoders/Python/xscks.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "xtp",
+      "script": "decoders/Python/xtproy.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "xui",
+      "script": "decoders/Python/xui.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    },
+    {
+      "suffix": "ziv",
+      "script": "decoders/Python/ziv.py",
+      "runtime": "python",
+      "fixtureStatus": "fixture_missing",
+      "caseIds": [],
+      "exporterVersion": "not_verified",
+      "androidVerification": "not_started"
+    }
+  ]
+}

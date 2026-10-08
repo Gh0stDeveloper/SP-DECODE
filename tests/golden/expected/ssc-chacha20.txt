@@ -1,0 +1,11 @@
+┌───────────────
+│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (ssc)
+│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu
+├───────────────
+│[۞] CONFIGS: [{"CONFIGNAME":"A23 synthetic profile","ADDRESS":"example.org","PORT":443,"PASSWORD":"dummy-not-a-real-secret"}]
+│[۞] NOTE: Offline test
+
+├───────────────
+│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub
+│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve
+└───────────────

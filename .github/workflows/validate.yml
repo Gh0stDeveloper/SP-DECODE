@@ -62,5 +62,20 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+      - name: Generate A.2.3 synthetic golden coverage (metadata only)
+        run: PYTHONPATH=. python tests/golden/a23_report.py --output "$RUNNER_TEMP/spdecode-a23/coverage.json"
+
+      - name: Export six deterministic synthetic decoder samples
+        run: PYTHONPATH=. python tests/golden/a23_export.py --output-dir "$RUNNER_TEMP/spdecode-a23/samples"
+
+      - name: Upload A.2.3 synthetic golden coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spdecode-android-a23-golden-coverage
+          path: ${{ runner.temp }}/spdecode-a23/
+          if-no-files-found: ignore
+          retention-days: 30
+
       - name: Validate Android documentation and editable SVGs
         run: python docs/android/validate_docs.py

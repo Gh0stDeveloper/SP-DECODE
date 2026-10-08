@@ -34,6 +34,7 @@ La **UI propuesta anteriormente en este proyecto es un requisito de producto**, 
 5. [DECODER_MATRIX.md](DECODER_MATRIX.md): inventario exacto de los 59 sufijos de main y pendientes de pruebas.
    - [DECODER_AUDIT.md](DECODER_AUDIT.md): **auditoría A.2 de los 48 scripts**, riesgos técnicos, recursos y preparación Android.
    - [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md): muestras seguras, plan de fixtures y pruebas golden por sufijo.
+   - [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md): **6 golden cases Linux, 5 sufijos, 54 pendientes**, generadores, hashes y exportador sintético.
    - [audit_decoders.py](audit_decoders.py): herramienta estática de solo lectura, ejecutada en CI.
 6. [SECURITY_AND_QA.md](SECURITY_AND_QA.md): privacidad, amenazas, pruebas y reglas de release.
 7. [ROADMAP.md](ROADMAP.md): fases A–H, subfases y puertas de calidad.
@@ -70,7 +71,7 @@ Los archivos [design/home-dark.svg](design/home-dark.svg) y [design/result-dark.
 
 ## Auditoría de decodificadores — Fase A.2
 
-Se inició la fase A.2 en `feat/android-a2-decoder-audit`. Los **48 scripts principales** (59 sufijos) quedaron examinados estáticamente y existe un auditor automatizado, pero **siguen pendientes muestras golden/validación dinámica para 46 scripts y todas las pruebas de dispositivo Android**. Los riesgos prioritarios están en [DECODER_AUDIT.md](DECODER_AUDIT.md); la política de fixtures se detalla en [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md). No se debe marcar un formato Android como «verificado» por una auditoría estática.
+La auditoría A.2.1/A.2.2 cubrió estáticamente 48 scripts/59 sufijos. En A.2.3 se construyeron **6 casos golden sintéticos completos para 5 sufijos** (.tls, .v2, .ehil, .ssc, .dark), con pruebas de CLI, negativos y hashes. **54/59 sufijos siguen sin fixture positivo**, y **0/59 están verificados en Android**. El corpus se describe en [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md); los riesgos técnicos están en [DECODER_AUDIT.md](DECODER_AUDIT.md). Ningún fixture sintético equivale a compatibilidad probada con versiones actuales de apps externas.
 
 ## Estado de entrega
 

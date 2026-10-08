@@ -124,6 +124,10 @@ Ver [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md) para evidencia requerida, técn
 - La prueba de compilación/ejecución Android y ruedas Chaquopy es **Fase C.4**, todavía no implementada.
 - No marcar un formato «verificado» por compilar Python, encontrar claves o producir stdout; exigir prueba golden y test dispositivo.
 
+### Actualización de evidencias A.2.3
+
+El corpus Linux amplió las dos aserciones parciales iniciales con **6 golden snapshots completos de 5 scripts**: TLS.py, EV2RAY.py, HTTPINJECTORLITE.py, SSCCUSTOM.py y DARKTUNNEL.py. Las nuevas pruebas incluyen CLI, inputs corruptos y hashes. Consultar [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md). Esta actualización no cambia la conclusión Android: **0/59 verificados**, y la cobertura real de versiones externas permanece desconocida.
+
 ## 8. Próximas tareas de auditoría funcional
 
 1. Recolectar muestras **sintéticas o autorizadas** de cada formato, asociadas a versión de app exportadora. A2.1 revisión de I/O, A2.2 dependencia/recursos, A2.3 corpus/fixtures, A2.4 paridad/reporte por sufijo.
