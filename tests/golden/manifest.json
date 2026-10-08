@@ -111,6 +111,126 @@
       "androidGolden": "not_started",
       "inputSha256": "97e423ca6978123703c4d3f24ab7f0df2805f04a0449668918fd546b0031a94b",
       "expectedRawUtf8Sha256": "34838f10fcdf6bcf646bdbf63c1a0d5fe3dbc3df3f32bfcc7c75da9e67e7280b"
+    },
+    {
+      "id": "multides-agn",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-agn.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific"
+    },
+    {
+      "id": "multides-cly",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-cly.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific"
+    },
+    {
+      "id": "multides-fɴ",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-fɴ.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific"
+    },
+    {
+      "id": "multides-jvc",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-jvc.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific"
+    },
+    {
+      "id": "multides-jvi",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-jvi.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific"
+    },
+    {
+      "id": "multides-v2i",
+      "generator": "des_xml_bytes",
+      "expectedRawText": "tests/golden/expected/multides-v2i.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_first_des_key_not_vendor_specific"
+    },
+    {
+      "id": "sksrv-sksrv",
+      "generator": "sksrv_xml_bytes",
+      "expectedRawText": "tests/golden/expected/sksrv-sksrv.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_sksrv_envelope"
+    },
+    {
+      "id": "sksrv-sksrv-png",
+      "generator": "sksrv_xml_bytes",
+      "expectedRawText": "tests/golden/expected/sksrv-sksrv-png.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "shared_sksrv_envelope"
+    },
+    {
+      "id": "xscks-aescbc",
+      "generator": "xscks_json_bytes",
+      "expectedRawText": "tests/golden/expected/xscks-aescbc.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "single_synthetic_envelope"
+    },
+    {
+      "id": "aro-minus18",
+      "generator": "aro_json_bytes",
+      "expectedRawText": "tests/golden/expected/aro-minus18.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "pending_ci",
+      "androidGolden": "not_started",
+      "keyVariantEvidence": "single_synthetic_envelope"
     }
   ],
   "extensions": [
@@ -118,8 +238,10 @@
       "suffix": "agn",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "multides-agn"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -127,8 +249,10 @@
       "suffix": "aro",
       "script": "decoders/Python/aro.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "aro-minus18"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -154,8 +278,10 @@
       "suffix": "cly",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "multides-cly"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -212,8 +338,10 @@
       "suffix": "fɴ",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "multides-fɴ"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -299,8 +427,10 @@
       "suffix": "jvc",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "multides-jvc"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -308,8 +438,10 @@
       "suffix": "jvi",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "multides-jvi"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -506,8 +638,10 @@
       "suffix": "sksrv",
       "script": "decoders/Python/sksrv.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "sksrv-sksrv"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -515,8 +649,10 @@
       "suffix": "sksrv.png",
       "script": "decoders/Python/sksrv.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "sksrv-sksrv-png"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -612,8 +748,10 @@
       "suffix": "v2i",
       "script": "decoders/Python/multides.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "multides-v2i"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
@@ -630,8 +768,10 @@
       "suffix": "xscks",
       "script": "decoders/Python/xscks.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_positive_planned_ci",
+      "caseIds": [
+        "xscks-aescbc"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },
