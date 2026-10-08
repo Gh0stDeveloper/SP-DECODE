@@ -50,5 +50,17 @@ jobs:
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
 
+      - name: A.2 static decoder source audit (read-only)
+        run: python docs/android/audit_decoders.py --output-dir "$RUNNER_TEMP/spdecode-a2"
+
+      - name: Upload sanitized A.2 decoder audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spdecode-android-a2-audit
+          path: ${{ runner.temp }}/spdecode-a2/
+          if-no-files-found: ignore
+          retention-days: 30
+
       - name: Validate Android documentation and editable SVGs
         run: python docs/android/validate_docs.py
