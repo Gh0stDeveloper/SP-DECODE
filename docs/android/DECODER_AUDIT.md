@@ -138,3 +138,7 @@ El corpus Linux amplió las dos aserciones parciales iniciales con **6 golden sn
 ### Evolución del corpus sintético (bloque 3, 2026-10-08)
 
 Desde la auditoría inicial se integraron **19 casos Linux exactos para 18 de los 59 sufijos**, correspondientes a **11 scripts**. Se añadieron diez rutas registradas: `.agn`, `.cly`, `.fɴ`, `.jvc`, `.jvi`, `.v2i`, `.sksrv`, `.sksrv.png`, `.xscks`, `.aro`. **Limitación:** seis usan un ciphertext DES común y dos usan un contenedor AES-GCM SKSRV común; su valor es verificar el enrutamiento, no declarar compatibilidad con distintas aplicaciones. La fase Android permanece en **0 formatos verificados**. Detalle y SHA en [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
+
+### Actualización del corpus, lote 4 — 2026-10-08
+
+Se añadieron diez casos golden sintéticos Linux: .hat, .sks, .sksplus, .cloudy, .mij, .fnnetwork, .uwu, .phc, .ost, .sbr. **Cobertura acumulada 29 casos/28 sufijos; 31 sin positivos.** Incluye Node.js, PHP y Python; ninguna validación Android. Rótulos heredados incorrectos: cloudy aparece como .aro, uwu/ost como .tnl. Conservados por paridad del raw output, revisar en fase D/E sin normalizar silenciosamente. Ver [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).

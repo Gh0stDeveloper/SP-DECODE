@@ -8,9 +8,9 @@
 
 | Sufijo | Aplicación | Runtime original | Script original | Linux golden sintético | Android | Fase |
 |---|---|---|---|---|---|---|
-| .hat | HA Tunnel Plus | node | decoders/JavaScript/hat.js | Sin fixture | No verificado | E |
+| .hat | HA Tunnel Plus | node | decoders/JavaScript/hat.js | 1 caso | No verificado | E |
 | .xscks | X-Socks | python | decoders/Python/xscks.py | 1 caso | No verificado | D |
-| .phc | PHC Tunnel | python | decoders/Python/phc.py | Sin fixture | No verificado | D |
+| .phc | PHC Tunnel | python | decoders/Python/phc.py | 1 caso | No verificado | D |
 | .ehil | HTTP Injector Lite | python | decoders/Python/HTTPINJECTORLITE.py | 1 caso | No verificado | D |
 | .mina | MinaProNet | python | decoders/Python/mina.py | Sin fixture | No verificado | D |
 | .at | ASH tunnel | python | decoders/Python/at.py | Sin fixture | No verificado | D |
@@ -26,7 +26,7 @@
 | .ziv | ZIVPN | python | decoders/Python/ziv.py | Sin fixture | No verificado | D |
 | .pb | XrayPB | python | decoders/Python/pb.py | Sin fixture | No verificado | D |
 | .rez | Rez Tunnel | node | decoders/JavaScript/rez.js | Sin fixture | No verificado | E |
-| .sks | SocksIP | node | decoders/JavaScript/sks.js | Sin fixture | No verificado | E |
+| .sks | SocksIP | node | decoders/JavaScript/sks.js | 1 caso | No verificado | E |
 | .stk | Stark VPN | node | decoders/JavaScript/stk.js | Sin fixture | No verificado | E |
 | .pcx | PCX Tunnel | python | decoders/Python/pcx.py | Sin fixture | No verificado | D |
 | .ssh | SSH Injector | python | decoders/Python/ssh.py | Sin fixture | No verificado | D |
@@ -37,9 +37,9 @@
 | .xui | XUI Tunnel | python | decoders/Python/xui.py | Sin fixture | No verificado | D |
 | .sip | SocksIP Tunnel | python | decoders/Python/sockip.py | Sin fixture | No verificado | D |
 | .fɴ | FN Tunnel | python | decoders/Python/multides.py | 1 caso | No verificado | D |
-| .mij | MIJ Tunnel | python | decoders/Python/mij.py | Sin fixture | No verificado | D |
+| .mij | MIJ Tunnel | python | decoders/Python/mij.py | 1 caso | No verificado | D |
 | .mtl | MTL Tunnel | python | decoders/Python/mtl.py | Sin fixture | No verificado | D |
-| .fnnetwork | FN Network | python | decoders/Python/fnnetwork.py | Sin fixture | No verificado | D |
+| .fnnetwork | FN Network | python | decoders/Python/fnnetwork.py | 1 caso | No verificado | D |
 | .mrc | MRC Tunnel | python | decoders/Python/mrc.py | Sin fixture | No verificado | D |
 | .sksrv | SKS Server | python | decoders/Python/sksrv.py | 1 caso | No verificado | D |
 | .sksrv.png | SKS Server | python | decoders/Python/sksrv.py | 1 caso | No verificado | D |
@@ -48,7 +48,7 @@
 | .jvi | JVI Tunnel | python | decoders/Python/multides.py | 1 caso | No verificado | D |
 | .jvc | JVC Tunnel | python | decoders/Python/multides.py | 1 caso | No verificado | D |
 | .aro | ARMOD | python | decoders/Python/aro.py | 1 caso | No verificado | D |
-| .cloudy | Cloudy Inject | python | decoders/Python/cloudy.py | Sin fixture | No verificado | D |
+| .cloudy | Cloudy Inject | python | decoders/Python/cloudy.py | 1 caso | No verificado | D |
 | .epro | ePro Tunnel | node | decoders/JavaScript/modulepro.js | Sin fixture | No verificado | E |
 | .cly | Cloudy | python | decoders/Python/multides.py | 1 caso | No verificado | D |
 | .xtp | XTProy | python | decoders/Python/xtproy.py | Sin fixture | No verificado | D |
@@ -56,12 +56,12 @@
 | .ipt | WeTunnel | python | decoders/Python/ipt.py | Sin fixture | No verificado | D |
 | .rezl | Rez Tunnel Lite | node | decoders/JavaScript/rez.js | Sin fixture | No verificado | E |
 | .tvt | TV Tunnel | node | decoders/JavaScript/rez.js | Sin fixture | No verificado | E |
-| .uwu | UWU Tunnel | python | decoders/Python/uwu.py | Sin fixture | No verificado | D |
+| .uwu | UWU Tunnel | python | decoders/Python/uwu.py | 1 caso | No verificado | D |
 | .npv2 | NPV Tunnel v2 | node | decoders/JavaScript/chicosp.js | Sin fixture | No verificado | E |
 | .dark | Dark Tunnel | python | decoders/Python/DARKTUNNEL.py | 1 caso | No verificado | D |
-| .ost | OUSS Tunnel | python | decoders/Python/ost.py | Sin fixture | No verificado | D |
-| .sbr | SBR Injector | python | decoders/Python/sbr.py | Sin fixture | No verificado | D |
-| .sksplus | SocksIP Plus | php | decoders/PHP/sksplus.php | Sin fixture | No verificado | E |
+| .ost | OUSS Tunnel | python | decoders/Python/ost.py | 1 caso | No verificado | D |
+| .sbr | SBR Injector | python | decoders/Python/sbr.py | 1 caso | No verificado | D |
+| .sksplus | SocksIP Plus | php | decoders/PHP/sksplus.php | 1 caso | No verificado | E |
 | .jez | JEZ Tunnel | php | decoders/PHP/jez.php | Sin fixture | No verificado | E |
 | .hrt | HRT Tunnel | php | decoders/PHP/hrt.php | Sin fixture | No verificado | E |
 | .hc | HTTP Custom | python | decoders/Python/HTTPCUSTOM.py | 1 caso | No verificado | D |

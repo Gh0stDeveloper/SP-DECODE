@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.5.0",
+  "documentationVersion": "1.6.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -39,7 +39,7 @@
         "A.6": "documented",
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
-        "A.2.3": "in_progress_19_synthetic_linux_cases_18_of_59_suffixes",
+        "A.2.3": "in_progress_29_synthetic_linux_cases_28_of_59_suffixes",
         "A.2.4": "not_started"
       }
     },
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Continue A.2.3 in batches up to ten new suffixes; verify distinct exporter key variants for MultiDES aliases and Android only after C.4 bridge/ABI tests.",
+  "nextAction": "Continue A.2.3 in batches up to ten suffixes while requiring golden output parity and version-provenance; A.2.4 Android bridge still missing.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
   "notes": "Planning only. No real Android decoder tested.",
@@ -99,7 +99,7 @@
       "EV2RAY.py"
     ],
     "androidVerifiedSuffixes": 0,
-    "functionalGoldenStatus": "partial_linux_golden_18_of_59_suffixes",
+    "functionalGoldenStatus": "partial_linux_golden_28_of_59_suffixes",
     "securityReviewOpen": [
       "NPVTUNNEL pickle of embedded constant",
       "Node config file mutation",
@@ -141,29 +141,39 @@
       "sksrv",
       "sksrv.png",
       "xscks",
-      "aro"
+      "aro",
+      "hat",
+      "sks",
+      "sksplus",
+      "cloudy",
+      "mij",
+      "fnnetwork",
+      "uwu",
+      "phc",
+      "ost",
+      "sbr"
     ],
-    "linuxGoldenCases": 19,
-    "linuxGoldenScriptCount": 11,
-    "missingPositiveFixtureSuffixes": 41,
-    "goldenBranch": "feat/android-a23-batch3-ten-suffixes",
+    "linuxGoldenCases": 29,
+    "linuxGoldenScriptCount": 21,
+    "missingPositiveFixtureSuffixes": 31,
+    "goldenBranch": "feat/android-a23-batch4-ten-suffixes",
     "goldenManifest": "tests/golden/manifest.json",
     "goldenGenerators": "tests/golden/a23_generators.py",
     "goldenReport": "tests/golden/a23_report.py",
     "goldenExporter": "tests/golden/a23_export.py",
     "goldenDocumentation": "docs/android/A23_GOLDEN_CORPUS.md",
-    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37855854741",
+    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37857077862",
     "nextGoldenPriority": [
       "ehi",
       "npv4",
       "npvt",
-      "hat",
       "npv2",
-      "sks",
+      "epro",
       "rez",
       "rezl",
       "tvt",
-      "sksplus"
+      "jez",
+      "hrt"
     ],
     "goldenBatch3": {
       "suffixes": [
@@ -184,6 +194,34 @@
       "sharedSKSRVEnvelopeAliasCount": 2,
       "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37855854741",
       "limitation": "Synthetic Linux CLI parity only; vendor export/version and Android all unverified"
+    },
+    "goldenBatch4": {
+      "suffixes": [
+        "hat",
+        "sks",
+        "sksplus",
+        "cloudy",
+        "mij",
+        "fnnetwork",
+        "uwu",
+        "phc",
+        "ost",
+        "sbr"
+      ],
+      "positiveCliCases": 10,
+      "runtimes": [
+        "python",
+        "node",
+        "php"
+      ],
+      "uniqueAdditionalScripts": 10,
+      "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37857077862",
+      "quirks": [
+        "cloudy prints .aro in header",
+        "uwu/ost print .tnl in header",
+        "mij and fnnetwork share synthetic GCM envelope"
+      ],
+      "limitation": "Synthetic Linux CLI parity only; vendor versions and Android all unverified"
     }
   },
   "lastVerifiedCi": [
