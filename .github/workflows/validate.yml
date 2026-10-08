@@ -49,3 +49,6 @@ jobs:
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
+
+      - name: Validate Android documentation and editable SVGs
+        run: python docs/android/validate_docs.py

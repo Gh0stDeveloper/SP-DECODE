@@ -55,6 +55,10 @@ La **UI propuesta anteriormente en este proyecto es un requisito de producto**, 
 
 **Versionado sugerido:** 0.1.0-alpha (shell/UI e import), 0.2.0-alpha (motor), 0.3.0-beta (formatos), 0.9.0-rc (certificación), 1.0.0 (release gates). La numeración se valida con Gradle antes de adoptarse.
 
+## Verificación documental automática
+
+Ejecutar: python docs/android/validate_docs.py. La prueba revisa presencia y enlaces internos, XML de los SVG, 59 filas de compatibilidad y sincronización de conteos con decoders.json. **No prueba compatibilidad Android real**.
+
 ## Resguardo del diseño
 
 Los archivos [design/home-dark.svg](design/home-dark.svg) y [design/result-dark.svg](design/result-dark.svg) conservan **maquetas visuales editables** para el desarrollo de Compose, además de los valores exactos de color, tipografía, espaciado, navegación, tarjetas y estados en DESIGN_SYSTEM.md. Son referencias de diseño, **NO capturas de una app funcional**. Conservarlos en el repositorio asegura continuidad entre chats.
