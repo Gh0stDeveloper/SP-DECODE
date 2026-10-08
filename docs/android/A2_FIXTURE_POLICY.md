@@ -76,7 +76,7 @@ Este orden es prioridad técnica, no promesa de soporte. Cada muestra debe tener
 
 ## Implementación actual del corpus (A.2.3)
 
-Ya existe el corpus **reproducible en memoria y exportable** en `tests/golden`, con [documentación detallada](A23_GOLDEN_CORPUS.md). Cuenta con **9 casos sintéticos completos para 8 sufijos** (TLS, e-V2Ray dos variantes, HTTP Injector Lite, SSC Custom, Dark Tunnel, HTTP Tweak .ht/.htb y HTTP Custom), manifest para los 59 sufijos, entradas negativas, SHA-256 congelados y pruebas exactas de salida Linux/CLI. Los **otros 51 sufijos** siguen en `fixture_missing`. Para exportar inputs físicos de prueba: `PYTHONPATH=. python tests/golden/a23_export.py --output-dir out/a23/samples`.
+Ya existe el corpus **reproducible en memoria y exportable** en `tests/golden`, con [documentación detallada](A23_GOLDEN_CORPUS.md). Cuenta con **19 casos sintéticos completos para 18 sufijos** (TLS, e-V2Ray dos variantes, HTTP Injector Lite, SSC Custom, Dark Tunnel, HTTP Tweak .ht/.htb y HTTP Custom), manifest para los 59 sufijos, entradas negativas, SHA-256 congelados y pruebas exactas de salida Linux/CLI. Los **otros 41 sufijos** siguen en `fixture_missing`. Para exportar inputs físicos de prueba: `PYTHONPATH=. python tests/golden/a23_export.py --output-dir out/a23/samples`.
 
 Esto **no representa cinco formatos certificados Android**: sigue `androidVerifiedSuffixes=0`. No hay demostración de compatibilidad con versiones actuales de apps emisoras.
 

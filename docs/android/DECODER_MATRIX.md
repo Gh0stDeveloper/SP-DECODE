@@ -9,7 +9,7 @@
 | Sufijo | Aplicación | Runtime original | Script original | Linux golden sintético | Android | Fase |
 |---|---|---|---|---|---|---|
 | .hat | HA Tunnel Plus | node | decoders/JavaScript/hat.js | Sin fixture | No verificado | E |
-| .xscks | X-Socks | python | decoders/Python/xscks.py | Sin fixture | No verificado | D |
+| .xscks | X-Socks | python | decoders/Python/xscks.py | 1 caso | No verificado | D |
 | .phc | PHC Tunnel | python | decoders/Python/phc.py | Sin fixture | No verificado | D |
 | .ehil | HTTP Injector Lite | python | decoders/Python/HTTPINJECTORLITE.py | 1 caso | No verificado | D |
 | .mina | MinaProNet | python | decoders/Python/mina.py | Sin fixture | No verificado | D |
@@ -36,21 +36,21 @@
 | .maya | Maya Tunnel | python | decoders/Python/maya.py | Sin fixture | No verificado | D |
 | .xui | XUI Tunnel | python | decoders/Python/xui.py | Sin fixture | No verificado | D |
 | .sip | SocksIP Tunnel | python | decoders/Python/sockip.py | Sin fixture | No verificado | D |
-| .fɴ | FN Tunnel | python | decoders/Python/multides.py | Sin fixture | No verificado | D |
+| .fɴ | FN Tunnel | python | decoders/Python/multides.py | 1 caso | No verificado | D |
 | .mij | MIJ Tunnel | python | decoders/Python/mij.py | Sin fixture | No verificado | D |
 | .mtl | MTL Tunnel | python | decoders/Python/mtl.py | Sin fixture | No verificado | D |
 | .fnnetwork | FN Network | python | decoders/Python/fnnetwork.py | Sin fixture | No verificado | D |
 | .mrc | MRC Tunnel | python | decoders/Python/mrc.py | Sin fixture | No verificado | D |
-| .sksrv | SKS Server | python | decoders/Python/sksrv.py | Sin fixture | No verificado | D |
-| .sksrv.png | SKS Server | python | decoders/Python/sksrv.py | Sin fixture | No verificado | D |
-| .v2i | V2Ray Injector | python | decoders/Python/multides.py | Sin fixture | No verificado | D |
-| .agn | AGN Injector | python | decoders/Python/multides.py | Sin fixture | No verificado | D |
-| .jvi | JVI Tunnel | python | decoders/Python/multides.py | Sin fixture | No verificado | D |
-| .jvc | JVC Tunnel | python | decoders/Python/multides.py | Sin fixture | No verificado | D |
-| .aro | ARMOD | python | decoders/Python/aro.py | Sin fixture | No verificado | D |
+| .sksrv | SKS Server | python | decoders/Python/sksrv.py | 1 caso | No verificado | D |
+| .sksrv.png | SKS Server | python | decoders/Python/sksrv.py | 1 caso | No verificado | D |
+| .v2i | V2Ray Injector | python | decoders/Python/multides.py | 1 caso | No verificado | D |
+| .agn | AGN Injector | python | decoders/Python/multides.py | 1 caso | No verificado | D |
+| .jvi | JVI Tunnel | python | decoders/Python/multides.py | 1 caso | No verificado | D |
+| .jvc | JVC Tunnel | python | decoders/Python/multides.py | 1 caso | No verificado | D |
+| .aro | ARMOD | python | decoders/Python/aro.py | 1 caso | No verificado | D |
 | .cloudy | Cloudy Inject | python | decoders/Python/cloudy.py | Sin fixture | No verificado | D |
 | .epro | ePro Tunnel | node | decoders/JavaScript/modulepro.js | Sin fixture | No verificado | E |
-| .cly | Cloudy | python | decoders/Python/multides.py | Sin fixture | No verificado | D |
+| .cly | Cloudy | python | decoders/Python/multides.py | 1 caso | No verificado | D |
 | .xtp | XTProy | python | decoders/Python/xtproy.py | Sin fixture | No verificado | D |
 | .roy | Royal Tunnel | python | decoders/Python/xtproy.py | Sin fixture | No verificado | D |
 | .ipt | WeTunnel | python | decoders/Python/ipt.py | Sin fixture | No verificado | D |

@@ -134,3 +134,7 @@ El corpus Linux amplió las dos aserciones parciales iniciales con **6 golden sn
 2. Prioridad: `.tls`, `.v2` para convertir tests existentes a golden byte-exact; luego `.ehi`, `.ehil`, `.hc`, `.ht/.htb`, `.npv4/.npvt`, `.ssc`, `.dark`, `.hat`.
 3. Revisión explícita del caso `NPVTUNNEL` y las escrituras de configuración Node antes de liberar motor portable.
 4. Registrar resultados por sufijo en DECODER_MATRIX.md y status.json; marcar verified solo tras paridad + ABI y dispositivo.
+
+### Evolución del corpus sintético (bloque 3, 2026-10-08)
+
+Desde la auditoría inicial se integraron **19 casos Linux exactos para 18 de los 59 sufijos**, correspondientes a **11 scripts**. Se añadieron diez rutas registradas: `.agn`, `.cly`, `.fɴ`, `.jvc`, `.jvi`, `.v2i`, `.sksrv`, `.sksrv.png`, `.xscks`, `.aro`. **Limitación:** seis usan un ciphertext DES común y dos usan un contenedor AES-GCM SKSRV común; su valor es verificar el enrutamiento, no declarar compatibilidad con distintas aplicaciones. La fase Android permanece en **0 formatos verificados**. Detalle y SHA en [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
