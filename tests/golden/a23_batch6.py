@@ -127,7 +127,8 @@ process.stdout.write(ctx.Tea.encrypt(process.argv[2],process.argv[3]));
         cwd=ROOT, capture_output=True, check=False, timeout=12
     )
     if run.returncode:
-        raise RuntimeError(f"TEA synthetic generation failed: {run.stderr.decode(\'utf-8\', \'replace\')[-1800:]}")
+        reason = run.stderr.decode("utf-8", "replace")[-1800:]
+        raise RuntimeError("TEA synthetic generation failed: " + reason)
     return run.stdout
 
 
