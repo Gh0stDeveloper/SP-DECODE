@@ -16,7 +16,7 @@ if (start < 0 || end <= start) throw new Error("REZ source layout changed");
 const snippet = original.slice(start, end);
 const sandbox = {module: {exports: {}}};
 vm.runInNewContext(snippet, sandbox, {timeout: 2000, filename: "repo-rez-tea-fixture.js"});
-const clear = JSON.stringify({
+let clear = JSON.stringify({
   PSInstall: "A23 synthetic",
   RootBlock: false,
   MobileData: true,
@@ -29,4 +29,6 @@ const clear = JSON.stringify({
   isDNS: false,
   Server: "example.org"
 });
+// Legacy strToLongs() does not tolerate a partial final 32-bit word.
+while (clear.length % 4 !== 0) clear += " ";
 process.stdout.write(sandbox.Tea.encrypt(clear, "@technore24 2022"));
