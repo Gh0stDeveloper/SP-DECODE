@@ -1,6 +1,6 @@
 # A.2.3 — Corpus de pruebas golden reproducibles
 
-> **Estado 2026-10-08: EN PROGRESO.** Hay **29 casos sintéticos positivos con salida íntegra congelada en 28 de 59 extensiones**. Faltan **31 extensiones sin muestra positiva**. Ninguna extensión está verificada en Android y ninguna prueba demuestra compatibilidad con versiones modernas de las apps exportadoras.
+> **Estado 2026-10-08: EN PROGRESO.** Hay **39 casos sintéticos positivos con salida íntegra congelada en 38 de 59 extensiones**. Faltan **21 extensiones sin muestra positiva**. Ninguna extensión está verificada en Android y ninguna prueba demuestra compatibilidad con versiones modernas de las apps exportadoras.
 
 ## 1. Evidencia y alcance
 
@@ -16,7 +16,8 @@ Los tests comparan el **`stdout` original byte por byte**, sin traducción ni no
 | 2 | 3 | 3: .ht, .htb, .hc | 2 |
 | 3 | 10 | 10: .agn, .cly, .fɴ, .jvc, .jvi, .v2i, .sksrv, .sksrv.png, .xscks, .aro | 4 |
 | **4** | **10** | **10: .hat, .sks, .sksplus, .cloudy, .mij, .fnnetwork, .uwu, .phc, .ost, .sbr** | **10** |
-| **Total** | **29** | **28 de 59** | **21** |
+| 5 | 10 | 10: .jez, .hrt, .rez, .rezl, .maya, .xui, .mrc, .mtl, .mina, .tnl | 9 |
+| **Total** | **39** | **38 de 59** | **30** |
 
 ### Detalle del lote 4
 
@@ -37,11 +38,31 @@ Los tests comparan el **`stdout` original byte por byte**, sin traducción ni no
 
 El lote anterior de seis sufijos MultiDES continúa limitado a **una única clave DES de ejemplo compartida**. En concreto, su golden no prueba las claves exclusivas de todos los exportadores. SKSRV y SKSRV.PNG también comparten su contenedor de prueba. No omitir estas limitaciones en documentación ni en la UI de formatos.
 
+### Detalle del lote 5 — diez casos Linux positivos
+
+| Sufijo | Runtime | Prueba sintética | Limitación conocida |
+|---|---|---|---|
+| .jez | PHP | AES-256-CBC, SHA-256(password) y Base64 | claves históricas, no exportador actual |
+| .hrt | PHP | mismo sobre AES-256-CBC | comparte input JEZ; salidas originales tienen etiquetas diferentes |
+| .rez | Node.js | Tea.encrypt original + descifrado TEA modificado, Base64 | **self-roundtrip**, no validación criptográfica independiente |
+| .rezl | Node.js | mismo contenedor que .rez | imprime `(.rez)`, rótulo heredado |
+| .maya | Python | AES-256-CBC + parseo JSON NoobCrypt | fixture con campos raíz simples; campos interiores especiales no cubiertos |
+| .xui | Python | AES-256-CBC + JSON NoobCrypt | variante de clave diferente; no autenticidad de archivo de fabricante |
+| .mrc | Python | PBKDF2-SHA256 + AES-GCM y XML | comparte entrada de prueba con .mtl |
+| .mtl | Python | PBKDF2-SHA256 + AES-GCM y XML | tiene la misma salida del ejemplo que .mrc |
+| .mina | Python | SHA-256(password) + AES-CBC + JSON | password derivado del octal estático del script |
+| .tnl | Python | PBKDF2-SHA256 + AES-GCM, parser de entries | esta ruta imprime JSON, sin banner; versiones OPL/OpenTunnel pendientes |
+
+**Nota de compatibilidad:** las diez muestras proceden de generadores internos, NO de versiones actuales de las apps. El generador REZ utiliza la función `Tea.encrypt` que ya forma parte del archivo histórico `rez.js`, aislándola en un contexto de Node sin acceso a `require`/FS/red durante el cálculo; se valida la ruta de descifrado CLI pero **no** es una implementación criptográfica de referencia independiente. El formato `.tvt` figura en el registro apuntando a `rez.js`, sin embargo el filtro de extensión de dicho decoder **rechaza .tvt**, por lo que deliberadamente NO se marca como golden verificado.
+
+La comparación golden usa la salida UTF-8 íntegra **producida por el ejecutable Linux real**; los diez snapshots se recopilaron de una ejecución de CI controlada, se revisaron y se fijaron con SHA-256, después se retiró el paso temporal de captura. No se normalizaron los rótulos `(.rez)` en .rezl ni los espacios y saltos de línea.
+
 ## 3. Verificaciones y resultados
 
 - Suite original: casos TLS y EV2RAY, HT/HTB, HC, EHIL, SSC, DARK con salidas completas.
 - Lote 3: diez rutas y sus datos falsos, pruebas negativas, matching de `.sksrv.png` y `.fɴ`.
 - Lote 4: diez procesos CLI originales, entradas positivas con salida exacta, casos corruptos, determinismo y hashes de entrada/salida congelados.
+- Lote 5: diez rutas Python/Node/PHP verificadas con salidas exactas capturadas del propio script (REZ self-roundtrip identificado), incluyendo entradas inválidas y hashes inmutables.
 - La validación se hace sin invocar servicios en red. Los ejecutables `python`, `node` y `php` son necesarios **para esta suite Linux**; la futura APK no dependerá de instalaciones externas.
 - Los errores específicos de proveedores/formatos modernos y la comprobación de dispositivos Android **no se han realizado**.
 
@@ -51,15 +72,19 @@ El lote anterior de seis sufijos MultiDES continúa limitado a **una única clav
 
 | Ruta | Propósito |
 |---|---|
-| `tests/golden/manifest.json` | inventario íntegro: 59 sufijos, 29 casos Linux exactos, 31 sin prueba positiva |
+| `tests/golden/manifest.json` | inventario íntegro: 59 sufijos, 39 casos Linux exactos, 21 sin prueba positiva |
 | `tests/golden/a23_generators.py` | punto de unión de los generadores |
 | `tests/golden/a23_batch3.py` | diez fixtures Linux del lote 3 |
 | `tests/golden/a23_batch4.py` | diez fixtures Linux del lote 4 (Python, Node y PHP) |
-| `tests/golden/expected/*.txt` | veintinueve salidas originales byte-exact |
+| `tests/golden/a23_batch5.py` | generadores deterministas PHP/Node/Python del lote 5 |
+| `tests/golden/a23_batch5_rez.cjs` | reutilización restringida del Tea.encrypt histórico, solo tests |
+| `tests/test_android_a23_batch5.py` | exactitud de diez stdout, casos inválidos y hashes lote 5 |
+| `tests/golden/a23_batch5_probe.py` | utilidad manual de referencia sintética, **no se ejecuta en CI normal** |
+| `tests/golden/expected/*.txt` | 39 salidas originales byte-exact |
 | `tests/test_android_a23_goldens.py` | nueve fixtures de los lotes 1 y 2 |
 | `tests/test_android_a23_batch3.py` | diez casos de CLI lote 3 |
 | `tests/test_android_a23_batch4.py` | diez casos de CLI lote 4 |
-| `tests/golden/a23_export.py` | genera 29 archivos ficticios físicos y SHA256.json |
+| `tests/golden/a23_export.py` | genera 39 archivos ficticios físicos y SHA256.json |
 | `tests/golden/a23_report.py` | metadatos de los 59 y SHA-256 sin salida sensible |
 | `.github/workflows/validate.yml` | tests del bot + artefacto de muestras y auditoría |
 
@@ -73,7 +98,7 @@ PYTHONPATH=. python tests/golden/a23_export.py --output-dir out/a23/samples
 
 ## 5. Problemas y continuación
 
-**A.2.3 permanece ABIERTA:** 31 sufijos siguen sin muestra positiva. Priorizar lotes de hasta diez por PR, **sin falsificar resultados**. Próximos candidatos del roadmap: `.ehi`, `.npv4`, `.npvt`, `.npv2`, `.epro`, `.rez`, `.rezl`, `.tvt`, `.jez`, `.hrt`. Estos incluyen whitebox, PHP y Node y podrían necesitar fixtures autorizados/versionados, además de aislar efectos colaterales Node.
+**A.2.3 permanece ABIERTA:** 21 sufijos sin golden positivo. Los próximos candidatos más difíciles son `.ehi`, `.npv4`, `.npvt`, `.npv2`, `.epro` y `.tvt`; requieren trabajo separado de XXTEA/Argon2, whitebox, ruta Node con estado compartido y errores de selección de extensión. Continuar con un máximo de diez por PR **sin forzar pases**. Estos scripts aún no cuentan con pruebas para las versiones actuales de sus aplicaciones.
 
 **A.2.4 pendiente:** aún no existe bridge Android, ni APK, ni prueba arm64/16 KB/RTL de resultados crudos. El soporte real de una extensión debe anunciarse únicamente cuando se haya confirmado en Android y para las versiones explícitas de exportador cubiertas.
 
