@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" role="img" aria-labelledby="title desc">
+<title id="title">SP-DECODE Android — resultado AMOLED</title>
+<desc id="desc">Maqueta de la pantalla Resultado con archivo perfil.tls, formato, servidor de ejemplo, contraseña oculta, vista de texto original y botones copiar y exportar.</desc>
+<rect width="390" height="844" fill="#080C12"/>
+<text x="28" y="29" fill="#F4F7FB" font-family="Inter,Roboto,Arial,sans-serif" font-weight="600" font-size="14">9:41</text>
+<g fill="none" stroke="#E2E8F0" stroke-width="2" stroke-linecap="round"><path d="M309 23v-5M315 23v-8M321 23v-11"/><path d="M331 17c4-4 11-4 15 0M334 20c3-2 7-2 9 0"/></g>
+<rect x="356" y="13" width="23" height="12" rx="3.6" stroke="#E2E8F0" fill="none"/><rect x="358.5" y="15.5" width="17.5" height="7" rx="2" fill="#E2E8F0"/>
+<g transform="translate(22 87)" fill="none" stroke="#CED9E8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10-10 0 0 10 10"/></g>
+<text x="76" y="89" fill="#F4F7FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="21" font-weight="700">Resultado</text>
+<text x="76" y="112" fill="#9BA9BC" font-family="Inter,Roboto,Arial,sans-serif" font-size="11.5">Contenido decodificado</text>
+<rect x="328" y="69" width="46" height="46" rx="14" fill="#111821" stroke="#2C394A"/>
+<g transform="translate(351 92)" stroke="#B4C0D0" fill="none" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M-9-1V10H8V-1M0-11v14M-5-2l5 5 5-5"/></g>
+<rect x="16" y="141" width="358" height="100" rx="20" fill="#15202D" stroke="#304154"/>
+<rect x="30" y="158" width="48" height="48" rx="14" fill="#28415A"/>
+<g transform="translate(54 182)" fill="none" stroke="#C9DFFF" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M-9-13H2l7 7v19H-9zM2-13v8h7M-4 4l3 3 6-7"/></g>
+<text x="92" y="176" fill="#F4F7FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="16" font-weight="700">perfil.tls</text>
+<text x="92" y="197" fill="#9BA9BC" font-family="Inter,Roboto,Arial,sans-serif" font-size="12">TLS Tunnel</text>
+<rect x="92" y="210" width="101" height="22" rx="11" fill="#183C30"/>
+<circle cx="105" cy="221" r="3.5" fill="#70D5A3"/>
+<text x="116" y="225" fill="#A8E9C8" font-family="Inter,Roboto,Arial,sans-serif" font-size="10.5" font-weight="600">Decodificado</text>
+<rect x="16" y="258" width="358" height="340" rx="20" fill="#111821" stroke="#2C394A"/>
+<text x="33" y="290" fill="#F4F7FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="14.5" font-weight="700">Datos de configuración</text>
+<text x="33" y="328" fill="#9BA9BC" font-family="Inter,Roboto,Arial,sans-serif" font-size="13">Formato</text>
+<text x="358" y="328" text-anchor="end" fill="#EEF4FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="13.5">TLS Tunnel</text>
+<path d="M33 343h324" stroke="#273447"/>
+<text x="33" y="368" fill="#9BA9BC" font-family="Inter,Roboto,Arial,sans-serif" font-size="13">Servidor</text>
+<text x="358" y="368" text-anchor="end" fill="#EEF4FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="13.5">example.com</text>
+<path d="M33 383h324" stroke="#273447"/>
+<text x="33" y="408" fill="#9BA9BC" font-family="Inter,Roboto,Arial,sans-serif" font-size="13">Puerto</text>
+<text x="358" y="408" text-anchor="end" fill="#EEF4FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="13.5">443</text>
+<path d="M33 423h324" stroke="#273447"/>
+<text x="33" y="448" fill="#9BA9BC" font-family="Inter,Roboto,Arial,sans-serif" font-size="13">Usuario SSH</text>
+<text x="358" y="448" text-anchor="end" fill="#EEF4FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="13.5">demo-user</text>
+<path d="M33 463h324" stroke="#273447"/>
+<text x="33" y="488" fill="#9BA9BC" font-family="Inter,Roboto,Arial,sans-serif" font-size="13">Contraseña</text>
+<text x="320" y="488" text-anchor="end" fill="#EEF4FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="15" letter-spacing="3">••••••••</text>
+<g transform="translate(348 483)" fill="none" stroke="#91A1B4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M-10 0s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6Z"/><circle r="2.5"/></g>
+<path d="M33 503h324" stroke="#273447"/>
+<text x="33" y="527" fill="#9BA9BC" font-family="Inter,Roboto,Arial,sans-serif" font-size="13">SNI</text>
+<text x="358" y="527" text-anchor="end" fill="#EEF4FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="13.5">sni.example.com</text>
+<path d="M33 545h324" stroke="#273447"/>
+<text x="33" y="570" fill="#6C89A8" font-family="Inter,Roboto,Arial,sans-serif" font-size="10.8">Datos de ejemplo · No corresponde a un archivo real</text>
+<rect x="16" y="612" width="358" height="75" rx="17" fill="#111821" stroke="#2C394A"/>
+<g transform="translate(40 638)" fill="none" stroke="#8DBBFF" stroke-width="1.6" stroke-linejoin="round"><path d="M-9-9h13l5 5V9H-9zM4-9v5h5M-4 1h8M-4 5h7"/></g>
+<text x="60" y="640" fill="#F4F7FB" font-family="Inter,Roboto,Arial,sans-serif" font-size="13.8" font-weight="650">Texto original</text>
+<text x="60" y="664" fill="#9BA9BC" font-family="Inter,Roboto,Arial,sans-serif" font-size="11.5">Mostrar resultado completo</text>
+<path d="m343 638 6 6 6-6" stroke="#A4B0C0" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+<rect x="16" y="703" width="172" height="49" rx="14" fill="#D6E7FF"/>
+<g transform="translate(50 727)" fill="none" stroke="#17283D" stroke-width="1.9" stroke-linejoin="round"><rect x="-8" y="-6" width="13" height="14" rx="2"/><path d="M-4-10H8V3"/></g>
+<text x="110" y="733" text-anchor="middle" fill="#132237" font-family="Inter,Roboto,Arial,sans-serif" font-weight="700" font-size="13.5">Copiar</text>
+<rect x="202" y="703" width="172" height="49" rx="14" fill="#1C2735" stroke="#314357"/>
+<g transform="translate(236 727)" fill="none" stroke="#C9DDF4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M0-10v13m-6-5 6 6 6-6M-9 5v6h18V5"/></g>
+<text x="291" y="733" text-anchor="middle" fill="#E8F0FA" font-family="Inter,Roboto,Arial,sans-serif" font-weight="700" font-size="13.5">Exportar</text>
+<rect x="0" y="759" width="390" height="85" fill="#111821"/><path d="M0 759h390" stroke="#2C394A"/>
+<g transform="translate(48 791)" fill="none" stroke="#91A1B4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m-11-1 11-9 11 9V10H-7V0H7v10"/></g>
+<text x="48" y="821" text-anchor="middle" fill="#91A1B4" font-family="Inter,Roboto,Arial,sans-serif" font-size="10.5">Inicio</text>
+<g transform="translate(145 791)" fill="none" stroke="#8DBBFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle r="10"/><path d="M0-6V0l4 3M-12-7l2-3"/></g>
+<text x="145" y="821" text-anchor="middle" fill="#8DBBFF" font-family="Inter,Roboto,Arial,sans-serif" font-size="10.5" font-weight="650">Historial</text>
+<g transform="translate(245 791)" fill="none" stroke="#91A1B4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="-11" y="-11" width="22" height="22" rx="3"/><path d="m-4-4-4 4 4 4M4-4l4 4-4 4"/></g>
+<text x="245" y="821" text-anchor="middle" fill="#91A1B4" font-family="Inter,Roboto,Arial,sans-serif" font-size="10.5">Formatos</text>
+<g transform="translate(341 791)" fill="none" stroke="#91A1B4" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle r="8"/><circle r="3"/><path d="M0-13v4M0 9v4M-13 0h4M9 0h4M-9-9l3 3M6 6l3 3M9-9 6-6M-6 6l-3 3"/></g>
+<text x="341" y="821" text-anchor="middle" fill="#91A1B4" font-family="Inter,Roboto,Arial,sans-serif" font-size="10.5">Ajustes</text>
+<rect x="144" y="836" width="102" height="3" rx="2" fill="#F4F7FB" opacity=".58"/>
+</svg>
