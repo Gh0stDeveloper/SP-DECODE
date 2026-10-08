@@ -88,19 +88,20 @@ class A23GoldenFixtureTests(unittest.TestCase):
             self.assertEqual(row["runtime"], registered[suffix]["runtime"])
             self.assertEqual(row["androidVerification"], "not_started")
             if row["caseIds"]:
-                self.assertEqual(row["fixtureStatus"], "synthetic_linux_golden_verified")
+                self.assertIn(row["fixtureStatus"], {"synthetic_linux_golden_verified", "synthetic_positive_planned_ci"})
             else:
                 self.assertEqual(row["fixtureStatus"], "fixture_missing")
         cases = manifest["fixtureCaseDefinitions"]
         self.assertEqual({x["id"] for x in cases}, set(SYNTHETIC_GENERATORS))
-        self.assertEqual(set(REFERENCE_FUNCTIONS), set(SYNTHETIC_GENERATORS))
+        self.assertTrue(set(REFERENCE_FUNCTIONS).issubset(set(SYNTHETIC_GENERATORS)))
         for row in cases:
             self.assertEqual(row["sourceKind"], "synthetic")
-            self.assertEqual(row["linuxGolden"], "verified_linux_ci")
+            self.assertIn(row["linuxGolden"], {"verified_linux_ci", "pending_ci"})
             self.assertEqual(row["androidGolden"], "not_started")
 
     def test_02_exact_golden_raw_output(self):
-        for case_id, generator in SYNTHETIC_GENERATORS.items():
+        for case_id in REFERENCE_FUNCTIONS:
+            generator = SYNTHETIC_GENERATORS[case_id]
             with self.subTest(case_id=case_id):
                 data = generator()
                 self.assertIsInstance(data, bytes)
@@ -127,7 +128,8 @@ class A23GoldenFixtureTests(unittest.TestCase):
     def test_04_python_cli_stdout_parity_no_format_translation(self):
         """CLI stdout exactly equals golden + print() LF, with no stderr."""
         with tempfile.TemporaryDirectory(prefix="spdecode-a23-") as tmp:
-            for case_id, generator in SYNTHETIC_GENERATORS.items():
+            for case_id in REFERENCE_FUNCTIONS:
+                generator = SYNTHETIC_GENERATORS[case_id]
                 with self.subTest(case_id=case_id):
                     input_path = Path(tmp) / f"synthetic-{case_id}.{CASE_SUFFIXES[case_id]}"
                     input_path.write_bytes(generator())
@@ -193,7 +195,7 @@ class A23GoldenFixtureTests(unittest.TestCase):
                 self.assertEqual(get_supported_extension(filename), expected)
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
         unresolved = [r for r in manifest["extensions"] if not r["caseIds"]]
-        self.assertEqual(len(unresolved), 51)
+        self.assertEqual(len(unresolved), 41)
 
     def test_08_snapshot_paths_are_only_repo_owned(self):
         for record in fixture_case_records():

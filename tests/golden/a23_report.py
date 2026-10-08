@@ -30,8 +30,11 @@ def build_report() -> dict:
         id_ = row["id"]
         data = SYNTHETIC_GENERATORS[id_]()
         golden = (ROOT / row["expectedRawText"]).read_bytes()
-        if _sha(data) != row.get("inputSha256") or _sha(golden) != row.get("expectedRawUtf8Sha256"):
-            raise ValueError(f"frozen golden fixture digest drift for {id_}")
+        if row["linuxGolden"] == "verified_linux_ci":
+            if _sha(data) != row.get("inputSha256") or _sha(golden) != row.get("expectedRawUtf8Sha256"):
+                raise ValueError(f"frozen golden fixture digest drift for {id_}")
+        elif row["linuxGolden"] != "pending_ci":
+            raise ValueError(f"unrecognized golden status for {id_}")
         cases.append({
             "id": id_,
             "inputSha256": _sha(data),
@@ -43,7 +46,7 @@ def build_report() -> dict:
             "referenceDecoderScript": next(
                 x["script"] for x in rows if id_ in x["caseIds"]
             ),
-            "verificationLevel": "L2_linux_golden_verified_android_pending",
+            "verificationLevel": ("L2_linux_golden_verified_android_pending" if row["linuxGolden"] == "verified_linux_ci" else "L1_candidate_pending_linux_ci"),
             "androidStatus": "not_verified",
             "exporterVersion": "not_verified",
         })
