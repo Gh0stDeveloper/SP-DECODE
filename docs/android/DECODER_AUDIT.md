@@ -107,7 +107,16 @@ Ver [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md) para evidencia requerida, técn
 
 **Para cerrar A.2 en el sentido estricto de ROADMAP:** documentar para cada decoder si hay muestra de formato vigente, assets necesarios, compatibilidad del bridge, casos negativos y plan de fixture reproducible. El corpus funcional completo y la compatibilidad real Android corresponden además a D/E/H, por lo que este estudio **no certifica** 59/59. El auditor estático alcanza la totalidad de fuentes; el campo `A.2` permanece **in_progress** hasta completar la evaluación de muestras/fixtures faltantes.
 
-## 6. Verificación automatizada y límites
+## 6. Evidencia de ejecución CI (2026-10-08)
+
+- [GitHub Actions Validate SP-DECODE — run 37835155484, **SUCCESS**](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484).
+- 12 tests unitarios del repositorio aprobados, incluidos 5 tests específicos nuevos de auditoría; no se ejecutó Android.
+- Auditoría estática en CI: **59 sufijos, 48 scripts, 12 scripts Python con run(), 1 candidato de import de red, 0 candidatos de llamada de red, 5 scripts con assets conocidos y 1 candidato de pickle**.
+- Registros/sintaxis/recursos conocidos: sin errores de integridad en CI.
+- [Artifact `spdecode-android-a2-audit` con reportes JSON/Markdown](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484/artifacts/11574907879). El artefacto de GitHub Actions caduca según su retención; el código auditor y esta documentación permanecen en Git.
+- Se observó un aviso de deprecación Node.js 20 en acciones existentes; no bloqueó el resultado, pero debe actualizarse el workflow en mantenimiento separado.
+
+## 7. Verificación automatizada y límites
 
 - `python docs/android/audit_decoders.py --output-dir out/android-a2`: escáner local sin importar scripts.
 - `python -m unittest discover -s tests -v`: validación del escáner y de dos fixtures sintéticos actuales.
@@ -115,7 +124,7 @@ Ver [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md) para evidencia requerida, técn
 - La prueba de compilación/ejecución Android y ruedas Chaquopy es **Fase C.4**, todavía no implementada.
 - No marcar un formato «verificado» por compilar Python, encontrar claves o producir stdout; exigir prueba golden y test dispositivo.
 
-## 7. Próximas tareas de auditoría funcional
+## 8. Próximas tareas de auditoría funcional
 
 1. Recolectar muestras **sintéticas o autorizadas** de cada formato, asociadas a versión de app exportadora. A2.1 revisión de I/O, A2.2 dependencia/recursos, A2.3 corpus/fixtures, A2.4 paridad/reporte por sufijo.
 2. Prioridad: `.tls`, `.v2` para convertir tests existentes a golden byte-exact; luego `.ehi`, `.ehil`, `.hc`, `.ht/.htb`, `.npv4/.npvt`, `.ssc`, `.dark`, `.hat`.

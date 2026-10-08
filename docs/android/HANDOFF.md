@@ -29,7 +29,7 @@ Este archivo es el punto de entrada para reanudar SP-DECODE Android en otro chat
 - A.1, A.3, A.4, A.5 y A.6: especificaciones redactadas.
 - A.2: conteo y matriz generados; **pendiente auditoría funcional real y fixtures de los 48 scripts**.
 - B, C, D, E, F, G, H: sin iniciar.
-- **A.2 auditoría estática en ejecución:** rama `feat/android-a2-decoder-audit`. Se revisaron las 48 fuentes, se creó `docs/android/audit_decoders.py`, pruebas y salidas CI `spdecode-android-a2-audit` (sin ejecutar los decoders). Ver [DECODER_AUDIT.md](DECODER_AUDIT.md) y [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md). A.2.3 y A.2.4 requieren corpus/paridad. No marcar A.2 complete sin cumplir alcance.
+- **A.2 auditoría estática verificada (A.2.1 y A.2.2), A.2 general ABIERTA:** rama `feat/android-a2-decoder-audit`. Se revisaron las 48 fuentes, se creó `docs/android/audit_decoders.py`, pruebas y salidas CI `spdecode-android-a2-audit` (sin ejecutar los decoders). Ver [DECODER_AUDIT.md](DECODER_AUDIT.md) y [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md). CI [success](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484): 12 unit tests, auditoría de 48 scripts y subida de [artefacto](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484/artifacts/11574907879). A.2.3 y A.2.4 requieren corpus/paridad. No marcar A.2 complete sin cumplir alcance.
 - Formatos: 59 sufijos (48 Python, 8 Node, 3 PHP); scripts distintos 39 Python + 6 JS + 3 PHP.
 - Todos los 59 formatos Android: «no verificado». No se han probado wheels nativos, ABI o compilación.
 - CI de la rama main existente: validate.yml del bot. No workflow Android.

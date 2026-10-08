@@ -32,13 +32,13 @@
       "status": "in_progress",
       "subphases": {
         "A.1": "documented",
-        "A.2": "static_inventory_and_dependencies_audited_fixtures_pending",
+        "A.2": "static_inventory_and_dependency_audit_verified_golden_fixtures_pending",
         "A.3": "documented",
         "A.4": "documented",
         "A.5": "documented",
         "A.6": "documented",
-        "A.2.1": "implemented_pending_ci",
-        "A.2.2": "implemented_pending_ci",
+        "A.2.1": "verified",
+        "A.2.2": "verified_static_findings_remediation_pending",
         "A.2.3": "not_started",
         "A.2.4": "not_started"
       }
@@ -112,6 +112,26 @@
       "docs/android/audit_decoders.py",
       "tests/test_android_a2_audit.py"
     ],
-    "recommendation": "Collect authorized golden fixtures and portability evidence; do not label any decoder Android verified."
-  }
+    "recommendation": "Collect authorized golden fixtures and portability evidence; do not label any decoder Android verified.",
+    "staticAnalysisCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484",
+    "staticAnalysisRunId": 37835155484,
+    "staticAnalysisRunConclusion": "success",
+    "testsInCi": 12,
+    "newTests": 5,
+    "networkImportCandidates": 1,
+    "networkCallCandidates": 0,
+    "pickleCandidates": 1,
+    "knownAssetScriptCount": 5,
+    "auditArtifactUrl": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484/artifacts/11574907879"
+  },
+  "lastVerifiedCi": [
+    {
+      "name": "Validate SP-DECODE",
+      "runId": 37835155484,
+      "conclusion": "success",
+      "headSha": "6619b6c6527faf5f1eca55373241e7ca50f91ed9",
+      "url": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484",
+      "scope": "bot regression + A2 static inventory + documentation; NOT Android execution"
+    }
+  ]
 }

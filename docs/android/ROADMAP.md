@@ -35,8 +35,8 @@ flowchart LR
 
 | Subfase | Estado inicial | Evidencia requerida |
 |---|---|---|
-| A.2.1 Inventario de 59 registros, 48 scripts y análisis sintáctico estático | implementado; verificar en CI | `audit_decoders.py`, 48 filas, 0 rutas faltantes, tests |
-| A.2.2 Dependencias/recursos, I/O, riesgos para port Android | documentado; revisar hallazgos prioritarios | DECODER_AUDIT.md, reportes CI y remediation list |
+| A.2.1 Inventario de 59 registros, 48 scripts y análisis sintáctico estático | verificado (CI success) | `audit_decoders.py`, 48 filas, 0 rutas faltantes, tests |
+| A.2.2 Dependencias/recursos, I/O, riesgos para port Android | verificado estáticamente; riesgos documentados | DECODER_AUDIT.md, reportes CI y remediation list |
 | A.2.3 Corpus y golden fixtures seguros (positivos/negativos) | pendiente | A2_FIXTURE_POLICY.md, muestras por formato, procedencia y hash |
 | A.2.4 Paridad de salida bot vs adapter; versión de formatos | pendiente | Linux goldens, ABI arm64 y pruebas C/D/E posteriores |
 
