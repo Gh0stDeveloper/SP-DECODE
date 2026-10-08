@@ -1,7 +1,7 @@
 # SP-DECODE Android — documentación oficial
 
 > **Estado:** arquitectura y producto definidos; la aplicación Android NO está implementada ni publicada.
-> **Edición:** 1.0, 2026-10-08 · **Repositorio:** Gh0stDeveloper/SP-DECODE · **Branch inicial:** docs/android-offline-architecture
+> **Edición:** 1.1 (multidioma), 2026-10-08 · **Repositorio:** Gh0stDeveloper/SP-DECODE · **Branch inicial:** docs/android-offline-architecture
 > **Dueño de producto:** Gh0stDeveloper · **Objetivo:** APK nativa, independiente, totalmente local.
 
 ![Referencia oficial de la pantalla principal](design/home-dark.svg)
@@ -16,7 +16,7 @@ La **UI propuesta anteriormente en este proyecto es un requisito de producto**, 
 ## Principios innegociables
 
 1. **Local-only:** sin backend, autenticación, sincronización, telemetría ni permisos de red. El decodificado, la base de datos y los archivos de salida residen en el dispositivo.
-1a. **Interfaz multidioma:** español, inglés, portugués brasileño y árabe (RTL), sin traducir ni modificar resultados, etiquetas o campos producidos por los decodificadores.
+9. **Interfaz multidioma:** español, inglés, portugués brasileño y árabe (RTL), sin traducir ni modificar resultados, etiquetas o campos producidos por los decodificadores.
 2. **Uso inmediato:** instalación → inicio → importación. Nunca pedir cuenta, token de Telegram ni paso de activación.
 3. **Compatibilidad verificable:** no anunciar que un formato funciona por aparecer en el registro. Se requiere fixture, salida comprobada y prueba real en Android.
 4. **Privacidad segura:** nunca enviar archivos ni secretos fuera del dispositivo; ocultar credenciales en pantalla y evitar logs, crash reports externos y copias de seguridad sin proteger.
@@ -29,8 +29,8 @@ La **UI propuesta anteriormente en este proyecto es un requisito de producto**, 
 
 1. [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md): alcance, historias, flujos, aceptación.
 2. [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md): **apariencia visual obligatoria**, medidas, colores, interacciones y pantallas.
-4. [LOCALIZATION.md](LOCALIZATION.md): **interfaz es/en/pt-BR/ar, RTL árabe y resultados del decoder sin traducción**.
-3. [ARCHITECTURE.md](ARCHITECTURE.md): límites, módulos Android, motor offline y datos.
+3. [LOCALIZATION.md](LOCALIZATION.md): **interfaz es/en/pt-BR/ar, RTL árabe y resultados del decoder sin traducción**.
+4. [ARCHITECTURE.md](ARCHITECTURE.md): límites, módulos Android, motor offline y datos.
 5. [DECODER_MATRIX.md](DECODER_MATRIX.md): inventario exacto de los 59 sufijos de main y pendientes de pruebas.
 6. [SECURITY_AND_QA.md](SECURITY_AND_QA.md): privacidad, amenazas, pruebas y reglas de release.
 7. [ROADMAP.md](ROADMAP.md): fases A–H, subfases y puertas de calidad.
