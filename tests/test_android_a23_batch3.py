@@ -76,7 +76,7 @@ class A23Batch3TenSuffixGoldenTests(unittest.TestCase):
                     "synthetic_positive_planned_ci",
                     "synthetic_linux_golden_verified",
                 })
-        self.assertEqual(len([r for r in manifest["extensions"] if not r["caseIds"]]), 31)
+        self.assertEqual(len([r for r in manifest["extensions"] if not r["caseIds"]]), 21)
 
     def test_03_bad_files_do_not_produce_successful_profile_output(self):
         with tempfile.TemporaryDirectory(prefix="spdecode-a23-b3-bad-") as tmp:

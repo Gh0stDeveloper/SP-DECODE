@@ -51,12 +51,13 @@ class A23Batch5Goldens(unittest.TestCase):
                     self.assertIn(b"example.org",stdout.stdout,case_id)
                     self.assertTrue(stdout.stdout.strip())
                     expected=GOLDENS/(case_id+".txt")
-                    if cases[case_id]["linuxGolden"]=="verified_linux_ci":
-                        self.assertEqual(stdout.stdout,expected.read_bytes())
-                        self.assertEqual(
-                            hashlib.sha256(stdout.stdout).hexdigest(),
-                            cases[case_id]["expectedRawUtf8Sha256"],
-                        )
+                    if cases[case_id]["linuxGolden"] != "verified_linux_ci":
+                        self.fail(f"Unverified golden: {case_id}")
+                    self.assertEqual(stdout.stdout,expected.read_bytes())
+                    self.assertEqual(
+                        hashlib.sha256(stdout.stdout).hexdigest(),
+                        cases[case_id]["expectedRawUtf8Sha256"],
+                    )
 
     def test_02_manifest_and_determinism(self):
         manifest=json.loads(MANIFEST.read_text(encoding="utf-8"))
@@ -73,13 +74,8 @@ class A23Batch5Goldens(unittest.TestCase):
                 self.assertEqual(rows[suffix]["caseIds"],[case_id])
                 self.assertEqual(get_supported_extension("sample."+suffix),suffix)
                 self.assertEqual(cases[case_id]["androidGolden"],"not_started")
-                if cases[case_id]["linuxGolden"]=="verified_linux_ci":
-                    self.assertEqual(
-                        hashlib.sha256(gen()).hexdigest(),
-                        cases[case_id]["inputSha256"],
-                    )
-                else:
-                    self.assertEqual(cases[case_id]["linuxGolden"],"pending_ci")
+                self.assertEqual(cases[case_id]["linuxGolden"],"verified_linux_ci")
+                self.assertEqual(hashlib.sha256(gen()).hexdigest(),cases[case_id]["inputSha256"])
         self.assertEqual(len([x for x in rows.values() if not x["caseIds"]]),21)
 
     def test_03_invalid_inputs_cannot_produce_a_valid_dummy_config(self):
@@ -96,8 +92,6 @@ class A23Batch5Goldens(unittest.TestCase):
         for case_id,gen in GENERATORS.items():
             with self.subTest(case=case_id):
                 case=cases[case_id]
-                if case["linuxGolden"]=="pending_ci":
-                    continue
                 self.assertEqual(case["linuxGolden"],"verified_linux_ci")
                 self.assertEqual(hashlib.sha256(gen()).hexdigest(),case["inputSha256"])
                 self.assertEqual(

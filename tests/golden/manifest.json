@@ -400,9 +400,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "bafaf1dd708bd639e1fc374a60ca4ba96ec9f4790319be3f3da657e88e101811",
+      "expectedRawUtf8Sha256": "9bf51d83654b8e2622064e61e3df1e6d06e3461c6c30c7d6f7484e7b9edbaafc"
     },
     {
       "id": "batch5-hrt",
@@ -412,9 +414,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "bafaf1dd708bd639e1fc374a60ca4ba96ec9f4790319be3f3da657e88e101811",
+      "expectedRawUtf8Sha256": "2bb7fa45a6c25d3fded41bcfa7f4e5b36f3ad1e8d834c05d8084c773b46a6b6d"
     },
     {
       "id": "batch5-rez",
@@ -424,9 +428,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "dd59a4cecf5302fcdc93827f41bd7043aa5843ed3584d6fe68f4d8361bcdb9fe",
+      "expectedRawUtf8Sha256": "f42aeb79c61276b21025af8af6567c65bcdde7fd30bd6e7193ee9ab46c764d41"
     },
     {
       "id": "batch5-rezl",
@@ -436,9 +442,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "dd59a4cecf5302fcdc93827f41bd7043aa5843ed3584d6fe68f4d8361bcdb9fe",
+      "expectedRawUtf8Sha256": "f42aeb79c61276b21025af8af6567c65bcdde7fd30bd6e7193ee9ab46c764d41"
     },
     {
       "id": "batch5-maya",
@@ -448,9 +456,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "a11bc4051cce25fe5ab438fd44f90c61125a2226aed462d4114f41a11b366fde",
+      "expectedRawUtf8Sha256": "bb6f74f6ba08c8655d72b48f8df8fef1e7a34f1df44a2388b730f2cc1586b19f"
     },
     {
       "id": "batch5-xui",
@@ -460,9 +470,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "950d59261db2eab6df0f43c30b703248521432b082f0bf5558ce815ab8849d1f",
+      "expectedRawUtf8Sha256": "90b537003edfea6fa3e3b3dd8dff5bb1ff825eae956324fbaf7c67aa6ebef695"
     },
     {
       "id": "batch5-mrc",
@@ -472,9 +484,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "bced8ea43d47334f21570cb00c93210e4cf8d4f3ad32b022d8c35eb8ad1ebdbd",
+      "expectedRawUtf8Sha256": "4afecea8a5337170fdfedf577f26a2d9d3690167df93b123dbf6e5a81fe58ae3"
     },
     {
       "id": "batch5-mtl",
@@ -484,9 +498,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "bced8ea43d47334f21570cb00c93210e4cf8d4f3ad32b022d8c35eb8ad1ebdbd",
+      "expectedRawUtf8Sha256": "4afecea8a5337170fdfedf577f26a2d9d3690167df93b123dbf6e5a81fe58ae3"
     },
     {
       "id": "batch5-mina",
@@ -496,9 +512,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "cee7d69b737ae4fdde87660254c34b598272456e4634da993108b95bb645ad42",
+      "expectedRawUtf8Sha256": "97a4ae92cc6a3a90a993f7e8e60a2a80003a3d97abd1b4bced6ff738fc14b0ea"
     },
     {
       "id": "batch5-tnl",
@@ -508,9 +526,11 @@
       "sourceKind": "synthetic",
       "outputEncoding": "utf-8",
       "goldenOutputKind": "cli_stdout_exact",
-      "linuxGolden": "pending_ci",
+      "linuxGolden": "verified_linux_ci",
       "androidGolden": "not_started",
-      "exporterVersion": "not_verified"
+      "exporterVersion": "not_verified",
+      "inputSha256": "3b8cc31c57fb7d5401e9eacc476650133508873b3925e6cd236197d362c8a1b8",
+      "expectedRawUtf8Sha256": "00f67455f89a7c7646f55d997fe8948c273c84f07cabfa6e5a0b56e6333bcd0c"
     }
   ],
   "extensions": [
@@ -664,7 +684,7 @@
       "suffix": "hrt",
       "script": "decoders/PHP/hrt.php",
       "runtime": "php",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-hrt"
       ],
@@ -706,7 +726,7 @@
       "suffix": "jez",
       "script": "decoders/PHP/jez.php",
       "runtime": "php",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-jez"
       ],
@@ -739,7 +759,7 @@
       "suffix": "maya",
       "script": "decoders/Python/maya.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-maya"
       ],
@@ -761,7 +781,7 @@
       "suffix": "mina",
       "script": "decoders/Python/mina.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-mina"
       ],
@@ -772,7 +792,7 @@
       "suffix": "mrc",
       "script": "decoders/Python/mrc.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-mrc"
       ],
@@ -783,7 +803,7 @@
       "suffix": "mtl",
       "script": "decoders/Python/mtl.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-mtl"
       ],
@@ -879,7 +899,7 @@
       "suffix": "rez",
       "script": "decoders/JavaScript/rez.js",
       "runtime": "node",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-rez"
       ],
@@ -890,7 +910,7 @@
       "suffix": "rezl",
       "script": "decoders/JavaScript/rez.js",
       "runtime": "node",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-rezl"
       ],
@@ -1023,7 +1043,7 @@
       "suffix": "tnl",
       "script": "decoders/Python/tnl.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-tnl"
       ],
@@ -1106,7 +1126,7 @@
       "suffix": "xui",
       "script": "decoders/Python/xui.py",
       "runtime": "python",
-      "fixtureStatus": "synthetic_positive_planned_ci",
+      "fixtureStatus": "synthetic_linux_golden_verified",
       "caseIds": [
         "batch5-xui"
       ],

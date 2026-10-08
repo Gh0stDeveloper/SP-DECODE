@@ -1,0 +1,11 @@
+┌───────────────
+│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (.xui)
+│[۞] Aplicación: XUI Tunnel
+├───────────────
+{
+    "Host": "example.org",
+    "Port": 443,
+    "Note": "A23 synthetic"
+}
+└───────────────
+
