@@ -88,7 +88,7 @@ class A23GoldenFixtureTests(unittest.TestCase):
             self.assertEqual(row["runtime"], registered[suffix]["runtime"])
             self.assertEqual(row["androidVerification"], "not_started")
             if row["caseIds"]:
-                self.assertIn(row["fixtureStatus"], {"synthetic_linux_golden_verified", "synthetic_positive_planned_ci"})
+                self.assertEqual(row["fixtureStatus"], "synthetic_linux_golden_verified")
             else:
                 self.assertEqual(row["fixtureStatus"], "fixture_missing")
         cases = manifest["fixtureCaseDefinitions"]
@@ -96,7 +96,7 @@ class A23GoldenFixtureTests(unittest.TestCase):
         self.assertTrue(set(REFERENCE_FUNCTIONS).issubset(set(SYNTHETIC_GENERATORS)))
         for row in cases:
             self.assertEqual(row["sourceKind"], "synthetic")
-            self.assertIn(row["linuxGolden"], {"verified_linux_ci", "pending_ci"})
+            self.assertEqual(row["linuxGolden"], "verified_linux_ci")
             self.assertEqual(row["androidGolden"], "not_started")
 
     def test_02_exact_golden_raw_output(self):

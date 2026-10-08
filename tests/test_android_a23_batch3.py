@@ -57,7 +57,7 @@ class A23Batch3TenSuffixGoldenTests(unittest.TestCase):
                     # this prevents false passes from an empty CLI exit code.
                     self.assertIn(b"example.org", actual.stdout)
                     self.assertIn(b"443", actual.stdout)
-                    self.assertIn("SP - DECODE" if False else "𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘", actual.stdout.decode("utf-8"))
+                    self.assertIn("𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘", actual.stdout.decode("utf-8"))
                     self.assertEqual(get_supported_extension("config." + suffix), suffix)
 
     def test_02_generators_are_deterministic_and_match_registered_paths(self):
@@ -99,17 +99,15 @@ class A23Batch3TenSuffixGoldenTests(unittest.TestCase):
                 record = cases[case_id]
                 self.assertEqual(record["goldenOutputKind"], "cli_stdout_exact")
                 self.assertEqual(record["androidGolden"], "not_started")
-                if record["linuxGolden"] == "verified_linux_ci":
-                    self.assertEqual(
-                        hashlib.sha256(generator()).hexdigest(), record["inputSha256"]
-                    )
-                    self.assertEqual(
-                        hashlib.sha256(
-                            (GOLDEN / "expected" / (case_id + ".txt")).read_bytes()
-                        ).hexdigest(), record["expectedRawUtf8Sha256"]
-                    )
-                else:
-                    self.assertEqual(record["linuxGolden"], "pending_ci")
+                self.assertEqual(record["linuxGolden"], "verified_linux_ci")
+                self.assertEqual(
+                    hashlib.sha256(generator()).hexdigest(), record["inputSha256"]
+                )
+                self.assertEqual(
+                    hashlib.sha256(
+                        (GOLDEN / "expected" / (case_id + ".txt")).read_bytes()
+                    ).hexdigest(), record["expectedRawUtf8Sha256"]
+                )
 
 
 if __name__ == "__main__":
