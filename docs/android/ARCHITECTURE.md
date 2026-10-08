@@ -163,11 +163,11 @@ sequenceDiagram
 
 Compose depende de use cases y models; dominios no dependen de Android UI. Registry conoce solo manifest y assets. ImportRepository usa ContentResolver. DecodeUseCase no conoce Telegram ni Room. RoomRepository solo persiste tipos serializados. Compartir y exportar son adaptadores Android, no lógica de decoder.
 
-## 9. Observabilidad sin conexión
+## 10. Observabilidad sin conexión
 
 Un panel local opt-in de diagnósticos puede mostrar duración, decoder, status y versión; **nunca contenido descifrado, bytes originales, token ni trazas que incluyan secretos**. Exportación manual de diagnóstico genera exclusivamente versión, dispositivo genérico y códigos sanitizados. Ninguna petición de soporte automática.
 
-## 10. Riesgos de arquitectura
+## 11. Riesgos de arquitectura
 
 - Falla de wheels ARM/16 KB → probar temprano y portar primitivas.
 - Scripts dependientes de cwd, subprocess o red → refactor a funciones puras.
@@ -176,7 +176,7 @@ Un panel local opt-in de diagnósticos puede mostrar duración, decoder, status 
 - Coste de almacenamiento historial → cuota/retención; cifrado; limpieza segura en medida que ofrezca Android.
 - Registro del bot evoluciona → generación automática y fail CI ante drift.
 
-## 11. Referencias
+## 12. Referencias
 
 - Android Storage Access Framework: https://developer.android.com/guide/topics/providers/document-provider
 - Android intents comunes: https://developer.android.com/guide/components/intents-common
