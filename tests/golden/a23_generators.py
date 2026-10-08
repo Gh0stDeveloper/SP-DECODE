@@ -180,6 +180,8 @@ def httpcustom_bytes() -> bytes:
     return raw.decode("latin-1").encode("utf-8")
 
 
+from tests.golden.a23_batch3 import BATCH3_GENERATORS
+
 SYNTHETIC_GENERATORS: dict[str, Callable[[], bytes]] = {
     "tls-aesgcm": tls_bytes,
     "httptweak-v1-ht": lambda: httptweak_bytes(1),
@@ -191,3 +193,5 @@ SYNTHETIC_GENERATORS: dict[str, Callable[[], bytes]] = {
     "ssc-chacha20": ssc_bytes,
     "dark-aescfb-msgpack": dark_bytes,
 }
+
+SYNTHETIC_GENERATORS.update(BATCH3_GENERATORS)
