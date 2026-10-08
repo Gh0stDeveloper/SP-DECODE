@@ -118,7 +118,7 @@ def _legacy_tea_file(plaintext: str, password: str) -> bytes:
     runner = r"""
 const fs=require('fs'),vm=require('vm');
 const code=fs.readFileSync(process.argv[1],'utf8').split('var decryptedData = Tea.decrypt')[0];
-const ctx={require,Buffer,console,process:{argv:['node','stk.js','test.stk']}};
+const ctx={require,Buffer,console,module:{exports:{}},process:{argv:['node','stk.js','test.stk']}};
 vm.runInNewContext(code,ctx,{timeout:8000});
 process.stdout.write(ctx.Tea.encrypt(process.argv[2],process.argv[3]));
 """
