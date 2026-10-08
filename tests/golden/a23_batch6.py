@@ -102,7 +102,7 @@ def sip_file() -> bytes:
 def at_file() -> bytes:
     from decoders.Python.at import STATIC
     seed = b"synthetic-seed16"
-    n1, n2 = b"batch6-nonce1", b"batch6-nonce2"
+    n1, n2 = b"batch6nonce1", b"batch6nonce2"
     clear = json.dumps({"Server": "example.org", "Port": 443}, separators=(",", ":")).encode()
     c2, tag2 = AES.new(seed, AES.MODE_GCM, nonce=n2).encrypt_and_digest(clear)
     c1, tag1 = AES.new(seed + STATIC, AES.MODE_GCM, nonce=n1).encrypt_and_digest(n2 + c2 + tag2)

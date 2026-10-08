@@ -56,3 +56,33 @@ def ash_dec(config):
     rc = recursive_decrypt(js)
     
     return rc
+
+
+# Offline file adapter for the existing ASH Tunnel algorithm.
+# The decoder's decrypt logic is intentionally unchanged.
+def run(file_bytes: bytes):
+    try:
+        decoded = ash_dec(file_bytes.decode("ascii").strip())
+        return json.dumps(decoded, indent=2, ensure_ascii=False)
+    except (ValueError, UnicodeError, KeyError, TypeError):
+        return None
+
+
+def main():
+    import argparse
+    from pathlib import Path
+    parser = argparse.ArgumentParser(description="Decode an offline .at profile")
+    parser.add_argument("file", type=Path)
+    args = parser.parse_args()
+    try:
+        output = run(args.file.read_bytes())
+    except OSError as exc:
+        parser.exit(2, f"File read error: {exc}\n")
+    if not output:
+        parser.exit(1, "Could not decode .at file\n")
+    print(output)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
