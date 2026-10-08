@@ -18,8 +18,7 @@ def dec(hex_data):
 
     gcm1 = AES.new(key1, AES.MODE_GCM, nonce=nonce1)
 
-    tmp = gcm1.decrypt(blob1[:-16])
-    # tag = blob1[-16:]
+    tmp = gcm1.decrypt_and_verify(blob1[:-16], blob1[-16:])
 
     key2 = seed
 
@@ -28,7 +27,7 @@ def dec(hex_data):
 
     gcm2 = AES.new(key2, AES.MODE_GCM, nonce=nonce2)
 
-    plain = gcm2.decrypt(blob2[:-16])
+    plain = gcm2.decrypt_and_verify(blob2[:-16], blob2[-16:])
 
     return plain.decode()
     

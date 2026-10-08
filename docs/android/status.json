@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Continue A.2.3 with 11 remaining suffixes; preserve honest exporter and Android verification gates; address GCM authentication in at and legacy CLI security before production",
+  "nextAction": "Continue A.2.3 with eleven pending suffixes; AT now validates GCM tags, requires independent exporter samples and Android portability tests before production.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
   "notes": "Planning only. No real Android decoder tested.",
@@ -304,9 +304,9 @@
       ],
       "knownLimitations": [
         "SocksIP VER7 not supported by SIP fixture",
-        "ASH Tunnel GCM historical source ignores integrity tags",
         "TEA cipher generators self-roundtrip, not independent",
-        "No Android device or exporter validation"
+        "No Android device or exporter validation",
+        "AT now authenticates both GCM tags; no device/version interoperability verified"
       ],
       "positiveExploratoryCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37861105855"
     }

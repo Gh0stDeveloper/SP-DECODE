@@ -150,3 +150,5 @@ Diez sufijos adicionales (.jez, .hrt, .rez, .rezl, .maya, .xui, .mrc, .mtl, .min
 ### A.2.3 lote 6 — 2026-10-08
 
 Diez nuevos casos Linux positivos: .nm, .pb, .pcx, .nt, .ziv, .vpnlite, .sip, .at, .ipt, .stk. **49 casos/48 extensiones** con snapshots y hashes, **11** sin positivos, **0 Android**. Nota: corregida clave minúscula .nt; añadió CLI .at; los tags GCM del algoritmo .at no se autentican por la fuente, requiere hardening; .ipt/.stk self-roundtrip TEA no es interoperabilidad independiente, .sip no cubre VER7. Consultar [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
+
+**Lote 6, corrección AES-GCM `.at`:** `decoders/Python/at.py` pasó de cifrado sin validación de autenticidad a `decrypt_and_verify` para **ambas** capas GCM; pruebas de manipulación de tag y ciphertext en `tests/test_android_a23_batch6.py`. La prueba positiva usa tags sintéticos válidos. No reemplaza validación de versiones de exportador.

@@ -118,7 +118,7 @@ Los generadores y esta documentación deben mantenerse sincronizados en cada PR 
 | `.ziv` | Python | PBKDF2-SHA256 + AES-GCM | probada primera de dos claves históricas |
 | `.vpnlite` | Python | SHA-256 + AES-CBC/PKCS7 | XML/JSON artificial simplificado |
 | `.sip` | Python | AES-ECB + Java Serialization sintética | prueba solo contenedor Java simple; no resuelve VER7 |
-| `.at` | Python | dos capas AES-GCM | añadido CLI `run/main`; fuente no valida tags, defecto de seguridad heredado |
+| `.at` | Python | dos capas AES-GCM | añadido CLI `run/main`; parche estricto de autenticación de ambas etiquetas GCM con pruebas de manipulación |
 | `.ipt` | Python | XXTEA de la fuente histórica | generador usa `Tea.encrypt` de STK, self-roundtrip sin independencia |
 | `.stk` | Node.js | XXTEA de la fuente histórica | generador usa `Tea.encrypt` del mismo script, self-roundtrip |
 

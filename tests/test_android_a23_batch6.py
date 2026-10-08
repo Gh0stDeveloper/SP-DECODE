@@ -72,6 +72,20 @@ class A23Batch6Goldens(unittest.TestCase):
                     self.assertLess(len(output.stdout),16384)
                     self.assertLess(len(output.stderr),16384)
 
+    def test_05_at_aes_gcm_authentication_rejects_tag_tampering(self):
+        from decoders.Python.at import run as run_at
+        good=GENERATORS["batch6-at"]()
+        self.assertIn("example.org",run_at(good))
+        raw=bytearray.fromhex(good.decode("ascii"))
+        # Both GCM tags must be checked; modifying the outer tag must reject.
+        raw[-1] ^= 0x01
+        self.assertIsNone(run_at(bytes(raw).hex().encode("ascii")))
+        # Also reject the first-layer encrypted contents, not just the tag.
+        raw=bytearray.fromhex(good.decode("ascii"))
+        raw[34] ^= 0x01
+        self.assertIsNone(run_at(bytes(raw).hex().encode("ascii")))
+
+
     def test_04_all_ten_inputs_outputs_have_frozen_sha256(self):
         cases={r["id"]:r for r in json.loads(MANIFEST.read_text(encoding="utf-8"))["fixtureCaseDefinitions"]}
         for id_,generate in GENERATORS.items():
