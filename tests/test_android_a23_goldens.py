@@ -195,7 +195,7 @@ class A23GoldenFixtureTests(unittest.TestCase):
                 self.assertEqual(get_supported_extension(filename), expected)
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
         unresolved = [r for r in manifest["extensions"] if not r["caseIds"]]
-        self.assertEqual(len(unresolved), 41)
+        self.assertEqual(len(unresolved), 31)
 
     def test_08_snapshot_paths_are_only_repo_owned(self):
         for record in fixture_case_records():

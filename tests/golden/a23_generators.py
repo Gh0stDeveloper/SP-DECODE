@@ -195,3 +195,6 @@ SYNTHETIC_GENERATORS: dict[str, Callable[[], bytes]] = {
 }
 
 SYNTHETIC_GENERATORS.update(BATCH3_GENERATORS)
+
+from tests.golden.a23_batch4 import BATCH4_GENERATORS
+SYNTHETIC_GENERATORS.update(BATCH4_GENERATORS)
