@@ -19,6 +19,10 @@
 9. Portapapeles puede ser leído o conservarse fuera de la app; advertir de ese límite. Ocultar revelación al volver del background.
 10. Claves criptográficas hardcodeadas de formatos públicos **no son secretos almacenables**: APK y repositorio se pueden analizar. No introducir credenciales personales de servicios.
 
+## Localización y seguridad de la salida
+
+Los recursos es/en/pt-BR/ar solo traducen UI, estados y accesibilidad. **No traducir, normalizar ni modificar `rawText`, etiquetas/claves originales o datos de archivos decodificados** al cambiar idioma o visualizar RTL. La presentación árabe debe aislar el texto técnico LTR sin alterar la cadena almacenada ni exportada. Las máscaras/redacciones de secretos son una operación de privacidad distinta, con confirmación, y nunca reemplazan la copia inalterada de salida original. Ver [LOCALIZATION.md](LOCALIZATION.md).
+
 ## Validación de resultado
 
 - DecoderResult.success no se infiere de stdout no vacío ni returncode 0. Los legacy pueden imprimir errores por stdout. Validar estructura, campos esperados, errores, límites y paridad.
@@ -34,7 +38,7 @@
 | Golden parity | misma muestra en script Linux existente y adapter Android; comparar bytes/campos |
 | Contract | DecodeRequest/Result, timeout, fallo dependency, cancelación, warnings |
 | Android intent/SAF | Content URI local, permiso revocado, MIME genérico, VIEW/SEND/MULTIPLE, duplicados |
-| UI | oscuridad/claridad, 320/360/393dp, teclado, font 200%, TalkBack, navegación |
+| UI + i18n | 4 locales es/en/pt-BR/ar con recursos completos, LTR/RTL golden, 320/360/393dp, font 200%, TalkBack, selector sistema/manual offline y cadenas técnicas sin cambios |
 | Storage | historial cifrado, migración, retención, reabrir sin URI fuente, limpiar datos |
 | Security | logcat con sentinelas, no INTERNET manifest, red con modo avión, backup, corruptos/zip bombs |
 | Compatibility | arm64 físico y x86_64 emulador, minSdk previsto 24, dispositivos 16 KB cuando correspondan |

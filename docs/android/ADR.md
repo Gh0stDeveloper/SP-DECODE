@@ -18,7 +18,7 @@
 | 012 | Estado por formato con fixtures | Firme | 59 registros != 59 probados |
 | 013 | CI/firmado/release gates estrictos | Firme | seguridad de usuarios |
 | 014 | minSdk 24 / arm64-v8a inicial | Condicional | restricción actual Chaquopy, pendiente validar |
-| 015 | Español/inglés y strings externas | Firme | internacionalización |
+| 015 | Solo UI es/en/pt-BR/ar; el resultado original del decoder **no se traduce** | Firme | idiomas offline, árabe RTL y preservación exacta de salida/exports; ver LOCALIZATION.md |
 | 016 | No ejecutar scripts descargados de internet | Firme | privacidad y seguridad |
 | 017 | SVG + DESIGN_SYSTEM son fuente visual obligatoria | Firme | continuidad entre chats |
 

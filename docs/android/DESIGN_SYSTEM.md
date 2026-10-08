@@ -104,6 +104,10 @@ Secciones compactas: Apariencia (tema claro/oscuro/sistema), Privacidad (ocultar
 - Contraste: texto normal 4.5:1 objetivo WCAG AA, iconos y controles 3:1, foco y targets de 48dp.
 - Modo landscape se prueba al menos para apertura externa/resultado, aun si la estética principal es portrait.
 
+## 10. Internacionalización visual obligatoria
+
+La app admite **español, inglés, portugués brasileño y árabe**. El diseño aprobado no se sustituye: la maqueta SVG está en español LTR y actúa como referencia visual canónica. En árabe se invierte el flujo de la **interfaz** RTL (cabecera, navegación, botones direccionales, orden y alineaciones) con los mismos tokens AMOLED, radios, tarjeta hero y barra inferior de cuatro destinos; el **resultado original del decoder no se traduce ni se reordena** y sus bloques técnicos se presentan LTR/aislados. Los textos largos árabes y portugueses usan disposición flexible sin cortar botones. La pantalla en árabe requiere capturas golden propias. Ver [LOCALIZATION.md](LOCALIZATION.md).
+
 ## 10. Animación y microinteracciones
 
 Importación: el botón responde de inmediato; modal/sheet inferior de progreso con nombre truncado + etapa («Leyendo», «Detectando formato», «Decodificando», «Preparando resultado»). Éxito con transición corta a Resultado; fallo muestra causa. Copiar: snackbar «Copiado» solo después de acción completa; exportación: snackbar «Archivo guardado» únicamente tras confirmación positiva del proveedor.

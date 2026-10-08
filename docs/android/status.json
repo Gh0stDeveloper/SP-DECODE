@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.0.0",
+  "documentationVersion": "1.1.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -64,5 +64,23 @@
   "nextAction": "Finalize A.2 functional audit and fixture plan; then B.1 Android shell and early C.4 Chaquopy/ABI spike.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
-  "notes": "Planning only. No real Android decoder tested."
+  "notes": "Planning only. No real Android decoder tested.",
+  "localization": {
+    "scope": "ui_only",
+    "languages": [
+      "es",
+      "en",
+      "pt-BR",
+      "ar"
+    ],
+    "languageSelection": [
+      "system",
+      "manual"
+    ],
+    "defaultFallback": "en",
+    "arabicRtlRequired": true,
+    "decoderOutputTranslated": false,
+    "decoderOutputMutationAllowed": false,
+    "localizationImplementationStatus": "documented_not_implemented"
+  }
 }

@@ -137,7 +137,7 @@ sequenceDiagram
 - Términos exactos de búsqueda por nombre/extension y fechas; opción desactivar historial, borrar individual/todo y política de retención.
 - Backups Android excluyen Room/history y secretos, o se desactivan completamente; no exportar claves de Keystore.
 
-**DataStore:** themeMode, hideSensitive=true, saveHistory=true (valor inicial sujeto a consentimiento UX), retentionDays, language, reduceMotion, lastSelectedTab. Jamás almacenar credenciales crudas en preferencias.
+**DataStore:** themeMode, hideSensitive=true, saveHistory=true (valor inicial sujeto a consentimiento UX), retentionDays, reduceMotion, lastSelectedTab. El idioma se gestiona mediante la API oficial de idioma por aplicación/AndroidX AppCompat (**fuente única de verdad**, con persistencia compatible según SDK); no duplicarlo en un campo language de DataStore sin migración explícita. Jamás almacenar credenciales crudas en preferencias.
 
 **Clipboard/export:** censura de campos secret por defecto, confirmación para datos crudos, limpiar portapapeles bajo políticas Android si técnicamente posible sin garantías; no garantizar que otra app no vea datos que el usuario decidió compartir.
 
@@ -150,7 +150,16 @@ sequenceDiagram
 - Gradle reproducible mediante wrapper versionado y dependency locking/verification; debug vs release, ABI splits o AAB en Play, APK arm64 firmada para GitHub.
 - Versionar sample fixture con datos sintéticos, jamás credenciales de producción.
 
-## 8. Dependencias entre componentes / aislamiento
+## 8. Localización de UI sin mutar DecodeResult
+
+- **Solo UI** en es/en/pt-BR/ar; recursos locales `values/strings.xml` (en por defecto), `values-es`, `values-pt-rBR`, `values-ar` y `plurals`/accesibilidad. No servicios de traducción.
+- Selector Sistema/4 idiomas desde Ajustes y preferencias de idioma en Android 13+; en Android 7–12 compatibilidad AndroidX AppCompat según documentación oficial, sin duplicar preferencia con DataStore. Configuración RTL habilitada para árabe.
+- El traductor de cadenas de Compose usa `stringResource` exclusivamente para textos de interfaz. **`DecodeResult.rawText`, `originalKey`, `originalLabel` y `rawValue` nunca pasan por traductor**; persistencia, clipboard y exportación original conservan contenido sin mutaciones (máscaras censuradas solo como opción separada).
+- Pantalla técnica en árabe: `LayoutDirection.Ltr` / dirección del texto LTR en regiones de raw text, JSON, URLs/IP/dominios/código; aislamiento bidi visual sin insertar marcas Unicode en el dato. Resto de UI RTL con start/end en lugar de left/right.
+- El cambio de locale puede recrear Activity: conservar sesión y resultados en ViewModel/estado. Pruebas de invariancia de resultado al alternar los cuatro idiomas.
+- Fuente de verdad de alcance, cadenas y aceptación: [LOCALIZATION.md](LOCALIZATION.md).
+
+## 9. Dependencias entre componentes / aislamiento
 
 Compose depende de use cases y models; dominios no dependen de Android UI. Registry conoce solo manifest y assets. ImportRepository usa ContentResolver. DecodeUseCase no conoce Telegram ni Room. RoomRepository solo persiste tipos serializados. Compartir y exportar son adaptadores Android, no lógica de decoder.
 
