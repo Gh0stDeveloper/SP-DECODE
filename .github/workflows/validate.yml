@@ -65,6 +65,9 @@ jobs:
       - name: Generate A.2.3 synthetic golden coverage (metadata only)
         run: PYTHONPATH=. python tests/golden/a23_report.py --output "$RUNNER_TEMP/spdecode-a23/coverage.json"
 
+      - name: Export six deterministic synthetic decoder samples
+        run: PYTHONPATH=. python tests/golden/a23_export.py --output-dir "$RUNNER_TEMP/spdecode-a23/samples"
+
       - name: Upload A.2.3 synthetic golden coverage
         if: always()
         uses: actions/upload-artifact@v4
