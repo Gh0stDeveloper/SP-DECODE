@@ -26,6 +26,20 @@ A structured, extensible decoder platform for processing supported configuration
 
 ---
 
+## SP-DECODE Android — Offline application (planned)
+
+> [!NOTE]
+> The Android APK is **planned and not yet available**. This is an independent, fully offline Android app with **no Telegram account, no login, no backend and no Internet permission**. The existing Telegram bot continues unchanged.
+
+- [Official Android documentation and design references](docs/android/README.md)
+- [Visual identity, UI tokens and SVG mockups](docs/android/DESIGN_SYSTEM.md)
+- [Architecture](docs/android/ARCHITECTURE.md) · [Decoder compatibility matrix](docs/android/DECODER_MATRIX.md)
+- [Phased roadmap](docs/android/ROADMAP.md) · [Cross-chat handoff](docs/android/HANDOFF.md)
+
+The Android proposal preserves the premium AMOLED visual design: shield header, centered import panel, structured result cards, copy/export buttons and bottom navigation.
+
+---
+
 ## Overview
 
 SP-DECODE is a modular Telegram bot designed to process and decode configuration formats used by multiple tunneling, proxy and VPN-related applications.
@@ -496,3 +510,4 @@ The project also relies on the open-source ecosystems around Python, Node.js, PH
 Made by [Ghost Developer](https://github.com/Gh0stDeveloper).
 
 </div>
+

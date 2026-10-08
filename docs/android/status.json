@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "product": "SP-DECODE Android",
+  "repository": "Gh0stDeveloper/SP-DECODE",
+  "documentationVersion": "1.0.0",
+  "referenceDate": "2026-10-08",
+  "baselineBranch": "main",
+  "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
+  "documentationBranch": "docs/android-offline-architecture",
+  "productStatus": "planning",
+  "androidSourceExists": false,
+  "apkProduced": false,
+  "offlineRequired": true,
+  "loginRequired": false,
+  "telegramDependencyAllowed": false,
+  "networkPermissionAllowed": false,
+  "visualBaseline": [
+    "docs/android/DESIGN_SYSTEM.md",
+    "docs/android/design/home-dark.svg",
+    "docs/android/design/result-dark.svg"
+  ],
+  "formats": {
+    "registeredSuffixes": 59,
+    "pythonSuffixes": 48,
+    "nodeSuffixes": 8,
+    "phpSuffixes": 3,
+    "distinctScripts": 48,
+    "androidVerifiedSuffixes": 0
+  },
+  "phases": {
+    "A": {
+      "status": "in_progress",
+      "subphases": {
+        "A.1": "documented",
+        "A.2": "inventory_complete_validation_pending",
+        "A.3": "documented",
+        "A.4": "documented",
+        "A.5": "documented",
+        "A.6": "documented"
+      }
+    },
+    "B": {
+      "status": "not_started"
+    },
+    "C": {
+      "status": "not_started"
+    },
+    "D": {
+      "status": "not_started"
+    },
+    "E": {
+      "status": "not_started"
+    },
+    "F": {
+      "status": "not_started"
+    },
+    "G": {
+      "status": "not_started"
+    },
+    "H": {
+      "status": "not_started"
+    }
+  },
+  "nextAction": "Finalize A.2 functional audit and fixture plan; then B.1 Android shell and early C.4 Chaquopy/ABI spike.",
+  "releaseStatus": "NO-APK-NO-GO",
+  "ciValidatedAndroid": false,
+  "notes": "Planning only. No real Android decoder tested."
+}
