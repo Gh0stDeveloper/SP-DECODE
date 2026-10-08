@@ -32,6 +32,9 @@ La **UI propuesta anteriormente en este proyecto es un requisito de producto**, 
 3. [LOCALIZATION.md](LOCALIZATION.md): **interfaz es/en/pt-BR/ar, RTL árabe y resultados del decoder sin traducción**.
 4. [ARCHITECTURE.md](ARCHITECTURE.md): límites, módulos Android, motor offline y datos.
 5. [DECODER_MATRIX.md](DECODER_MATRIX.md): inventario exacto de los 59 sufijos de main y pendientes de pruebas.
+   - [DECODER_AUDIT.md](DECODER_AUDIT.md): **auditoría A.2 de los 48 scripts**, riesgos técnicos, recursos y preparación Android.
+   - [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md): muestras seguras, plan de fixtures y pruebas golden por sufijo.
+   - [audit_decoders.py](audit_decoders.py): herramienta estática de solo lectura, ejecutada en CI.
 6. [SECURITY_AND_QA.md](SECURITY_AND_QA.md): privacidad, amenazas, pruebas y reglas de release.
 7. [ROADMAP.md](ROADMAP.md): fases A–H, subfases y puertas de calidad.
 8. [ADR.md](ADR.md): decisiones técnicas y alternativas descartadas.
@@ -64,6 +67,10 @@ Ejecutar: python docs/android/validate_docs.py. La prueba revisa presencia y enl
 ## Resguardo del diseño
 
 Los archivos [design/home-dark.svg](design/home-dark.svg) y [design/result-dark.svg](design/result-dark.svg) conservan **maquetas visuales editables** para el desarrollo de Compose, además de los valores exactos de color, tipografía, espaciado, navegación, tarjetas y estados en DESIGN_SYSTEM.md. Son referencias de diseño, **NO capturas de una app funcional**. Conservarlos en el repositorio asegura continuidad entre chats.
+
+## Auditoría de decodificadores — Fase A.2
+
+Se inició la fase A.2 en `feat/android-a2-decoder-audit`. Los **48 scripts principales** (59 sufijos) quedaron examinados estáticamente y existe un auditor automatizado, pero **siguen pendientes muestras golden/validación dinámica para 46 scripts y todas las pruebas de dispositivo Android**. Los riesgos prioritarios están en [DECODER_AUDIT.md](DECODER_AUDIT.md); la política de fixtures se detalla en [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md). No se debe marcar un formato Android como «verificado» por una auditoría estática.
 
 ## Estado de entrega
 

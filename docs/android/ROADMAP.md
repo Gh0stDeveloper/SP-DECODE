@@ -23,13 +23,24 @@ flowchart LR
 | Subfase | Alcance | Prueba de cierre |
 |---|---|---|
 | A.1 | PRD, requisitos offline/no login, flujos y exclusiones | PRD revisado |
-| A.2 | Auditar 59 extensiones/48 scripts: dependencias, red, CLI, fixtures, errores, recursos, vigencia | matriz completa con compatibilidad medida y plan fixture por formato |
+| A.2 | Auditar 59 extensiones/48 scripts: dependencias, red, CLI, fixtures, errores, recursos, vigencia | revisión estática reproducible + plan de fixtures; validación dinámica y muestras pendientes |
 | A.3 | Arquitectura por capas, modelos, puente Python, ruta de ports, SAF | diagrama, contratos, spike definida |
 | A.4 | UI aprobada, tokens, wireframes editables, estados y golden visual | DESIGN_SYSTEM + SVG |
 | A.5 | Seguridad: red nula, secretos, backups, amenazas y pruebas | SECURITY_AND_QA |
 | A.6 | Continuidad: branch, docs, README y registros de fase | HANDOFF + status.json |
 
-**Resultado actual:** A.1/A.3/A.4/A.5/A.6 documentadas; A.2 tiene inventario pero **falta revisión real de algoritmos/fixtures**. A sigue abierta.
+**Resultado actual:** A.1/A.3/A.4/A.5/A.6 documentadas; **A.2.1 revisión estática y A.2.2 inventario de dependencias/recursos** implementadas y sometidas a CI; **A.2.3 fixtures/vectores seguros y A.2.4 paridad y compatibilidad actual** permanecen pendientes. A sigue abierta.
+
+### Subfases internas A.2 para seguimiento preciso
+
+| Subfase | Estado inicial | Evidencia requerida |
+|---|---|---|
+| A.2.1 Inventario de 59 registros, 48 scripts y análisis sintáctico estático | implementado; verificar en CI | `audit_decoders.py`, 48 filas, 0 rutas faltantes, tests |
+| A.2.2 Dependencias/recursos, I/O, riesgos para port Android | documentado; revisar hallazgos prioritarios | DECODER_AUDIT.md, reportes CI y remediation list |
+| A.2.3 Corpus y golden fixtures seguros (positivos/negativos) | pendiente | A2_FIXTURE_POLICY.md, muestras por formato, procedencia y hash |
+| A.2.4 Paridad de salida bot vs adapter; versión de formatos | pendiente | Linux goldens, ABI arm64 y pruebas C/D/E posteriores |
+
+La fuente permanente de hallazgos está en [DECODER_AUDIT.md](DECODER_AUDIT.md) y la política de pruebas en [A2_FIXTURE_POLICY.md](A2_FIXTURE_POLICY.md).
 
 ## Fase B — Proyecto Android nativo
 

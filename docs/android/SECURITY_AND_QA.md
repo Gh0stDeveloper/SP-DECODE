@@ -23,6 +23,14 @@
 
 Los recursos es/en/pt-BR/ar solo traducen UI, estados y accesibilidad. **No traducir, normalizar ni modificar `rawText`, etiquetas/claves originales o datos de archivos decodificados** al cambiar idioma o visualizar RTL. La presentación árabe debe aislar el texto técnico LTR sin alterar la cadena almacenada ni exportada. Las máscaras/redacciones de secretos son una operación de privacidad distinta, con confirmación, y nunca reemplazan la copia inalterada de salida original. Ver [LOCALIZATION.md](LOCALIZATION.md).
 
+## Hallazgos de auditoría A.2 que bloquean compatibilidad no probada
+
+- `NPVTUNNEL.py`: `pickle.loads` se aplica a una constante embebida, **no se observó input directo controlado por usuario** en ese punto; revisar trust boundary antes de llevar la lógica a APK.
+- `modulepro.js` / `chicosp.js`: mutan `cfg/config.inc.json`; es inaceptable como estado global compartido en Android. Reemplazar por estado local inmutable por ejecución y recursos de solo lectura.
+- `gold.py`: importa `requests`; no se observó llamada de red directa en el archivo, pero debe eliminarse la dependencia si no se necesita y verificar comportamiento transitivo.
+- El motor incorpora `cryptography`, `argon2`, `msgpack` y `PyCryptodome` con requisitos de ABI/16 KB pendientes; una ejecución de CI en Linux no los valida para Android.
+- `tests/test_current_decoders.py` dispone de dos fixtures sintéticos de TLS y EV2RAY con aserciones parciales; no hay paridad Android ni golden completo. Ver [DECODER_AUDIT.md](DECODER_AUDIT.md).
+
 ## Validación de resultado
 
 - DecoderResult.success no se infiere de stdout no vacío ni returncode 0. Los legacy pueden imprimir errores por stdout. Validar estructura, campos esperados, errores, límites y paridad.
