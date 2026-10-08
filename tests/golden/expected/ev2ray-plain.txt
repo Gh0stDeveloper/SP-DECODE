@@ -1,0 +1,11 @@
+┌───────────────
+│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (e-V2Ray)
+│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu
+├───────────────
+│[۞] Profile Name: Perfil e-V2Ray
+│[۞] V2Ray Config: {"v":"2","ps":"SP-DECODE test","add":"v2.example.com","port":"443"}
+│[۞] Metadata: {"Field 1":"Perfil e-V2Ray","Field 3":true}
+├───────────────
+│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub
+│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve
+└───────────────

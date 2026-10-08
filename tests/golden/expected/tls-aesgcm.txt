@@ -1,0 +1,26 @@
+TLS Tunnel
+==============================
+
+{
+    "tlsvpnVersion": 7,
+    "server": 1,
+    "port": 443,
+    "pserver": true,
+    "sshuser": "ghost",
+    "sshpass": "secret",
+    "sshhost": "ssh.example.com",
+    "server_port": "443",
+    "sshport": "22",
+    "metodo": 2,
+    "upayload": true,
+    "payload": "GET / HTTP/1.1",
+    "usnihost": true,
+    "snihost": "sni.example.com",
+    "upayloadat": false,
+    "uproxy": false,
+    "legacy_dns_mode": 0,
+    "bloqmc": false,
+    "mensagem": "Perfil de prueba"
+}
+
+==============================
