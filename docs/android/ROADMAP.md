@@ -83,7 +83,7 @@ flowchart LR
 | F.2 | Copiar, compartir y revelar secretos con censura | tests privacidad y TalkBack |
 | F.3 | Exportar TXT y JSON solo cuando sea válido | SAF/create-document tests |
 | F.4 | progreso, cancelación, errores y vacíos | estados correctos |
-| F.5 | i18n es/en, tema, tipografía, accesibilidad | 320dp + 200% font + claro/oscuro |
+| F.5 | i18n es/en/pt-BR/ar: selector offline + Android per-app language, RTL real, cadenas UI y accesibilidad | cuatro idiomas completos, golden LTR/RTL, 320dp y 200 % font; resultado del decoder sin traducción |
 
 ## Fase G — Historial y gestión
 
@@ -100,7 +100,7 @@ flowchart LR
 | Subfase | Trabajo | Cierre |
 |---|---|---|
 | H.1 | CI Android + pipeline legacy del bot | todos jobs relevantes success |
-| H.2 | compatibilidad formato-by-formato y suite golden | matriz con evidencia, no claims falsos |
+| H.2 | compatibilidad formato-by-formato y suite golden; paridad `rawText` entre es/en/pt-BR/ar | matriz con evidencia, datos exportados idénticos entre idiomas y sin traducciones |
 | H.3 | revisión seguridad, dependencias, permisos, fuzz | 0 blockers P0 |
 | H.4 | rendimiento, ABI, 16 KB, Android 7–16 | pruebas medidas por dispositivo |
 | H.5 | icono, splash, changelog y créditos | recursos finales |

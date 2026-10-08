@@ -30,6 +30,9 @@ Usuarios Android que reciben o gestionan archivos de configuración de aplicacio
 | FR-18 | Entorno libre de red | El APK no declara INTERNET; motor prohíbe cualquier llamada de red y app funciona en modo avión | P0 |
 | FR-19 | Trazabilidad técnica | Cada decodificación vincula versión de decoder, formato, duración aproximada, origen del archivo y resultado | P1 |
 | FR-20 | Copia/exportación segura | Credenciales ocultas por defecto; control revelación momentánea y advertencia al copiar/exportar contenido sensible | P0 |
+| FR-21 | Multidioma solo interfaz | es, en, pt-BR y ar en todas las pantallas y estados; elección manual/sistema offline | P0 |
+| FR-22 | Resultado inalterado por idioma | rawText, claves, datos y TXT/JSON originales idénticos en los 4 locales; sin traducción automática | P0 |
+| FR-23 | UI árabe RTL | Navegación y controles RTL; bloques de texto técnico LTR aislados sin alterar bytes exportados | P0 |
 
 **Priorización:** P0 obligatorio para primera beta funcional; P1 se completa antes de release 1.0 o se excluye con decisión ADR, nunca de manera silenciosa.
 
@@ -40,7 +43,7 @@ Usuarios Android que reciben o gestionan archivos de configuración de aplicacio
 - **Resiliencia:** procesos largos cancelables, límites configurables por decoder, OOM protegido mediante cotas de tamaño, descompresión y profundidad de JSON.
 - **Compatibilidad:** minSdk **24 preliminar**, condicionado a compatibilidad Chaquopy y ruedas de dependencias; targetSdk acorde a política vigente en la fecha de release, no fijarlo de forma anticipada. Soporte prioritario arm64-v8a, x86_64 para CI/emulador; 32 bits solo tras validación.
 - **Estabilidad:** sin fallos fatales sobre inputs corruptos, extensiones engañosas o intent repetidos; restauración tras terminación de proceso.
-- **Accesibilidad/localización:** es-419 y en; strings externalizadas, fechas regionales, sin textos incrustados en bitmaps; RTL evaluable a futuro.
+- **Accesibilidad/localización:** interfaz obligatoria en español (es/es-419), inglés (en), portugués brasileño (pt-BR) y árabe (ar); selector propio y preferencias por aplicación en Android 13+, soporte RTL **obligatorio**, strings externalizadas, fechas/UI locales y nada de texto incrustado en bitmaps. **La salida original de los decodificadores se mantiene en su idioma y formato originales**, sin traducción ni cambios al exportar.
 - **Privacidad:** nada de analítica ni telemetría; logs técnicos **sin payloads/secretos**; no backup automático de historial descifrado.
 - **Confiabilidad:** CI por PR, pruebas unitarias/instrumentadas, matriz física (Android 7, 10, 13, 15/16 si disponible), emuladores y modo avión.
 

@@ -19,6 +19,7 @@ REQUIRED = (
     "README.md",
     "PRODUCT_REQUIREMENTS.md",
     "DESIGN_SYSTEM.md",
+    "LOCALIZATION.md",
     "ARCHITECTURE.md",
     "DECODER_MATRIX.md",
     "SECURITY_AND_QA.md",
@@ -64,6 +65,14 @@ def main() -> int:
     ):
         if expected.get(key) != actual:
             errors.append(f"status.json {key}: {expected.get(key)} != {actual}")
+
+    locale = status.get("localization", {})
+    if (locale.get("scope") != "ui_only"
+        or locale.get("languages") != ["es", "en", "pt-BR", "ar"]
+        or locale.get("decoderOutputTranslated") is not False
+        or locale.get("decoderOutputMutationAllowed") is not False
+        or locale.get("arabicRtlRequired") is not True):
+        errors.append("Localization contract mismatch: four UI locales, Arabic RTL, original results unchanged")
 
     if status["offlineRequired"] is not True or status["loginRequired"] is not False:
         errors.append("Product offline/no-login invariant changed")

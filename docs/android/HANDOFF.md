@@ -10,6 +10,7 @@ Este archivo es el punto de entrada para reanudar SP-DECODE Android en otro chat
 - **Diseño visual aceptado:** cabecera con escudo y nombre SP-DECODE, panel grande central «Importar configuración», sección Resultado con campos legibles y secretos ocultos, acciones Copiar/Exportar, navegación inferior **Inicio · Historial · Formatos · Ajustes**, modo AMOLED, tarjetas suaves, tipografía limpia y SOLO ICONOS sin emojis.
 - Fuente visual: docs/android/DESIGN_SYSTEM.md, docs/android/design/home-dark.svg, docs/android/design/result-dark.svg. Las maquetas son referencias editables, NO screenshots de APK.
 - Los 59 sufijos del registro son solo inventario, no prueba de funcionamiento actual.
+- **Multidioma obligatorio en la interfaz**: español, inglés, portugués brasileño y árabe, con RTL para árabe. **Los resultados, campos, claves y texto original de los decodificadores NO se traducen**, aunque la UI se muestre en cualquier idioma. Véase docs/android/LOCALIZATION.md. Nunca perder este requisito en otro chat.
 
 ## Orden de recuperación (obligatorio)
 
@@ -59,9 +60,9 @@ No asegurar que una fase está cerrada sin evidencias de tests pertinentes. No a
 Continúa el proyecto Gh0stDeveloper/SP-DECODE, producto SP-DECODE Android.
 Utiliza el conector de GitHub para consultar main, PRs y ramas Android.
 Lee TODOS los archivos de docs/android/, especialmente README.md,
-DESIGN_SYSTEM.md, ARCHITECTURE.md, PRODUCT_REQUIREMENTS.md,
+DESIGN_SYSTEM.md, LOCALIZATION.md, ARCHITECTURE.md, PRODUCT_REQUIREMENTS.md,
 DECODER_MATRIX.md, ROADMAP.md, SECURITY_AND_QA.md, ADR.md,
-HANDOFF.md y status.json. Conserva EXACTAMENTE el concepto visual
+HANDOFF.md, LOCALIZATION.md y status.json. Interfaz traducida en es/en/pt-BR/ar; árabe con RTL; **resultado de decodificadores sin traducir ni modificar**. Conserva EXACTAMENTE el concepto visual
 aprobado y las maquetas docs/android/design/home-dark.svg y
 docs/android/design/result-dark.svg; no cambies el diseño sin ADR.
 App Kotlin+Jetpack Compose 100 % offline, sin login, Telegram,

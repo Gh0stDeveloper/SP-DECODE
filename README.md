@@ -33,6 +33,7 @@ A structured, extensible decoder platform for processing supported configuration
 
 - [Official Android documentation and design references](docs/android/README.md)
 - [Visual identity, UI tokens and SVG mockups](docs/android/DESIGN_SYSTEM.md)
+- [Offline UI localization (Spanish, English, Brazilian Portuguese, Arabic RTL) — decoder output never translated](docs/android/LOCALIZATION.md)
 - [Architecture](docs/android/ARCHITECTURE.md) · [Decoder compatibility matrix](docs/android/DECODER_MATRIX.md)
 - [Phased roadmap](docs/android/ROADMAP.md) · [Cross-chat handoff](docs/android/HANDOFF.md)
 
