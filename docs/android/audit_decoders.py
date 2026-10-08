@@ -143,6 +143,17 @@ def _script_inspection(script: str, runtime: str, suffixes: list[str]) -> dict[s
             r"\b(?:include|require)(?:_once)?\s*\(?\s*['\"]([^'\"]+)['\"]", src
         )))
 
+    # A URL literal is not a network dependency. Check actual imports/APIs.
+    flags["imports_network_facility"] = (
+        (runtime == "python" and (
+            bool({"requests", "socket", "http", "aiohttp", "httpx"} & set(imports))
+            or bool(re.search(r"(?m)^\s*(?:from\s+urllib\.request\s+import|import\s+urllib\.request\b)", src))
+        ))
+        or (runtime == "node" and bool(
+            {"http", "https", "axios", "node:http", "node:https"} & set(imports)
+        ))
+        or (runtime == "php" and bool(re.search(r"\bcurl_init\s*\(", src)))
+    )
     third_party = sorted(set(imports) & THIRD_PARTY_ROOTS)
     resources = [
         {"path": item, "present": (ROOT / item).is_file()}
