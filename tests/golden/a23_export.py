@@ -14,6 +14,7 @@ from pathlib import Path
 
 from tests.golden.a23_generators import SYNTHETIC_GENERATORS
 from tests.golden.a23_batch4 import BATCH4_CASE_SUFFIXES
+from tests.golden.a23_batch5 import CASE_SUFFIXES as BATCH5_CASE_SUFFIXES
 from tests.golden.a23_batch3 import BATCH3_CASE_SUFFIXES
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -28,6 +29,7 @@ SUFFIX = {
     "dark-aescfb-msgpack": "dark",
     **BATCH3_CASE_SUFFIXES,
     **BATCH4_CASE_SUFFIXES,
+    **BATCH5_CASE_SUFFIXES,
     "ehil-aescbc-double": "ehil",
 }
 
