@@ -113,3 +113,16 @@ Rama `feat/android-a24-parity-runtime-security-baseline`. Se añadió `android/`
 - El host Android continúa sin interfaz de importación y sin permisos de red.
 - Siguiente paso: revisar workflow, resolver errores, después A.2.4.2
   (otros motores), A.2.4.3 arm64/16 KiB, y Fase B/C UI+SAF.
+
+## A.2.4 — lote de diez adaptadores Android Kotlin
+
+Rama `feat/android-a24-batch10-native-ports`. PR en revisión. Se agregaron ports
+de `.phc`, `.mina`, `.vpnlite`, `.cloudy`, `.mij`, `.fnnetwork`,
+`.uwu`, `.sksrv`, `.maya`, `.xui`. Cada archivo es su propia ruta
+de descifrado con clave, envoltura y salida del motor original. No son puertos
+genéricos de «probar todas las claves». Pruebas: 13 muestras en total,
+una positiva Android por nuevo formato + negativos y regresión del bot.
+
+**No habilitar en UI** hasta integrar SAF/flujo de importación y recibir
+resultados de CI emulador. `.sksrv.png` permanece separado y sin implementar.
+Los 59 goldens Linux son sintéticos, 0 certificados en Android físico.
