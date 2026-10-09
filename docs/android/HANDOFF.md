@@ -100,3 +100,16 @@ Rama `feat/android-a24-parity-runtime-security-baseline`. Se añadió `android/`
 ### Evidencia de emulador A.2.4, primera iteración
 
 [CI Android conectado #37868719536](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37868719536): **4/4 tests OK en Android 35 x86_64**, dos perfiles `.v2` sintéticos, permisos revisados, Gradle `assembleDebug` y AndroidTest correctos; Linux `validate` también success. Catálogo generado de 59 entradas no afirma soporte nativo: solamente `.v2` está en modo prototipo y **58 siguen sin port**, con **0/59 certificados**. Se añadirán pruebas de catálogo y se deberá volver a validar el HEAD tras el último commit.
+
+
+## Incremento A.2.4 TLS (rama de trabajo)
+
+- Rama `feat/android-a24-tls-aead-parity`; base `main` posterior a PR #15.
+- Nuevo port Kotlin offline `TlsReferencePort.kt`, JCA AES-256-GCM y
+  referencia `tls-aesgcm`; genera tres assets sintéticos verificados SHA-256.
+- Catálogo registra 2 sufijos en estado experimental (`.v2`, `.tls`);
+  quedan 57 sin port, **0/59 verificados con exportadores reales**.
+- No marcar `.tls` como pasado en emulador hasta recibir ejecución CI.
+- El host Android continúa sin interfaz de importación y sin permisos de red.
+- Siguiente paso: revisar workflow, resolver errores, después A.2.4.2
+  (otros motores), A.2.4.3 arm64/16 KiB, y Fase B/C UI+SAF.
