@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.11.0",
+  "documentationVersion": "1.11.1",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -40,7 +40,7 @@
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
         "A.2.3": "synthetic_linux_golden_complete_60_cases_59_of_59_vendor_and_android_pending",
-        "A.2.4": "in_progress_two_v2_synthetic_android_api35_parity_passed_58_suffixes_unported"
+        "A.2.4": "in_progress_v2_2_cases_passed_tls_synthetic_port_pending_emulator_57_unported"
       }
     },
     "B": {
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Expand native format ports (currently only .v2 experimental); check CI on latest commit and postmerge main. Arm64/16KiB and real exporter variants remain blocking for Android verification.",
+  "nextAction": "Validate three synthetic vectors (.v2 x2, TLS x1) on Android emulator CI; then expand native parity, implement UI/SAF, test arm64 and 16KiB. Zero exporter versions certified.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": true,
   "notes": "Planning only. No real Android decoder tested.",
@@ -357,18 +357,20 @@
       "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/pull/14"
     },
     "a24": {
-      "branch": "feat/android-a24-parity-runtime-security-baseline",
-      "pr": 15,
-      "state": "in_progress_two_synthetic_v2_vectors_passed_api35_x86_64_remaining_58_suffixes",
+      "branch": "feat/android-a24-tls-aead-parity",
+      "pr": "pending",
+      "state": "tls_reference_port_added_emulator_verification_pending_57_unported",
       "androidPrototypePath": "android/",
       "referenceCorpusCases": 60,
       "referenceRegisteredSuffixes": 59,
       "instrumentedCandidateSuffixes": [
-        "v2"
+        "v2",
+        "tls"
       ],
       "instrumentedCandidateCaseIds": [
         "ev2ray-plain",
-        "ev2ray-aes128"
+        "ev2ray-aes128",
+        "tls-aesgcm"
       ],
       "instrumentedPassedOnDevice": [
         "ev2ray-plain",
@@ -383,8 +385,8 @@
       "offlineSecurity": "manifest has no INTERNET, ACCESS_NETWORK_STATE or legacy storage permissions; emulator check pending",
       "whiteboxSecurity": "restricted data-only pickle with bounded decompression; global/REDUCE opcodes rejected and Linux regression checks",
       "nodePhpPortability": "not_started",
-      "remainingNativeSuffixes": 58,
-      "note": "Compile or synthetic emulator test does not certify real modern exporter files. Only two .v2 synthetic variants are targeted.",
+      "remainingNativeSuffixes": 57,
+      "note": "TLS reference port awaiting emulator CI. Previous 2 .v2 variants passed on API35 x86_64. No real exporter, arm64 or 16KiB proof.",
       "emulatorEvidence": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37868719536",
       "lastValidatedSourceSha": "865740e3c9fea0ccb98c0526ff4796704511d44d",
       "instrumentedTestCount": 4,
