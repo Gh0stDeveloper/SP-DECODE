@@ -123,7 +123,7 @@ fun FunctionalSettingsPanel(
             Text("Ghost Developer · @Gh0stDeveloper",color=TitleText,fontSize=14.sp)
             Text(stringResource(R.string.contribute_invitation),
                 color=MutedText,fontSize=13.sp,lineHeight=19.sp)
-            LinkRow(Icons.Outlined.Code,"Repositorio · GitHub",
+            LinkRow(Icons.Outlined.Code,stringResource(R.string.project_repo),
                 "https://github.com/Gh0stDeveloper/SP-DECODE",onExternalLink)
             LinkRow(Icons.Outlined.AccountCircle,
                 stringResource(R.string.contact_developer),
