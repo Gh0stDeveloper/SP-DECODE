@@ -13,6 +13,7 @@ import android.os.PersistableBundle
 import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
@@ -46,12 +47,19 @@ class MainActivity : ComponentActivity() {
     private var hideCredentials by mutableStateOf(false)
     private val settings get()=getSharedPreferences("spdecode-ui-preferences",MODE_PRIVATE)
     private var job:Job?=null
-    private val recent=mutableStateListOf<DecodeView>()
-    private var result by mutableStateOf<DecodeView?>(null)
-    private var tab by mutableIntStateOf(0)
+    private val sessionVm by viewModels<DecodeSessionViewModel>()
+    private val recent get()=sessionVm.recent
+    private var result:DecodeView?
+        get()=sessionVm.current
+        set(value){sessionVm.current=value}
+    private var tab:Int
+        get()=sessionVm.tab
+        set(value){sessionVm.tab=value}
     private var busy by mutableStateOf(false)
     private var message by mutableStateOf<String?>(null)
-    private var reveal by mutableStateOf(false)
+    private var reveal:Boolean
+        get()=sessionVm.reveal
+        set(value){sessionVm.reveal=value}
     private var stagedExport:String?=null
 
     override fun attachBaseContext(base:Context) {
