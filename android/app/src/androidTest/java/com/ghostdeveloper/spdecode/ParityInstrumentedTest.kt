@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.ghostdeveloper.spdecode.parity.V2RayReferencePort
+import com.ghostdeveloper.spdecode.parity.TlsReferencePort
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,6 +37,24 @@ class ParityInstrumentedTest {
     }
 
     @Test
+    fun syntheticTlsAesGcmMatchesLinuxRawUtf8() {
+        assertArrayEquals(
+            fixture("tls-aesgcm.txt"),
+            TlsReferencePort.decode(fixture("tls-aesgcm.tls"))?.toByteArray(Charsets.UTF_8)
+        )
+    }
+
+    @Test
+    fun tlsRejectsCorruptionAndOversizedInput() {
+        assertNull(TlsReferencePort.decode(byteArrayOf()))
+        assertNull(TlsReferencePort.decode("not a TLS profile".toByteArray()))
+        assertNull(TlsReferencePort.decode(ByteArray(1024 * 1024 + 1)))
+        val damaged = fixture("tls-aesgcm.tls").clone()
+        damaged[damaged.size / 2] = (damaged[damaged.size / 2].toInt() xor 1).toByte()
+        assertNull(TlsReferencePort.decode(damaged))
+    }
+
+    @Test
     fun malformedProfileAndOversizedDataAreNotSuccessful() {
         assertNull(V2RayReferencePort.decode(byteArrayOf()))
         assertNull(V2RayReferencePort.decode("bad-profile".toByteArray()))
@@ -56,7 +75,8 @@ class ParityInstrumentedTest {
         assertEquals("v2", resolver.detect("test.v2", formats)?.suffix)
         assertEquals("prototype_two_synthetic_cases", resolver.detect("test.v2", formats)?.portStatus)
         assertEquals(0, formats.count { it.androidVerified })
-        assertEquals(58, formats.count { it.portStatus == "not_implemented" })
+        assertEquals("prototype_tls_aesgcm_synthetic_case", resolver.detect("test.TLS", formats)?.portStatus)
+        assertEquals(57, formats.count { it.portStatus == "not_implemented" })
         assertNull(resolver.detect("unrecognized.unknown", formats))
     }
 

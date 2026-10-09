@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-CASES=("ev2ray-plain", "ev2ray-aes128")
+CASES=("ev2ray-plain", "ev2ray-aes128", "tls-aesgcm")
 
 
 def sha(raw:bytes)->str:
@@ -36,7 +36,7 @@ def prepare(out:Path)->list[dict[str,str]]:
         truth=expected.read_bytes()
         if sha(source)!=case["inputSha256"] or sha(truth)!=case["expectedRawUtf8Sha256"]:
             raise ValueError("Frozen golden mismatch for "+cid)
-        (out/(cid+".v2")).write_bytes(source)
+        (out/(cid+(".tls" if cid=="tls-aesgcm" else ".v2"))).write_bytes(source)
         (out/(cid+".txt")).write_bytes(truth)
         rows.append({"id":cid,"inputSha256":sha(source),"expectedRawUtf8Sha256":sha(truth)})
     (out/"checksums.json").write_text(json.dumps(rows,indent=2)+"\n","utf-8")
@@ -48,7 +48,7 @@ def main()->int:
     ap.add_argument("--output-dir",type=Path,required=True)
     args=ap.parse_args()
     result=prepare(args.output_dir)
-    print("[A.2.4] Prepared",len(result),"synthetic .v2 golden vectors; output-only; no customer exports")
+    print("[A.2.4] Prepared",len(result),"synthetic Android golden vectors; output-only; no customer exports")
     return 0
 
 
