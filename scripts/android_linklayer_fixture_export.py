@@ -23,7 +23,8 @@ def export(directory: Path) -> None:
         "linklayer-ver6-long.lnk": _export(_gob(long_config), flag=1),
     }
     for filename, data in cases.items():
-        assert decode(data) == LinkLayerTests.expected
+        expected = long_config if filename == "linklayer-ver6-long.lnk" else LinkLayerTests.expected
+        assert decode(data) == expected
         (directory / filename).write_bytes(data)
         (directory / filename.removesuffix(".lnk").__add__(".json")).write_text(
             json.dumps(decode(data), ensure_ascii=False, indent=2) + "\n",
