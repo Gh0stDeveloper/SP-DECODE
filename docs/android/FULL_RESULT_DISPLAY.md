@@ -87,3 +87,19 @@ cifrada y en las acciones explícitas de copiar/exportar; no hay pérdida
 de información ni cambios en motores criptográficos. La máscara de
 credenciales continúa siendo opcional y desactivada por defecto.
 
+
+### Nueva decisión 0.3.6-alpha: presentación exclusivamente JSON
+
+Se reemplaza el bloque de salida estilo bot por **un único objeto/array JSON
+indentado**. Los separadores originales no aparecen en pantalla. Metadatos
+del resultado en líneas de comentario externas al JSON:
+aplicación identificada por catálogo, fecha local de decodificación y
+`Powered by Ghost Developer`. El objeto JSON es sintácticamente válido
+cuando se copia exclusivamente su contenido; los comentarios NO se incluyen
+dentro del objeto.
+
+JSON nativo mantiene tipos, listas y objetos anidados. Salidas legacy `key:
+value` se convierten en claves JSON manteniendo duplicados; casos no
+estructurados se presentan como `content` JSON sin decoración. El texto
+original continúa disponible a través de las acciones tradicionales de
+copiar/exportar, sin modificación del resultado cifrado.

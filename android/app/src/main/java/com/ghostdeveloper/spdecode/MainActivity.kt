@@ -13,6 +13,7 @@ import android.os.PersistableBundle
 import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.activity.viewModels
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -32,8 +33,11 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.first
+import android.os.SystemClock
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.Locale
@@ -70,6 +74,7 @@ class MainActivity : ComponentActivity() {
     private var progressTotal by mutableIntStateOf(1)
     private var importGeneration=0
     private var navigationExplicit=false
+    private var showBrandedSplash by mutableStateOf(true)
     private var message by mutableStateOf<String?>(null)
     private var reveal:Boolean
         get()=sessionVm.reveal
@@ -140,6 +145,8 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState:Bundle?){
+        val splashStarted=SystemClock.elapsedRealtime()
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         selectedLanguage=settings.getString("language","system") ?: "system"
         hideCredentials=settings.getBoolean("mask_credentials",false)
@@ -170,8 +177,16 @@ class MainActivity : ComponentActivity() {
             }catch(_:CancellationException){throw CancellationException()}
             catch(_:Exception){toast(R.string.history_storage_error)}
         }
+        scope.launch {
+            // The splash never blocks the user indefinitely if file I/O stalls.
+            withTimeoutOrNull(5000L) { historyLoad?.await() }
+            val elapsed=SystemClock.elapsedRealtime()-splashStarted
+            delay((750L-elapsed).coerceAtLeast(0L))
+            showBrandedSplash=false
+        }
         setContent {
-            SpDecodeApp(
+            if(showBrandedSplash) SpDecodeSplashScreen()
+            else SpDecodeApp(
                 activeTab=tab,
                 current=result,
                 session=recent,

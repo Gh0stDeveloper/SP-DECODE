@@ -1,5 +1,6 @@
 package com.ghostdeveloper.spdecode
 
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -15,7 +16,16 @@ import org.junit.Test
 class FunctionalUiInstrumentedTest {
     @get:Rule val ui=createAndroidComposeRule<MainActivity>()
 
+    private fun awaitStartup() {
+        val ctx=ui.activity
+        ui.waitUntil(10000) {
+            ui.onAllNodesWithContentDescription(ctx.getString(R.string.home))
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+    }
+
     @Test fun mainScreenContainsScreenshotLayoutAndFourTabs(){
+        awaitStartup()
         val ctx=ui.activity
         ui.onNodeWithText("SP-DECODE").assertExists()
         // The last tab is intentionally persistent; navigate explicitly.
@@ -30,6 +40,7 @@ class FunctionalUiInstrumentedTest {
     }
 
     @Test fun formatsTabExposesExperimentalSuffixesNotCertified(){
+        awaitStartup()
         val ctx=ui.activity
         ui.onNodeWithContentDescription(ctx.getString(R.string.formats)).performClick()
         ui.onNode(hasSetTextAction()).performTextInput("sksrv.png")
@@ -39,6 +50,7 @@ class FunctionalUiInstrumentedTest {
     }
 
     @Test fun settingsTabClarifiesLocalEncryptedPersistentHistory(){
+        awaitStartup()
         val ctx=ui.activity
         ui.onNodeWithContentDescription(ctx.getString(R.string.settings)).performClick()
         ui.onNodeWithText(ctx.getString(R.string.privacy_text)).assertExists()

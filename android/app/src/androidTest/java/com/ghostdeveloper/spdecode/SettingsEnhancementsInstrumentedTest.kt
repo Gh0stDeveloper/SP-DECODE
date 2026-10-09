@@ -1,5 +1,6 @@
 package com.ghostdeveloper.spdecode
 
+import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -17,6 +18,10 @@ class SettingsEnhancementsInstrumentedTest {
 
     @Test fun settingsShowsFiveLanguagesPrivacyAndVerifiedContributorLinks(){
         val ctx=ui.activity
+        ui.waitUntil(10000) {
+            ui.onAllNodesWithContentDescription(ctx.getString(R.string.settings))
+                .fetchSemanticsNodes().isNotEmpty()
+        }
         ui.onNodeWithContentDescription(ctx.getString(R.string.settings)).performClick()
         // Settings keeps a single compact row until the user opens the sheet.
         ui.onNodeWithText("Español").assertDoesNotExist()

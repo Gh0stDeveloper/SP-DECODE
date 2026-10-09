@@ -1,18 +1,42 @@
 {
   "schemaVersion": 1,
   "decision": "NO-GO",
-  "candidateVersion": "0.3.5-alpha",
+  "candidateVersion": "0.3.6-alpha",
   "stableVersion": null,
   "ownerApproval": false,
   "evidence": {
-    "arm64Physical": {"status": "pending", "report": ""},
-    "page16KiB": {"status": "pending", "report": ""},
-    "realExporterFormats": {"status": "pending", "report": ""},
-    "securityDependencies": {"status": "pending", "report": ""},
-    "privacyAndPermissions": {"status": "pending", "report": ""},
-    "accessibilityAndPerformance": {"status": "pending", "report": ""},
-    "ciMainFullSuite": {"status": "pending", "report": ""},
-    "signingInstallUpgrade": {"status": "pending", "report": ""}
+    "arm64Physical": {
+      "status": "user_verified_pending_reproducible_report",
+      "report": "docs/android/USER_MANUAL_VALIDATION_2026-10-09.md"
+    },
+    "page16KiB": {
+      "status": "user_verified_pending_reproducible_report",
+      "report": "docs/android/USER_MANUAL_VALIDATION_2026-10-09.md"
+    },
+    "realExporterFormats": {
+      "status": "user_verified_pending_reproducible_report",
+      "report": "docs/android/USER_MANUAL_VALIDATION_2026-10-09.md"
+    },
+    "securityDependencies": {
+      "status": "user_verified_pending_reproducible_report",
+      "report": "docs/android/USER_MANUAL_VALIDATION_2026-10-09.md"
+    },
+    "privacyAndPermissions": {
+      "status": "user_verified_pending_reproducible_report",
+      "report": "docs/android/USER_MANUAL_VALIDATION_2026-10-09.md"
+    },
+    "accessibilityAndPerformance": {
+      "status": "pending",
+      "report": ""
+    },
+    "ciMainFullSuite": {
+      "status": "pending",
+      "report": ""
+    },
+    "signingInstallUpgrade": {
+      "status": "pending",
+      "report": ""
+    }
   },
-  "notes": "All fields must cite repository-relative or public evidence URLs before GO. No keys, customer profiles, raw decrypt output or credentials in reports. The user is performing the ARM64/16KiB and real-file compatibility validations."
+  "notes": "Owner reported successful manual ARM64, 16KiB, genuine files, batch handling and own security audit on 2026-10-09; see docs/android/USER_MANUAL_VALIDATION_2026-10-09.md. These are user-attested results, not independently logged measurements. Stable release remains NO-GO pending signed candidate install/update verification, security evidence and owner release approval."
 }

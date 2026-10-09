@@ -14,7 +14,7 @@ class SingleResultViewInstrumentedTest {
     @get:Rule val ui=createComposeRule()
     private val ctx get()=InstrumentationRegistry.getInstrumentation().targetContext
 
-    @Test fun onlyPrimaryBotStyledOutputAndActionsRemain() {
+    @Test fun jsonOnlyDataUnderDecoderAndDateCommentHeader() {
         val raw="┌───────────────\n│SP-DECODE (.ehi)\n"+
             "│[۞] configMessage: demo value\n"+
             "│[۞] overwriteServerData: {\"city\":\"LA\",\"port\":443}\n"+
@@ -25,7 +25,7 @@ class SingleResultViewInstrumentedTest {
                 current=view,reveal=false,hideCredentials=false,
                 onReveal={},onCopy={},onExport={})
         }
-        ui.onNodeWithText("SP-DECODE (.ehi)",substring=true).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.result_decoded_by,"HTTP Injector"),substring=true).assertExists()
         ui.onNodeWithText("\"city\": \"LA\"",substring=true).assertExists()
         ui.onNodeWithText(ctx.getString(R.string.detailed_fields)).assertDoesNotExist()
         ui.onNodeWithText(ctx.getString(R.string.raw_text)).assertDoesNotExist()

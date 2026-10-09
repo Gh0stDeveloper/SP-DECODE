@@ -1,6 +1,8 @@
 package com.ghostdeveloper.spdecode
 
 import android.content.Context
+import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
@@ -18,6 +20,10 @@ class LocaleSwitchInstrumentedTest {
 
     @Test fun selectingSpanishPreservesDecodedSessionInMemory() {
         val ctx=ui.activity
+        ui.waitUntil(10000) {
+            ui.onAllNodesWithContentDescription(ctx.getString(R.string.settings))
+                .fetchSemanticsNodes().isNotEmpty()
+        }
         val before=ctx.getSharedPreferences("spdecode-ui-preferences",Context.MODE_PRIVATE)
             .getString("language","system")?:"system"
         val sample=DecodeView("test.xui","xui",
