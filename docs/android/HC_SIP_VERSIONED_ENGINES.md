@@ -55,11 +55,18 @@ El mismo AES-ECB original se usa solo para obtener el contenedor:
   se pasa al decodificador antiguo como si fuese éxito.
 - Si contiene `VER7`, sigue siendo una variante no implementada.
 
-La clave AES-GCM del archivo proporcionado es literalmente
-`cambia_esto_por_tu_llave_de_32_b`. El código se ha replicado tal
-cual, **sin evidencia de que corresponda a una clave real de exportación**.
-Si es un marcador provisional, se requieren una implementación válida
-y un archivo exportado autorizado antes de declarar compatibilidad real.
+La clave AES-GCM literal del código aportado es
+`cambia_esto_por_tu_llave_de_32_b` (32 bytes ASCII). **El propietario
+confirmó explícitamente el 2026-10-09 que esta clave es funcional** en
+la versión `VER8` de SocksIP y no es un marcador de sustitución.
+Se conserva exactamente en Python y Kotlin; el nombre aparentemente
+provisional no autoriza a modificarla, derivarla ni reemplazarla.
+
+**Evidencia diferenciada:** esta confirmación del propietario establece
+la funcionalidad observada de la clave. La batería CI existente usa
+vectores generados sintéticamente con la misma clave; esos tests
+certifican la coherencia de ambas implementaciones, pero no sustituyen
+una prueba de paridad registrada de un exportador comercial real.
 
 ## Pruebas y estado
 
