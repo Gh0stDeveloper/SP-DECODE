@@ -54,7 +54,8 @@ fun CompleteResultCard(
         else runCatching {
             AndroidDecoderCatalog.detect(current.filename,
                 AndroidDecoderCatalog.read(context))?.appName
-        }.getOrNull() ?: current.extension.uppercase(Locale.ROOT)
+        }.getOrNull() ?: TextProtocolDecoder.appNameForSuffix(current.extension)
+            ?: current.extension.uppercase(Locale.ROOT)
     }
     val formattedDate=remember(current?.savedAtMillis,
         context.resources.configuration.locales[0]) {
