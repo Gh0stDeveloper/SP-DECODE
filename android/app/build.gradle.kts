@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -11,8 +12,8 @@ android {
         applicationId = "com.ghostdeveloper.spdecode"
         minSdk = 24
         targetSdk = 35
-        versionCode = 7
-        versionName = "0.3.4-alpha"
+        versionCode = 8
+        versionName = "0.3.5-alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("en", "es", "pt-rBR", "ar")
     }
@@ -24,8 +25,31 @@ android {
             excludes += "META-INF/versions/**"
         }
     }
+    // Production keystore passwords are injected only at build time by CI.
+    // Never commit keystores, signing secrets or their obfuscated equivalents.
+    signingConfigs {
+        val path=providers.environmentVariable("SPDECODE_RELEASE_STORE_FILE").orNull
+        val storePass=providers.environmentVariable("SPDECODE_RELEASE_STORE_PASSWORD").orNull
+        val alias=providers.environmentVariable("SPDECODE_RELEASE_KEY_ALIAS").orNull
+        val keyPass=providers.environmentVariable("SPDECODE_RELEASE_KEY_PASSWORD").orNull
+        if(!path.isNullOrBlank() && !storePass.isNullOrBlank() &&
+            !alias.isNullOrBlank() && !keyPass.isNullOrBlank()) {
+            create("production") {
+                storeFile=file(path)
+                storePassword=storePass
+                keyAlias=alias
+                keyPassword=keyPass
+                enableV1Signing=true
+                enableV2Signing=true
+                enableV3Signing=true
+            }
+        }
+    }
     buildTypes {
-        release { isMinifyEnabled = false }
+        release {
+            isMinifyEnabled = false
+            signingConfig=signingConfigs.findByName("production")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -45,6 +69,9 @@ dependencies {
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0")
     implementation("androidx.datastore:datastore-preferences:1.1.7")
+    implementation("androidx.room:room-runtime:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
+    kapt("androidx.room:room-compiler:2.7.2")
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.foundation:foundation")
     implementation("androidx.compose.material3:material3")

@@ -270,3 +270,21 @@ Detalles en `ALPHA_INSTALL.md`.
 - Se mejoró posteriormente el resultado de lote ante fallos de DataStore y el ajuste adaptable de filtros en pantallas estrechas. **Se exige nuevo CI SUCCESS del HEAD de PR #27 antes de hacer merge**.
 - Los tests del emulador no sustituyen verificación de importación real de 30 URIs SAF, ARM64, páginas 16 KiB ni exportadores vigentes. El usuario está comprobando A.2.4.3 / A.2.4.4 de manera independiente.
 - B.5 sigue **parcial** por migración Room / DI aún pendiente. G.2–G.5 disponibles en versión debug experimental; H producción no iniciada.
+
+## 0.3.5-alpha — limpieza del resultado, índice Room y preparación H (2026-10-09)
+
+- **Resultado visual único:** eliminar paneles alternos desplegables "Texto original" y "Campos detallados". Conservar salida principal aprobada por el usuario, JSON anidados en pantalla, selección de texto, máscara opcional y acciones Copiar/Exportar con toda la salida original sin pérdidas.
+- **Room sin secretos:** `HistoryRepository` añade tabla Room con **solo UUID y `savedAtMillis`** para indexación secundaria. La verdad sigue en `SecureDecodeHistory` (registros JSON v1/v2 AES-GCM + AtomicFile), compatible con versiones anteriores. En cada carga Room se reconstruye desde ciphertext ya autenticado, sin migrar datos privados a SQLite.
+- **DI y restauración:** `SpDecodeApplication` centraliza servicios locales sin red; Activity usa repositorio e historial DataStore; al reabrir recupera pestaña y último resultado mediante UUID opaco, sin poner rawText en Bundle ni DataStore. La navegación sigue con tabs Compose y la conversión completa a Navigation Compose no está implementada.
+- **H técnico, no H de publicación:** `android-signed-release.yml` se dispara **solo manualmente** desde main, exige CI verde exacto, firmas v1/v2/v3, zipalign y secreto de keystore; `release/android-readiness.json` y `scripts/android_release_gate.py` bloquean stable hasta recibir GO y pruebas verificadas; runbook `docs/android/RELEASE_RUNBOOK.md`. **No se ha creado release estable ni se han firmado APK con credenciales reales.**
+- **Validaciones de usuario aún abiertas:** A.2.4.3 ARM64 y páginas 16 KiB, A.2.4.4 variantes reales, G.4 importaciones reales por lote. Mantener NO-GO producción. El PR queda condicionado a CI Linux+Android API35 y pruebas de migración.
+
+
+### Última validación PR #28 (09/oct/2026)
+
+- Código final de B.5 / Room y vista única del resultado en SHA `54f5a0ad886004a98c3f4bfec4619e44c4346c96`.
+- [Actions #37906990733](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37906990733): Linux **SUCCESS**, Gradle Android **SUCCESS** y **104/104 pruebas API35 x86_64 aprobadas**; APK de prueba `SP-DECODE-Android-v0.3.5-alpha-debug-APK`.
+- Incluye corrección para que restaurar una pestaña nunca prevalezca sobre navegación explícita del usuario, así como prueba UI que navega expresamente a Inicio.
+- **Aún NO certifica** actualizaciones de firma debug→producción, ARM64, memoria de páginas 16 KB, exportadores reales ni lotes SAF sobre hardware. No iniciar publicación estable hasta aprobar los ocho gates `release/android-readiness.json`.
+- Estos cambios documentales exigen CI de PR otra vez, aunque no alteran la APK; no fusionar el PR #28 si el HEAD tiene comprobaciones fallidas.
+

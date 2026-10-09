@@ -76,3 +76,14 @@ Los 59 decodificadores siguen siendo **experimentales**: falta
 certificación frente a archivos reales y versiones recientes,
 variantes EHI estándar/SIP VER7, ARM64/16KiB y revisión final antes
 de publicar `release`. La alfa se firma y empaqueta como `debug`.
+
+### Decisión final del usuario: una sola vista (0.3.5-alpha)
+
+La presentación con el formato del bot, encabezados, delimitadores, claves y
+valores completos, y JSON interno organizado es **la única vista principal**.
+Se eliminan los controles desplegables de «Texto original» y «Campos
+detallados». El texto original sin alteraciones se conserva en memoria
+cifrada y en las acciones explícitas de copiar/exportar; no hay pérdida
+de información ni cambios en motores criptográficos. La máscara de
+credenciales continúa siendo opcional y desactivada por defecto.
+
