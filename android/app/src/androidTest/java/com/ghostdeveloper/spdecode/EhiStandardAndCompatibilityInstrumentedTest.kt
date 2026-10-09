@@ -17,7 +17,7 @@ import javax.crypto.spec.SecretKeySpec
 class EhiStandardAndCompatibilityInstrumentedTest {
     private val inst get() = InstrumentationRegistry.getInstrumentation()
     private fun fixture(name: String) =
-        inst.context.assets.open("parity/$"+"name").use { it.readBytes() }
+        inst.context.assets.open("parity/$name").use { it.readBytes() }
 
     @Test fun standardArgon2idXChaCha20MatchesOriginalBotText() {
         val sample=fixture("ehi-standard-id.ehi")
