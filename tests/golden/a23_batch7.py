@@ -50,7 +50,7 @@ def _xxtea_encrypt(plain:bytes,key:bytes)->bytes:
 
 def ehi_bytes():
     from decoders.Python.HTTPINJECTOR import EHIConstants as C
-    raw=_compact({"profileName":"A23 synthetic","Server":"example.org","Port":443}).encode()
+    raw=_compact({"overwriteServerData":"example.org","Port":443}).encode()
     raw2=_xxtea_encrypt(raw,C.EOO_MASTER_KEY)
     iv=bytes(range(16))
     l2=AES.new(C.L2_KEY_STATIC,AES.MODE_CBC,iv).encrypt(pad(raw2,16))
