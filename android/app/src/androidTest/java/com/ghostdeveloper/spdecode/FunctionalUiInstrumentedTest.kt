@@ -18,6 +18,8 @@ class FunctionalUiInstrumentedTest {
     @Test fun mainScreenContainsScreenshotLayoutAndFourTabs(){
         val ctx=ui.activity
         ui.onNodeWithText("SP-DECODE").assertExists()
+        // The last tab is intentionally persistent; navigate explicitly.
+        ui.onNodeWithContentDescription(ctx.getString(R.string.home)).performClick()
         ui.onNodeWithText(ctx.getString(R.string.import_title)).assertExists()
         ui.onNodeWithText(ctx.getString(R.string.select_file)).assertExists()
         ui.onNodeWithText(ctx.getString(R.string.illustrative)).assertExists()
