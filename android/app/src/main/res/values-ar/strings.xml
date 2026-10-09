@@ -102,4 +102,20 @@
     <string name="decode_progress_reading">جارٍ قراءة الملف المحدد…</string>
     <string name="decode_progress_decoding">جارٍ فك ترميز الإعدادات محليًا…</string>
     <string name="decode_progress_saving">جارٍ حفظ النتيجة المشفرة…</string>
+    <string name="history_search">البحث باسم الملف أو الامتداد</string>
+    <string name="history_favorites">المفضلة</string>
+    <string name="history_sort">ترتيب</string>
+    <string name="history_newest">الأحدث أولًا</string>
+    <string name="history_oldest">الأقدم أولًا</string>
+    <string name="history_name">حسب الاسم</string>
+    <string name="history_matches">%1$d نتائج</string>
+    <string name="history_select_visible">تحديد العناصر الظاهرة</string>
+    <string name="history_no_matches">لا توجد ملفات مطابقة لهذه المرشحات</string>
+    <string name="history_import_batch">استيراد حتى 30 ملفًا</string>
+    <string name="history_retention">مدة الاحتفاظ بالسجل</string>
+    <string name="history_keep_forever">الاحتفاظ دائمًا</string>
+    <string name="history_keep_days">الاحتفاظ لمدة %1$d يومًا</string>
+    <string name="history_retention_note">تُحذف النتائج القديمة تلقائيًا، وتُحفظ النتائج المفضلة.</string>
+    <string name="batch_progress_count">الملف %1$d من %2$d</string>
+    <string name="batch_import_summary">اكتملت الدفعة: تم فك %1$d وحدث فشل في %2$d. قد تكون بعض الإصدارات غير مدعومة أو الملفات تالفة.</string>
 </resources>
