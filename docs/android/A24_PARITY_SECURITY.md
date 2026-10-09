@@ -62,11 +62,13 @@ La ejecución [GitHub Actions #37868719536](https://github.com/Gh0stDeveloper/SP
 
 ## 6. Incremento siguiente: TLS Tunnel AES-GCM nativo (PR pendiente)
 
-La rama `feat/android-a24-tls-aead-parity` incorpora el adaptador nativo
+El [PR #16](https://github.com/Gh0stDeveloper/SP-DECODE/pull/16), rama `feat/android-a24-tls-aead-parity`, incorpora el adaptador nativo
 `TlsReferencePort`, sin Chaquopy ni servicios de red. Reproduce el
 contenedor sintético `tls-aesgcm` con clave histórica de referencia,
 reconstrucción de nonce de 36 bytes, AES-256-GCM **autenticado** y los campos
-JSON ordenados sin traducir. Un tag incorrecto se rechaza sin producir texto
+JSON ordenados sin traducir. La serialización reproduce el comportamiento
+`json.dumps(..., ensure_ascii=False)` de Python, sin escapar barras `/` como
+`JSONObject.quote` de Android. Un tag incorrecto se rechaza sin producir texto
 parcial. El tamaño de entrada se limita a 1 MiB.
 
 La preparación `scripts/android_a24_prepare.py` genera ahora **tres**
