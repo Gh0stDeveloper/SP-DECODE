@@ -4,7 +4,8 @@
   "syntheticLinuxCoveredSuffixes": 59,
   "androidCertifiedSuffixes": 0,
   "androidPrototypeSuffixes": [
-    "v2"
+    "v2",
+    "tls"
   ],
   "entries": [
     {
@@ -399,7 +400,7 @@
       "script": "decoders/Python/TLS.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "prototype_tls_aesgcm_synthetic_case",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
