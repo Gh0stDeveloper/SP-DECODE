@@ -109,3 +109,22 @@ pasaron en emulador. Se añade después `AndroidOfflineDecoderRouter`, que
 selecciona 1:1 por extensión y no intenta claves de otros decodificadores.
 La versión con router se somete a una segunda ejecución CI antes de fusionar.
 Ningún hardware arm64, exportador moderno ni página 16-KiB comprobado.
+
+## 8. Lote A.2.4 adicional — diez extensiones (`batch20`, PR en revisión)
+
+Formatos y métodos originales: `.at` (AES-GCM ×2 con seed + constante),
+`.nm` (lista NetMod de claves AES-ECB original), `.ost` y `.sbr`
+(DES-ECB con **claves distintas**, no se prueban claves de otro formato),
+`.pcx`, `.nt`, `.pb` (contraseñas propias PBKDF2-SHA256/AES-GCM y filtros XML),
+`.aro` (Base64 + rotación +18, campos Base64), `.ipt` (descifrado XXTEA personalizado
+y filtro), `.gold` (SHA256/AES-CBC y descifrado de campos JSON recursivos).
+
+Se añadieron diez clases Kotlin propias, `Batch20Primitives` para primitivas
+JCA/formatos de texto; 10 comparaciones de output UTF-8 byte por byte frente a
+Linux y 30 pruebas negativas. `AndroidOfflineDecoderRouter` enruta solo por
+sufijo, sin mezclar claves. Se incluyen diez golden SHA-256 congelados en
+`android_a24_prepare.py`. Catálogo: 22 sufijos experimentales, 37 sin port,
+59 registrados, **0 certificados en exportadores actuales**.
+
+**Gates pendientes:** Linux + Android compile + emulador API35 para los
+últimos cambios; después ARM64, páginas 16KB y archivos reales autorizados.
