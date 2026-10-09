@@ -40,10 +40,18 @@ object ResultPresentation {
             val key=match.groupValues[1].trim()
             val value=match.groupValues[2].trim()
             if(key.isEmpty()||decoration.containsMatchIn(key))continue
-            if(obj.has(key))continue
+            // Repeated legacy keys are not discarded: source scripts can emit
+            // multiple entries with the same label. Distinguish them in JSON
+            // while preserving their appearance order in the human view.
+            var unique=key
+            var count=2
+            while(obj.has(unique)){
+                unique=key+" ("+count+")"
+                count++
+            }
             val element=parseInlineJson(value)
-            obj.add(key,element)
-            flatten(element,key,rows,0)
+            obj.add(unique,element)
+            flatten(element,unique,rows,0)
             if(rows.size>=MAX_FIELDS)break
         }
         if(rows.isNotEmpty())
