@@ -99,3 +99,13 @@ se habilitó una UI de importación al usuario.
 - `XuiPort`: misma librería NoobCrypt original, pero clave XUI diferente y adaptador separado.
 
 **Puertas de calidad:** 13 fixtures congelados con hashes SHA-256 (`.v2`×2, TLS×1, 10 nuevos), 10 tests positivos Kotlin separados y una prueba con 30 casos fallidos; tests del catálogo y Linux. Las referencias son **sintéticas**; no representan exportaciones actuales. Si CI no ha aprobado la rama, estos diez formatos permanecen `experimental_batch10_synthetic`, no certificados ni disponibles en UI. `androidVerifiedSuffixes=0`; quedan 47 sin port (y el sufijo `.sksrv.png` sin ruta propia). Debe probarse en arm64 y 16 KiB después.
+
+### Resultado CI inicial del lote (sin router)
+
+[GitHub Actions #37872655497](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37872655497):
+Linux `validate` **success** y Android emulador API 35 x86_64 **success**.
+Los 10 tests de paridad nuevos, pruebas de entrada inválida y regresión anterior
+pasaron en emulador. Se añade después `AndroidOfflineDecoderRouter`, que
+selecciona 1:1 por extensión y no intenta claves de otros decodificadores.
+La versión con router se somete a una segunda ejecución CI antes de fusionar.
+Ningún hardware arm64, exportador moderno ni página 16-KiB comprobado.
