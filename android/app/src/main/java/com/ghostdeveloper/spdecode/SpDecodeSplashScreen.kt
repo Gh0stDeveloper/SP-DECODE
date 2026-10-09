@@ -48,10 +48,15 @@ fun SpDecodeSplashScreen(){
             Spacer(Modifier.height(36.dp))
             CircularProgressIndicator(color=Color.White,
                 strokeWidth=2.dp,modifier=Modifier.size(23.dp))
-            Spacer(Modifier.height(45.dp))
-            Text(stringResource(R.string.splash_powered_by),
-                color=Color(0xFFABABAB),fontSize=13.sp,
-                textAlign=TextAlign.Center)
         }
+        // Independent bottom alignment: attribution never sits near the logo
+        // and stays above gesture navigation on small screens.
+        Text(
+            stringResource(R.string.splash_powered_by),
+            color=Color(0xFFABABAB),fontSize=12.sp,
+            textAlign=TextAlign.Center,
+            modifier=Modifier.align(Alignment.BottomCenter)
+                .padding(horizontal=20.dp,bottom=30.dp),
+        )
     }
 }
