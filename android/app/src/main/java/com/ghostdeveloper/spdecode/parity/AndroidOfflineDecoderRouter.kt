@@ -53,6 +53,17 @@ object AndroidOfflineDecoderRouter {
             "ziv" -> ZivPort.decode(input)
             "epro" -> EproPort.decode(context,input)
             "npv2" -> Npv2Port.decode(context,input)
+            "rez" -> RezPort.decode(input)
+            "rezl" -> RezlPort.decode(input)
+            "tvt" -> TvtPort.decode(input)
+            "stk" -> StkPort.decode(input)
+            "xtp" -> XtpPort.decode(input)
+            "roy" -> RoyPort.decode(input)
+            "sksplus" -> SksplusPort.decode(input)
+            "sks" -> SksPort.decode(input)
+            "sut" -> SutPort.decode(input)
+            "tnl" -> TnlPort.decode(input)
+            "ssh" -> SshPort.decode(input)
             else -> null
         }
     }
