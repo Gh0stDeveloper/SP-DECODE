@@ -355,11 +355,11 @@ private fun HistoryScreen(
                     singleLine=true,shape=RoundedCornerShape(14.dp),
                     label={Text(stringResource(R.string.history_search))},
                     leadingIcon={Icon(Icons.Outlined.Search,null)},
-                    trailingIcon={if(query.isNotEmpty()) {
-                        {IconButton(onClick={query=""}) {
+                    trailingIcon={
+                        if(query.isNotEmpty()) IconButton(onClick={query=""}) {
                             Icon(Icons.Outlined.Close,stringResource(R.string.close))
-                        }}
-                    }else null},
+                        }
+                    },
                 )
             }
             item {
