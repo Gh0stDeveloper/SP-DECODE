@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.20.0",
+  "documentationVersion": "1.21.0",
   "referenceDate": "2026-10-09",
   "baselineBranch": "main",
-  "baselineHead": "1a57445e38e6a1d3318f5c880027dbe47570084f",
+  "baselineHead": "29dbe95c56399d1c46fe61563eac4633b47b52f6",
   "documentationBranch": "docs/android-offline-architecture",
-  "productStatus": "android_0_3_3_nested_json_primary_view_compact_languages_modal_import_patch_pending_ci",
+  "productStatus": "android_0_3_4_secure_history_batch_patch_pr27_pending_ci",
   "androidSourceExists": true,
   "apkProduced": true,
   "offlineRequired": true,
@@ -45,13 +45,13 @@
       }
     },
     "B": {
-      "status": "v0_3_3_ui_patch_pending_ci_previous_0_3_2_88_tests_success",
+      "status": "v0_3_3_verified_main_G2_G5_ui_patch_in_PR27_pending_ci",
       "subphases": {
         "B.1": "verified_compose_apk_api35_in_pr22",
         "B.2": "reference_screenshot_baseline_verified_apk_0_2_real_user",
         "B.3": "home_history_formats_settings_real_language_and_credits_verified_emulator",
         "B.4": "SAF_import_and_JSON_ordered_original_copy_export_verified_emulator",
-        "B.5": "ViewModel_ephemeral_session_survives_locale_change_verified_emulator",
+        "B.5": "partially_implemented_ViewModel_keystore_records_DataStore_retention_last_selected_Room_DI_pending",
         "B.6": "82_of_82_connected_instrumentation_tests_api35_success_linux_success"
       }
     },
@@ -68,16 +68,23 @@
       "status": "v0_3_3_original_style_main_result_inline_nested_json_modal_import_preview_mask_and_contrast_pending_ci"
     },
     "G": {
-      "status": "not_started"
+      "status": "in_progress_pr27_pending_ci",
+      "subphases": {
+        "G.1": "keystore_aesgcm_atomic_records_existing_Room_not_integrated",
+        "G.2": "metadata_only_search_extension_sort_favorites_encrypted_v2_pending_ci",
+        "G.3": "selective_delete_retention_excluding_favorites_backup_off_pending_ci",
+        "G.4": "30_file_sequential_failure_isolated_cancel_batch_pending_ci",
+        "G.5": "DataStore_retention_last_UUID_process_death_restore_pending_ci"
+      }
     },
     "H": {
       "status": "not_started"
     }
   },
-  "nextAction": "Finish PR #26 CI (Linux and Android emulator), merge only on green, then install v0.3.3 debug APK on real ARM64 device; compare EHI/EHIL nested JSON, cancel and locale sheet against screenshots before A.2.4.3 and A.2.4.4.",
-  "releaseStatus": "DEBUG-ALPHA-0.3.3-IN-REVIEW-NO-PRODUCTION-GO",
+  "nextAction": "Verify PR #27 on Linux and Android API35, fix failures and merge only after green. User runs A.2.4.3 (ARM64/16KiB) and A.2.4.4 (real formats) independently. B.5 Room/DI remaining; H production signing/release not initiated.",
+  "releaseStatus": "DEBUG-ALPHA-v0.3.4-PR27-PENDING-CI-NO-STABLE-RELEASE",
   "ciValidatedAndroid": true,
-  "notes": "PR #25 HTTP Injector standard route merged and validated on API35 with 88 tests; PR #26 implements user screenshot primary decoder text and inline nested JSON viewer, compact language sheet, modal error/progress, high-contrast actions. Await CI on PR #26; external exporters, arm64/16KiB and physical tests still pending.",
+  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending.",
   "localization": {
     "scope": "ui_only",
     "languages": [
@@ -623,5 +630,28 @@
     "cancel": true,
     "contrastingActions": true,
     "hardwareValidation": "pending"
+  },
+  "historyManagement": {
+    "branch": "feat/android-b5-g2-g5-history-batch",
+    "pr": 27,
+    "version": "0.3.4-alpha",
+    "state": "implemented_pending_ci",
+    "encryptedFavoriteRecordVersion": 2,
+    "backwardCompatibleVersion": 1,
+    "searchOnlyMetadata": true,
+    "retentionDays": [
+      0,
+      7,
+      30,
+      90,
+      365
+    ],
+    "favoritesExempt": true,
+    "maxBatchFiles": 30,
+    "sequential": true,
+    "continueOnFileError": true,
+    "lastSelectedUuidInDataStore": true,
+    "roomMigration": "not_implemented",
+    "arm64AndVendorFixtures": "user_testing"
   }
 }
