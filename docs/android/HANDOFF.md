@@ -298,3 +298,12 @@ Detalles en `ALPHA_INSTALL.md`.
 - Keystore de producción RSA-4096/PKCS#12 generado **fuera del repositorio** y entregado solo al propietario en artefacto privado. Los cuatro secrets se introducirán manualmente en GitHub; NO copiar contraseñas al GitHub PR o documentos. Workflow manual ya exige v1/v2/v3 y versiones coincidentes.
 - Estado release: **NO-GO hasta probar candidato firmado, firma de actualizaciones y confirmación final**, aun cuando los tests de usuario sean positivos.
 
+
+## 0.3.7-alpha — decodificación de textos (09/oct/2026)
+
+- El usuario confirma que incorporó la keystore en GitHub Actions; no implica haber probado una APK firmada ni autoriza release estable automáticamente.
+- El bot admite `tls://`, `ssc://`, `dark://`, `vmess://`, `zivpn://`, `v2box://`, `howdy://`/`N7pr://`, `nm-...://`, `ar-...://`, `pb-...://`, `/decssh` y fallback NetMod Base64 sin prefijo.
+- Android 0.3.7 añade panel de texto en Inicio con detector de esquemas y lógica Android nativa/JCA sin red, mantiene resultado JSON, copia/exportación e historial cifrado. Los textos SSC/Dark admiten fragmentos sucesivos temporales, con límite de 250k caracteres y 600s de inactividad; ninguna parte incompleta se guarda.
+- **No se han alterado** las rutas SAF por lotes, los puertos de archivo existentes ni la publicación estable automática.
+- Documento de alcance: `docs/android/TEXT_PROTOCOLS.md`. Pendiente CI final de PR #30 y pruebas del usuario con cadenas reales/fragmentos.
+
