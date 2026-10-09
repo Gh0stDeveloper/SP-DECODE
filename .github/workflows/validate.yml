@@ -94,7 +94,7 @@ jobs:
 
 
   android-parity:
-    name: Android v1.0.3 production source regression (API 35)
+    name: Android v1.0.4 production source regression (API 35)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -173,7 +173,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v1.0.3-ci-home-screenshot
+          name: SP-DECODE-Android-v1.0.4-ci-home-screenshot
           path: android/app/build/outputs/spdecode-ui/home.png
           if-no-files-found: error
           retention-days: 30
