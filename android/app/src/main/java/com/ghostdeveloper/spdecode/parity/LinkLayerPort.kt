@@ -177,7 +177,7 @@ object LinkLayerPort {
             val first=take(1)[0].toInt() and 255
             if(first<128)return first.toLong()
             val width=256-first
-            check(width in 1..8,"Invalid Go gob integer width")
+            check(width in 1..8,"Invalid Go gob integer width at offset ${position-1}")
             var out=0L
             repeat(width){out=(out shl 8) or ((take(1)[0].toLong()) and 255L)}
             return out
