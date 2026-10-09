@@ -29,6 +29,7 @@ class FunctionalUiInstrumentedTest {
     @Test fun formatsTabExposesExperimentalSuffixesNotCertified(){
         val ctx=ui.activity
         ui.onNodeWithContentDescription(ctx.getString(R.string.formats)).performClick()
+        ui.onNodeWithText(ctx.getString(R.string.search_formats)).performClick()
         ui.onNodeWithText(".sksrv.png").assertExists()
         ui.onNodeWithText(ctx.getString(R.string.catalog_note)).assertExists()
     }
