@@ -29,7 +29,7 @@
 | .sks | SocksIP | node | decoders/JavaScript/sks.js | 1 caso | No verificado | E |
 | .stk | Stark VPN | node | decoders/JavaScript/stk.js | 1 caso | No verificado | E |
 | .pcx | PCX Tunnel | python | decoders/Python/pcx.py | 1 caso | No verificado | D |
-| .ssh | SSH Injector | python | decoders/Python/ssh.py | Sin fixture | No verificado | D |
+| .ssh | SSH Injector | python | decoders/Python/ssh.py | 1 caso | No verificado | D |
 | .nt | Net Tunnel | python | decoders/Python/nt.py | 1 caso | No verificado | D |
 | .vpnlite | VPN Lite | python | decoders/Python/vpnlite.py | 1 caso | No verificado | D |
 | .sut | SUT Tunnel | python | decoders/Python/sut.py | 1 caso | No verificado | D |

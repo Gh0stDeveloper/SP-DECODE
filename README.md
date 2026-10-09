@@ -37,7 +37,7 @@ A structured, extensible decoder platform for processing supported configuration
 - [Architecture](docs/android/ARCHITECTURE.md) · [Decoder compatibility matrix](docs/android/DECODER_MATRIX.md)
 - [Phased roadmap](docs/android/ROADMAP.md) · [Cross-chat handoff](docs/android/HANDOFF.md)
 - [Decoder A.2 source audit (48 scripts)](docs/android/DECODER_AUDIT.md) · [Golden fixture policy](docs/android/A2_FIXTURE_POLICY.md)
-- [A.2.3 synthetic golden corpus — fifty-nine cases, fifty-eight file suffixes](docs/android/A23_GOLDEN_CORPUS.md)
+- [A.2.3 synthetic Linux golden corpus — sixty exact cases, all fifty-nine registered suffixes](docs/android/A23_GOLDEN_CORPUS.md)
 
 The Android proposal preserves the premium AMOLED visual design: shield header, centered import panel, structured result cards, copy/export buttons and bottom navigation.
 

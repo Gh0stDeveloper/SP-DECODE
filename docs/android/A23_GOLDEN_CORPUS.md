@@ -1,6 +1,6 @@
 # A.2.3 — Corpus de pruebas golden reproducibles
 
-> **Estado 2026-10-08: EN PROGRESO.** Hay **59 casos sintéticos positivos con salida íntegra congelada en 58 de 59 extensiones**. Falta **1 extensión sin muestra positiva**. Ninguna extensión está verificada en Android y ninguna prueba demuestra compatibilidad con versiones modernas de las apps exportadoras.
+> **Estado 2026-10-08: CORPUS LINUX SINTÉTICO COMPLETO.** **60 casos golden de salida completa congelada para los 59 sufijos registrados; 0 sin muestra sintética positiva.** El registro de aplicaciones de terceros no está certificado, y **0 de 59 están verificados en Android**. Esta finalización cubre exclusivamente pruebas sintéticas de referencia en Linux.
 
 ## 1. Evidencia y alcance
 
@@ -19,7 +19,8 @@ Los tests comparan el **`stdout` original byte por byte**, sin traducción ni no
 | 5 | 10 | 10: .jez, .hrt, .rez, .rezl, .maya, .xui, .mrc, .mtl, .mina, .tnl | 9 |
 | 6 | 10 | 10: .nm, .pb, .pcx, .nt, .ziv, .vpnlite, .sip, .at, .ipt, .stk | 10 |
 | **7** | **10** | **10: .ehi, .epro, .gold, .npv2, .npv4, .npvt, .roy, .sut, .tvt, .xtp** | **7** |
-| **Total** | **59** | **58 de 59** | **47** |
+| **8 — SSH Injector** | **1** | **1: .ssh** | **1** |
+| **Total** | **60** | **59 de 59** | **48** |
 
 ### Detalle del lote 4
 
@@ -74,7 +75,7 @@ La comparación golden usa la salida UTF-8 íntegra **producida por el ejecutabl
 
 | Ruta | Propósito |
 |---|---|
-| `tests/golden/manifest.json` | inventario íntegro: 59 sufijos, 49 casos Linux exactos, 11 sin prueba positiva |
+| `tests/golden/manifest.json` | inventario íntegro: 59 sufijos, 60 casos Linux exactos, 0 sin prueba positiva |
 | `tests/golden/a23_generators.py` | punto de unión de los generadores |
 | `tests/golden/a23_batch3.py` | diez fixtures Linux del lote 3 |
 | `tests/golden/a23_batch4.py` | diez fixtures Linux del lote 4 (Python, Node y PHP) |
@@ -82,11 +83,13 @@ La comparación golden usa la salida UTF-8 íntegra **producida por el ejecutabl
 | `tests/golden/a23_batch5_rez.cjs` | reutilización restringida del Tea.encrypt histórico, solo tests |
 | `tests/test_android_a23_batch5.py` | exactitud de diez stdout, casos inválidos y hashes lote 5 |
 | `tests/golden/a23_batch5_probe.py` | utilidad manual de referencia sintética, **no se ejecuta en CI normal** |
-| `tests/golden/expected/*.txt` | 49 salidas originales byte-exact |
+| `tests/golden/a23_batch8_ssh.py` | último cifrado Blowfish sintético para .ssh, sin material personal |
+| `tests/test_android_a23_final_ssh.py` | CLI exacto, fallo cerrado, original aleatorio en modo normal y hashes |
+| `tests/golden/expected/*.txt` | 60 salidas originales byte-exact |
 | `tests/test_android_a23_goldens.py` | nueve fixtures de los lotes 1 y 2 |
 | `tests/test_android_a23_batch3.py` | diez casos de CLI lote 3 |
 | `tests/test_android_a23_batch4.py` | diez casos de CLI lote 4 |
-| `tests/golden/a23_export.py` | genera 49 archivos ficticios físicos y SHA256.json |
+| `tests/golden/a23_export.py` | genera 60 archivos ficticios físicos y SHA256.json |
 | `tests/golden/a23_report.py` | metadatos de los 59 y SHA-256 sin salida sensible |
 | `.github/workflows/validate.yml` | tests del bot + artefacto de muestras y auditoría |
 
@@ -100,7 +103,7 @@ PYTHONPATH=. python tests/golden/a23_export.py --output-dir out/a23/samples
 
 ## 5. Problemas y continuación
 
-**A.2.3 permanece ABIERTA:** solo `.ssh` carece de golden positivo. Su decodificador Blowfish imprime un emoji aleatorio, por lo que necesita una estrategia explícita para estabilizar la salida sin ocultar diferencias. La futura certificación de archivos de exportadores actuales y la paridad Android también siguen pendientes. Estos scripts aún no cuentan con pruebas para las versiones actuales de sus aplicaciones.
+**A.2.3 / línea de base sintética Linux COMPLETA (59/59):** no quedan extensiones sin caso golden ficticio. Esto **no** certifica que los exportadores actuales produzcan el mismo contenedor ni que exista una APK operativa. Para pasar de evidencia sintética L2 a compatibilidad, faltan vectores externos autorizados versionados, hardening de scripts heredados (incluido `pickle.loads` whitebox) y prueba de paridad real Android en A.2.4.
 
 **A.2.4 pendiente:** aún no existe bridge Android, ni APK, ni prueba arm64/16 KB/RTL de resultados crudos. El soporte real de una extensión debe anunciarse únicamente cuando se haya confirmado en Android y para las versiones explícitas de exportador cubiertas.
 
@@ -127,7 +130,7 @@ Los diez tienen `expectedRawText` byte-exact, `inputSha256` y `expectedRawUtf8Sh
 
 ### Casos expresamente pendientes
 
-**Nota histórica del cierre del lote 6:** los 11 sufijos citados estaban pendientes al finalizar esa tanda. El lote 7 incorporó diez y únicamente `.ssh` continúa sin golden positivo. No tratar pruebas de error como golden.
+**Nota histórica del cierre del lote 6:** los 11 sufijos citados estaban pendientes en aquel momento. El lote 7 añadió diez y el lote 8 completó `.ssh`. No tratar nunca una salida de error como golden positivo.
 
 **Evidencia de exploración (10 salidas positivas):** [GitHub Actions 37861105855](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37861105855). El CI final tras congelar hashes es la fuente autorizada para fusionar este lote.
 
@@ -148,4 +151,14 @@ Los diez tienen `expectedRawText` byte-exact, `inputSha256` y `expectedRawUtf8Sh
 
 **Reparaciones incluidas:** `gold.py` admite `archivo.gold` como argumento y ya no falla por `stylize_math` indefinida; `rez.js` acepta `.tvt`; `chicosp.js`/`modulepro.js` no reescriben el archivo de configuración por una simple ejecución de descifrado. Los comandos explícitos de configuración siguen teniendo ese comportamiento heredado.
 
-**Criterio de compatibilidad:** 58/59 indica solo muestras artificiales Linux golden. **0/59 dispositivos Android verificados**, y **ninguna versión de exportadores externos certificada**. Para cerrar A.2.3 faltan `.ssh`, validación de versiones autorizadas y análisis de seguridad/per-portabilidad.
+**Criterio de compatibilidad:** **59/59** indica *exclusivamente* muestras sintéticas Linux con hashes congelados. **0/59 Android verificados** y **0 versiones externas certificadas**. Quedan pendientes las pruebas con exportadores versionados, seguridad y portabilidad; no anunciar soporte Android 59/59.
+
+## 8. Lote final — SSH Injector `.ssh` (Blowfish-CBC)
+
+- Archivo ficticio con entradas `Host=example.org`, `Port=443` y una nota expresamente sintética. Se cifra con **Blowfish-CBC/PKCS#7** y la clave/IV históricos existentes en `decoders/Python/ssh.py`.
+- `tests/golden/a23_batch8_ssh.py` obtiene clave e IV directamente del AST del código de referencia para evitar incoherencias. La salida se conserva completa en `tests/golden/expected/batch8-ssh.txt` y se congela con `inputSha256` y `expectedRawUtf8Sha256` en el manifiesto.
+- La CLI original elegía un emoji diferente por ejecución. **Solo al establecer `SPDECODE_SSH_GOLDEN_TEST=1`** se usa una elección determinista para comprobar bytes exactos; **el comportamiento normal sigue siendo aleatorio**. Este cambio no toca claves, descifrado ni campos en bruto.
+- Se rechazan archivos vacíos, cifrados inválidos y texto descifrado sin ninguna entrada XML; no se publican trazas Python ni falsos perfiles positivos. Los tests verifican explícitamente ese fallo cerrado.
+- El alcance positivo es **el contenedor cifrado artificial sobre Linux**. No acredita que la app original use la misma clave en todas sus versiones; no constituye un instalador ni una verificación Android.
+
+La línea de base L2 sintética está finalizada cuando el CI del commit fusionado en `main` confirma el corpus de **60 casos / 59 sufijos**. Los riesgos de aplicación exportadora y APK pertenecen a puertas de verificación posteriores; se mantienen expresamente abiertos.

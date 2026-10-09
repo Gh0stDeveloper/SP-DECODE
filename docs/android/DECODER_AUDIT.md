@@ -156,3 +156,7 @@ Diez nuevos casos Linux positivos: .nm, .pb, .pcx, .nt, .ziv, .vpnlite, .sip, .a
 ### Cobertura ampliada en A.2.3 lote 7 (2026-10-08)
 
 59 golden snapshots sintéticos en 58/59 sufijos; únicamente `.ssh` sin positivo. Las rutas nuevas abarcan EHI (solo IV bypass), ePro, Gold, NPV2, NPV4/NPVT (whitebox con blob fijo cargado mediante pickle: **riesgo de seguridad pendiente**), ROY/XTP, SUT y TVT. El bot de consola se mantiene sin servicio de red para esos generadores. Paridad Android **0/59** y compatibilidad con versiones de apps exportadoras **no verificada**. Ver [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
+
+### Actualización final A.2.3 — Golden sintético SSH, lote 8
+
+El corpus de referencia **Linux sintético** completó **60 casos exactos / 59 sufijos / 48 scripts**. `.ssh` incluye perfil ficticio Blowfish-CBC, stdout completo con un emoji estabilizado exclusivamente por `SPDECODE_SSH_GOLDEN_TEST=1`, hashes inmutables y negativos que deben fallar cerrados. Sin la variable de prueba, el emoji mantiene selección aleatoria histórica. Mantener la evaluación separada de la compatibilidad real de exportadores y ejecución Android (0/59). La carga `pickle.loads` del blob whitebox NPV permanece riesgo de seguridad no resuelto. Ver [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
