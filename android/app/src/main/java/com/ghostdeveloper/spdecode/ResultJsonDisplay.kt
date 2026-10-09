@@ -17,9 +17,9 @@ import com.google.gson.JsonPrimitive
 object ResultJsonDisplay {
     private val gson=GsonBuilder().serializeNulls().disableHtmlEscaping()
         .setPrettyPrinting().create()
-    private val decorativeLine=Regex("""^[\\s│┌┐└┘├┤─═╔╗╚╝╠╣]+$""")
+    private val decorativeLine=Regex("""^[\s│┌┐└┘├┤─═╔╗╚╝╠╣]+$""")
     private val decoratedHeading=Regex(
-        """(?i)^\\s*│?\\s*(?:SP\\s*[-–]\\s*DECODE|[┌└├╔╚].*|(?:Developer|Group|Channel|Créditos|Credits|Copyright)\\s*:)""")
+        """(?i)^\s*│?\s*(?:SP\s*[-–]\s*DECODE|[┌└├╔╚].*|(?:Developer|Group|Channel|Créditos|Credits|Copyright)\s*:)""")
     private const val MAX_DEPTH=24
 
     fun render(raw:String,suffix:String,maskCredentials:Boolean=false):String {
