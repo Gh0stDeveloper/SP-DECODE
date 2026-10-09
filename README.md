@@ -26,10 +26,10 @@ A structured, extensible decoder platform for processing supported configuration
 
 ---
 
-## SP-DECODE Android — Offline application (planned)
+## SP-DECODE Android — Offline application (functional alpha)
 
 > [!NOTE]
-> The Android APK is **planned and not yet available**. This is an independent, fully offline Android app with **no Telegram account, no login, no backend and no Internet permission**. The existing Telegram bot continues unchanged.
+> **Android 0.3.0-alpha** is a functional offline preview, built by GitHub Actions with an installable debug APK. It is **not a production-certified release**: some real exporter versions and algorithm variants remain unsupported. No Telegram account, login, backend or Internet permission. The original Telegram bot remains unchanged. Download the APK artifact from the latest successful Android validation workflow.
 
 - [Official Android documentation and design references](docs/android/README.md)
 - [Visual identity, UI tokens and SVG mockups](docs/android/DESIGN_SYSTEM.md)
@@ -40,7 +40,7 @@ A structured, extensible decoder platform for processing supported configuration
 - [A.2.3 synthetic Linux golden corpus — sixty exact cases, all fifty-nine registered suffixes](docs/android/A23_GOLDEN_CORPUS.md)
 - [A.2.4 Android parity and decoder security: experimental Kotlin host, CI emulator and risk matrix](docs/android/A24_PARITY_SECURITY.md)
 
-The Android proposal preserves the premium AMOLED visual design: shield header, centered import panel, structured result cards, copy/export buttons and bottom navigation.
+The Android implementation follows the user's approved AMOLED reference: shield header, centered import panel, **all ordered decoded fields including nested JSON**, copy/export as JSON, human-readable structured output or exact original text, selectable UI languages (es/en/pt-BR/ar), credits and collaboration links, and bottom navigation.
 
 ---
 

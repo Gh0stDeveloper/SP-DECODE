@@ -33,7 +33,7 @@
     <string name="about_title">حول SP-DECODE</string>
     <string name="about_text">إصدار ألفا يعمل دون اتصال. ما زالت الصيغ والتوافق قيد الاختبار.</string>
     <string name="language_title">اللغات</string>
-    <string name="language_text">تتبع الواجهة لغة الجهاز. سيضاف الاختيار اليدوي لاحقًا.</string>
+    <string name="language_text">اختر لغة التطبيق. سيؤدي تغييرها إلى إعادة تشغيل هذه الشاشة.</string>
     <string name="show">إظهار</string>
     <string name="hide">إخفاء</string>
     <string name="raw_text">النص الأصلي لفك الترميز</string>
@@ -66,4 +66,24 @@
     <string name="unknown">غير معروف</string>
     <string name="sensitive">قيمة حساسة</string>
     <string name="all_formats">جميع الصيغ</string>
+    <string name="language_pick_description">اختر لغة التطبيق. سيؤدي تغييرها إلى إعادة تشغيل هذه الشاشة.</string>
+    <string name="language_system">لغة الجهاز</string>
+    <string name="result_preferences_title">عرض النتائج</string>
+    <string name="mask_passwords_title">إخفاء كلمات المرور في المعاينة</string>
+    <string name="mask_passwords_detail">اختياري وغير مفعل افتراضيًا. تُعرض كل الحقول كاملة.</string>
+    <string name="export_security_note">قد يؤدي النسخ أو المشاركة إلى كشف بيانات الدخول للتطبيقات الأخرى.</string>
+    <string name="developer_credits">المطور والاعتمادات</string>
+    <string name="contribute_invitation">مشروع مفتوح المصدر يرحب بالمساهمين والمختبرين وإضافات فك الترميز. ساهم أو أبلغ عن الأخطاء عبر GitHub.</string>
+    <string name="contact_developer">الاتصال بالمطور</string>
+    <string name="telegram_group">مجتمع تيليغرام</string>
+    <string name="telegram_channel">قناة تيليغرام</string>
+    <string name="report_issue">الإبلاغ عن خطأ / المساهمة</string>
+    <string name="clear_confirm_title">مسح سجل الجلسة؟</string>
+    <string name="clear_confirm_detail">سيتم حذف النتائج الموجودة في الذاكرة ولا يمكن التراجع.</string>
+    <string name="complete_fields_count">%1$d حقول كاملة</string>
+    <string name="json_option">JSON · كامل ومنسق</string>
+    <string name="ordered_option">منظم · جميع الحقول</string>
+    <string name="original_option">النص الأصلي لفك الترميز</string>
+    <string name="raw_masked_explanation">قد يحتوي النص الأصلي على كلمات مرور داخل JSON. أوقف الإخفاء من الإعدادات لعرضه.</string>
+    <string name="project_repo">المستودع · GitHub</string>
 </resources>

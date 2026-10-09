@@ -3,6 +3,9 @@ package com.ghostdeveloper.spdecode
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
+import android.content.Context
+import android.content.res.Configuration
+import android.content.ActivityNotFoundException
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +13,7 @@ import android.os.PersistableBundle
 import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.getValue
@@ -29,6 +33,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.util.Locale
 
 /**
  * First functional offline Android alpha.
@@ -38,14 +43,38 @@ import java.io.IOException
 class MainActivity : ComponentActivity() {
     private companion object { const val MAX_BYTES=1024*1024 }
     private val scope=CoroutineScope(SupervisorJob()+Dispatchers.Main.immediate)
+    private var selectedLanguage by mutableStateOf("system")
+    private var hideCredentials by mutableStateOf(false)
+    private val settings get()=getSharedPreferences("spdecode-ui-preferences",MODE_PRIVATE)
     private var job:Job?=null
-    private val recent=mutableStateListOf<DecodeView>()
-    private var result by mutableStateOf<DecodeView?>(null)
-    private var tab by mutableIntStateOf(0)
+    private val sessionVm by viewModels<DecodeSessionViewModel>()
+    private val recent get()=sessionVm.recent
+    private var result:DecodeView?
+        get()=sessionVm.current
+        set(value){sessionVm.current=value}
+    private var tab:Int
+        get()=sessionVm.tab
+        set(value){sessionVm.tab=value}
     private var busy by mutableStateOf(false)
     private var message by mutableStateOf<String?>(null)
-    private var reveal by mutableStateOf(false)
+    private var reveal:Boolean
+        get()=sessionVm.reveal
+        set(value){sessionVm.reveal=value}
     private var stagedExport:String?=null
+
+    override fun attachBaseContext(base:Context) {
+        val tag=base.getSharedPreferences("spdecode-ui-preferences",Context.MODE_PRIVATE)
+            .getString("language","system") ?: "system"
+        if(tag=="system") {
+            super.attachBaseContext(base)
+        }else {
+            val locale=Locale.forLanguageTag(tag)
+            val config=Configuration(base.resources.configuration)
+            config.setLocale(locale)
+            config.setLayoutDirection(locale)
+            super.attachBaseContext(base.createConfigurationContext(config))
+        }
+    }
 
     private val picker=registerForActivityResult(ActivityResultContracts.OpenDocument()){uri->
         if(uri!=null)importFiles(listOf(uri))
@@ -54,26 +83,52 @@ class MainActivity : ComponentActivity() {
         if(uris.isNotEmpty())importFiles(uris.take(10))
     }
     private val exporter=registerForActivityResult(
-        ActivityResultContracts.CreateDocument("text/plain")){uri->
+        ActivityResultContracts.CreateDocument("text/plain")){uri->saveExport(uri)}
+
+    private val jsonExporter=registerForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")){uri->
+        saveExport(uri)
+    }
+
+    private fun saveExport(uri:Uri?){
         val text=stagedExport
         stagedExport=null
-        if(uri!=null && text!=null) {
-            scope.launch {
-                try{
-                    withContext(Dispatchers.IO) {
-                        contentResolver.openOutputStream(uri,"w")?.use {
-                            it.write(text.toByteArray(Charsets.UTF_8))
-                            it.flush()
-                        }?:throw IOException("Destination unavailable")
-                    }
-                    toast(R.string.saved)
-                }catch(_:Exception){toast(R.string.write_error)}
-            }
+        if(uri!=null && text!=null)scope.launch{
+            try{
+                withContext(Dispatchers.IO){
+                    contentResolver.openOutputStream(uri,"w")?.use{
+                        it.write(text.toByteArray(Charsets.UTF_8))
+                        it.flush()
+                    }?:throw IOException("Destination unavailable")
+                }
+                toast(R.string.saved)
+            }catch(_:Exception){toast(R.string.write_error)}
         }
+    }
+
+    private fun setLanguage(tag:String){
+        if(tag !in setOf("system","es","en","pt-BR","ar")||tag==selectedLanguage)return
+        settings.edit().putString("language",tag).apply()
+        selectedLanguage=tag
+        recreate()
+    }
+
+    private fun openExternal(url:String){
+        if(url !in setOf(
+            "https://github.com/Gh0stDeveloper/SP-DECODE",
+            "https://github.com/Gh0stDeveloper/SP-DECODE/issues",
+            "https://t.me/Gh0stDeveloper",
+            "https://t.me/CodeBreakersHub",
+            "https://t.me/GhostDeve"
+        ))return
+        try {startActivity(Intent(Intent.ACTION_VIEW,Uri.parse(url)))}
+        catch(_:ActivityNotFoundException){toast(R.string.read_error)}
     }
 
     override fun onCreate(savedInstanceState:Bundle?){
         super.onCreate(savedInstanceState)
+        selectedLanguage=settings.getString("language","system") ?: "system"
+        hideCredentials=settings.getBoolean("mask_credentials",false)
         @Suppress("DEPRECATION")
         window.statusBarColor=android.graphics.Color.BLACK
         @Suppress("DEPRECATION")
@@ -93,8 +148,13 @@ class MainActivity : ComponentActivity() {
                 onImportMultiple={multiPicker.launch(arrayOf("*/*"))},
                 onCancel={job?.cancel();busy=false},
                 onReveal={reveal=it},
-                onCopy={original->result?.let{copy(if(original)it.rawText else it.redactedText)}},
-                onExport={original->result?.let{export(if(original)it.rawText else it.redactedText,it.filename)}},
+                onCopy={format->result?.let{copy(ResultPresentation.formatted(it.document,format))}},
+                onExport={format->result?.let{export(ResultPresentation.formatted(it.document,format),it.filename,format)}},
+                selectedLanguage=selectedLanguage,
+                hideCredentials=hideCredentials,
+                onLanguage={tag->setLanguage(tag)},
+                onMaskCredentials={value->hideCredentials=value;settings.edit().putBoolean("mask_credentials",value).apply()},
+                onExternalLink={url->openExternal(url)},
                 onSelect={result=it;tab=0;reveal=false},
                 onClear={recent.clear();result=null;reveal=false},
                 onDismissError={message=null},
@@ -191,11 +251,12 @@ class MainActivity : ComponentActivity() {
         manager.setPrimaryClip(clip)
         toast(R.string.copied)
     }
-    private fun export(text:String,filename:String){
+    private fun export(text:String,filename:String,format:ResultExport){
         stagedExport=text
         val safe=filename.substringBeforeLast('.').replace(Regex("[^A-Za-z0-9._-]"),"_")
             .take(50).ifEmpty{"spdecode"}
-        exporter.launch("$safe-decoded.txt")
+        if(format==ResultExport.JSON) jsonExporter.launch("$safe-decoded.json")
+        else exporter.launch("$safe-decoded.txt")
     }
     private fun toast(id:Int)=Toast.makeText(this,id,Toast.LENGTH_SHORT).show()
 

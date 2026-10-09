@@ -54,8 +54,13 @@ fun SpDecodeApp(
     onImportMultiple:()->Unit,
     onCancel:()->Unit,
     onReveal:(Boolean)->Unit,
-    onCopy:(Boolean)->Unit,
-    onExport:(Boolean)->Unit,
+    onCopy:(ResultExport)->Unit,
+    onExport:(ResultExport)->Unit,
+    selectedLanguage:String,
+    hideCredentials:Boolean,
+    onLanguage:(String)->Unit,
+    onMaskCredentials:(Boolean)->Unit,
+    onExternalLink:(String)->Unit,
     onSelect:(DecodeView)->Unit,
     onClear:()->Unit,
     onDismissError:()->Unit
@@ -76,11 +81,12 @@ fun SpDecodeApp(
             BrandHeader(onSettings={onTab(3)})
             Box(Modifier.weight(1f)) {
                 when(activeTab) {
-                    0->HomeScreen(current,session,busy,reveal,onImport,onCancel,onReveal,
+                    0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
                         onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect)
                     1->HistoryScreen(session,onSelect,onClear,onImportMultiple)
                     2->FormatsScreen()
-                    else->SettingsScreen(onClear)
+                    else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
+                        onLanguage,onMaskCredentials,onClear,onExternalLink)
                 }
             }
             BottomTabs(activeTab,onTab)
@@ -102,34 +108,34 @@ fun SpDecodeApp(
                 onDismissRequest={dialog=null},
                 title={Text(stringResource(if(copy)R.string.copy_question else R.string.export_question))},
                 text={
-                    Column(verticalArrangement=Arrangement.spacedBy(14.dp)) {
-                        Text(stringResource(R.string.privacy_warning),color=Secondary,fontSize=14.sp)
-                        TextButton(
-                            modifier=Modifier.fillMaxWidth(),
-                            onClick={
-                                if(copy)onCopy(false)else onExport(false)
-                                dialog=null
+                    Column(verticalArrangement=Arrangement.spacedBy(10.dp)) {
+                        Text(stringResource(R.string.privacy_warning),
+                            color=Secondary,fontSize=13.sp)
+                        listOf(
+                            Triple(ResultExport.JSON,R.string.json_option,Icons.Outlined.DataObject),
+                            Triple(ResultExport.ORDERED,R.string.ordered_option,Icons.Outlined.FormatListBulleted),
+                            Triple(ResultExport.ORIGINAL,R.string.original_option,Icons.Outlined.Code)
+                        ).forEach { (format,label,icon)->
+                            OutlinedButton(
+                                modifier=Modifier.fillMaxWidth(),
+                                onClick={
+                                    if(copy)onCopy(format)else onExport(format)
+                                    dialog=null
+                                }
+                            ){
+                                Icon(icon,null)
+                                Spacer(Modifier.width(9.dp))
+                                Text(stringResource(label))
                             }
-                        ){
-                            Icon(if(copy)Icons.Outlined.ContentCopy else Icons.Outlined.FileDownload,null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(if(copy)R.string.masked_copy else R.string.masked_export))
-                        }
-                        OutlinedButton(
-                            modifier=Modifier.fillMaxWidth(),
-                            onClick={
-                                if(copy)onCopy(true)else onExport(true)
-                                dialog=null
-                            }
-                        ){
-                            Icon(Icons.Outlined.Visibility,null)
-                            Spacer(Modifier.width(8.dp))
-                            Text(stringResource(if(copy)R.string.full_copy else R.string.full_export))
                         }
                     }
                 },
-                confirmButton={TextButton(onClick={dialog=null}){Text(stringResource(R.string.cancel))}},
-                containerColor=Panel,titleContentColor=White,textContentColor=White,
+                confirmButton={TextButton(onClick={dialog=null}){
+                    Text(stringResource(R.string.cancel))
+                }},
+                containerColor=Panel,
+                titleContentColor=White,
+                textContentColor=White,
             )
         }
     }
@@ -166,6 +172,7 @@ private fun HomeScreen(
     session:List<DecodeView>,
     busy:Boolean,
     reveal:Boolean,
+    hideCredentials:Boolean,
     onImport:()->Unit,
     onCancel:()->Unit,
     onReveal:(Boolean)->Unit,
@@ -218,7 +225,7 @@ private fun HomeScreen(
                 color=Secondary,fontSize=12.sp
             )
         }
-        ResultCard(current,reveal,onReveal,onCopy,onExport)
+        CompleteResultCard(current,reveal,hideCredentials,onReveal,onCopy,onExport)
         Row(verticalAlignment=Alignment.CenterVertically){
             Icon(Icons.Outlined.Lock,null,tint=Secondary,modifier=Modifier.size(15.dp))
             Spacer(Modifier.width(8.dp))
@@ -240,127 +247,6 @@ private fun HomeScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun ResultCard(
-    current:DecodeView?,
-    reveal:Boolean,
-    onReveal:(Boolean)->Unit,
-    onCopy:()->Unit,
-    onExport:()->Unit,
-){
-    var rawExpanded by remember(current){mutableStateOf(false)}
-    val example=current==null
-    val file=current?.filename?:stringResource(R.string.example_file)
-    val suffix=current?.extension?:"tls"
-    val fields=if(example)listOf(
-        stringResource(R.string.server) to "example.com",
-        stringResource(R.string.port) to "443",
-        stringResource(R.string.password) to "••••••••"
-    )else current!!.fields.filterNot{(k,_)->
-        k.contains("𝗚𝗥𝗢𝗨𝗣")||k.contains("𝗖𝗛𝗔𝗡𝗡𝗘𝗟")
-    }.take(10)
-    Surface(
-        shape=RoundedCornerShape(16.dp),
-        color=Background,
-        border=BorderStroke(1.dp,Outline),
-        modifier=Modifier.fillMaxWidth()
-    ){
-        Column(Modifier.padding(15.dp),verticalArrangement=Arrangement.spacedBy(15.dp)) {
-            Row(verticalAlignment=Alignment.CenterVertically){
-                Icon(Icons.Outlined.CheckCircle,null,tint=if(example)Green else Amber,
-                    modifier=Modifier.size(20.dp))
-                Spacer(Modifier.width(10.dp))
-                Text(file,color=White,fontSize=16.sp,fontWeight=FontWeight.Bold,
-                    maxLines=1,overflow=TextOverflow.Ellipsis,modifier=Modifier.weight(1f))
-                Spacer(Modifier.width(6.dp))
-                Surface(color=if(example)Color(0xFF082216)else Color(0xFF302615),
-                    shape=RoundedCornerShape(18.dp)){
-                    Text(stringResource(if(example)R.string.sample else R.string.experimental),
-                        modifier=Modifier.padding(horizontal=9.dp,vertical=5.dp),
-                        color=if(example)Green else Amber,fontSize=11.sp,
-                        fontWeight=FontWeight.SemiBold)
-                }
-            }
-            HorizontalDivider(color=Outline,thickness=1.dp)
-            FieldRow(stringResource(R.string.format),
-                if(suffix=="tls")"TLS Tunnel" else suffix.uppercase(),false,reveal,onReveal)
-            fields.forEach{(name,value)->
-                FieldRow(name,value, !example && RedactionPolicy.isSensitive(name),
-                    reveal,onReveal)
-            }
-            if(example)Text(stringResource(R.string.illustrative_warning),
-                fontSize=11.sp,color=Secondary)
-            if(!example){
-                HorizontalDivider(color=Outline)
-                TextButton(onClick={rawExpanded=!rawExpanded},contentPadding=PaddingValues(0.dp)){
-                    Text(stringResource(R.string.raw_text),color=Secondary,fontSize=13.sp)
-                    Spacer(Modifier.width(8.dp))
-                    Icon(if(rawExpanded)Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                        null,tint=Secondary,modifier=Modifier.size(18.dp))
-                }
-                if(rawExpanded){
-                    SelectionContainer {
-                        Text(
-                            if(reveal)current!!.rawText else current!!.redactedText,
-                            color=White,fontSize=12.sp,lineHeight=18.sp,
-                            style=TextStyle(textDirection=TextDirection.Ltr)
-                        )
-                    }
-                }
-            }
-            Row(horizontalArrangement=Arrangement.spacedBy(10.dp)){
-                ActionButton(stringResource(R.string.copy),Icons.Outlined.ContentCopy,
-                    enabled=!example,onClick=onCopy,modifier=Modifier.weight(1f))
-                ActionButton(stringResource(R.string.export),Icons.Outlined.FileDownload,
-                    enabled=!example,onClick=onExport,modifier=Modifier.weight(1f))
-            }
-        }
-    }
-}
-
-@Composable
-private fun FieldRow(name:String,value:String,sensitive:Boolean,reveal:Boolean,
-                     onReveal:(Boolean)->Unit) {
-    Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
-        Text(name,color=Secondary,fontSize=13.sp,maxLines=2,modifier=Modifier.weight(0.43f))
-        Row(
-            modifier=Modifier.weight(0.57f),
-            horizontalArrangement=Arrangement.End,
-            verticalAlignment=Alignment.CenterVertically,
-        ){
-            Text(if(sensitive&&!reveal)"••••••••" else value,
-                color=White,fontSize=13.sp,maxLines=3,
-                overflow=TextOverflow.Ellipsis,textAlign=TextAlign.End,
-                style=TextStyle(textDirection=TextDirection.Ltr),
-                modifier=Modifier.weight(1f,fill=false))
-            if(sensitive){
-                IconButton(onClick={onReveal(!reveal)},modifier=Modifier.size(29.dp)){
-                    Icon(if(reveal)Icons.Outlined.VisibilityOff else Icons.Outlined.Visibility,
-                        stringResource(if(reveal)R.string.hide else R.string.show),
-                        tint=Secondary,modifier=Modifier.size(19.dp))
-                }
-            }
-        }
-    }
-}
-@Composable
-private fun ActionButton(
-    title:String,
-    icon:androidx.compose.ui.graphics.vector.ImageVector,
-    enabled:Boolean,
-    onClick:()->Unit,
-    modifier:Modifier=Modifier
-){
-    Button(onClick=onClick,enabled=enabled,modifier=modifier.heightIn(min=47.dp),
-        colors=ButtonDefaults.buttonColors(containerColor=Panel,contentColor=White,
-            disabledContainerColor=Panel,disabledContentColor=Secondary),
-        shape=RoundedCornerShape(11.dp),contentPadding=PaddingValues(horizontal=8.dp)){
-        Icon(icon,null,modifier=Modifier.size(17.dp))
-        Spacer(Modifier.width(7.dp))
-        Text(title,fontSize=13.sp,fontWeight=FontWeight.SemiBold)
     }
 }
 
@@ -441,43 +327,6 @@ private fun FormatsScreen(){
                     Text(stringResource(R.string.experimental),color=Amber,fontSize=12.sp)
                 }
                 HorizontalDivider(color=Outline)
-            }
-        }
-    }
-}
-@Composable
-private fun SettingsScreen(onClear:()->Unit){
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-        .padding(20.dp),verticalArrangement=Arrangement.spacedBy(17.dp)){
-        Text(stringResource(R.string.settings_title),fontSize=24.sp,fontWeight=FontWeight.Bold)
-        SettingsSection(Icons.Outlined.Lock,
-            stringResource(R.string.privacy_title),
-            stringResource(R.string.privacy_text))
-        SettingsSection(Icons.Outlined.Info,
-            stringResource(R.string.about_title),
-            stringResource(R.string.about_text))
-        SettingsSection(Icons.Outlined.Translate,
-            stringResource(R.string.language_title),
-            stringResource(R.string.language_text))
-        OutlinedButton(onClick=onClear,modifier=Modifier.fillMaxWidth()){
-            Icon(Icons.Outlined.DeleteOutline,null)
-            Spacer(Modifier.width(9.dp))
-            Text(stringResource(R.string.delete_session))
-        }
-        Text("SP-DECODE · 0.2.0-alpha",color=Secondary,fontSize=12.sp,
-            modifier=Modifier.align(Alignment.CenterHorizontally))
-    }
-}
-@Composable
-private fun SettingsSection(icon:androidx.compose.ui.graphics.vector.ImageVector,
-                            title:String,description:String) {
-    Surface(color=Panel,shape=RoundedCornerShape(15.dp),modifier=Modifier.fillMaxWidth()){
-        Row(Modifier.padding(17.dp),verticalAlignment=Alignment.Top){
-            Icon(icon,null,tint=White,modifier=Modifier.size(23.dp))
-            Spacer(Modifier.width(13.dp))
-            Column(verticalArrangement=Arrangement.spacedBy(8.dp)){
-                Text(title,color=White,fontWeight=FontWeight.SemiBold)
-                Text(description,color=Secondary,fontSize=13.sp,lineHeight=19.sp)
             }
         }
     }

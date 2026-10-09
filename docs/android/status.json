@@ -2,14 +2,14 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.18.0",
+  "documentationVersion": "1.19.1",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
   "documentationBranch": "docs/android-offline-architecture",
-  "productStatus": "android_compose_functional_alpha_implementation_pending_ci",
+  "productStatus": "android_0_3_full_result_export_language_picker_credits_verified_api35",
   "androidSourceExists": true,
-  "apkProduced": false,
+  "apkProduced": true,
   "offlineRequired": true,
   "loginRequired": false,
   "telegramDependencyAllowed": false,
@@ -45,14 +45,14 @@
       }
     },
     "B": {
-      "status": "compose_ui_saf_file_decode_session_history_working_source_pending_emulator_ci",
+      "status": "v0_3_debug_alpha_full_results_manual_locales_credits_82_tests_pass",
       "subphases": {
-        "B.1": "implemented_pending_android_compile_and_lint",
-        "B.2": "implemented_user_screenshot_amoled_pending_emulator_visual_check",
-        "B.3": "implemented_home_history_formats_settings_pending_ui_tests",
-        "B.4": "partial_saf_open_document_view_send_multiple_export_txt_pending_provider_tests",
-        "B.5": "not_started_persistent_room_datastore_vm",
-        "B.6": "instrumentation_added_pending_ci"
+        "B.1": "verified_compose_apk_api35_in_pr22",
+        "B.2": "reference_screenshot_baseline_verified_apk_0_2_real_user",
+        "B.3": "home_history_formats_settings_real_language_and_credits_verified_emulator",
+        "B.4": "SAF_import_and_JSON_ordered_original_copy_export_verified_emulator",
+        "B.5": "ViewModel_ephemeral_session_survives_locale_change_verified_emulator",
+        "B.6": "82_of_82_connected_instrumentation_tests_api35_success_linux_success"
       }
     },
     "C": {
@@ -65,7 +65,7 @@
       "status": "not_started"
     },
     "F": {
-      "status": "not_started"
+      "status": "v0_3_complete_typed_json_nested_fields_full_preview_three_copy_export_modes_api35_verified"
     },
     "G": {
       "status": "not_started"
@@ -74,10 +74,10 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Validate Compose build, FunctionalUiInstrumentedTest and 72 existing Android tests; debug APK Actions artifact. Then SAF provider QA, encrypted history, real exporter certification and release hardening.",
-  "releaseStatus": "DEBUG-ALPHA-PENDING-CI-NO-PRODUCTION-GO",
+  "nextAction": "Install v0.3 debug APK from successful GitHub Actions artifact on ARM64 user phone, verify long XUI/HC real-exporter results and multilingual UX, then harden remaining advanced exporter variants and physical 16KiB compatibility for release.",
+  "releaseStatus": "DEBUG-ALPHA-0.3-VERIFIED-API35-NO-PRODUCTION-GO",
   "ciValidatedAndroid": true,
-  "notes": "User-provided 2026-10-08 screenshot is authoritative over differing older SVG designs. 59 Kotlin decoders remain experimental; UI now implemented in branch, awaiting CI.",
+  "notes": "User verified v0.2 on Android phone and provided 3 screenshots; v0.3 fixes full XUI and nested HC presentation, copy/export JSON ordered original, five UI locales, credits; 82/82 API35 instrumentation tests and Linux success in run #37892276304. Still 0 certified modern vendor formats, ARM64/16KiB and production APK signing pending.",
   "localization": {
     "scope": "ui_only",
     "languages": [
@@ -94,7 +94,7 @@
     "arabicRtlRequired": true,
     "decoderOutputTranslated": false,
     "decoderOutputMutationAllowed": false,
-    "localizationImplementationStatus": "four_resource_locales_device_language_no_manual_selector_yet"
+    "localizationImplementationStatus": "manual_language_system_es_en_pt_BR_ar_persisted_verified_api35_emulator"
   },
   "a2": {
     "baseCommit": "39118010f24bac95aea6c3299fc1523a4c9e0522",
@@ -589,5 +589,13 @@
       "scope": "bot regression + A2 static inventory + documentation; NOT Android execution"
     }
   ],
-  "versionName": "0.2.0-alpha"
+  "versionName": "0.3.0-alpha",
+  "ci": {
+    "latestAndroidRun": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37892276304",
+    "androidInstrumentedTests": 82,
+    "androidStatus": "success",
+    "linuxStatus": "success",
+    "alphaApkArtifact": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37892276304/artifacts/11599006603",
+    "emulatorScreenshotArtifact": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37892276304/artifacts/11599276005"
+  }
 }

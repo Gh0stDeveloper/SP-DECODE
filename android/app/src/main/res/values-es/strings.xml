@@ -33,7 +33,7 @@
     <string name="about_title">Acerca de SP-DECODE</string>
     <string name="about_text">Versión alfa Android sin conexión. Aún se prueban variantes y compatibilidad externa.</string>
     <string name="language_title">Idiomas</string>
-    <string name="language_text">La interfaz sigue el idioma de tu dispositivo. La selección manual está prevista.</string>
+    <string name="language_text">Elige el idioma de la aplicación. Al cambiarlo se reinicia esta pantalla.</string>
     <string name="show">Mostrar</string>
     <string name="hide">Ocultar</string>
     <string name="raw_text">Texto original del decodificador</string>
@@ -66,4 +66,24 @@
     <string name="unknown">Desconocido</string>
     <string name="sensitive">Dato sensible</string>
     <string name="all_formats">Todos los formatos</string>
+    <string name="language_pick_description">Elige el idioma de la aplicación. Al cambiarlo se reinicia esta pantalla.</string>
+    <string name="language_system">Idioma del dispositivo</string>
+    <string name="result_preferences_title">Visualización de resultados</string>
+    <string name="mask_passwords_title">Ocultar contraseñas en la vista</string>
+    <string name="mask_passwords_detail">Opcional y desactivado por defecto. Todos los campos se muestran completos.</string>
+    <string name="export_security_note">Al copiar o compartir, otras aplicaciones podrían recibir credenciales.</string>
+    <string name="developer_credits">Desarrollador y créditos</string>
+    <string name="contribute_invitation">Proyecto de código abierto. Se agradecen colaboradores, pruebas y nuevos decodificadores. Puedes contribuir o reportar errores en GitHub.</string>
+    <string name="contact_developer">Contactar al desarrollador</string>
+    <string name="telegram_group">Comunidad de Telegram</string>
+    <string name="telegram_channel">Canal de Telegram</string>
+    <string name="report_issue">Reportar error / Colaborar</string>
+    <string name="clear_confirm_title">¿Limpiar el historial de sesión?</string>
+    <string name="clear_confirm_detail">Se borrarán los resultados decodificados en memoria. No se puede deshacer.</string>
+    <string name="complete_fields_count">%1$d campos completos</string>
+    <string name="json_option">JSON · completo y ordenado</string>
+    <string name="ordered_option">Estructurado · todos los campos</string>
+    <string name="original_option">Texto original del decodificador</string>
+    <string name="raw_masked_explanation">El texto original puede incluir contraseñas dentro de JSON. Desactiva la ocultación en Ajustes para verlo.</string>
+    <string name="project_repo">Repositorio · GitHub</string>
 </resources>
