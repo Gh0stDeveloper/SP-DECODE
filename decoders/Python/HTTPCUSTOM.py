@@ -353,8 +353,24 @@ class HCDecryptor:
 
 
 def run(file_bytes: bytes) -> Optional[str]:
-    """Entry point for seamless integration."""
-    return HCDecryptor.execute(file_bytes)
+    """Use the historical decoder first; HCCFG is a separate, versioned engine.
+
+    The CLI/bot never prompts interactively. Password/HWID-protected files
+    report a clear requirement instead of hanging a worker or pretending that
+    an authenticated decryption succeeded.
+    """
+    legacy = HCDecryptor.execute(file_bytes)
+    if legacy is not None:
+        return legacy
+    from _hc_hccfg import HCError, decrypt
+    try:
+        value = decrypt(file_bytes)
+    except HCError as exc:
+        # Authenticated envelopes may require credentials that cannot be
+        # safely collected inside a non-interactive Telegram file worker.
+        raise ValueError("HTTP Custom HCCFG: " + str(exc)) from exc
+    return json.dumps(value, indent=4, ensure_ascii=False)
+
 
 
 def main() -> int:
