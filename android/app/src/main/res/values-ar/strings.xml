@@ -85,4 +85,5 @@
     <string name="ordered_option">منظم · جميع الحقول</string>
     <string name="original_option">النص الأصلي لفك الترميز</string>
     <string name="raw_masked_explanation">قد يحتوي النص الأصلي على كلمات مرور داخل JSON. أوقف الإخفاء من الإعدادات لعرضه.</string>
+    <string name="project_repo">المستودع · GitHub</string>
 </resources>
