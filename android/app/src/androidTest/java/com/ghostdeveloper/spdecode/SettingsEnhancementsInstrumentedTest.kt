@@ -1,5 +1,6 @@
 package com.ghostdeveloper.spdecode
 
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -22,6 +23,8 @@ class SettingsEnhancementsInstrumentedTest {
             ui.onAllNodesWithContentDescription(ctx.getString(R.string.settings))
                 .fetchSemanticsNodes().isNotEmpty()
         }
+        if(ui.onAllNodesWithText(ctx.getString(R.string.whats_new_continue)).fetchSemanticsNodes().isNotEmpty())
+            ui.onNodeWithText(ctx.getString(R.string.whats_new_continue)).performClick()
         ui.onNodeWithContentDescription(ctx.getString(R.string.settings)).performClick()
         // Settings keeps a single compact row until the user opens the sheet.
         ui.onNodeWithText("Español").assertDoesNotExist()
