@@ -121,4 +121,13 @@
     <string name="result_decoded_by">تم فك الترميز بواسطة %1$s</string>
     <string name="result_decoded_date">التاريخ: %1$s</string>
     <string name="splash_powered_by">Powered by Ghost Developer</string>
+    <string name="text_decode_title">فك ترميز النص</string>
+    <string name="text_decode_description">الصق رابط التهيئة أو النص المشفر. تعمل البروتوكولات المدعومة دون إنترنت.</string>
+    <string name="text_decode_hint">الصق النص أو الجزء التالي</string>
+    <string name="text_decode_action">فك ترميز النص</string>
+    <string name="text_decode_reset">حذف الأجزاء</string>
+    <string name="text_decode_pending">%1$s: تم استلام %2$d أجزاء. الصق الجزء التالي وحاول مجددًا أو احذف الأجزاء.</string>
+    <string name="text_decode_private">تتم المعالجة محليًا. لا تُحفظ الأجزاء غير المكتملة.</string>
+    <string name="text_decode_invalid">بروتوكول غير معروف أو جزء غير صالح أو تجاوز حد الحجم.</string>
+    <string name="text_decode_unsupported">تعذر فك ترميز النص. ربما يكون غير مكتمل أو تالفًا أو يستخدم تشفيرًا مختلفًا.</string>
 </resources>
