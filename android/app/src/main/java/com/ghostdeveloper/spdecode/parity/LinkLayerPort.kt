@@ -52,26 +52,35 @@ object LinkLayerPort {
             cipher.processBytes(data,0,data.size,it,0)
         }
     }
-    /** PBKDF2(password=RAW Go bytes, salt, 1500, dkLen=32, HMAC-SHA1).
-     * PBEKeySpec is NOT used because it transforms byte passwords to chars.
+    /** Exact hashlib.pbkdf2_hmac("sha1", password, salt, 32, 1500).
+     *
+     * Python's positional arguments are iterations=32 and dklen=1500 bytes,
+     * NOT iterations=1500 and dklen=32. LinkLayer XORs up to 1500 bytes;
+     * swapping these produced structurally plausible but invalid Go gob data.
+     * PBEKeySpec is avoided because it converts raw byte passwords to chars.
      */
     private fun pbkdf2(password:ByteArray):ByteArray {
         check(password.size==16)
         val hmac=Mac.getInstance("HmacSHA1")
         hmac.init(SecretKeySpec(password,"HmacSHA1"))
-        val result=ByteArray(32)
+        val result=ByteArray(1500)
         var offset=0
-        for(blockIndex in 1..2) {
-            val counter=byteArrayOf(0,0,0,blockIndex.toByte())
+        var blockIndex=1
+        while(offset<result.size) {
+            val counter=byteArrayOf(
+                (blockIndex ushr 24).toByte(),(blockIndex ushr 16).toByte(),
+                (blockIndex ushr 8).toByte(),blockIndex.toByte()
+            )
             var u=hmac.doFinal(join(salt,counter))
             val xor=u.clone()
-            repeat(1499) {
+            repeat(31) {
                 u=hmac.doFinal(u)
                 for(i in xor.indices)xor[i]=(xor[i].toInt() xor u[i].toInt()).toByte()
             }
             val count=minOf(xor.size,result.size-offset)
             xor.copyInto(result,offset,0,count)
             offset+=count
+            blockIndex++
         }
         return result
     }
