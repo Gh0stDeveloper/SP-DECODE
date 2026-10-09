@@ -33,6 +33,21 @@ class AndroidReleaseGateTest(unittest.TestCase):
         ready["evidence"]["arm64Physical"]["report"] = ""
         self.assertTrue(check(ready, "stable", "1.0.0"))
 
+    def test_public_preview_needs_explicit_owner_approval_and_no_go(self):
+        data = copy.deepcopy(BASE)
+        data["stableVersion"] = "1.0.0"
+        self.assertTrue(check(data, "public-preview", "1.0.0"))
+        data["ownerApproval"] = True
+        self.assertTrue(check(data, "public-preview", "1.0.0"))
+        data["publicPreviewApproval"] = True
+        self.assertEqual([], check(data, "public-preview", "1.0.0"))
+        self.assertTrue(check(data, "public-preview", "1.0.1"))
+        self.assertTrue(check(data, "public-preview", "1.0.0-alpha"))
+        data["decision"] = "GO"
+        self.assertTrue(check(data, "public-preview", "1.0.0"))
+        # Publishing a preview never unlocks stable without eight verified reports.
+        self.assertTrue(check(data, "stable", "1.0.0"))
+
     def test_tampered_evidence_schema_is_rejected(self):
         broken=copy.deepcopy(BASE)
         broken["schemaVersion"]=99
