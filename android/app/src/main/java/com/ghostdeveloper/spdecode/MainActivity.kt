@@ -60,6 +60,9 @@ class MainActivity : ComponentActivity() {
         get()=sessionVm.tab
         set(value){sessionVm.tab=value}
     private var busy by mutableStateOf(false)
+    private var progressStage by mutableIntStateOf(0)
+    private var progressFilename by mutableStateOf<String?>(null)
+    private var importGeneration=0
     private var message by mutableStateOf<String?>(null)
     private var reveal:Boolean
         get()=sessionVm.reveal
@@ -111,7 +114,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun setLanguage(tag:String){
-        if(tag !in setOf("system","es","en","pt-BR","ar")||tag==selectedLanguage)return
+        if(!SupportedLanguages.supports(tag)||tag==selectedLanguage)return
         settings.edit().putString("language",tag).apply()
         selectedLanguage=tag
         recreate()
@@ -156,11 +159,13 @@ class MainActivity : ComponentActivity() {
                 session=recent,
                 busy=busy,
                 error=message,
+                progressStage=progressStage,
+                progressFilename=progressFilename,
                 reveal=reveal,
                 onTab={tab=it;reveal=false},
                 onImport={picker.launch(arrayOf("*/*"))},
                 onImportMultiple={multiPicker.launch(arrayOf("*/*"))},
-                onCancel={job?.cancel();busy=false},
+                onCancel={cancelImport()},
                 onReveal={reveal=it},
                 onCopy={format->result?.let{copy(ResultPresentation.formatted(it.document,format))}},
                 onExport={format->result?.let{export(ResultPresentation.formatted(it.document,format),it.filename,format)}},
@@ -197,37 +202,63 @@ class MainActivity : ComponentActivity() {
         if(uris.isNotEmpty())importFiles(uris)
     }
 
+    private fun cancelImport() {
+        // An obsolete worker must not close the new import's progress dialog.
+        importGeneration++
+        job?.cancel()
+        job=null
+        busy=false
+        progressFilename=null
+    }
+
     private fun importFiles(uris:List<Uri>){
         job?.cancel()
+        val generation=++importGeneration
         job=scope.launch {
             busy=true
+            progressStage=0
+            progressFilename=null
             message=null
             reveal=false
             try {
                 historyLoad?.await()
                 for(uri in uris.take(10)){
-                    val processed=withContext(Dispatchers.IO){
-                        val name=displayName(uri)
-                        val supported=AndroidDecoderCatalog.detect(name,AndroidDecoderCatalog.read(this@MainActivity))
-                        if(supported==null)throw DecodeFailure(R.string.unsupported)
-                        val input=readBounded(uri)
-                        val text=withContext(Dispatchers.Default){
-                            AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
-                        }?:throw DecodeFailure(R.string.unsupported_variant_message)
-                        DecodeView(name,supported.suffix,text,input.size)
-                    }
+                    progressStage=0
+                    val name=withContext(Dispatchers.IO){displayName(uri)}
+                    progressFilename=name
+                    val supported=AndroidDecoderCatalog.detect(
+                        name,AndroidDecoderCatalog.read(this@MainActivity))
+                        ?:throw DecodeFailure(R.string.unsupported)
+                    val input=withContext(Dispatchers.IO){readBounded(uri)}
+                    progressStage=1
+                    val text=withContext(Dispatchers.Default){
+                        AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
+                    }?:throw DecodeFailure(R.string.unsupported_variant_message)
+                    val processed=DecodeView(name,supported.suffix,text,input.size)
+                    progressStage=2
+                    val saved=try {
+                        withContext(Dispatchers.IO){historyStore.save(processed)}
+                        true
+                    }catch(e:CancellationException){throw e}
+                    catch(_:Exception){false}
                     result=processed
-                    val saved = runCatching {
-                        withContext(Dispatchers.IO) { historyStore.save(processed) }
-                    }.isSuccess
                     recent.add(0,processed)
                     if(!saved)toast(R.string.history_storage_error)
                     tab=0
                 }
-            }catch(_:CancellationException){throw CancellationException()}
-            catch(e:DecodeFailure){message=getString(e.stringId);tab=0}
-            catch(_:Exception){message=getString(R.string.read_error);tab=0}
-            finally{busy=false}
+            }catch(e:CancellationException){throw e}
+            catch(e:DecodeFailure){if(generation==importGeneration){
+                message=getString(e.stringId);tab=0
+            }}
+            catch(_:Exception){if(generation==importGeneration){
+                message=getString(R.string.read_error);tab=0
+            }}
+            finally {
+                if(generation==importGeneration) {
+                    busy=false
+                    progressFilename=null
+                }
+            }
         }
     }
 
