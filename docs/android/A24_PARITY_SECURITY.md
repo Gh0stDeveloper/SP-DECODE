@@ -173,3 +173,20 @@ Preparación de **38 vectores SHA256 sintéticos para 37 sufijos experimentales*
 **22 sin portar**; 59 inventariados; **0 certificados de exportador actual**.
 La prueba Android nueva incluye 15 comparaciones completas, rutas deterministas
 y 45 entradas rechazadas. Pendiente CI API35 x86_64 y ARM64 físico/16KiB.
+
+### Evidencia de paridad sintética del lote 15
+
+Workflow GitHub Actions: [#37881078999](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37881078999).
+**Linux `validate` success; build Android success; 47/47 pruebas
+instrumentadas en emulador Android 15 API35 x86_64 correctas.**
+Las primeras incidencias de la rama (assertion obsoleta `.sksrv.png`
+y lectura prematura de bytes cifrados `.epro` como UTF-8) se corrigieron.
+
+**Límites de cobertura:** `epro` confirma el contenedor AES-ECB directo
+sintético, no todas las variantes XOR/doble capa del módulo histórico.
+`npv2` sólo comprueba la configuración V2Ray vmess sintética y una clave
+del conjunto original. MultiDES tiene seis rutas con un *solo motor*,
+probadas sintéticamente con la primera clave. No se anuncian variantes
+completas ni compatibilidad con versiones recientes.
+Ningún input se comparte con Telegram; los registros no deben contener
+datos descifrados.
