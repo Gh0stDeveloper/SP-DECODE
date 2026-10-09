@@ -33,7 +33,7 @@
     <string name="about_title">About SP-DECODE</string>
     <string name="about_text">Offline Android alpha. Decoder variants and external compatibility are still being tested.</string>
     <string name="language_title">Languages</string>
-    <string name="language_text">Interface follows your device language. Manual selection is planned.</string>
+    <string name="language_text">Choose the app language. Changing it restarts this screen.</string>
     <string name="show">Show</string>
     <string name="hide">Hide</string>
     <string name="raw_text">Original decoder output</string>
@@ -66,4 +66,22 @@
     <string name="unknown">Unknown</string>
     <string name="sensitive">Sensitive value</string>
     <string name="all_formats">All formats</string>
+    <string name="language_pick_description">Choose the app language. Changing it restarts this screen.</string>
+    <string name="language_system">Use device language</string>
+    <string name="result_preferences_title">Result display</string>
+    <string name="mask_passwords_title">Hide passwords in preview</string>
+    <string name="mask_passwords_detail">Optional. Disabled by default; all decoded fields are visible unless enabled.</string>
+    <string name="export_security_note">Sharing or copying original data can reveal credentials to other apps.</string>
+    <string name="developer_credits">Developer &amp; credits</string>
+    <string name="contribute_invitation">Open source project · collaborators, testers and decoder contributors are welcome. Report issues or contribute on GitHub.</string>
+    <string name="contact_developer">Contact developer</string>
+    <string name="telegram_group">Telegram community</string>
+    <string name="telegram_channel">Telegram channel</string>
+    <string name="report_issue">Report an issue / Contribute</string>
+    <string name="clear_confirm_title">Clear session history?</string>
+    <string name="clear_confirm_detail">This removes current in-memory decoded results. It cannot be undone.</string>
+    <string name="complete_fields_count">%1$d complete fields</string>
+    <string name="json_option">JSON · typed and formatted</string>
+    <string name="ordered_option">Structured · full ordered fields</string>
+    <string name="original_option">Original decoder text</string>
 </resources>
