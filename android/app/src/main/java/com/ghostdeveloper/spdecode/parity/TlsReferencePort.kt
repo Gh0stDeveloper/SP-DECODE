@@ -1,7 +1,6 @@
 package com.ghostdeveloper.spdecode.parity
 
 import android.util.Base64
-import org.json.JSONObject
 import java.nio.ByteBuffer
 import java.nio.charset.CodingErrorAction
 import java.nio.charset.StandardCharsets
@@ -106,9 +105,9 @@ object TlsReferencePort {
         return buildString {
             append("TLS Tunnel\n==============================\n\n{\n")
             fields.entries.forEachIndexed { index, (key, value) ->
-                append("    ").append(JSONObject.quote(key)).append(": ")
+                append("    ").append(jsonQuote(key)).append(": ")
                 when (value) {
-                    is String -> append(JSONObject.quote(value))
+                    is String -> append(jsonQuote(value))
                     is Boolean -> append(if (value) "true" else "false")
                     else -> append(value.toString())
                 }
@@ -117,6 +116,35 @@ object TlsReferencePort {
             }
             append("}\n\n==============================")
         }
+    }
+
+    /**
+     * Python json.dumps(ensure_ascii=False) compatible string escaping.
+     * Android's JSONObject.quote escapes '/', changing golden raw bytes.
+     * Preserve slash and all non-control Unicode code points verbatim.
+     */
+    private fun jsonQuote(value: String): String = buildString {
+        append('"')
+        for (ch in value) {
+            when (ch) {
+                '"' -> append("\\\"")
+                '\\' -> append("\\\\")
+                '\b' -> append("\\b")
+                '\t' -> append("\\t")
+                '\n' -> append("\\n")
+                '\f' -> append("\\f")
+                '\r' -> append("\\r")
+                else -> {
+                    if (ch.code < 0x20) {
+                        append("\\u")
+                        append(ch.code.toString(16).padStart(4, '0'))
+                    } else {
+                        append(ch)
+                    }
+                }
+            }
+        }
+        append('"')
     }
 
     private fun hex(s: String): ByteArray =
