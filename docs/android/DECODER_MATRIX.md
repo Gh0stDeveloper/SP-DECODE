@@ -14,12 +14,12 @@
 | .ehil | HTTP Injector Lite | python | decoders/Python/HTTPINJECTORLITE.py | 1 caso | No verificado | D |
 | .mina | MinaProNet | python | decoders/Python/mina.py | 1 caso | No verificado | D |
 | .at | ASH tunnel | python | decoders/Python/at.py | 1 caso | No verificado | D |
-| .gold | Gold Tunnel | python | decoders/Python/gold.py | Sin fixture | No verificado | D |
+| .gold | Gold Tunnel | python | decoders/Python/gold.py | 1 caso | No verificado | D |
 | .nm | NetMod | python | decoders/Python/nms.py | 1 caso | No verificado | D |
-| .npv4 | NPV Tunnel v4 | python | decoders/Python/NPVTUNNEL.py | Sin fixture | No verificado | D |
+| .npv4 | NPV Tunnel v4 | python | decoders/Python/NPVTUNNEL.py | 1 caso | No verificado | D |
 | .ht | HTTP Tweak | python | decoders/Python/HTTPTWEAK.py | 1 caso | No verificado | D |
 | .htb | HTTP Tweak | python | decoders/Python/HTTPTWEAK.py | 1 caso | No verificado | D |
-| .npvt | NPV Tunnel v4 | python | decoders/Python/NPVTUNNEL.py | Sin fixture | No verificado | D |
+| .npvt | NPV Tunnel v4 | python | decoders/Python/NPVTUNNEL.py | 1 caso | No verificado | D |
 | .tnl | Tunnel | python | decoders/Python/tnl.py | 1 caso | No verificado | D |
 | .tls | TLS Tunnel | python | decoders/Python/TLS.py | 1 caso | No verificado | D |
 | .v2 | e-V2Ray | python | decoders/Python/EV2RAY.py | 2 casos | No verificado | D |
@@ -32,7 +32,7 @@
 | .ssh | SSH Injector | python | decoders/Python/ssh.py | Sin fixture | No verificado | D |
 | .nt | Net Tunnel | python | decoders/Python/nt.py | 1 caso | No verificado | D |
 | .vpnlite | VPN Lite | python | decoders/Python/vpnlite.py | 1 caso | No verificado | D |
-| .sut | SUT Tunnel | python | decoders/Python/sut.py | Sin fixture | No verificado | D |
+| .sut | SUT Tunnel | python | decoders/Python/sut.py | 1 caso | No verificado | D |
 | .maya | Maya Tunnel | python | decoders/Python/maya.py | 1 caso | No verificado | D |
 | .xui | XUI Tunnel | python | decoders/Python/xui.py | 1 caso | No verificado | D |
 | .sip | SocksIP Tunnel | python | decoders/Python/sockip.py | 1 caso | No verificado | D |
@@ -49,15 +49,15 @@
 | .jvc | JVC Tunnel | python | decoders/Python/multides.py | 1 caso | No verificado | D |
 | .aro | ARMOD | python | decoders/Python/aro.py | 1 caso | No verificado | D |
 | .cloudy | Cloudy Inject | python | decoders/Python/cloudy.py | 1 caso | No verificado | D |
-| .epro | ePro Tunnel | node | decoders/JavaScript/modulepro.js | Sin fixture | No verificado | E |
+| .epro | ePro Tunnel | node | decoders/JavaScript/modulepro.js | 1 caso | No verificado | E |
 | .cly | Cloudy | python | decoders/Python/multides.py | 1 caso | No verificado | D |
-| .xtp | XTProy | python | decoders/Python/xtproy.py | Sin fixture | No verificado | D |
-| .roy | Royal Tunnel | python | decoders/Python/xtproy.py | Sin fixture | No verificado | D |
+| .xtp | XTProy | python | decoders/Python/xtproy.py | 1 caso | No verificado | D |
+| .roy | Royal Tunnel | python | decoders/Python/xtproy.py | 1 caso | No verificado | D |
 | .ipt | WeTunnel | python | decoders/Python/ipt.py | 1 caso | No verificado | D |
 | .rezl | Rez Tunnel Lite | node | decoders/JavaScript/rez.js | 1 caso | No verificado | E |
-| .tvt | TV Tunnel | node | decoders/JavaScript/rez.js | Sin fixture | No verificado | E |
+| .tvt | TV Tunnel | node | decoders/JavaScript/rez.js | 1 caso | No verificado | E |
 | .uwu | UWU Tunnel | python | decoders/Python/uwu.py | 1 caso | No verificado | D |
-| .npv2 | NPV Tunnel v2 | node | decoders/JavaScript/chicosp.js | Sin fixture | No verificado | E |
+| .npv2 | NPV Tunnel v2 | node | decoders/JavaScript/chicosp.js | 1 caso | No verificado | E |
 | .dark | Dark Tunnel | python | decoders/Python/DARKTUNNEL.py | 1 caso | No verificado | D |
 | .ost | OUSS Tunnel | python | decoders/Python/ost.py | 1 caso | No verificado | D |
 | .sbr | SBR Injector | python | decoders/Python/sbr.py | 1 caso | No verificado | D |
@@ -65,7 +65,7 @@
 | .jez | JEZ Tunnel | php | decoders/PHP/jez.php | 1 caso | No verificado | E |
 | .hrt | HRT Tunnel | php | decoders/PHP/hrt.php | 1 caso | No verificado | E |
 | .hc | HTTP Custom | python | decoders/Python/HTTPCUSTOM.py | 1 caso | No verificado | D |
-| .ehi | HTTP Injector | python | decoders/Python/HTTPINJECTOR.py | Sin fixture | No verificado | D |
+| .ehi | HTTP Injector | python | decoders/Python/HTTPINJECTOR.py | 1 caso | No verificado | D |
 | .ssc | SSC Custom | python | decoders/Python/SSCCUSTOM.py | 1 caso | No verificado | D |
 
 **Nota:** `Linux golden sintético` solo indica que el script actual reproduce la salida de un input ficticio; no significa compatibilidad con la app exportadora real, tampoco Android. Ver [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).

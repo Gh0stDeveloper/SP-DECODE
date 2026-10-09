@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.8.0",
+  "documentationVersion": "1.9.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -39,7 +39,7 @@
         "A.6": "documented",
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
-        "A.2.3": "in_progress_49_synthetic_linux_cases_48_of_59_suffixes",
+        "A.2.3": "in_progress_59_synthetic_linux_cases_58_of_59_suffixes",
         "A.2.4": "not_started"
       }
     },
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Continue A.2.3 with eleven pending suffixes; AT now validates GCM tags, requires independent exporter samples and Android portability tests before production.",
+  "nextAction": "A.2.3: test .ssh deterministic legacy Blowfish golden and solve embedded whitebox pickle security; A.2.4 Android ABI parity remains not started.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
   "notes": "Planning only. No real Android decoder tested.",
@@ -99,7 +99,7 @@
       "EV2RAY.py"
     ],
     "androidVerifiedSuffixes": 0,
-    "functionalGoldenStatus": "partial_linux_golden_48_of_59_suffixes",
+    "functionalGoldenStatus": "partial_linux_golden_58_of_59_suffixes",
     "securityReviewOpen": [
       "NPVTUNNEL pickle of embedded constant",
       "Node config file mutation",
@@ -171,30 +171,30 @@
       "sip",
       "at",
       "ipt",
-      "stk"
+      "stk",
+      "ehi",
+      "epro",
+      "gold",
+      "npv2",
+      "npv4",
+      "npvt",
+      "roy",
+      "sut",
+      "tvt",
+      "xtp"
     ],
-    "linuxGoldenCases": 49,
-    "linuxGoldenScriptCount": 40,
-    "missingPositiveFixtureSuffixes": 11,
-    "goldenBranch": "feat/android-a23-batch6-ten-suffixes",
+    "linuxGoldenCases": 59,
+    "linuxGoldenScriptCount": 47,
+    "missingPositiveFixtureSuffixes": 1,
+    "goldenBranch": "feat/android-a23-batch7-ten-suffixes",
     "goldenManifest": "tests/golden/manifest.json",
     "goldenGenerators": "tests/golden/a23_generators.py",
     "goldenReport": "tests/golden/a23_report.py",
     "goldenExporter": "tests/golden/a23_export.py",
     "goldenDocumentation": "docs/android/A23_GOLDEN_CORPUS.md",
-    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37861105855",
+    "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37864174018",
     "nextGoldenPriority": [
-      "ehi",
-      "npv4",
-      "npvt",
-      "npv2",
-      "epro",
-      "tvt",
-      "gold",
-      "roy",
-      "ssh",
-      "sut",
-      "xtp"
+      "ssh"
     ],
     "goldenBatch3": {
       "suffixes": [
@@ -309,6 +309,38 @@
         "AT now authenticates both GCM tags; no device/version interoperability verified"
       ],
       "positiveExploratoryCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37861105855"
+    },
+    "goldenBatch7": {
+      "suffixes": [
+        "ehi",
+        "epro",
+        "gold",
+        "npv2",
+        "npv4",
+        "npvt",
+        "roy",
+        "sut",
+        "tvt",
+        "xtp"
+      ],
+      "positiveCliCases": 10,
+      "runtimes": [
+        "python",
+        "node"
+      ],
+      "additionalUniqueScripts": 7,
+      "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37864174018",
+      "remainingSuffixes": [
+        "ssh"
+      ],
+      "limitations": [
+        "synthetic Linux only",
+        "EHI bypass IV not standard/Argon2",
+        "NPV embedded pickle load risk pending",
+        "ROY/XTP and NPV4/NPVT share scripts; TVT self-roundtrip",
+        "no Android/native ABI proof",
+        "no third-party exporter version certification"
+      ]
     }
   },
   "lastVerifiedCi": [
