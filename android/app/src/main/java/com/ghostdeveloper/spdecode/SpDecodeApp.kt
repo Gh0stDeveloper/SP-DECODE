@@ -84,8 +84,10 @@ fun SpDecodeApp(
             BrandHeader(onSettings={onTab(3)})
             Box(Modifier.weight(1f)) {
                 when(activeTab) {
-                    0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
-                        onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect)
+                    0->HomeScreen(current,session,busy,error,reveal,hideCredentials,onImport,onCancel,onReveal,
+                        onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect,
+                        onDismissNotice=onDismissError,
+                        onContact={onExternalLink("https://t.me/Gh0stDeveloper")})
                     1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple)
                     2->FormatsScreen()
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
@@ -94,17 +96,7 @@ fun SpDecodeApp(
             }
             BottomTabs(activeTab,onTab)
         }
-        if(error!=null)AlertDialog(
-            onDismissRequest=onDismissError,
-            title={Text(stringResource(R.string.import_error))},
-            text={Text(error)},
-            confirmButton={TextButton(onClick=onDismissError){
-                Text(stringResource(R.string.close))
-            }},
-            containerColor=Panel,
-            titleContentColor=White,
-            textContentColor=Secondary,
-        )
+        // Import failures are presented as non-blocking inline notices on Home.
         if(dialog!=null && current!=null) {
             val copy=dialog=="copy"
             AlertDialog(
@@ -174,6 +166,7 @@ private fun HomeScreen(
     current:DecodeView?,
     session:List<DecodeView>,
     busy:Boolean,
+    error:String?,
     reveal:Boolean,
     hideCredentials:Boolean,
     onImport:()->Unit,
@@ -181,7 +174,9 @@ private fun HomeScreen(
     onReveal:(Boolean)->Unit,
     onCopy:()->Unit,
     onExport:()->Unit,
-    onSelect:(DecodeView)->Unit
+    onSelect:(DecodeView)->Unit,
+    onDismissNotice:()->Unit,
+    onContact:()->Unit,
 ) {
     Column(
         modifier=Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -219,6 +214,35 @@ private fun HomeScreen(
             }
         }
 
+        if(error!=null) {
+            Surface(
+                color=Panel,
+                shape=RoundedCornerShape(16.dp),
+                modifier=Modifier.fillMaxWidth(),
+                border=BorderStroke(1.dp, Outline),
+            ) {
+                Column(Modifier.padding(16.dp),
+                    verticalArrangement=Arrangement.spacedBy(9.dp)) {
+                    Row(verticalAlignment=Alignment.CenterVertically) {
+                        Icon(Icons.Outlined.Info,null,tint=Amber,modifier=Modifier.size(22.dp))
+                        Spacer(Modifier.width(10.dp))
+                        Text(stringResource(R.string.decode_notice_title),color=White,
+                            fontSize=16.sp,fontWeight=FontWeight.SemiBold,
+                            modifier=Modifier.weight(1f))
+                        IconButton(onClick=onDismissNotice) {
+                            Icon(Icons.Outlined.Close,stringResource(R.string.close),
+                                tint=Secondary)
+                        }
+                    }
+                    Text(error,color=Secondary,fontSize=14.sp,lineHeight=21.sp)
+                    TextButton(onClick=onContact) {
+                        Icon(Icons.Outlined.ContactSupport,null)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.decode_notice_contact))
+                    }
+                }
+            }
+        }
         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
             Text(stringResource(R.string.result),color=White,fontWeight=FontWeight.Bold,
                 fontSize=18.sp,modifier=Modifier.weight(1f))
