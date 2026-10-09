@@ -7,7 +7,8 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 A24_BATCH10=("phc","mina","vpnlite","cloudy","mij","fnnetwork","uwu","sksrv","maya","xui")
-PROTO=("v2","tls")+A24_BATCH10
+A24_BATCH20=("at","nm","ost","sbr","pcx","nt","pb","aro","ipt","gold")
+PROTO=("v2","tls")+A24_BATCH10+A24_BATCH20
 CATALOG=ROOT/"android/app/src/main/assets/decoder_catalog.json"
 
 
@@ -21,7 +22,7 @@ def generate()->dict:
             "script":entry["script"],
             "originalRuntime":entry["runtime"],
             "linuxGoldenSynthetic":True,
-            "androidPortStatus":("prototype_two_synthetic_cases" if suffix=="v2" else "prototype_tls_aesgcm_synthetic_case" if suffix=="tls" else "experimental_batch10_synthetic" if suffix in A24_BATCH10 else "not_implemented"),
+            "androidPortStatus":("prototype_two_synthetic_cases" if suffix=="v2" else "prototype_tls_aesgcm_synthetic_case" if suffix=="tls" else "experimental_batch10_synthetic" if suffix in A24_BATCH10 else "experimental_batch20_synthetic" if suffix in A24_BATCH20 else "not_implemented"),
             "androidVerified":False,
             "exporterVersionsVerified":[],
         })
@@ -44,7 +45,7 @@ def main():
     else:
         if not CATALOG.exists() or json.loads(CATALOG.read_text("utf-8"))!=expected:
             raise SystemExit("Android catalog is stale: python scripts/android_a24_catalog.py --write")
-    print("[A.2.4] Android registry verified: 59 registered, 12 experimental, 0 certified")
+    print("[A.2.4] Android registry verified: 59 registered, 22 experimental, 0 certified")
 
 
 if __name__=="__main__":
