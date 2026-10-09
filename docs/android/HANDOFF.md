@@ -145,3 +145,13 @@ Al aprobar: 22 prototipos, 37 sin port, 0 formatos certificados por exportador.
 - Catálogo: 22 prototipos, 37 sin implementar y 0 certificados en
   exportaciones de proveedores. Android offline UI/SAF, arm64, 16KiB
   y archivos reales siguen pendientes.
+
+## Continuidad A.2.4 — lote de quince adaptadores
+
+Rama `feat/android-a24-batch15-native-ports`. 15 sufijos, 13 decodificadores
+fuente distintos contando agrupaciones MultiDES y SKSRV; no se afirma que
+sean quince algoritmos diferentes. Los puertos están en Kotlin y el catálogo
+indica 37 prototipos, 22 no implementados. Nuevo test
+`Batch15InstrumentedTest`; 38 goldens sintéticos Android totales,
+45 casos negativos para 15 nuevos. Confirmar CI y corregir
+desajustes exactos antes de autorizar merge. Bot original inalterado.
