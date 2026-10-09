@@ -121,4 +121,13 @@
     <string name="result_decoded_by">Decoded by %1$s</string>
     <string name="result_decoded_date">Date: %1$s</string>
     <string name="splash_powered_by">Powered by Ghost Developer</string>
+    <string name="text_decode_title">Decode text</string>
+    <string name="text_decode_description">Paste a configuration link or encoded text. TLS, VMess, SSC, Dark Tunnel and other supported schemes work fully offline.</string>
+    <string name="text_decode_hint">Paste the text or the next fragment</string>
+    <string name="text_decode_action">Decode text</string>
+    <string name="text_decode_reset">Discard parts</string>
+    <string name="text_decode_pending">%1$s: %2$d part(s) received. Paste the next fragment and decode again, or discard.</string>
+    <string name="text_decode_private">Locally processed. Incomplete fragments are never saved.</string>
+    <string name="text_decode_invalid">No recognized text protocol, invalid fragment, or size limit exceeded.</string>
+    <string name="text_decode_unsupported">Could not decode this text. It may be incomplete, corrupted or a different cipher version.</string>
 </resources>
