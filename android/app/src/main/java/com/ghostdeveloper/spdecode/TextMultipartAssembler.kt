@@ -17,6 +17,7 @@ object TextMultipartAssembler {
     fun next(previous:TextPartSession?,fragment:String,nowMs:Long):TextPartSession? {
         if(fragment.length>TextProtocolDecoder.MAX_CHARS)return null
         val detected=TextProtocolDecoder.identify(fragment)
+            ?.takeUnless { it.protocol=="netmod" && "://" !in fragment }
         if(detected!=null) {
             if(!detected.multipart)return null
             val compact=compact(detected,detected.content)?:return null
@@ -51,7 +52,7 @@ object TextMultipartAssembler {
             "ssc"->candidate.length<=TextProtocolDecoder.MAX_CHARS &&
                 candidate.all{it in "0123456789abcdefABCDEF"}
             "dark"->candidate.length<=TextProtocolDecoder.MAX_CHARS &&
-                candidate.all{it.isLetterOrDigit()||it in "+/_=-"}
+                candidate.all{it in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/_=-"}
             else->false
         }
         if(!valid)return null
