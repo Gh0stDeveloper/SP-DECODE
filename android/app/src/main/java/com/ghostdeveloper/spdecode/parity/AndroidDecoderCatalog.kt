@@ -23,7 +23,7 @@ object AndroidDecoderCatalog {
         require(doc.getInt("schemaVersion") == 2)
         require(doc.getInt("androidCertifiedSuffixes") == 0)
         val list = doc.getJSONArray("entries")
-        require(list.length() == 59)
+        require(list.length() == 60)
         return (0 until list.length()).map { index ->
             val item = list.getJSONObject(index)
             Format(
