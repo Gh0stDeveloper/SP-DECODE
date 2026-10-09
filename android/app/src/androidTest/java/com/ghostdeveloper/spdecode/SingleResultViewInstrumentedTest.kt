@@ -25,7 +25,8 @@ class SingleResultViewInstrumentedTest {
                 current=view,reveal=false,hideCredentials=false,
                 onReveal={},onCopy={},onExport={})
         }
-        ui.onNodeWithText(ctx.getString(R.string.result_decoded_by,"HTTP Injector"),substring=true).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.result_decoded_by,"SP-DECODE"),substring=true).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.result_decoded_by,"HTTP Injector"),substring=true).assertDoesNotExist()
         ui.onNodeWithText("\"city\": \"LA\"",substring=true).assertExists()
         ui.onNodeWithText(ctx.getString(R.string.detailed_fields)).assertDoesNotExist()
         ui.onNodeWithText(ctx.getString(R.string.raw_text)).assertDoesNotExist()
