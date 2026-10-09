@@ -1,5 +1,6 @@
 import base64
-import hashlib, json, requests
+import hashlib
+import json
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 

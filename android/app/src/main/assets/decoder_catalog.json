@@ -1,0 +1,542 @@
+{
+  "schemaVersion": 1,
+  "inventorySource": "decoders.json",
+  "syntheticLinuxCoveredSuffixes": 59,
+  "androidCertifiedSuffixes": 0,
+  "androidPrototypeSuffixes": [
+    "v2"
+  ],
+  "entries": [
+    {
+      "suffix": "fnnetwork",
+      "script": "decoders/Python/fnnetwork.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "sksrv.png",
+      "script": "decoders/Python/sksrv.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "sksplus",
+      "script": "decoders/PHP/sksplus.php",
+      "originalRuntime": "php",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "vpnlite",
+      "script": "decoders/Python/vpnlite.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "cloudy",
+      "script": "decoders/Python/cloudy.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "sksrv",
+      "script": "decoders/Python/sksrv.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "xscks",
+      "script": "decoders/Python/xscks.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "dark",
+      "script": "decoders/Python/DARKTUNNEL.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "ehil",
+      "script": "decoders/Python/HTTPINJECTORLITE.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "epro",
+      "script": "decoders/JavaScript/modulepro.js",
+      "originalRuntime": "node",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "gold",
+      "script": "decoders/Python/gold.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "maya",
+      "script": "decoders/Python/maya.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "mina",
+      "script": "decoders/Python/mina.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "npv2",
+      "script": "decoders/JavaScript/chicosp.js",
+      "originalRuntime": "node",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "npv4",
+      "script": "decoders/Python/NPVTUNNEL.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "npvt",
+      "script": "decoders/Python/NPVTUNNEL.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "rezl",
+      "script": "decoders/JavaScript/rez.js",
+      "originalRuntime": "node",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "agn",
+      "script": "decoders/Python/multides.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "aro",
+      "script": "decoders/Python/aro.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "cly",
+      "script": "decoders/Python/multides.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "ehi",
+      "script": "decoders/Python/HTTPINJECTOR.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "hat",
+      "script": "decoders/JavaScript/hat.js",
+      "originalRuntime": "node",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "hrt",
+      "script": "decoders/PHP/hrt.php",
+      "originalRuntime": "php",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "htb",
+      "script": "decoders/Python/HTTPTWEAK.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "ipt",
+      "script": "decoders/Python/ipt.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "jez",
+      "script": "decoders/PHP/jez.php",
+      "originalRuntime": "php",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "jvc",
+      "script": "decoders/Python/multides.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "jvi",
+      "script": "decoders/Python/multides.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "mij",
+      "script": "decoders/Python/mij.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "mrc",
+      "script": "decoders/Python/mrc.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "mtl",
+      "script": "decoders/Python/mtl.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "ost",
+      "script": "decoders/Python/ost.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "pcx",
+      "script": "decoders/Python/pcx.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "phc",
+      "script": "decoders/Python/phc.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "rez",
+      "script": "decoders/JavaScript/rez.js",
+      "originalRuntime": "node",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "roy",
+      "script": "decoders/Python/xtproy.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "sbr",
+      "script": "decoders/Python/sbr.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "sip",
+      "script": "decoders/Python/sockip.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "sks",
+      "script": "decoders/JavaScript/sks.js",
+      "originalRuntime": "node",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "ssc",
+      "script": "decoders/Python/SSCCUSTOM.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "ssh",
+      "script": "decoders/Python/ssh.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "stk",
+      "script": "decoders/JavaScript/stk.js",
+      "originalRuntime": "node",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "sut",
+      "script": "decoders/Python/sut.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "tls",
+      "script": "decoders/Python/TLS.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "tnl",
+      "script": "decoders/Python/tnl.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "tvt",
+      "script": "decoders/JavaScript/rez.js",
+      "originalRuntime": "node",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "uwu",
+      "script": "decoders/Python/uwu.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "v2i",
+      "script": "decoders/Python/multides.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "xtp",
+      "script": "decoders/Python/xtproy.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "xui",
+      "script": "decoders/Python/xui.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "ziv",
+      "script": "decoders/Python/ziv.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "at",
+      "script": "decoders/Python/at.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "fɴ",
+      "script": "decoders/Python/multides.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "hc",
+      "script": "decoders/Python/HTTPCUSTOM.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "ht",
+      "script": "decoders/Python/HTTPTWEAK.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "nm",
+      "script": "decoders/Python/nms.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "nt",
+      "script": "decoders/Python/nt.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "pb",
+      "script": "decoders/Python/pb.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "v2",
+      "script": "decoders/Python/EV2RAY.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "prototype_two_synthetic_cases",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    }
+  ]
+}

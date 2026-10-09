@@ -77,3 +77,7 @@ La auditoría A.2.1/A.2.2 cubrió estáticamente 48 scripts/59 sufijos. En A.2.3
 
 Esta documentación constituye **la especificación inicial del producto**. La implementación, ejecución en dispositivos, validación de dependencias ARM/16 KB, pruebas de descifrado y firma de APK quedan pendientes. Antes de escribir código, leer el registro de decisiones y las puertas de calidad de ROADMAP.md.
 
+
+### Incremento A.2.4 de ingeniería (paridad y seguridad)
+
+Existe un nuevo `android/` **solo como host de instrumentación**, no como aplicación de usuario funcional. Los primeros vectores Kotlin nativos `.v2` se generan desde el corpus Linux congelado y se comparan byte por byte con AndroidTest. Resultado de referencia y estado completo de riesgos: [A24_PARITY_SECURITY.md](A24_PARITY_SECURITY.md). **La cobertura Android certificada continúa 0/59** hasta pruebas por ABI, exportador autorizado y versión, mientras se desarrollan los ports restantes.

@@ -2,13 +2,13 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.10.0",
+  "documentationVersion": "1.11.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
   "documentationBranch": "docs/android-offline-architecture",
-  "productStatus": "planning",
-  "androidSourceExists": false,
+  "productStatus": "android_experimental_test_host_only_not_app",
+  "androidSourceExists": true,
   "apkProduced": false,
   "offlineRequired": true,
   "loginRequired": false,
@@ -32,7 +32,7 @@
       "status": "in_progress",
       "subphases": {
         "A.1": "documented",
-        "A.2": "static_audit_verified_partial_linux_goldens_in_progress_android_pending",
+        "A.2": "static_audit_and_linux_goldens_done_android_parity_partial_security_hardening_in_progress",
         "A.3": "documented",
         "A.4": "documented",
         "A.5": "documented",
@@ -40,11 +40,11 @@
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
         "A.2.3": "synthetic_linux_golden_complete_60_cases_59_of_59_vendor_and_android_pending",
-        "A.2.4": "not_started"
+        "A.2.4": "in_progress_two_v2_synthetic_android_api35_parity_passed_58_suffixes_unported"
       }
     },
     "B": {
-      "status": "not_started"
+      "status": "experimental_android_parity_host_only_B1_product_scaffold_not_started"
     },
     "C": {
       "status": "not_started"
@@ -65,9 +65,9 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Linux synthetic corpus A.2.3 L2 complete at 60 cases for 59/59 suffixes. Obtain authorized exporter-version vectors and resolve NPV pickle security, then implement A.2.4 Android arm64 bridge and rawText parity. No APK/Android formats certified.",
+  "nextAction": "Expand native format ports (currently only .v2 experimental); check CI on latest commit and postmerge main. Arm64/16KiB and real exporter variants remain blocking for Android verification.",
   "releaseStatus": "NO-APK-NO-GO",
-  "ciValidatedAndroid": false,
+  "ciValidatedAndroid": true,
   "notes": "Planning only. No real Android decoder tested.",
   "localization": {
     "scope": "ui_only",
@@ -101,10 +101,11 @@
     "androidVerifiedSuffixes": 0,
     "functionalGoldenStatus": "complete_synthetic_linux_goldens_59_of_59_vendor_and_android_pending",
     "securityReviewOpen": [
-      "NPVTUNNEL pickle of embedded constant",
-      "Node config file mutation",
-      "unused requests import",
-      "Crypto/cryptography/argon2/msgpack Android ABI wheels"
+      "NPV embedded pickle structural migration to signed declarative data (restricted loader mitigates arbitrary globals)",
+      "Node shared lib/config historical side effects: regression tested but plugin sandbox absent",
+      "Crypto/cryptography/argon2/msgpack native Android wheels and arm64/16KB unverified",
+      "legacy decoder stdout may include secrets; Android UI/export masking not yet implemented",
+      "third-party exporter versions and authentic fixtures unavailable"
     ],
     "artifacts": [
       "docs/android/DECODER_AUDIT.md",
@@ -354,6 +355,41 @@
       "testOnlyDeterminismEnv": "SPDECODE_SSH_GOLDEN_TEST=1",
       "limitation": "Blowfish CBC artificial reference vector on Linux only; normal emoji remains random; all exporter versions and Android unverified",
       "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/pull/14"
+    },
+    "a24": {
+      "branch": "feat/android-a24-parity-runtime-security-baseline",
+      "pr": 15,
+      "state": "in_progress_two_synthetic_v2_vectors_passed_api35_x86_64_remaining_58_suffixes",
+      "androidPrototypePath": "android/",
+      "referenceCorpusCases": 60,
+      "referenceRegisteredSuffixes": 59,
+      "instrumentedCandidateSuffixes": [
+        "v2"
+      ],
+      "instrumentedCandidateCaseIds": [
+        "ev2ray-plain",
+        "ev2ray-aes128"
+      ],
+      "instrumentedPassedOnDevice": [
+        "ev2ray-plain",
+        "ev2ray-aes128"
+      ],
+      "androidVerifiedSuffixes": 0,
+      "emulatorTargetApi": 35,
+      "emulatorTargetAbi": "x86_64",
+      "realExporterVersionGoldens": 0,
+      "arm64Evidence": "not_started",
+      "pageSize16KbEvidence": "not_started",
+      "offlineSecurity": "manifest has no INTERNET, ACCESS_NETWORK_STATE or legacy storage permissions; emulator check pending",
+      "whiteboxSecurity": "restricted data-only pickle with bounded decompression; global/REDUCE opcodes rejected and Linux regression checks",
+      "nodePhpPortability": "not_started",
+      "remainingNativeSuffixes": 58,
+      "note": "Compile or synthetic emulator test does not certify real modern exporter files. Only two .v2 synthetic variants are targeted.",
+      "emulatorEvidence": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37868719536",
+      "lastValidatedSourceSha": "865740e3c9fea0ccb98c0526ff4796704511d44d",
+      "instrumentedTestCount": 4,
+      "experimentalHostApkCompiled": true,
+      "catalog59SuffixesGenerated": true
     }
   },
   "lastVerifiedCi": [
