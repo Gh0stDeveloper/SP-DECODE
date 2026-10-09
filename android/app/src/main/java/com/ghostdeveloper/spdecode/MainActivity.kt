@@ -50,8 +50,9 @@ class MainActivity : ComponentActivity() {
     private var hideCredentials by mutableStateOf(false)
     private val settings get()=getSharedPreferences("spdecode-ui-preferences",MODE_PRIVATE)
     private var job:Job?=null
-    private val historyStore by lazy { SecureDecodeHistory(applicationContext) }
-    private val historyPreferences by lazy { HistoryPreferences(applicationContext) }
+    private val services by lazy { (application as SpDecodeApplication).services }
+    private val historyStore get()=services.records
+    private val historyPreferences get()=services.preferences
     private var retentionDays by mutableIntStateOf(0)
     private var historyLoad: Deferred<Unit>? = null
     private val sessionVm by viewModels<DecodeSessionViewModel>()
@@ -151,6 +152,9 @@ class MainActivity : ComponentActivity() {
             try {
                 val preferences = historyPreferences.values.first()
                 retentionDays=preferences.retentionDays
+                // Restore only navigation metadata; the decoded payload always
+                // comes from the Keystore-encrypted record, never from DataStore.
+                if(tab==0)tab=preferences.lastTab
                 val saved=withContext(Dispatchers.IO) {
                     val days=preferences.retentionDays
                     if(days>0) historyStore.pruneOlderThan(
@@ -177,7 +181,15 @@ class MainActivity : ComponentActivity() {
                 progressPosition=progressPosition,
                 progressTotal=progressTotal,
                 reveal=reveal,
-                onTab={tab=it;reveal=false},
+                onTab={ newTab ->
+                    tab=newTab
+                    reveal=false
+                    scope.launch {
+                        try { historyPreferences.setLastTab(newTab) }
+                        catch(e:CancellationException){throw e}
+                        catch(_:Exception){toast(R.string.history_storage_error)}
+                    }
+                },
                 onImport={picker.launch(arrayOf("*/*"))},
                 onImportMultiple={multiPicker.launch(arrayOf("*/*"))},
                 onCancel={cancelImport()},
@@ -311,7 +323,7 @@ class MainActivity : ComponentActivity() {
             try {
                 historyLoad?.await()
                 val updated=withContext(Dispatchers.IO) {
-                    historyStore.setFavorite(id,favorite)
+                    historyStore.favorite(id,favorite)
                 }
                 val index=recent.indexOfFirst{it.id==id}
                 if(index>=0)recent[index]=updated
@@ -348,7 +360,7 @@ class MainActivity : ComponentActivity() {
         scope.launch {
             try {
                 historyLoad?.await()
-                withContext(Dispatchers.IO) { historyStore.clearAll() }
+                withContext(Dispatchers.IO) { historyStore.clear() }
                 historyPreferences.setSelectedId(null)
                 recent.clear()
                 result = null
