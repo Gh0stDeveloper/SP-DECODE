@@ -51,7 +51,11 @@
     "sks",
     "sut",
     "tnl",
-    "ssh"
+    "ssh",
+    "ht",
+    "htb",
+    "hat",
+    "ehil"
   ],
   "entries": [
     {
@@ -131,7 +135,7 @@
       "script": "decoders/Python/HTTPINJECTORLITE.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -248,7 +252,7 @@
       "script": "decoders/JavaScript/hat.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -266,7 +270,7 @@
       "script": "decoders/Python/HTTPTWEAK.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -545,7 +549,7 @@
       "script": "decoders/Python/HTTPTWEAK.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
