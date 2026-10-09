@@ -184,7 +184,7 @@ object LinkLayerPort {
         }
         fun sint():Long {
             val u=uint()
-            return if(u and 1L != 0L)(u ushr 1).inv() else u ushr 1
+            return if((u and 1L) != 0L)(u ushr 1).inv() else u ushr 1
         }
         fun smallUInt(cap:Int):Int {
             val n=uint()
