@@ -6,7 +6,7 @@ import org.json.JSONObject
  */
 object SutPort {
     private val p=LegacyPortPrimitives
-    private const val INNER_PASSWORD="new#Pa$$wd#4#Maky,sim?2024tech&(.);#@980well*..smk.now"
+    private const val INNER_PASSWORD="new#Pa\$\$wd#4#Maky,sim?2024tech&(.);#@980well*..smk.now"
     private val REQUIRED=listOf("UDPServerIP","ServerIP","Payload","Bug","SNI",
         "ServerUser","UDPServerUser","UDPServerPass","chaveKey","serverNameKey","dnsKey")
     private val OPTIONAL=listOf("TunnelType","isMsg","Message","HardwareID","Remind","Exp","mExp")
