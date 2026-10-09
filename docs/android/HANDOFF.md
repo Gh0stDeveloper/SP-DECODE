@@ -155,3 +155,12 @@ indica 37 prototipos, 22 no implementados. Nuevo test
 `Batch15InstrumentedTest`; 38 goldens sintéticos Android totales,
 45 casos negativos para 15 nuevos. Confirmar CI y corregir
 desajustes exactos antes de autorizar merge. Bot original inalterado.
+
+- CI lote de 15: [#37881078999](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37881078999) Linux y Android
+  success, **47/47 pruebas API35 x86_64** (37 sufijos prototipo,
+  38 golden positivos por dos variantes V2, 22 sufijos sin portar).
+- Añadido guard `test_android_a24_legacy_module_assets.py` contra
+  divergencia de `cfg/keyFile.json` y etiquetas inglesas original.
+  Su ejecución se confirma en el próximo workflow, no el anterior.
+- Cobertura `epro` raw ECB y `npv2` vmess sintética.
+  Faltan subvariantes, exportaciones reales, ARM64 físico y 16KiB.
