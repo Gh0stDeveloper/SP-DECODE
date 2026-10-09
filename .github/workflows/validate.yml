@@ -107,11 +107,10 @@ jobs:
         with:
           gradle-version: "8.11.1"
 
-      - name: Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK platform
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install Android SDK platform (runner SDK, no deprecated tools package)
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          sdkmanager --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
 
       - name: Python fixture dependencies
         run: python -m pip install -r requirements.txt

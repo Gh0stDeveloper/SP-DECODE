@@ -82,7 +82,7 @@ def _regex_flags(src: str, runtime: str) -> dict[str, bool]:
             r"\bfetch\s*\(|\bcurl_exec\s*\(|"
             r"\bhttps?\.(?:get|request)\s*\(", src
         )),
-        "uses_pickle": bool(re.search(r"\bpickle\.(?:loads?|Unpickler)\s*\(", src)),
+        "uses_pickle": bool(re.search(r"\bpickle\.(?:loads?|Unpickler)\b", src)),
         "uses_eval": bool(re.search(
             r"\beval\s*\(|\bexec\s*\(|\bnew\s+Function\s*\(", src
         )),
