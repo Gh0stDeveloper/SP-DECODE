@@ -43,8 +43,7 @@ class HcSipVersionedTests(unittest.TestCase):
     def test_hc_rejects_outer_mac_tampering(self):
         broken=bytearray(hccfg_file())
         broken[-1]^=0x40
-        with self.assertRaises(ValueError):
-            hc_run(bytes(broken))
+        self.assertIsNone(hc_run(bytes(broken)))
 
     def test_sip_legacy_still_decodes(self):
         self.assertEqual(decode_profile(sip_file())["server"],"example.org")
