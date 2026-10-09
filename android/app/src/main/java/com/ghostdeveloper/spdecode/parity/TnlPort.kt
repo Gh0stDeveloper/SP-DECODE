@@ -19,7 +19,7 @@ import javax.crypto.spec.SecretKeySpec
  */
 object TnlPort {
     private val p=LegacyPortPrimitives
-    private val passwords=listOf("B1m93p$$9pZcL9yBs0b$jJwtPM5VG@Vg",
+    private val passwords=listOf("B1m93p\$\$9pZcL9yBs0b\$jJwtPM5VG@Vg",
         "A^ST^f6ASG6AS5asd")
     private const val OPL_SECRET="f3a91c4e2d7b05869e4f1a3c8d2e6b07a5c9f2e14d8b3a76e0f5c1d9b4a72e3f"
     private const val OPL_LEN_XOR= -1481390639
