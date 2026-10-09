@@ -37,6 +37,24 @@ class SocksIPVersionInspectionTests(unittest.TestCase):
         self.assertTrue(report["parse_supported"])
         self.assertNotIn("example.org", str(report))
 
+    def test_ver8_nonce_may_begin_with_ascii_digit(self):
+        encrypted_outer = base64.b64decode(sip_ver8_file())
+        outer = unpad(AES.new(SIP_AES_KEY, AES.MODE_ECB).decrypt(encrypted_outer), 16)
+        self.assertTrue(outer.startswith(b"VER8"))
+        from decoders.Python.sockip import SIP_VER8_KEY
+        nonce, payload, tag = outer[4:16], outer[16:-16], outer[-16:]
+        original = AES.new(SIP_VER8_KEY, AES.MODE_GCM, nonce=nonce)
+        java = original.decrypt_and_verify(payload, tag)
+        new_nonce = b"8" + nonce[1:]
+        cipher = AES.new(SIP_VER8_KEY, AES.MODE_GCM, nonce=new_nonce)
+        ciphertext, new_tag = cipher.encrypt_and_digest(java)
+        encoded = base64.b64encode(AES.new(SIP_AES_KEY, AES.MODE_ECB)
+            .encrypt(pad(b"VER8" + new_nonce + ciphertext + new_tag, 16)))
+        report = inspect_sip(encoded)
+        self.assertEqual(report["version"], "VER8")
+        self.assertEqual(report["authentication"], "verified")
+        self.assertTrue(report["parse_supported"])
+
     def test_ver7_is_recognized_not_assumed_gcm(self):
         report = inspect_sip(wrap_unknown_version(7, b"aabbccddee00ff"))
         self.assertEqual(report["version"], "VER7")
