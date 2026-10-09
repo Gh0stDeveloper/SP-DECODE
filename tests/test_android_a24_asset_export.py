@@ -13,7 +13,7 @@ from scripts.android_a24_prepare import CASES,ROOT,SUFFIX,prepare
 
 
 class AndroidA24AssetTests(unittest.TestCase):
-    def test_asset_export_is_exactly_twenty_three_frozen_synthetic_vectors(self):
+    def test_asset_export_is_exactly_thirty_eight_frozen_synthetic_vectors(self):
         with tempfile.TemporaryDirectory(prefix="spdecode-a24-") as tmp:
             output=Path(tmp)/"assets"
             results=prepare(output)
