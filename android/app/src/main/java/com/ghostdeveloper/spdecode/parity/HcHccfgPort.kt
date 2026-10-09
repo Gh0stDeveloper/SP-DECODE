@@ -187,7 +187,7 @@ internal object HcHccfgPort {
     }
     private fun featureBytes(env:JSONObject):ByteArray {
         val f=env.getJSONArray("f")
-        require(f.length()<=128)
+        require(f.length()<=128 && (0 until f.length()).all { f.get(it) is String })
         return utf((0 until f.length()).joinToString(","){f.getString(it)})
     }
     private fun nBytes(env:JSONObject):ByteArray? {
@@ -228,8 +228,12 @@ internal object HcHccfgPort {
         }.toByteArray()
         var ikm=if(n7mode)mac(n7,bytes(byteArrayOf(0xd3.toByte()),c0.copyOf(32),t))
             else c0hash(t)
-        val protectionFlag=env.optInt("h",0)
-        require(protectionFlag==0||protectionFlag==1)
+        val protectionFlag=when(val flag=env.opt("h")) {
+            null,JSONObject.NULL,false -> 0
+            true -> 1
+            is Number -> flag.toInt().also { require(it==0||it==1) }
+            else -> error("Bad HCCFG protection flag")
+        }
         val protectionAad=if(protectionFlag==1){
             require(!password.isNullOrEmpty()){"PASSWORD_REQUIRED"}
             val ops=env.getInt("l")
