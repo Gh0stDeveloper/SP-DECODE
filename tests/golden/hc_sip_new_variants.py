@@ -19,7 +19,7 @@ from tests.golden.a23_generators import httpcustom_bytes
 NONCE_MAIN=bytes(range(24))
 NONCE_PROFILE=bytes(range(24,48))
 NONCE_OUTER=bytes(range(48,72))
-NONCE_SIP=b"spdecode-ver8"
+NONCE_SIP=b"spdecodev8!!"
 
 
 def aead(key: bytes, nonce: bytes, aad: bytes, plain: bytes) -> bytes:
