@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.17.1",
+  "documentationVersion": "1.18.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
   "documentationBranch": "docs/android-offline-architecture",
-  "productStatus": "android_experimental_test_host_only_not_app",
+  "productStatus": "android_compose_functional_alpha_implementation_pending_ci",
   "androidSourceExists": true,
   "apkProduced": false,
   "offlineRequired": true,
@@ -15,6 +15,7 @@
   "telegramDependencyAllowed": false,
   "networkPermissionAllowed": false,
   "visualBaseline": [
+    "docs/android/USER_SCREENSHOT_REFERENCE.md",
     "docs/android/DESIGN_SYSTEM.md",
     "docs/android/design/home-dark.svg",
     "docs/android/design/result-dark.svg"
@@ -44,7 +45,15 @@
       }
     },
     "B": {
-      "status": "experimental_android_parity_host_only_B1_product_scaffold_not_started"
+      "status": "compose_ui_saf_file_decode_session_history_working_source_pending_emulator_ci",
+      "subphases": {
+        "B.1": "implemented_pending_android_compile_and_lint",
+        "B.2": "implemented_user_screenshot_amoled_pending_emulator_visual_check",
+        "B.3": "implemented_home_history_formats_settings_pending_ui_tests",
+        "B.4": "partial_saf_open_document_view_send_multiple_export_txt_pending_provider_tests",
+        "B.5": "not_started_persistent_room_datastore_vm",
+        "B.6": "instrumentation_added_pending_ci"
+      }
     },
     "C": {
       "status": "not_started"
@@ -65,10 +74,10 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Merge final-7 PR after both final-commit CI jobs succeed. Then continue A.2.4 vendor variants, ARM64/16KB, UI/SAF production readiness and security review; keep release NO-GO.",
-  "releaseStatus": "NO-APK-NO-GO",
+  "nextAction": "Validate Compose build, FunctionalUiInstrumentedTest and 72 existing Android tests; debug APK Actions artifact. Then SAF provider QA, encrypted history, real exporter certification and release hardening.",
+  "releaseStatus": "DEBUG-ALPHA-PENDING-CI-NO-PRODUCTION-GO",
   "ciValidatedAndroid": true,
-  "notes": "Android synthetic format parity passed for 59/59 suffix routes; not proof of real exporter support or production readiness.",
+  "notes": "User-provided 2026-10-08 screenshot is authoritative over differing older SVG designs. 59 Kotlin decoders remain experimental; UI now implemented in branch, awaiting CI.",
   "localization": {
     "scope": "ui_only",
     "languages": [
@@ -85,7 +94,7 @@
     "arabicRtlRequired": true,
     "decoderOutputTranslated": false,
     "decoderOutputMutationAllowed": false,
-    "localizationImplementationStatus": "documented_not_implemented"
+    "localizationImplementationStatus": "four_resource_locales_device_language_no_manual_selector_yet"
   },
   "a2": {
     "baseCommit": "39118010f24bac95aea6c3299fc1523a4c9e0522",
@@ -579,5 +588,6 @@
       "url": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37835155484",
       "scope": "bot regression + A2 static inventory + documentation; NOT Android execution"
     }
-  ]
+  ],
+  "versionName": "0.2.0-alpha"
 }
