@@ -24,6 +24,7 @@ private val TitleText=Color(0xFFF7F7F7)
 private val SurfaceLine=Color(0xFF343434)
 
 /** Actual per-app locale choice, credited URLs are verified from README. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FunctionalSettingsPanel(
     language:String,
