@@ -202,3 +202,13 @@ do not merge until both jobs green.
 Technical debt remains even after synthetic success: EHI standard Argon2id
 variant, HC extra inner field variants, SIP VER7, NPV other app versions,
 plus ARM64/16KiB and authorized real exporter fixtures, UI/SAF.
+
+### CI final y pasos siguientes
+
+[Lote final run #37885309397](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37885309397) Linux **60/60**,
+Android emulador API35 x86_64 **72/72**, compilación **success**.
+59/59 sufijos tienen **adapter experimental** y 60 source-goldens
+positivos. `PR #21` se puede fusionar después del último CI de este
+commit documental. No hay versiones reales certificadas; no publicar
+release de producción. Continuar con variantes reales, UI/SAF, 16KiB
+y ARM64, y endurecimiento de la superficie de claves/configuraciones.
