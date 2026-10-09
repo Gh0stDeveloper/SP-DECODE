@@ -49,7 +49,9 @@ class SecureDecodeHistory(context: Context) {
 
     fun load(): List<DecodeView> =
         directory.listFiles().orEmpty()
-            .filter { it.isFile && it.name.endsWith(".bin") }
+            .filter { it.isFile && (it.name.endsWith(".bin") || it.name.endsWith(".bin.bak")) }
+            .map { if (it.name.endsWith(".bak")) File(directory, it.name.removeSuffix(".bak")) else it }
+            .distinctBy { it.name }
             .mapNotNull { file -> runCatching { read(file) }.getOrNull() }
             .sortedWith(compareByDescending<DecodeView> { it.savedAtMillis }.thenBy { it.id })
 
@@ -102,7 +104,7 @@ class SecureDecodeHistory(context: Context) {
 
     private fun read(file: File): DecodeView {
         // Avoid exhausting heap on a corrupted or maliciously oversized record.
-        require(file.length() in 1..MAX_RECORD_BYTES)
+        require(file.length() in 1L..MAX_RECORD_BYTES)
         val input = DataInputStream(ByteArrayInputStream(AtomicFile(file).openRead().use { it.readBytes() }))
         val payload = input.use {
             require(it.readInt() == MAGIC && it.readUnsignedByte() == 1)
