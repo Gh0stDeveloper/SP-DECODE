@@ -212,3 +212,28 @@ positivos. `PR #21` se puede fusionar después del último CI de este
 commit documental. No hay versiones reales certificadas; no publicar
 release de producción. Continuar con variantes reales, UI/SAF, 16KiB
 y ARM64, y endurecimiento de la superficie de claves/configuraciones.
+
+## Primer APK funcional — 0.2.0-alpha, rama de trabajo
+
+Rama `feat/android-b1-functional-compose-app`.
+La captura del usuario de 2026-10-08 es la referencia visual **prioritaria**
+(`USER_SCREENSHOT_REFERENCE.md`) si los SVG anteriores discrepan.
+Primera implementación Jetpack Compose en `SpDecodeApp.kt` y `MainActivity.kt`:
+pantalla negra con panel gris como la captura, cuatro tabs, estado demo
+claramente etiquetado, importación SAF, intents VIEW/SEND/SEND_MULTIPLE,
+enrutamiento a 59 Kotlin decoders y salida original, copiar/exportar TXT
+con confirmación de datos sensibles, catálogo de 59 extensiones,
+historial efímero de sesión, es/en/pt-BR/ar según sistema, RTL.
+
+Seguridad inicial: no INTERNET, sin acceso global almacenamiento, límite
+1 MiB input y NO historia persistente en claro. Copiar/exportar raw solo
+mediante opción consciente. La censura heurística no garantiza identificar
+secreto sin etiqueta. `FunctionalUiInstrumentedTest` comprueba
+pantalla/4 tabs, formatos, ajustes, censura. APK debug de Actions
+`SP-DECODE-Android-v0.2.0-alpha-debug-APK` solamente si los jobs pasan.
+
+**Estatus en esta anotación: IMPLEMENTADO EN RAMA, NO COMPILADO
+NI VERIFICADO AÚN EN EMULADOR.** No atribuirle funciones de historial
+cifrado persistente, selector manual de idioma, release firmada, ni
+compatibilidad certificada con exportadores modernos.
+Detalles en `ALPHA_INSTALL.md`.
