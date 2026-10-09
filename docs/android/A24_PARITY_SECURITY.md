@@ -190,3 +190,19 @@ probadas sintéticamente con la primera clave. No se anuncian variantes
 completas ni compatibilidad con versiones recientes.
 Ningún input se comparte con Telegram; los registros no deben contener
 datos descifrados.
+
+## 10. A.2.4 — 11 further original decoder routes (provisional, CI required)
+
+Branch: `feat/android-a24-final-remainder-batch`.
+
+- `.rez`, `.rezl`, `.tvt`: the same legacy `rez.js` TEA-style integer algorithm, fixed original password and identical `.rez` printed header. Three independent suffix dispatches, not three invented crypto engines.
+- `.stk`: own `stk.js` TEA key, JSON cleanup and proprietary ordered field labels.
+- `.xtp`, `.roy`: same original `xtproy.py` AES-256-CBC, private 16-symbol nibble alphabet, distinct filename dispatchers.
+- `.sksplus`: native port of PHP `sksplus.php` signed-byte JSON container and AES-256-CBC with source key.
+- `.sks`: original `sks.js` source construction using MD5 text encoding and the supplied profile IV; JS field selection and original order preserved.
+- `.sut`: original `sut.py` outer nibble-encoded AES-CBC and its own inner AES-CBC encrypted fields.
+- `.tnl`: `tnl.py` PBKDF2-SHA256/AES-GCM, OpenTunnel and OPL binary transports with distinct SHA256 parameters; XML entry JSON formatting.
+- `.ssh`: original Blowfish-CBC-PKCS7 and XML record sorting. The Linux golden uses seeded random glyph and the Kotlin port deliberately uses that same fixed glyph, since the display glyph has no cryptographic role.
+
+The new 11 format routes have 11 SHA256-frozen synthetic Linux goldens. Combined catalog:
+48 experimental format routes, 49 reference vectors, 11 remaining unported, **0** certified against live vendor exporters. These counts describe **candidates pending CI** until Android instrumentation passes. API35 x86_64 does not constitute ARM64/16KiB proof.
