@@ -64,6 +64,10 @@ object AndroidOfflineDecoderRouter {
             "sut" -> SutPort.decode(input)
             "tnl" -> TnlPort.decode(input)
             "ssh" -> SshPort.decode(input)
+            "ht" -> HtPort.decode(context,input)
+            "htb" -> HtbPort.decode(context,input)
+            "hat" -> HatPort.decode(context,input)
+            "ehil" -> EhilPort.decode(input)
             else -> null
         }
     }
