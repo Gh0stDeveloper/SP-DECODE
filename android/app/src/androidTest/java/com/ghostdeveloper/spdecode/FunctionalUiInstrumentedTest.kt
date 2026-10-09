@@ -23,6 +23,8 @@ class FunctionalUiInstrumentedTest {
             ui.onAllNodesWithContentDescription(ctx.getString(R.string.home))
                 .fetchSemanticsNodes().isNotEmpty()
         }
+        if(ui.onAllNodesWithText(ctx.getString(R.string.whats_new_continue)).fetchSemanticsNodes().isNotEmpty())
+            ui.onNodeWithText(ctx.getString(R.string.whats_new_continue)).performClick()
     }
 
     @Test fun mainScreenContainsScreenshotLayoutAndFourTabs(){
