@@ -59,7 +59,7 @@ class AndroidProductionWorkflowTest(unittest.TestCase):
 
     def test_stable_identity_and_publication_are_separate(self):
         self.assertRegex(self.gradle, r'versionName\s*=\s*"1\.0\.3"')
-        self.assertRegex(self.gradle, r'versionCode\s*=\s*13\b')
+        self.assertRegex(self.gradle, r'versionCode\s*=\s*14\b')
         w = self.workflow
         self.assertIn("publication-gate:", w)
         self.assertIn("python scripts/android_release_gate.py --mode stable", w)
