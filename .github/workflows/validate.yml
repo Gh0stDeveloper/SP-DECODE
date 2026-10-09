@@ -53,6 +53,9 @@ jobs:
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
 
+      - name: Verify standard-IV EHI with original Python decoder
+        run: PYTHONPATH=. python scripts/android_ehi_standard_fixture.py --output-dir "$RUNNER_TEMP/ehi-standard"
+
       - name: Probe batch-seven synthetic decoder candidates
         run: PYTHONPATH=. python tests/golden/a23_probe7.py
 
@@ -91,7 +94,7 @@ jobs:
 
 
   android-parity:
-    name: Android 0.3.1 encrypted history + 60 synthetic vectors (API 35)
+    name: Android 0.3.2 full EHI routes + unsupported variant notices (API 35)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -122,6 +125,9 @@ jobs:
 
       - name: Prepare SHA-256-pinned synthetic parity assets
         run: PYTHONPATH=. python scripts/android_a24_prepare.py --output-dir android/app/src/androidTest/assets/parity
+
+      - name: Generate verified standard-IV EHI Android parity sample
+        run: PYTHONPATH=. python scripts/android_ehi_standard_fixture.py --output-dir android/app/src/androidTest/assets/parity
 
       - name: Compile audited NPV white-box to offline data-only Android asset
         run: PYTHONPATH=. python scripts/android_a24_whitebox_export.py --output android/app/src/main/assets/npv_whitebox.bin
@@ -161,7 +167,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v0.3.1-alpha-home-screenshot
+          name: SP-DECODE-Android-v0.3.2-alpha-home-screenshot
           path: android/app/build/outputs/spdecode-ui/home.png
           if-no-files-found: error
           retention-days: 30
@@ -181,7 +187,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v0.3.1-alpha-debug-APK
+          name: SP-DECODE-Android-v0.3.2-alpha-debug-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

@@ -5,7 +5,7 @@ import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
 /** Original sockip.py AES-128-ECB envelope and safe data-only Java reader.
- * VER7 is identified and rejected exactly as the original unsupported source.
+ * An unsupported inner version is never returned as a decoded success.
  */
 object SipPort {
     private val p=LegacyPortPrimitives
@@ -20,10 +20,10 @@ object SipPort {
         val cipher=Cipher.getInstance("AES/ECB/PKCS5Padding")
         cipher.init(Cipher.DECRYPT_MODE,SecretKeySpec(key,"AES"))
         val clear=cipher.doFinal(bytes)
-        if(clear.size>=4 && String(clear.copyOfRange(0,4),Charsets.US_ASCII)=="VER7")
-            return@safeDecode "SocksIP Tunnel: unsupported profile version\n"+
-                "SocksIP VER7 was detected after AES-ECB. "+
-                "This inner container is not implemented by the analyzed SocksIP 15.14.4 build."
+        require(!(clear.size>=4 &&
+            String(clear.copyOfRange(0,4),Charsets.US_ASCII)=="VER7")) {
+            "Unsupported SocksIP inner variant"
+        }
         val json=SockipObjectReader(clear).read()
         p.prettyJson(json).replace(Regex("(?m)^ +")) {m->
             " ".repeat(m.value.length/2)

@@ -11,12 +11,19 @@ android {
         applicationId = "com.ghostdeveloper.spdecode"
         minSdk = 24
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.3.1-alpha"
+        versionCode = 5
+        versionName = "0.3.2-alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("en", "es", "pt-rBR", "ar")
     }
     buildFeatures { compose = true }
+    packaging {
+        resources {
+            // Bouncy Castle and jspecify both ship JVM 9 multi-release metadata;
+            // Android does not execute those JVM-specific OSGi descriptors.
+            excludes += "META-INF/versions/**"
+        }
+    }
     buildTypes {
         release { isMinifyEnabled = false }
     }
@@ -33,6 +40,8 @@ dependencies {
     implementation(composeBom)
     implementation("androidx.activity:activity-compose:1.10.1")
     implementation("com.google.code.gson:gson:2.13.1")
+    // Lightweight Argon2id + XChaCha20-Poly1305 primitives for standard .ehi.
+    implementation("org.bouncycastle:bcprov-jdk18on:1.86")
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0")
     implementation("androidx.compose.ui:ui")

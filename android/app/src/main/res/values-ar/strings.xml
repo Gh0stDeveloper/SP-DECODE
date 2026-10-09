@@ -94,4 +94,7 @@
     <string name="history_delete_selected">حذف المحدد</string>
     <string name="history_delete_confirm">هل تريد حذف %1$d نتيجة محفوظة نهائيًا من هذا الجهاز؟</string>
     <string name="history_storage_error">تعذر الوصول إلى السجل المشفر. تحقق من مساحة تخزين الجهاز.</string>
+    <string name="decode_notice_title">عذرًا، تعذر فك ترميز هذا الملف</string>
+    <string name="decode_notice_contact">التواصل مع المطور</string>
+    <string name="unsupported_variant_message">قد تكون هذه النسخة أو الصيغة غير مدعومة حاليًا، أو قد يكون الملف تالفًا. يمكنك التواصل مع المطور لمراجعة دعم هذا التنسيق.</string>
 </resources>

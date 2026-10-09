@@ -94,4 +94,7 @@
     <string name="history_delete_selected">Eliminar seleccionados</string>
     <string name="history_delete_confirm">¿Eliminar definitivamente %1$d resultado(s) de este dispositivo?</string>
     <string name="history_storage_error">No se pudo acceder al historial cifrado. Revisa el almacenamiento disponible.</string>
+    <string name="decode_notice_title">¡Oops! No pudimos decodificar este archivo</string>
+    <string name="decode_notice_contact">Contactar al desarrollador</string>
+    <string name="unsupported_variant_message">Esta versión o variante todavía no es compatible, o el archivo podría estar dañado. Puedes contactar al desarrollador para que revise cómo incorporar soporte.</string>
 </resources>

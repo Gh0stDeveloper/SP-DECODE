@@ -213,7 +213,7 @@ class MainActivity : ComponentActivity() {
                         val input=readBounded(uri)
                         val text=withContext(Dispatchers.Default){
                             AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
-                        }?:throw DecodeFailure(R.string.import_error)
+                        }?:throw DecodeFailure(R.string.unsupported_variant_message)
                         DecodeView(name,supported.suffix,text,input.size)
                     }
                     result=processed
@@ -225,8 +225,8 @@ class MainActivity : ComponentActivity() {
                     tab=0
                 }
             }catch(_:CancellationException){throw CancellationException()}
-            catch(e:DecodeFailure){message=getString(e.stringId)}
-            catch(_:Exception){message=getString(R.string.read_error)}
+            catch(e:DecodeFailure){message=getString(e.stringId);tab=0}
+            catch(_:Exception){message=getString(R.string.read_error);tab=0}
             finally{busy=false}
         }
     }
