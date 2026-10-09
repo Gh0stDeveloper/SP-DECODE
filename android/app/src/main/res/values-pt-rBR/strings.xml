@@ -33,7 +33,7 @@
     <string name="about_title">Sobre o SP-DECODE</string>
     <string name="about_text">Versão alfa Android offline. Variantes e compatibilidade externa ainda em testes.</string>
     <string name="language_title">Idiomas</string>
-    <string name="language_text">A interface acompanha o idioma do dispositivo. Seleção manual planejada.</string>
+    <string name="language_text">Escolha o idioma do aplicativo. A alteração reinicia esta tela.</string>
     <string name="show">Mostrar</string>
     <string name="hide">Ocultar</string>
     <string name="raw_text">Texto original do decodificador</string>
@@ -66,4 +66,22 @@
     <string name="unknown">Desconhecido</string>
     <string name="sensitive">Valor sensível</string>
     <string name="all_formats">Todos os formatos</string>
+    <string name="language_pick_description">Escolha o idioma do aplicativo. A alteração reinicia esta tela.</string>
+    <string name="language_system">Idioma do dispositivo</string>
+    <string name="result_preferences_title">Exibição dos resultados</string>
+    <string name="mask_passwords_title">Ocultar senhas na visualização</string>
+    <string name="mask_passwords_detail">Opcional e desativado por padrão. Todos os campos são exibidos.</string>
+    <string name="export_security_note">Copiar ou compartilhar pode expor credenciais a outros aplicativos.</string>
+    <string name="developer_credits">Desenvolvedor e créditos</string>
+    <string name="contribute_invitation">Projeto de código aberto. Colaboradores, testes e novos decodificadores são bem-vindos. Contribua ou informe erros no GitHub.</string>
+    <string name="contact_developer">Contato com o desenvolvedor</string>
+    <string name="telegram_group">Comunidade no Telegram</string>
+    <string name="telegram_channel">Canal do Telegram</string>
+    <string name="report_issue">Reportar problema / Contribuir</string>
+    <string name="clear_confirm_title">Limpar o histórico da sessão?</string>
+    <string name="clear_confirm_detail">Os resultados decodificados em memória serão apagados.</string>
+    <string name="complete_fields_count">%1$d campos completos</string>
+    <string name="json_option">JSON · completo e formatado</string>
+    <string name="ordered_option">Estruturado · todos os campos</string>
+    <string name="original_option">Texto original do decodificador</string>
 </resources>
