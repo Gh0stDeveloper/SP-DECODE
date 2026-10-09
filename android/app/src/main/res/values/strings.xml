@@ -27,7 +27,7 @@
     <string name="session_only">Saved locally · Encrypted history</string>
     <string name="search_formats">Search app or extension</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">59 offline experimental formats. Compatibility with current app versions is not certified.</string>
+    <string name="catalog_note">60 offline experimental formats. LinkLayer VER6 is available; exporter compatibility varies by format.</string>
     <string name="settings_title">Settings</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_text">Original imported files are not copied. Decoded results are encrypted and stored only on this device until you delete them.</string>
@@ -129,4 +129,10 @@
     <string name="text_decode_private">Processed offline. Only successfully decoded results are saved.</string>
     <string name="text_decode_invalid">Unrecognized text protocol, invalid input or size limit exceeded.</string>
     <string name="text_decode_unsupported">Could not decode this text. It may be incomplete, corrupted or a different cipher version.</string>
+    <string name="whats_new_title">What\'s new in SP-DECODE</string>
+    <string name="whats_new_description">Version 1.0.3 · New offline configuration format</string>
+    <string name="whats_new_linklayer">LinkLayer VPN (.lnk) VER6 support</string>
+    <string name="whats_new_fields">Displays 60 configuration fields, including nested SSH, HTTP, SSL and DNS settings.</string>
+    <string name="whats_new_offline">Decoding stays on your device. Older decoders and saved history remain available.</string>
+    <string name="whats_new_continue">Got it</string>
 </resources>
