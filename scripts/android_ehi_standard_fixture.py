@@ -77,7 +77,9 @@ def make() -> tuple[bytes, bytes]:
     expected = run(payload)
     if not expected or "serverHost: example.org" not in expected or message not in expected:
         raise AssertionError("Standard EHI fixture did not round-trip original Python decoder")
-    return payload, expected.encode("utf-8")
+    # CLI stdout includes print(result), which appends one terminal newline.
+    # Keep this byte-for-byte contract consistent with the frozen 60 goldens.
+    return payload, (expected + "\n").encode("utf-8")
 
 
 def write(out: Path) -> None:
