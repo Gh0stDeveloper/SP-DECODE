@@ -114,15 +114,11 @@ Android no debe requerir Python, Node, PHP, red, credenciales externas o acceso 
 
 **Salida obligatoria:** resultado verificable con la muestra aportada y pruebas negativas que no producen falsos éxitos.
 
-### Fase 4 — Paridad Kotlin / Android
+### Fase 4 — Preparación mínima para una futura integración Android (OPCIONAL)
 
-1. Portar el parser y las primitivas verificadas a un motor Kotlin independiente; no insertar un decoder de Python en el APK ni introducir conexión a Internet.
-2. Añadir despacho estrictamente ligado al sufijo y, dentro de éste, a la versión estructural, sin *fallback* criptográfico a motores ajenos.
-3. Preservar el resultado completo y su organización en pantalla; integrar importación por lotes, errores explicativos, cancelación y guardado cifrado sólo al finalizar correctamente.
-4. Si es una extensión nueva, regenerar catálogo, contadores de la UI y aserciones, incrementando el número total sin declarar soporte certificado prematuramente.
-5. Probar paridad Python ↔ Kotlin en bytes/JSON/representación final y conservar compatibilidad con formatos existentes.
+**No portar a Kotlin, no cambiar la UI y no compilar APK en esta sesión.** Tras conseguir que Python funcione, dejar como máximo una nota breve con entrada, salida, algoritmos comprobados y dependencias para que el propietario realice la integración Android posteriormente.
 
-**Salida obligatoria:** decodificación offline reproducible en Android y pruebas instrumentadas.
+**Salida opcional:** breve guía de portabilidad. **No exigirla para dar por terminado el trabajo Python.**
 
 ### Fase 5 — Auditoría de seguridad y QA
 
@@ -130,31 +126,32 @@ Android no debe requerir Python, Node, PHP, red, credenciales externas o acceso 
 - Validar autenticación e integridad donde corresponda: ningún resultado presentado como éxito tras fallar un MAC/tag.
 - Límites de tamaños, profundidad, tiempo, memoria y descompresión. No ejecutar deserialización de objetos con efectos secundarios ni código procedente del archivo.
 - Comprobar que ninguna configuración privada ni clave privada se escriba en logs, fixtures públicos o informes del CI. Para dispositivos, conservar procesamiento local.
-- Ejecutar tests Python/CI Linux y Android API35; además, pruebas reales en ARM64 y dispositivos/páginas de 16 KiB si aplica.
+- Ejecutar **tests Python y CLI/bot**, incluidos casos positivos y negativos y CI Linux relevante. Android API35, ARM64 y páginas de 16 KiB quedan para el trabajo posterior; **no ejecutarlos como parte de esta solicitud**.
 - No dar por verificado un formato real basándose exclusivamente en archivos sintéticos. Registrar al menos un caso real autorizado y su resultado esperado en un repositorio **privado** o registro de QA seguro, no en GitHub público.
 
 **Salida obligatoria:** matriz de pruebas, alcance real de compatibilidad y reporte de limitaciones reproducibles.
 
-### Fase 6 — PR, documentación y entrega
+### Fase 6 — Entrega focalizada del decodificador Python
 
-1. Documentar formato nuevo y versiones detectadas, protección de entradas, claves/protocolo sin exponer secretos, rutas de error, algoritmo confirmado, referencias de código y limitaciones.
-2. Abrir PR pequeño y específico; corregir Linux/Android hasta que las verificaciones del commit final estén en `SUCCESS`.
-3. Revisar que `main` y la automatización de Releases no creen publicaciones prematuras o cambien el estado `NO-GO` sin evidencia.
-4. Solo tras autorización de publicación, versionar correctamente, fusionar y verificar APK firmada con la keystore definitiva, firmas y hashes, y el enlace real de GitHub Releases.
+1. Documentar brevemente formato, método identificado, dependencias y límites, citando evidencias sin exponer secretos privados.
+2. Mantener el código probado en una rama independiente; abrir un PR de Python si resulta útil. Ejecutar tests pertinentes y corregir errores.
+3. No fusionar a `main`, no alterar versión Android ni activar publicación de APK. El propietario decidirá después cómo portar e integrar.
+4. Entregar ruta del script, comando de uso (`python ... archivo.ext`), dependencias y resultado de las pruebas con el archivo suministrado.
 
-**Salida obligatoria:** PR, documentación técnica, reporte comparativo de resultados, tests y pasos exactos de instalación.
+**Salida obligatoria:** script Python funcional y verificado, pruebas de errores y guía breve para ejecutarlo desde el bot. **No se requiere Kotlin, APK ni Release.**
 
 ## 6. Criterios estrictos de aceptación
 
-El trabajo se considera **completado técnicamente** solo cuando:
+**Para este encargo Python, la entrega se considera terminada cuando:**
 
-- La extensión y la pertenencia de `VER6` estén confirmadas con la app y el archivo reales.
-- El decodificador **Python del bot** reproduzca los campos verificables del archivo sin intervención manual ni contenido fabricado.
-- El decodificador **Android** produzca una salida equivalente de manera totalmente offline.
-- Los decodificadores anteriores mantengan sus pruebas y resultados.
-- Las rutas de error sean claras, no se produzcan falsos positivos ni pérdidas silenciosas de datos.
-- Los tests, el catálogo, la documentación y el CI estén actualizados y no exista un fallo de compilación o regresión.
-- El trabajo esté separado de la publicación estable hasta que las evidencias y las pruebas reales estén completas.
+- La extensión y la relación de `VER6` con la **nueva aplicación (no SocksIP)** están confirmadas con los adjuntos.
+- El script **Python** se ejecuta sin preguntas interactivas y reproduce los campos que se pueden verificar en el archivo real.
+- Las pruebas positivas, negativas y de entradas truncadas son reproducibles, sin errores silenciosos ni falsos éxitos.
+- No se alteran ni rompen los decodificadores anteriores.
+- Se proporciona archivo fuente, dependencias, comando de uso y resultado concreto de validación.
+- Todo queda aislado en rama/PR, sin fusionar ni disparar una publicación de la aplicación.
+
+**Quedan expresamente fuera de aceptación:** compilación Android, Kotlin, interfaces, pruebas instrumentadas, número de versión de APK y GitHub Releases.
 
 Si una etapa no es posible, declarar **PARCIAL / BLOQUEADO / NO CONFIRMADO**, indicar la evidencia faltante y avanzar en pruebas o análisis que sí sean verificables. No marcar “terminado” sin pruebas.
 
