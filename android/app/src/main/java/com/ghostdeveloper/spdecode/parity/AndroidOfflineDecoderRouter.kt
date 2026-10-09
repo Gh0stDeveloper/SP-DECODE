@@ -74,7 +74,7 @@ object AndroidOfflineDecoderRouter {
             "npvt" -> NpvtPort.decode(context,input)
             "sip" -> SipPort.decode(input)
             "ssc" -> SscPort.decode(input)
-            "hc" -> HcPort.decode(context,input)
+            "hc" -> HcPort.decode(context,input) ?: HcHccfgPort.decode(input)
             else -> null
         }
     }
