@@ -58,7 +58,7 @@ class AndroidProductionWorkflowTest(unittest.TestCase):
         self.assertIn("production-signed.apk", w)
 
     def test_stable_identity_and_publication_are_separate(self):
-        self.assertRegex(self.gradle, r'versionName\s*=\s*"1\.0\.2"')
+        self.assertRegex(self.gradle, r'versionName\s*=\s*"1\.0\.3"')
         self.assertRegex(self.gradle, r'versionCode\s*=\s*13\b')
         w = self.workflow
         self.assertIn("publication-gate:", w)
