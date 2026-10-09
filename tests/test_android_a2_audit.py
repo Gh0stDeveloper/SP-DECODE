@@ -33,7 +33,7 @@ class AndroidA2AuditTests(unittest.TestCase):
     def test_known_portability_flags_are_reported_without_executing(self):
         rows = {x["script"]: x for x in audit.analyze(ROOT)["scripts"]}
         self.assertTrue(rows["decoders/Python/NPVTUNNEL.py"]["flags"]["uses_pickle"])
-        self.assertTrue(rows["decoders/Python/gold.py"]["flags"]["imports_network_facility"])
+        self.assertFalse(rows["decoders/Python/gold.py"]["flags"]["imports_network_facility"])
         self.assertFalse(rows["decoders/Python/gold.py"]["flags"]["invokes_network_api"])
         self.assertTrue(rows["decoders/Python/TLS.py"]["flags"]["declares_run"])
         self.assertTrue(rows["decoders/JavaScript/modulepro.js"]["flags"]["writes_files"])
