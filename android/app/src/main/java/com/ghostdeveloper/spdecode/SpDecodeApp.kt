@@ -155,7 +155,7 @@ private fun BrandHeader(onSettings:()->Unit){
                 maxLines=1,overflow=TextOverflow.Ellipsis)
         }
         IconButton(onClick=onSettings){
-            Icon(Icons.Outlined.Tune,stringResource(R.string.settings),tint=Secondary)
+            Icon(Icons.Outlined.Tune,stringResource(R.string.options),tint=Secondary)
         }
     }
 }
