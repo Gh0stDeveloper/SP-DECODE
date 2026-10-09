@@ -39,6 +39,28 @@ def check(evidence: dict, mode: str, version: str) -> list[str]:
         return problems
     if mode != "stable":
         return ["unknown release mode"]
+    # The owner can elect to distribute a stable build after explicitly
+    # accepting the limits of manual QA. This is NOT an independent audit:
+    # unverified evidence remains unverified in the manifest and release notes.
+    # Consent is version-scoped, report-backed and never transferable.
+    if evidence.get("decision") == "OWNER-GO":
+        if not re.fullmatch(r"[1-9][0-9]*\.[0-9]+\.[0-9]+", version):
+            problems.append("owner-approved stable version must be semver")
+        if evidence.get("stableVersion") != version:
+            problems.append("owner-approved version mismatch")
+        if evidence.get("ownerApproval") is not True:
+            problems.append("explicit owner approval required")
+        consent = evidence.get("ownerStableAcceptance")
+        if not isinstance(consent, dict):
+            problems.append("version-scoped owner risk acceptance required")
+        else:
+            if consent.get("approved") is not True or consent.get("version") != version:
+                problems.append("owner acceptance must explicitly match release version")
+            ref = consent.get("report", "")
+            if (not isinstance(ref,str) or not ref.startswith("docs/android/") or
+                not Path(ref).is_file()):
+                problems.append("owner acceptance requires an existing report")
+        return problems
     if not re.fullmatch(r"[1-9][0-9]*\.[0-9]+\.[0-9]+", version):
         problems.append("stable version must be an ordinary semver tag")
     if evidence.get("stableVersion") != version:
