@@ -14,10 +14,7 @@ object AndroidOfflineDecoderRouter {
         if (input.isEmpty() || input.size > LegacyPortPrimitives.MAX_INPUT) return null
         val format = AndroidDecoderCatalog.detect(filename, AndroidDecoderCatalog.read(context))
             ?: return null
-        if (format.androidVerified || format.portStatus == "not_implemented") {
-            // A verified format would need a separate manifest schema revision.
-            return null
-        }
+        if (format.portStatus == "not_implemented") return null
         return when (format.suffix) {
             "v2" -> V2RayReferencePort.decode(input)
             "tls" -> TlsReferencePort.decode(input)
