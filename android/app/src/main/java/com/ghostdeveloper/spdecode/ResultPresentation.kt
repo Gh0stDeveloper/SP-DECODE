@@ -132,13 +132,24 @@ object ResultPresentation {
             }
         }
     }
+    // Attribution is added ONLY to the ordered copy/export: original raw output
+    // remains immutable and JSON copy/export must remain valid machine-readable JSON.
+    // Keep the official SP-DECODE group/channel consistent with Settings links.
     fun structure(suffix:String,fields:List<ResultField>):String=buildString {
-        append("┌───────────────\n│SP-DECODE (.").append(suffix).append(")\n├───────────────\n")
+        append("┌────────────────────────────\n")
+        append("│ SP-DECODE (.").append(suffix).append(")\n")
+        append("│ Créditos\n")
+        append("│ Decodificado por: SP-DECODE\n")
+        append("│ Desarrollado por: Ghost Developer\n")
+        append("├────────────────────────────\n")
         for(field in fields){
             append("│[۞] ").append(field.path).append(": ")
                 .append(field.value).append('\n')
         }
-        append("└───────────────")
+        append("├────────────────────────────\n")
+        append("│ Grupo: https://t.me/CodeBreakersHub\n")
+        append("│ Canal: https://t.me/GhostDeve\n")
+        append("└────────────────────────────")
     }
     fun formatted(doc:ResultDocument,format:ResultExport)=when(format){
         ResultExport.JSON->doc.json
