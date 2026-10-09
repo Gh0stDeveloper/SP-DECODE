@@ -19,10 +19,8 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
 import java.text.DateFormat
 import java.util.Date
-import java.util.Locale
 
 private val Ink=Color(0xFFF7F7F7)
 private val Muted=Color(0xFFABABAB)
@@ -48,14 +46,6 @@ fun CompleteResultCard(
     val mask=hideCredentials&&!reveal
     val primary=remember(current?.id,mask) {
         current?.let { ResultJsonDisplay.render(it.rawText,it.extension,mask) }.orEmpty()
-    }
-    val appName=remember(current?.filename,current?.extension) {
-        if(current==null)""
-        else runCatching {
-            AndroidDecoderCatalog.detect(current.filename,
-                AndroidDecoderCatalog.read(context))?.appName
-        }.getOrNull() ?: TextProtocolDecoder.appNameForSuffix(current.extension)
-            ?: current.extension.uppercase(Locale.ROOT)
     }
     val formattedDate=remember(current?.savedAtMillis,
         context.resources.configuration.locales[0]) {
@@ -89,7 +79,7 @@ fun CompleteResultCard(
                     color=Muted,fontSize=12.sp)
             } else {
                 Column(verticalArrangement=Arrangement.spacedBy(4.dp)) {
-                    Text("// "+stringResource(R.string.result_decoded_by,appName),
+                    Text("// "+stringResource(R.string.result_decoded_by,"SP-DECODE"),
                         color=Muted,fontSize=12.sp,lineHeight=17.sp,
                         style=TextStyle(textDirection=TextDirection.Ltr))
                     Text("// "+stringResource(R.string.result_decoded_date,formattedDate),
