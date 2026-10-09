@@ -56,7 +56,7 @@ class A23Batch7Goldens(unittest.TestCase):
                 self.assertEqual(byid[cid]["linuxGolden"],"verified_linux_ci")
                 self.assertEqual(byid[cid]["androidGolden"],"not_started")
                 self.assertEqual(get_supported_extension("profile."+suffix),suffix)
-        self.assertEqual([x["suffix"] for x in rows["extensions"] if not x["caseIds"]],["ssh"])
+        self.assertEqual([x["suffix"] for x in rows["extensions"] if not x["caseIds"]],[])
 
     def test_03_corrupt_input_does_not_produce_successful_profile(self):
         with tempfile.TemporaryDirectory(prefix="spdecode-a23-b7-bad-") as folder:

@@ -1,0 +1,22 @@
+┌───────────────
+│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (.ssh)
+│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu
+├───────────────
+│[🚀] Host : example.org
+│[🚀] Note : A23 synthetic offline SSH test
+│[🚀] Port : 443
+│[🚀] unlockKeys 🔽
+│[🚀] cproxyRemoto: ***
+│[🚀] sslProxy: ***
+│[🚀] dnsKey: ***
+│[🚀] cchaveKey: ***
+│[🚀] cserverNameKey: ***
+│[🚀] cdnssshUser: ***
+│[🚀] cdnssshPass: ***
+
+├───────────────
+│[🚀] 𝗚𝗥𝗢𝗨𝗣 : CodeBreakersHub
+├───────────────
+│[🚀] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve
+└───────────────
+

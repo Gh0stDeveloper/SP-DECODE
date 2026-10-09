@@ -1,6 +1,8 @@
 import sys
 import re
 import random
+import os
+import binascii
 from Crypto.Cipher import Blowfish
 from Crypto.Util.Padding import unpad
 from base64 import b64decode
@@ -27,12 +29,18 @@ def ssh_injector(file):
 
     # Proceso de extracción de datos
     extracted_data = re.findall(r'<entry key="([^"]+)">([^"]+)</entry>', decrypt_text)
+    if not extracted_data:
+        raise ValueError('SSH Injector decrypted file contains no entry records')
     
     # Lista de emojis
     emojis = ["💠", "🔵", "💀", "🤖",  "😈", "🔥", "🚀", "🔐"]
 
     # Elegir un emoji aleatorio
-    random_emoji = random.choice(emojis)
+    # An explicit TEST-ONLY environment switch stabilizes the decorative
+    # glyph for a byte-exact Linux CLI golden. Normal app/bot behavior remains
+    # random as before. No decryption logic or field content is altered.
+    selector = random.Random(0) if os.environ.get("SPDECODE_SSH_GOLDEN_TEST") == "1" else random
+    random_emoji = selector.choice(emojis)
 
     result_message = []
 
@@ -58,15 +66,22 @@ def ssh_injector(file):
 
     return result_str
 
-def main():
+def main() -> int:
     if len(sys.argv) != 2:
-        print("Uso: python ssh.py file.ssh")
-        sys.exit(1)
+        print("Uso: python ssh.py file.ssh", file=sys.stderr)
+        return 2
 
-    file_path = sys.argv[1]
+    try:
+        result = ssh_injector(sys.argv[1])
+    except (OSError, ValueError, UnicodeError, binascii.Error) as exc:
+        # Corrupt or missing files must not dump a Python traceback or
+        # accidentally produce a positive-looking decrypted profile.
+        print(f"SSH Injector decode error: {type(exc).__name__}", file=sys.stderr)
+        return 1
 
-    result = ssh_injector(file_path)
     print(result)
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.9.0",
+  "documentationVersion": "1.10.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -39,7 +39,7 @@
         "A.6": "documented",
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
-        "A.2.3": "in_progress_59_synthetic_linux_cases_58_of_59_suffixes",
+        "A.2.3": "synthetic_linux_golden_complete_60_cases_59_of_59_vendor_and_android_pending",
         "A.2.4": "not_started"
       }
     },
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "A.2.3: test .ssh deterministic legacy Blowfish golden and solve embedded whitebox pickle security; A.2.4 Android ABI parity remains not started.",
+  "nextAction": "Linux synthetic corpus A.2.3 L2 complete at 60 cases for 59/59 suffixes. Obtain authorized exporter-version vectors and resolve NPV pickle security, then implement A.2.4 Android arm64 bridge and rawText parity. No APK/Android formats certified.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": false,
   "notes": "Planning only. No real Android decoder tested.",
@@ -99,7 +99,7 @@
       "EV2RAY.py"
     ],
     "androidVerifiedSuffixes": 0,
-    "functionalGoldenStatus": "partial_linux_golden_58_of_59_suffixes",
+    "functionalGoldenStatus": "complete_synthetic_linux_goldens_59_of_59_vendor_and_android_pending",
     "securityReviewOpen": [
       "NPVTUNNEL pickle of embedded constant",
       "Node config file mutation",
@@ -181,21 +181,20 @@
       "roy",
       "sut",
       "tvt",
-      "xtp"
+      "xtp",
+      "ssh"
     ],
-    "linuxGoldenCases": 59,
-    "linuxGoldenScriptCount": 47,
-    "missingPositiveFixtureSuffixes": 1,
-    "goldenBranch": "feat/android-a23-batch7-ten-suffixes",
+    "linuxGoldenCases": 60,
+    "linuxGoldenScriptCount": 48,
+    "missingPositiveFixtureSuffixes": 0,
+    "goldenBranch": "feat/android-a23-batch8-last-ssh-golden",
     "goldenManifest": "tests/golden/manifest.json",
     "goldenGenerators": "tests/golden/a23_generators.py",
     "goldenReport": "tests/golden/a23_report.py",
     "goldenExporter": "tests/golden/a23_export.py",
     "goldenDocumentation": "docs/android/A23_GOLDEN_CORPUS.md",
     "linuxGoldenCi": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37864174018",
-    "nextGoldenPriority": [
-      "ssh"
-    ],
+    "nextGoldenPriority": [],
     "goldenBatch3": {
       "suffixes": [
         "agn",
@@ -341,6 +340,20 @@
         "no Android/native ABI proof",
         "no third-party exporter version certification"
       ]
+    },
+    "goldenBatch8": {
+      "suffixes": [
+        "ssh"
+      ],
+      "positiveCliCases": 1,
+      "runtimes": [
+        "python"
+      ],
+      "additionalUniqueScripts": 1,
+      "source": "decoders/Python/ssh.py",
+      "testOnlyDeterminismEnv": "SPDECODE_SSH_GOLDEN_TEST=1",
+      "limitation": "Blowfish CBC artificial reference vector on Linux only; normal emoji remains random; all exporter versions and Android unverified",
+      "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/pull/14"
     }
   },
   "lastVerifiedCi": [

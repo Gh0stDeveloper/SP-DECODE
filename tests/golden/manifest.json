@@ -841,6 +841,21 @@
       "inputSha256": "88297deaeea16cb5207ec37b98397d4525259a3010001aab63e38e6e83d0bc59",
       "expectedRawUtf8Sha256": "afb3150db55078b450b33a4bfcc8f616da1e2f32192dda39f71286db4f5e2919",
       "limitations": "Shared source cipher/fixture, not independent exporter evidence"
+    },
+    {
+      "id": "batch8-ssh",
+      "generator": "ssh_bytes",
+      "expectedRawText": "tests/golden/expected/batch8-ssh.txt",
+      "inputSource": "generated_deterministic",
+      "sourceKind": "synthetic",
+      "outputEncoding": "utf-8",
+      "goldenOutputKind": "cli_stdout_exact",
+      "linuxGolden": "verified_linux_ci",
+      "androidGolden": "not_started",
+      "exporterVersion": "not_verified",
+      "inputSha256": "8645b0501a6978d3f299ad66a56e3b02762b3f9bb9c417f9b47928d8b5410b41",
+      "expectedRawUtf8Sha256": "9d7216207091d4f61edebb358513b36be19ccc42984d33c4d7eeaa2da7145aa2",
+      "limitations": "Test-only SPDECODE_SSH_GOLDEN_TEST=1 stabilizes decoration; does not establish exporter or Android compatibility."
     }
   ],
   "extensions": [
@@ -1343,8 +1358,10 @@
       "suffix": "ssh",
       "script": "decoders/Python/ssh.py",
       "runtime": "python",
-      "fixtureStatus": "fixture_missing",
-      "caseIds": [],
+      "fixtureStatus": "synthetic_linux_golden_verified",
+      "caseIds": [
+        "batch8-ssh"
+      ],
       "exporterVersion": "not_verified",
       "androidVerification": "not_started"
     },

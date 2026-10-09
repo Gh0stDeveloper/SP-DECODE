@@ -53,6 +53,9 @@ jobs:
       - name: Probe batch-seven synthetic decoder candidates
         run: PYTHONPATH=. python tests/golden/a23_probe7.py
 
+      - name: Probe final SSH synthetic decoder fixture (diagnostic)
+        run: PYTHONPATH=. python tests/golden/a23_probe8_ssh.py
+
       - name: A.2 static decoder source audit (read-only)
         run: python docs/android/audit_decoders.py --output-dir "$RUNNER_TEMP/spdecode-a2"
 
