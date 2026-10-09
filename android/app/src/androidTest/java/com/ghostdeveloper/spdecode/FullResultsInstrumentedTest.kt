@@ -47,7 +47,7 @@ class FullResultsInstrumentedTest {
         assertTrue(doc.structured.contains("field45: FINAL_FIELD_NOT_CUT"))
     }
     @Test fun orderedCopyExportCreditsIdentifySpDecodeAndDeveloperWithoutChangingJson() {
-        val raw="{\"Username\":\"sample\",\"Password\":\"dummy\",\"Enabled\":true}"
+        val raw="{\n  \"Username\": \"sample\",\n  \"Password\": \"dummy\",\n  \"Enabled\": true\n}"
         val document=ResultPresentation.parse(raw,"lnk")
         val ordered=ResultPresentation.formatted(document,ResultExport.ORDERED)
         assertTrue(ordered.contains("Decodificado por: SP-DECODE"))
