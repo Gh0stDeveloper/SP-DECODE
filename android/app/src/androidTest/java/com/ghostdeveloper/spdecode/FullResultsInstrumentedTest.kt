@@ -60,6 +60,15 @@ class FullResultsInstrumentedTest {
         assertTrue(JsonParser.parseString(doc.json).asJsonObject.get("Config").isJsonObject)
         assertEquals(original,ResultPresentation.formatted(doc,ResultExport.ORIGINAL))
     }
+    @Test fun repeatedSourceFieldsAreNotSilentlyDiscarded(){
+        val raw="│[۞] DNS: primary.example\n│[۞] DNS: secondary.example"
+        val parsed=ResultPresentation.parse(raw,"tls")
+        assertEquals(2,parsed.fields.size)
+        assertEquals("DNS",parsed.fields[0].path)
+        assertEquals("DNS (2)",parsed.fields[1].path)
+        assertTrue(parsed.json.contains("secondary.example"))
+        assertTrue(parsed.structured.contains("secondary.example"))
+    }
     @Test fun falsePositivesLikePayloadPublicKeyAndConfigAreNotPasswords(){
         assertFalse(ResultPresentation.isCredential("Config"))
         assertFalse(ResultPresentation.isCredential("Payload"))
