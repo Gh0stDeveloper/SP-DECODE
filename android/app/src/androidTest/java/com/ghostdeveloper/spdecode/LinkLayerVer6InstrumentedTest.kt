@@ -36,6 +36,8 @@ class LinkLayerVer6InstrumentedTest {
             // Distinguish cipher-layer incompatibility from Go gob parser drift.
             val payload=try { LinkLayerPort.decryptGob(bytes) }
                 catch(e:Exception){throw AssertionError("LinkLayer crypt stage: ${e.message}",e)}
+            assertArrayEquals("Kotlin decryption bytes differ from Python Go gob",
+                asset("linklayer-ver6.gob"),payload)
             try { LinkLayerPort.decodeGob(payload) }
                 catch(e:Exception){throw AssertionError("LinkLayer gob stage: ${e.message} (size=${payload.size})",e)}
             val actual=JSONObject(route(filename,bytes) ?: error("Kotlin failed: $filename"))
