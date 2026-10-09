@@ -54,12 +54,12 @@
             "script": "decoders/Python/HTTPTWEAK.py",
             "runtime": "python",
             "name": "HTTP Tweak"
-        },        
+        },
         "npvt": {
             "script": "decoders/Python/NPVTUNNEL.py",
             "runtime": "python",
             "name": "NPV Tunnel v4"
-        },                
+        },
         "tnl": {
             "script": "decoders/Python/tnl.py",
             "runtime": "python",
@@ -255,11 +255,6 @@
             "runtime": "python",
             "name": "Dark Tunnel"
         },
-        "npv4": {
-            "script": "decoders/Python/NPVTUNNEL.py",
-            "runtime": "python",
-            "name": "NPV Tunnel v4"
-        },
         "ost": {
             "script": "decoders/Python/ost.py",
             "runtime": "python",
@@ -299,6 +294,11 @@
             "script": "decoders/Python/SSCCUSTOM.py",
             "runtime": "python",
             "name": "SSC Custom"
+        },
+        "lnk": {
+            "script": "decoders/Python/linklayer.py",
+            "runtime": "python",
+            "name": "LinkLayer VPN"
         }
     }
 }
