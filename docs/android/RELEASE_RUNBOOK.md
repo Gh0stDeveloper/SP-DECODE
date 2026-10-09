@@ -1,94 +1,89 @@
-# SP-DECODE Android — firma, release y decisión GO/NO-GO
+# SP-DECODE Android 1.0.0 — firma permanente automática
 
-**Fecha de preparación:** 2026-10-09
+**Actualizado:** 2026-10-09
 
-La implementación de un pipeline de publicación NO equivale a permiso para
-publicar una versión estable. Mientras A.2.4.3, A.2.4.4 y H.2–H.5 no estén
-cerradas con evidencia reproducible, el archivo
-[`release/android-readiness.json`](../../release/android-readiness.json)
-permanece en **NO-GO**. La APK alpha nunca debe anunciar compatibilidad de
-59 formatos reales sin verificación por versión.
+## Compilación y firma de producción
 
-## Responsabilidades
+La APK de producción es un `assembleRelease` con `versionName = "1.0.0"`
+y `versionCode = 11`. **No se usa una clave provisional, APK debug ni
+certificado generado en CI.** GitHub Actions toma la misma keystore PKCS#12
+definitiva que el propietario configuró mediante los cuatro Secrets:
 
-- **Usuario/tester:** ARM64 físico, páginas de 16 KB, exportaciones auténticas,
-  variantes de cifrado y compatibilidad por versión; pruebas SAF/lotes de 30.
-- **Desarrollo:** compilar, ejecutar CI, probar restauración cifrada/Room,
-  comprobar permisos, auditoría y documentación del estado, correcciones de código.
-- **Responsable de release:** revisar informes sin secretos, aprobar GO,
-  custodiar la clave de firma y autorizar manualmente la publicación.
+- `SPDECODE_SIGNING_KEYSTORE_BASE64`
+- `SPDECODE_SIGNING_STORE_PASSWORD`
+- `SPDECODE_SIGNING_KEY_ALIAS`
+- `SPDECODE_SIGNING_KEY_PASSWORD`
 
-## Formato de evidencias
+Conservar la keystore original y sus contraseñas fuera del repositorio y en
+copias privadas redundantes. Perder la clave imposibilita firmar futuras
+actualizaciones compatibles con la misma identidad Android.
 
-Cada bloque `evidence` debe indicar `status: "verified"` y `report`
-con URL HTTPS o ruta real dentro de `docs/android/` o `release/evidence/`.
-Los informes deben precisar app original y versión, Android/API/ABI,
-fabricante/dispositivo, 4/16 KB, hash de fixture (sin credenciales),
-resultado esperado/obtenido, intentos y hallazgos. No incorporar
-configuraciones originales con credenciales o enlaces a datos privados.
+### Automatización
 
-No basta con tests sintéticos Linux/x86_64 para cerrar ARM64, 16 KB o
-exportadores externos. Firmar la APK tampoco certifica la compatibilidad.
+1. Un push o merge a `main` inicia `Validate SP-DECODE` (Linux y Android).
+2. Al completar ese workflow con **SUCCESS**, se activa automáticamente
+   `Android Production Signed APK` mediante `workflow_run`.
+3. El workflow de producción **rechaza eventos originados en PR/forks**.
+   Debe coincidir el SHA del CI exitoso con la punta actual de `main`; un
+   CI viejo nunca puede firmar código distinto ni una rama externa.
+4. La compilación genera el mismo activo local auditado NPV que el CI de
+   Android y ejecuta `gradle :app:assembleRelease` usando exclusivamente
+   los Secrets de producción.
+5. Verifica `apksigner` (V1/V2/V3), `zipalign -P 16` (16 KiB), nombre
+   del paquete y versión con `aapt`. Si cualquiera falla, se marca
+   **FAILURE** y no se publica una APK.
+6. El artefacto de GitHub Actions se llama
+   `SP-DECODE-v1.0.0-PRODUCTION-SIGNED`. Contiene:
+   - `SP-DECODE-v1.0.0-production-signed.apk`
+   - `SHA256SUMS.txt`
+   - `SIGNATURE_VERIFICATION.txt` (SHA-256 público del certificado,
+     verificación de esquemas y SHA del commit)
+7. Existe `workflow_dispatch` para repetir manualmente el mismo flujo
+   de producción sin cambiar firma, y también exige CI verde del SHA
+   exacto en `main`.
 
-## Flujo de candidato firmado (no publica)
+**Importante:** no se proporciona keystore ni contraseñas dentro del artefacto.
+La única copia en el runner se destruye al acabar el job.
 
-1. Configurar las variables secretas del repositorio o entornos protegidos:
-   `SPDECODE_SIGNING_KEYSTORE_BASE64` (almacén codificado en Base64),
-   `SPDECODE_SIGNING_STORE_PASSWORD`, `SPDECODE_SIGNING_KEY_ALIAS`,
-   `SPDECODE_SIGNING_KEY_PASSWORD`. No insertar valores en Gradle,
-   commits, capturas ni informes.
-2. Proteger el entorno `spdecode-production` con revisores obligatorios
-   y limitarlo a la rama `main`; opcionalmente `spdecode-candidate`.
-3. GitHub → Actions → **Android Signed Release (Manual Gates)** →
-   Run workflow, elegir `candidate`, versión `0.3.6-alpha`,
-   `publish=false`.
-4. La acción exige código de `main`, CI verde del **mismo SHA**,
-   compila `assembleRelease` y verifica con `apksigner` v1/v2/v3,
-   `zipalign` con páginas de 16 KiB y genera `SHA256SUMS.txt`.
-5. Descargar el artefacto firmado y validar instalación/actualización
-   contra **la misma clave**. Una APK debug firmada con otra clave
-   **no puede actualizarse encima** de la versión firmada de producción;
-   desinstalar para cambiar de firma borra el historial privado. No
-   recomendar desinstalar sin exportar resultados deseados previamente.
+## APK firmada frente a publicación pública
 
-## Publicación estable manual
+El artefacto automático es **APK release de producción firmada con la
+clave definitiva**, apta para pruebas de instalación y actualización. No
+se debe confundir con la publicación pública en GitHub Releases.
 
-Tras completar cada evidencia y obtener aprobación:
+La publicación estable se realiza automáticamente **solo cuando** la
+verificación `scripts/android_release_gate.py --mode stable --version 1.0.0`
+aprueba todas las evidencias existentes en
+`release/android-readiness.json`, cuya decisión actual es `NO-GO`.
+El propietario ha aprobado pasar a 1.0.0 y ha declarado pasar pruebas
+ARM64/16 KiB, archivos reales, lotes y auditoría personal; no hay que
+inventar informes externos para cambiar los checks a `verified`.
+La firma y prueba de actualización con la clave definitiva todavía requieren
+evidencia tras ejecutar el primer APK release. La validación específica
+en dispositivo de los protocolos nuevos de texto también debe incorporarse.
 
-1. Cambiar `versionName` en Gradle a una versión estable real, incrementar
-   `versionCode` y ajustar `stableVersion`, `decision: "GO"`,
-   `ownerApproval: true` en el estado de release.
-2. Ejecutar `python scripts/android_release_gate.py --mode stable --version 1.0.0`
-   como comprobación previa. Revisar de nuevo tests, seguridad y CI de `main`.
-3. Ejecutar manualmente el workflow con `kind=stable`, `version=1.0.0`,
-   `publish=true` y `confirmation=PUBLISH_STABLE`. El entorno protegido
-   exige revisión. Nunca crear release estable por un simple push o merge.
-4. Confirmar APK, SHA-256, firma, instalación, changelog, políticas de datos
-   y descarga pública. Guardar resultados en `release/evidence/`.
+Cuando los controles estén completos y el propietario confirme la
+compatibilidad de instalación/actualización, registrar los informes y
+cambiar `decision` a `GO`. El siguiente CI verde de `main` publicará
+v1.0.0 una sola vez, sin sobrescribir tags o binarios ya publicados.
 
-## Privacidad de la arquitectura B.5
+## Instalación y actualizaciones
 
-El único almacenamiento que contiene perfiles descifrados es
-`SecureDecodeHistory`: registros AES-GCM protegidos por Android Keystore,
-guardados mediante `AtomicFile` bajo `noBackupFilesDir`. El índice Room
-nuevo contiene únicamente UUID y timestamp; puede reconstruirse de esos
-registros sin migrarlos, copiarlos ni descifrarlos en SQLite. DataStore
-contiene retención, pestaña y último UUID, nunca la salida original.
-El contenedor `SpDecodeApplication` centraliza estas dependencias.
+La APK de depuración anterior fue firmada con una clave diferente y **no
+puede actualizarse en el mismo dispositivo** sobre ella. Desinstalar una
+aplicación puede eliminar de forma definitiva el historial protegido con
+Android Keystore: antes de cambiar de certificado, exportar los resultados
+que el propietario desee conservar. Las siguientes compilaciones firmadas
+con **la misma** clave definitiva sí podrán actualizarse sin reinstalar
+si se incrementa `versionCode`.
 
-El proceso Android recrea el ViewModel y vuelve a cargar los registros desde
-disco; una restauración fallida del índice NO debe borrar archivos cifrados.
-La navegación por pestañas sigue con Compose ligero; no declarar integración
-Navigation Compose/Hilt realizada si no existe.
+## Privacidad
 
-## Keystore nuevo preparado el 2026-10-09
+El histórico contiene registros cifrados AES-GCM en
+`SecureDecodeHistory` respaldados por Android Keystore; Room es un
+índice reconstruible de identificadores y fechas. DataStore guarda solo
+preferencias, pestaña y UUID. Los protocolos textuales y sus partes
+incompletas se procesan localmente, sin Telegram ni subida de archivos.
 
-El usuario recibió el paquete privado `SP-DECODE-Android-Signing-Private.zip`
-generado fuera del repositorio. Es un **nuevo** certificado RSA de 4096 bits
-almacenado como PKCS#12. Debe conservar el keystore y contraseña originales
-en un sitio seguro sin subirlos a commits; los valores secret se introducen
-desde el paquete privado en GitHub Actions. La configuración original en
-`android/app/build.gradle.kts` fuerza las firmas APK v1/v2/v3 para release.
-No se ha probado la firma con secretos alojados en el repositorio,
-ni la instalación de un candidato firmado. El flujo sigue manual y
-bloqueado para stable hasta una aprobación futura.
+Consultar `docs/android/USER_MANUAL_VALIDATION_2026-10-09.md` y
+`docs/android/TEXT_PROTOCOLS.md` para el alcance de pruebas comunicado.
