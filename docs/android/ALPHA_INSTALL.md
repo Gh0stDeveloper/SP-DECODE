@@ -1,4 +1,4 @@
-# Instalación de la primera APK funcional — 0.2.0-alpha
+# Instalación de la primera APK funcional — 0.3.0-alpha
 
 ## Descargar APK debug de GitHub Actions
 
@@ -6,7 +6,7 @@ Abrir `.github/workflows/validate.yml` en Actions de SP-DECODE y
 elegir el último run del PR `feat/android-b1-functional-compose-app`
 con jobs `validate` y `Android UI alpha + 60 synthetic vectors (API 35)`
 en `success`. En **Artifacts**, descargar
-`SP-DECODE-Android-v0.2.0-alpha-debug-APK`. Extraer
+`SP-DECODE-Android-v0.3.0-alpha-debug-APK`. Extraer
 `app-debug.apk` del ZIP del artefacto y enviarlo al teléfono.
 
 **Importante:** este archivo no se obtiene desde el bot Telegram ni
@@ -45,3 +45,16 @@ Android utiliza el idioma del sistema entre es/en/pt-BR/ar, con RTL
 para árabe; el resultado del decoder se conserva literalmente.
 
 Diseño: `docs/android/USER_SCREENSHOT_REFERENCE.md`.
+
+## Cambios de la alfa 0.3
+
+- Resultados completos: ya no hay límites de diez campos ni tres líneas.
+- `.xui`: propiedades JSON con sus tipos y orden original.
+- `.hc`: Config y Protections se desglosan en campos anidados.
+- Copiar/Exportar: JSON válido, vista estructurada completa o texto original.
+- Ajustes: selector de idioma (sistema/es/en/pt-BR/ar) y preferencias de visibilidad.
+- Créditos del desarrollador y enlaces GitHub/Telegram para colaborar.
+- La preferencia de idioma y ocultación se guarda; los textos descifrados
+  siguen exclusivamente en memoria. El historial no es persistente.
+
+Detalles técnicos: `docs/android/FULL_RESULT_DISPLAY.md`.
