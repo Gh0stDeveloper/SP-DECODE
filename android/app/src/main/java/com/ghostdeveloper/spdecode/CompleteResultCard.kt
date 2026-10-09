@@ -111,13 +111,13 @@ fun CompleteResultCard(
                         null,tint=Muted,modifier=Modifier.size(18.dp))
                 }
                 if(rawExpanded){
-                    SelectionContainer{
-                        Text(
-                            if(hideCredentials&&!reveal)current!!.redactedText
-                                else current!!.rawText,
-                            color=Ink,fontSize=12.sp,lineHeight=18.sp,
-                            style=TextStyle(textDirection=TextDirection.Ltr)
-                        )
+                    if(hideCredentials&&!reveal) {
+                        Text(stringResource(R.string.raw_masked_explanation),
+                            color=Muted,fontSize=12.sp,lineHeight=18.sp)
+                    }else SelectionContainer{
+                        Text(current!!.rawText,color=Ink,fontSize=12.sp,
+                            lineHeight=18.sp,
+                            style=TextStyle(textDirection=TextDirection.Ltr))
                     }
                 }
             }
