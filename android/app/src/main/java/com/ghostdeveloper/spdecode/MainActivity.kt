@@ -280,7 +280,9 @@ class MainActivity : ComponentActivity() {
         }
         val detected=TextProtocolDecoder.identify(userText)
         val candidate=when {
-            detected?.multipart==true || (detected==null&&textParts!=null)->
+            detected?.multipart==true ||
+                (textParts!=null && (detected==null ||
+                    (detected.protocol=="netmod" && "://" !in userText)))->
                 TextMultipartAssembler.next(textParts,userText,SystemClock.elapsedRealtime())
                     ?.also {
                         textParts=it
