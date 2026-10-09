@@ -62,7 +62,8 @@
     "npvt",
     "sip",
     "ssc",
-    "hc"
+    "hc",
+    "lnk"
   ],
   "entries": [
     {
@@ -342,6 +343,16 @@
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
+      "androidVerified": false,
+      "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "lnk",
+      "name": "LinkLayer VPN",
+      "script": "decoders/Python/linklayer.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": true,
+      "androidPortStatus": "experimental_linklayer_ver6_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
