@@ -107,7 +107,7 @@ class SecureDecodeHistory(context: Context) {
     /** Atomic favorite update: metadata remains encrypted in its full record. */
     fun setFavorite(id:String, favorite:Boolean):DecodeView {
         require(UUID.fromString(id).toString() == id)
-        val file=File(directory,"$"+"{id}.bin")
+        val file=File(directory,"${id}.bin")
         val previous=read(file)
         val updated=previous.copy(favorite=favorite)
         save(updated)
