@@ -134,3 +134,8 @@ La fuente permanente de hallazgos está en [DECODER_AUDIT.md](DECODER_AUDIT.md),
 
 Objetivo; rama; SHA; rutas cambiadas; formatos/fixtures; CI job+URL+estado; resultados dispositivo/ABI; capturas golden; riesgos; próxima subfase. Actualizar HANDOFF.md + status.json en el mismo PR.
 
+
+### Seguimiento 0.3.5-alpha (preparación técnica, no cierre de H)
+
+Se elimina la duplicación de vistas crudas/detalladas del resultado. B.5 añade Room exclusivamente para índices UUID/fecha sin credenciales, una capa de servicios local y restauración de pestaña, con pruebas de migración desde registros cifrados anteriores; Navigation Compose completo sigue pendiente si se decide necesario. H incorpora preparación de firmado y validación con puertas NO-GO; firma con credenciales reales, auditoría final y publicación quedan bloqueadas hasta pruebas A.2.4.3, A.2.4.4 y seguridad/QA.
+
