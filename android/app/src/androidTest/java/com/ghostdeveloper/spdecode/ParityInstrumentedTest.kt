@@ -76,7 +76,8 @@ class ParityInstrumentedTest {
         assertEquals("prototype_two_synthetic_cases", resolver.detect("test.v2", formats)?.portStatus)
         assertEquals(0, formats.count { it.androidVerified })
         assertEquals("prototype_tls_aesgcm_synthetic_case", resolver.detect("test.TLS", formats)?.portStatus)
-        assertEquals(47, formats.count { it.portStatus == "not_implemented" })
+        assertEquals(37, formats.count { it.portStatus == "not_implemented" })
+        assertEquals(10, formats.count { it.portStatus == "experimental_batch20_synthetic" })
         assertEquals(10, formats.count { it.portStatus == "experimental_batch10_synthetic" })
         assertNull(resolver.detect("unrecognized.unknown", formats))
     }

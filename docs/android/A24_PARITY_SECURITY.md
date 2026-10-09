@@ -109,3 +109,40 @@ pasaron en emulador. Se añade después `AndroidOfflineDecoderRouter`, que
 selecciona 1:1 por extensión y no intenta claves de otros decodificadores.
 La versión con router se somete a una segunda ejecución CI antes de fusionar.
 Ningún hardware arm64, exportador moderno ni página 16-KiB comprobado.
+
+## 8. Lote A.2.4 adicional — diez extensiones (`batch20`, PR en revisión)
+
+Formatos y métodos originales: `.at` (AES-GCM ×2 con seed + constante),
+`.nm` (lista NetMod de claves AES-ECB original), `.ost` y `.sbr`
+(DES-ECB con **claves distintas**, no se prueban claves de otro formato),
+`.pcx`, `.nt`, `.pb` (contraseñas propias PBKDF2-SHA256/AES-GCM y filtros XML),
+`.aro` (Base64 + rotación +18, campos Base64), `.ipt` (descifrado XXTEA personalizado
+y filtro), `.gold` (SHA256/AES-CBC y descifrado de campos JSON recursivos).
+
+Se añadieron diez clases Kotlin propias, `Batch20Primitives` para primitivas
+JCA/formatos de texto; 10 comparaciones de output UTF-8 byte por byte frente a
+Linux y 30 pruebas negativas. `AndroidOfflineDecoderRouter` enruta solo por
+sufijo, sin mezclar claves. Se incluyen diez golden SHA-256 congelados en
+`android_a24_prepare.py`. Catálogo: 22 sufijos experimentales, 37 sin port,
+59 registrados, **0 certificados en exportadores actuales**.
+
+**Gates pendientes:** Linux + Android compile + emulador API35 para los
+últimos cambios; después ARM64, páginas 16KB y archivos reales autorizados.
+
+### Evidencia final de la segunda tanda (lote batch20)
+
+CI final de PR #18: [run 37876235386](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37876235386).
+Los jobs Linux `validate` y Android API 35 x86_64 terminaron en
+`success`. Android informó **31 tests instrumentados ejecutados,
+31 correctos**, que incluyen los diez tests nuevos byte por byte,
+la selección exacta por sufijo, los 30 rechazos de entradas malformadas
+y todas las pruebas de los lotes anteriores. Las diferencias de
+indentación detectadas en `.at` y `.nm` durante el primer intento
+se corrigieron y se revalidaron en esta ejecución.
+
+**Alcance:** sólo referencias sintéticas, no exportaciones actuales.
+`.ost` y `.sbr` utilizan DES heredado y no tienen autenticación;
+`.nm` usa AES-ECB y `.gold` AES-CBC, también sin autenticación del
+contenedor. Esas debilidades pertenecen a los formatos originales: el
+lector Android debe mantener estas rutas desconectadas, con límites y
+sin registrar secretos, sin atribuirles garantías de autenticación.
