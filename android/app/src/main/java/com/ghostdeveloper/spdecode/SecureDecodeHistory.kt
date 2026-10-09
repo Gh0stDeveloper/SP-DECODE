@@ -104,8 +104,13 @@ class SecureDecodeHistory(context: Context) {
 
     private fun read(file: File): DecodeView {
         // Avoid exhausting heap on a corrupted or maliciously oversized record.
-        require(file.length() in 1L..MAX_RECORD_BYTES)
-        val input = DataInputStream(ByteArrayInputStream(AtomicFile(file).openRead().use { it.readBytes() }))
+        val atomic = AtomicFile(file)
+        val bytes = atomic.openRead().use { stream ->
+            // openRead restores any interrupted .bak before checking file length.
+            require(atomic.baseFile.length() in 1L..MAX_RECORD_BYTES)
+            stream.readBytes()
+        }
+        val input = DataInputStream(ByteArrayInputStream(bytes))
         val payload = input.use {
             require(it.readInt() == MAGIC && it.readUnsignedByte() == 1)
             val ivLength = it.readUnsignedByte()
