@@ -31,7 +31,7 @@ object TextProtocolDecoder {
     private val ar=setOf("dns","vless","vmess","trojan","ssr","socks","trojan-go","ssh")
     private val pb=setOf("ssh","vless","vmess","trojan","socks","ss")
     data class Input(val protocol:String,val app:String,val suffix:String,
-        val content:String,val multipart:Boolean=false)
+        val content:String)
 
     fun appNameForSuffix(suffix:String):String?=when(suffix.lowercase(Locale.ROOT)){
         "vmess"->"VMess"
@@ -45,19 +45,44 @@ object TextProtocolDecoder {
         else->null
     }
 
+    /**
+     * A complete encrypted link can contain pasted line wrapping. Normalize
+     * whitespace only for the two well-defined encoded alphabets; never join
+     * unrelated chat messages or maintain fragment/part sessions.
+     */
+    private fun fullPastedPayload(text:String):Input? {
+        val marker=text.indexOf("://")
+        if(marker<=0 || marker>32)return null
+        val scheme=text.substring(0,marker).lowercase(Locale.ROOT)
+        val ssc=scheme=="ssc"
+        val dark=scheme=="dt" || scheme=="dtunnel" || "dark" in scheme
+        if(!ssc && !dark)return null
+        val body=text.substring(marker+3).filterNot {
+            it.isWhitespace() || it=='\u200b' || it=='\u200c' ||
+                it=='\u200d' || it=='\ufeff' || it=='\u0060'
+        }
+        if(body.isBlank() || body.length>MAX_CHARS)return null
+        val allowed=if(ssc)"0123456789abcdefABCDEF"
+            else "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/_=-"
+        if(!body.all { it in allowed })return null
+        return if(ssc)Input("ssc","SSC Custom","ssc","ssc://$body")
+        else Input("dark","Dark Tunnel","dark","$scheme://$body")
+    }
+
     fun identify(raw:String):Input? {
         if(raw.length>MAX_CHARS)return null
         val clean=raw.trim().replace("\ufeff","").replace("\u200b","")
         if(clean.startsWith("/decssh ",true))return Input("decssh","SSH","decssh",clean)
+        fullPastedPayload(clean)?.let { return it }
         for(match in links.findAll(clean)){
             val scheme=match.groupValues[1].lowercase(Locale.ROOT)
             val body=match.groupValues[2].trim().trimEnd(')',',',';',']')
             if(body.isEmpty())continue
             when {
                 scheme=="tls"->return Input("tls","TLS Tunnel","tls","tls://$body")
-                scheme=="ssc"->return Input("ssc","SSC Custom","ssc","ssc://$body",true)
+                scheme=="ssc"->return Input("ssc","SSC Custom","ssc","ssc://$body")
                 scheme=="dt"||scheme=="dtunnel"||"dark" in scheme->
-                    return Input("dark","Dark Tunnel","dark","$scheme://$body",true)
+                    return Input("dark","Dark Tunnel","dark","$scheme://$body")
                 scheme=="vmess"->return Input("vmess","VMess","vmess",body)
                 scheme=="zivpn"->return Input("zivpn","ZIVPN","zivpn",body)
                 scheme=="howdy"||scheme=="n7pr"->return Input("howdy","Howdy","howdy",body)
