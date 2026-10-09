@@ -12,6 +12,10 @@ from typing import Any
 from Crypto.Cipher import AES
 
 SIP_AES_KEY = bytes.fromhex("192e04080804040905592959385f5417")
+# VER8: second, authenticated AES-256-GCM layer from supplied 2026-10-09 source.
+SIP_VER8_KEY = b"cambia_esto_por_tu_llave_de_32_b"
+SIP_VER8_MAGIC = b"VER8"
+
 SIP_STREAM_MAGIC = b"\xac\xed\x00\x05"
 MAX_SERIALIZED_SIZE = 4 * 1024 * 1024
 MAX_STRING_SIZE = 1024 * 1024
@@ -298,9 +302,21 @@ def decode_profile(file_bytes: bytes) -> dict[str, Any]:
             "This inner container is not implemented by the analyzed SocksIP 15.14.4 build."
         )
 
+    if plaintext.startswith(SIP_VER8_MAGIC):
+        # The transport starts with VER8, followed by nonce[12],
+        # ciphertext and tag[16]. NEVER parse unauthenticated plaintext.
+        wrapped = plaintext[len(SIP_VER8_MAGIC):]
+        if len(wrapped) < 12 + 16 + len(SIP_STREAM_MAGIC):
+            raise ValueError("SocksIP VER8 envelope is truncated")
+        try:
+            cipher = AES.new(SIP_VER8_KEY, AES.MODE_GCM, nonce=wrapped[:12])
+            plaintext = cipher.decrypt_and_verify(wrapped[12:-16], wrapped[-16:])
+        except ValueError as exc:
+            raise ValueError("SocksIP VER8 authentication failed") from exc
+
     if not plaintext.startswith(SIP_STREAM_MAGIC):
         raise ValueError(
-            "decrypted SocksIP payload is neither VER7 nor Java Object Serialization"
+            "decrypted SocksIP payload is neither VER7, VER8 nor Java Object Serialization"
         )
 
     parsed = _JavaObjectReader(plaintext).read()
