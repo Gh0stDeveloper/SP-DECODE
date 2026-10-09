@@ -5,6 +5,7 @@
     <string name="import_title">Importar configuración</string>
     <string name="import_detail">Selecciona un archivo compatible desde tu dispositivo</string>
     <string name="select_file">Seleccionar archivo</string>
+    <string name="home_import_action">Importar archivo</string>
     <string name="offline_status">Procesamiento local · Sin Internet</string>
     <string name="result">Resultado</string>
     <string name="illustrative">Ejemplo ilustrativo</string>
@@ -123,11 +124,9 @@
     <string name="splash_powered_by">Powered by Ghost Developer</string>
     <string name="text_decode_title">Decodificar texto</string>
     <string name="text_decode_description">Pega un enlace o texto cifrado. TLS, VMess, SSC, Dark Tunnel y otros protocolos compatibles funcionan sin internet.</string>
-    <string name="text_decode_hint">Pega el texto o el siguiente fragmento</string>
+    <string name="text_decode_hint">Pega aquí el enlace o texto completo</string>
     <string name="text_decode_action">Decodificar texto</string>
-    <string name="text_decode_reset">Descartar partes</string>
-    <string name="text_decode_pending">%1$s: %2$d parte(s) recibidas. Pega el siguiente fragmento y vuelve a decodificar o descarta las partes.</string>
-    <string name="text_decode_private">Procesamiento local. Los fragmentos incompletos no se guardan.</string>
-    <string name="text_decode_invalid">Protocolo de texto no reconocido, fragmento inválido o límite de tamaño excedido.</string>
+    <string name="text_decode_private">Procesamiento local. Solo se guardan resultados decodificados correctamente.</string>
+    <string name="text_decode_invalid">Protocolo no reconocido, texto inválido o límite de tamaño excedido.</string>
     <string name="text_decode_unsupported">No fue posible decodificar este texto. Puede estar incompleto, dañado o usar otra variante de cifrado.</string>
 </resources>
