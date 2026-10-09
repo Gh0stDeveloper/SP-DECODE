@@ -104,6 +104,13 @@ class TextProtocolDecoderInstrumentedTest {
         assertEquals("ssc://aabbccddee",second.input.content)
         assertNull(TextMultipartAssembler.next(second,"chat message",3000))
         assertNull(TextMultipartAssembler.next(second,"ff",602001))
+        // A long hex chunk also looks like generic bare Base64; the
+        // assembler must prioritize the *existing* SSC session instead.
+        val longHex="ab".repeat(80)
+        val third=TextMultipartAssembler.next(second,longHex,2500)
+        assertNotNull(third)
+        assertEquals(3,third!!.parts)
+        assertTrue(third.input.content.endsWith(longHex))
         val dark=TextMultipartAssembler.next(null,"dtunnel://abcd+/==",1000)
         assertNotNull(dark)
         assertEquals(2,TextMultipartAssembler.next(dark,"efgh",1200)?.parts)
