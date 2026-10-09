@@ -18,6 +18,9 @@ class SettingsEnhancementsInstrumentedTest {
     @Test fun settingsShowsFiveLanguagesPrivacyAndVerifiedContributorLinks(){
         val ctx=ui.activity
         ui.onNodeWithContentDescription(ctx.getString(R.string.settings)).performClick()
+        // Settings keeps a single compact row until the user opens the sheet.
+        ui.onNodeWithText("Español").assertDoesNotExist()
+        ui.onNodeWithText(ctx.getString(R.string.language_title)).performClick()
         ui.onNodeWithText("Español").assertExists()
         ui.onNodeWithText("English").assertExists()
         ui.onNodeWithText("Português (Brasil)").assertExists()
