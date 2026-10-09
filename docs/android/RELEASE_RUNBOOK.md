@@ -67,6 +67,32 @@ compatibilidad de instalación/actualización, registrar los informes y
 cambiar `decision` a `GO`. El siguiente CI verde de `main` publicará
 v1.0.0 una sola vez, sin sobrescribir tags o binarios ya publicados.
 
+### GitHub Releases: distribución pública del APK firmado
+
+Desde la aprobación explícita del propietario el 2026-10-09 se permite
+publicar **automáticamente una versión preliminar pública** mientras se
+mantiene el control estricto de estabilidad `NO-GO`. Esta autorización
+es distinta de una auditoría independiente completa.
+
+- Tag publicado automáticamente: `v1.0.0-rc.1` (GitHub **Pre-release**).
+- APK: `SP-DECODE-v1.0.0-production-signed.apk`, compilado mediante
+  `assembleRelease` con la **keystore definitiva** de GitHub Secrets.
+- Evidencias adjuntas: `SHA256SUMS.txt` y `SIGNATURE_VERIFICATION.txt`.
+- Condiciones: CI exitoso en el **SHA exacto** de `main`, firmación y
+  verificación V1/V2/V3 exitosas, `ownerApproval=true`,
+  `publicPreviewApproval=true`, `decision=NO-GO` y versión coincidente.
+- No se publica un APK debug ni se vuelven a publicar/modificar tags o
+  binarios existentes: cada `vX.Y.Z-rc.1` se crea una sola vez.
+- El texto público avisa que la certificación independiente de todas las
+  variantes y pruebas de instalación/actualización sigue pendiente.
+
+El mismo workflow publicará **`v1.0.0` estable** (sin sufijo) únicamente
+cuando `scripts/android_release_gate.py --mode stable` verifique todas
+las evidencias y la decisión cambie a `GO`. La distribución preliminar
+**no altera** ni sustituye las evidencias pendientes de `release/android-readiness.json`.
+
+Página pública: https://github.com/Gh0stDeveloper/SP-DECODE/releases
+
 ## Instalación y actualizaciones
 
 La APK de depuración anterior fue firmada con una clave diferente y **no
