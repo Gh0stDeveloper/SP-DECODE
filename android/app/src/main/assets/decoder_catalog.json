@@ -55,7 +55,14 @@
     "ht",
     "htb",
     "hat",
-    "ehil"
+    "ehil",
+    "dark",
+    "ehi",
+    "npv4",
+    "npvt",
+    "sip",
+    "ssc",
+    "hc"
   ],
   "entries": [
     {
@@ -126,7 +133,7 @@
       "script": "decoders/Python/DARKTUNNEL.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -189,7 +196,7 @@
       "script": "decoders/Python/NPVTUNNEL.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -198,7 +205,7 @@
       "script": "decoders/Python/NPVTUNNEL.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -243,7 +250,7 @@
       "script": "decoders/Python/HTTPINJECTOR.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -396,7 +403,7 @@
       "script": "decoders/Python/sockip.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -414,7 +421,7 @@
       "script": "decoders/Python/SSCCUSTOM.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -540,7 +547,7 @@
       "script": "decoders/Python/HTTPCUSTOM.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },

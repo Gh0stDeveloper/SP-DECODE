@@ -91,7 +91,7 @@ jobs:
 
 
   android-parity:
-    name: Android emulator 53 synthetic vectors (52 suffixes, API 35)
+    name: Android emulator 60 synthetic vectors (59 suffixes, API 35)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -122,6 +122,9 @@ jobs:
 
       - name: Prepare SHA-256-pinned synthetic parity assets
         run: PYTHONPATH=. python scripts/android_a24_prepare.py --output-dir android/app/src/androidTest/assets/parity
+
+      - name: Compile audited NPV white-box to offline data-only Android asset
+        run: PYTHONPATH=. python scripts/android_a24_whitebox_export.py --output android/app/src/main/assets/npv_whitebox.bin
 
       - name: Verify Android support catalog has no false verified claims
         run: PYTHONPATH=. python scripts/android_a24_catalog.py

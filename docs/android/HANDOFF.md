@@ -184,3 +184,31 @@ source mechanisms correctly reused for multiple registry suffixes.
 Latest emulation must also check `FinalExtra4InstrumentedTest`;
 the successful older workflow covering only 11 does NOT validate
 the four new ports. No revision of the original bot.
+
+## Final seven batch A.2.4
+
+Branch `feat/android-a24-final-seven-native-ports`; explicit Kotlin adapters
+dark, ehi, npv4, npvt, sip, ssc, hc, plus `LegacyChaCha8`,
+`StrictMessagePack`, `SockipObjectReader` and
+`NpvWhiteboxReferencePort`. `scripts/android_a24_whitebox_export.py`
+must execute **before Android Gradle build**, in CI; the resulting
+binary is embedded as an APK read-only offline asset.
+
+60 synthetic goldens, 59 candidate suffixes, **zero real-exporter-certified**.
+The 7 new Android golden positives and 21 negative cases have **not yet
+passed a full emulator CI** at documentation authoring. Keep PR draft and
+do not merge until both jobs green.
+
+Technical debt remains even after synthetic success: EHI standard Argon2id
+variant, HC extra inner field variants, SIP VER7, NPV other app versions,
+plus ARM64/16KiB and authorized real exporter fixtures, UI/SAF.
+
+### CI final y pasos siguientes
+
+[Lote final run #37885309397](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37885309397) Linux **60/60**,
+Android emulador API35 x86_64 **72/72**, compilación **success**.
+59/59 sufijos tienen **adapter experimental** y 60 source-goldens
+positivos. `PR #21` se puede fusionar después del último CI de este
+commit documental. No hay versiones reales certificadas; no publicar
+release de producción. Continuar con variantes reales, UI/SAF, 16KiB
+y ARM64, y endurecimiento de la superficie de claves/configuraciones.

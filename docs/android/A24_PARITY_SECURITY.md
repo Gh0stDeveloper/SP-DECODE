@@ -226,3 +226,55 @@ This PR now holds **15 new suffix routes**, 53 SHA-pinned synthetic goldens,
 **52 Android candidates / 59 registered**, seven not yet ported. This
 describes experimental work pending the final emulator run, **not
 compatibility certification**.
+
+## 11. A.2.4 — final seven native decoder **experimental subsets**
+
+Repository branch: `feat/android-a24-final-seven-native-ports`.
+The 59 suffixes now have 60 source-frozen Linux fixture candidates
+(two `.v2` cases). All route by **explicit suffix** and **original
+decoder family**, without unrelated-key fallback, subprocesses, or internet.
+Until CI is green the seven suffixes are **unverified candidates**.
+
+- `.dark`: AES-CFB/128, nested data-only MessagePack and original field
+  normalization, with a strictly bounded custom MessagePack parser.
+- `.ssc`: pure Kotlin original **8-byte nonce** ChaCha20 (64-bit counter)
+  with original L1/L2/L3 source keys; optional field decryption.
+- `.ehi`: Java export header, two AES-CBC stages and XXTEA, original
+  protected field XOR. **Only bypass IV vectors covered.**
+  Standard-IV Argon2id/ChaCha20-Poly1305 encryption is not ported and must
+  not be advertised as supported.
+- `.hc`: original outer XOR+ChaCha20 and RST AES-ECB candidate keys;
+  subset tested for newer RST JSON. Secondary JKL/credential variants
+  remain unverified.
+- `.npv4`, `.npvt`: the **same original** NPVTUNNEL white-box, two
+  rounds, four primitive tables exported at build time from audited
+  restricted source pickle to fixed data-only binary `NPWA0001`.
+  **No pickle unpickling or Python runtime on Android.**
+- `.sip`: source AES-128-ECB and bounded inert Java Object Serialization
+  reader. Known VER7 encrypted container is explicitly **unsupported** by
+  analyzed original engine and is not guessed or misdecoded.
+
+`Final7InstrumentedTest.kt` compares all seven frozen synthetic outputs
+byte-for-byte with original Linux scripts, including explicit suffix routing
+and 21 malformed/empty/oversized negative checks. The exact test run remains
+pending. Variant compatibility is narrower than suffix dispatch coverage:
+**0 currently vendor-certified formats, ARM64 physical device and 16 KiB
+page-size evidence still pending**. No production APK/GO.
+
+### Evidencia CI final de los 59 sufijos experimentales
+
+GitHub Actions [#37885309397](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37885309397) confirmó:
+**Linux `validate` = success (60 tests); Android compile =
+success; Android API35 x86_64 instrumentación = 72/72 tests success**.
+Los 60 goldens congelados de las 59 rutas y las pruebas negativas de
+los siete puertos nuevos pasaron. El asset `npv_whitebox.bin` fue
+exportado y validado antes de compilar Android. No se añadió ejecución
+de Python, PHP, Node.js ni pickle al APK.
+
+**Alcance preciso:** la subetapa de *paridad sintética de sufijos*
+ha completado 59/59. A.2.4 como fase global **no está cerrada**:
+persisten EHI Argon2id estándar, SIP VER7 (tampoco soportado por el
+motor Linux analizado), variantes secundarias HC, certificación con
+exportaciones de proveedores, ARM64 y tamaños de página de 16KiB,
+revisión de riesgos criptográficos y UI/SAF offline. No publicar APK
+de producción por el resultado sintético.
