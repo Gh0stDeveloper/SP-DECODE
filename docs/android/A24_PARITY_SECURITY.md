@@ -128,3 +128,21 @@ sufijo, sin mezclar claves. Se incluyen diez golden SHA-256 congelados en
 
 **Gates pendientes:** Linux + Android compile + emulador API35 para los
 últimos cambios; después ARM64, páginas 16KB y archivos reales autorizados.
+
+### Evidencia final de la segunda tanda (lote batch20)
+
+CI final de PR #18: [run 37876235386](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37876235386).
+Los jobs Linux `validate` y Android API 35 x86_64 terminaron en
+`success`. Android informó **31 tests instrumentados ejecutados,
+31 correctos**, que incluyen los diez tests nuevos byte por byte,
+la selección exacta por sufijo, los 30 rechazos de entradas malformadas
+y todas las pruebas de los lotes anteriores. Las diferencias de
+indentación detectadas en `.at` y `.nm` durante el primer intento
+se corrigieron y se revalidaron en esta ejecución.
+
+**Alcance:** sólo referencias sintéticas, no exportaciones actuales.
+`.ost` y `.sbr` utilizan DES heredado y no tienen autenticación;
+`.nm` usa AES-ECB y `.gold` AES-CBC, también sin autenticación del
+contenedor. Esas debilidades pertenecen a los formatos originales: el
+lector Android debe mantener estas rutas desconectadas, con límites y
+sin registrar secretos, sin atribuirles garantías de autenticación.
