@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.23.0",
+  "documentationVersion": "1.24.0",
   "referenceDate": "2026-10-09",
   "baselineBranch": "main",
   "baselineHead": "e24733fcaae9608f37a6a362f0aab4327a9681ac",
   "documentationBranch": "docs/android-offline-architecture",
-  "productStatus": "android_v0_3_6_json_only_branded_splash_API35_108_tests_success_pr29",
+  "productStatus": "android_0_3_7_native_text_protocols_multipart_pending_ci",
   "androidSourceExists": true,
   "apkProduced": true,
   "offlineRequired": true,
@@ -67,7 +67,7 @@
       "status": "not_started"
     },
     "F": {
-      "status": "JSON_only_result_preview_header_app_date_developer_credit_Android_API35_108_success"
+      "status": "JSON_only_display_and_new_text_decoder_panel_0_3_7_pending_ci"
     },
     "G": {
       "status": "G2_G5_implemented_API35_100_tests_green_final_pr_head_gate_pending",
@@ -76,7 +76,8 @@
         "G.2": "metadata_only_search_extension_sort_favorites_encrypted_v2_verified_api35_run_37903456589",
         "G.3": "selective_delete_retention_excluding_favorites_backup_off_verified_api35_run_37903456589",
         "G.4": "owner_confirmed_30_file_batches_success_and_failure_paths_2026_10_09",
-        "G.5": "DataStore_tab_and_UUID_process_recreation_Room_rebuild_verified_API35_104_tests"
+        "G.5": "DataStore_tab_and_UUID_process_recreation_Room_rebuild_verified_API35_104_tests",
+        "G.6": "NEW_text_protocol_decode_offline_tls_ssc_dark_vmess_netmod_armod_pb_howdy_zivpn_v2box_decssh_pending_ci"
       }
     },
     "H": {
@@ -92,10 +93,10 @@
       }
     }
   },
-  "nextAction": "Owner: safely configure SPDECODE_SIGNING_* four Secrets from PRIVATE keystore ZIP, run manual signed candidate kind=candidate version=0.3.6-alpha publish=false only after main CI green; verify v1/v2/v3 and signed upgrade on physical Android before stable GO.",
-  "releaseStatus": "v0.3.6_ALPHA_GREEN_USER_ARM64_16KB_BATCH_REALFILES_REPORTED_SIGNING_CANDIDATE_PENDING_NO_GO",
+  "nextAction": "Verify PR #30 Android API35 + Linux, merge on green and provide 0.3.7-alpha debug APK; owner tests real text protocols and signed candidate with installed keystore secrets, no stable publishing before confirmed signatures.",
+  "releaseStatus": "DEBUG_ALPHA_0_3_7_TEXT_PATCH_CI_PENDING_SIGNED_CANDIDATE_NOT_VERIFIED_NO_GO",
   "ciValidatedAndroid": true,
-  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge. Owner confirms manual genuine files, batch, ARM64/16K and audit passed, recorded as user attestation; signed release upgrade pending. 0.3.6 changes ONLY preview to JSON + metadata comments and branded splash. PR29 0.3.6 code HEAD 27df0bf66aa73b8d31674f4eb6816274875b0f5a passed Linux and 108/108 API35 emulator run 37910797924. Signing private keys are outside repository; manual candidate test remains pending.",
+  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge. Owner confirms manual genuine files, batch, ARM64/16K and audit passed, recorded as user attestation; signed release upgrade pending. 0.3.6 changes ONLY preview to JSON + metadata comments and branded splash. PR29 0.3.6 code HEAD 27df0bf66aa73b8d31674f4eb6816274875b0f5a passed Linux and 108/108 API35 emulator run 37910797924. Signing private keys are outside repository; manual candidate test remains pending. Owner reports production keystore added to GitHub Actions Secrets; actual signed workflow verification still outstanding. 0.3.7 adds native offline text protocols and private in-memory multipart sessions, retaining existing file imports, Android Keystore history and JSON results.",
   "localization": {
     "scope": "ui_only",
     "languages": [
@@ -717,5 +718,33 @@
     "android": "success",
     "device": "API35 x86_64 emulator",
     "userDevice": "reported verified separately"
+  },
+  "textProtocols": {
+    "version": "0.3.7-alpha",
+    "reference": "docs/android/TEXT_PROTOCOLS.md",
+    "status": "implemented_pending_ci",
+    "offline": true,
+    "plugins": false,
+    "protocols": [
+      "tls",
+      "ssc",
+      "dark",
+      "vmess",
+      "netmod",
+      "armod",
+      "xraypb",
+      "howdy",
+      "zivpn",
+      "v2box",
+      "decssh"
+    ],
+    "multipart": [
+      "ssc",
+      "dark"
+    ],
+    "ttlMinutes": 10,
+    "maxChars": 250000,
+    "source": "spdecode/handlers/text_protocols.py",
+    "testing": "synthetic Android instrumentation pending"
   }
 }
