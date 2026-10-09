@@ -228,9 +228,9 @@ internal object HcHccfgPort {
         }.toByteArray()
         var ikm=if(n7mode)mac(n7,bytes(byteArrayOf(0xd3.toByte()),c0.copyOf(32),t))
             else c0hash(t)
-        val protected=env.optInt("h",0)
-        require(protected==0||protected==1)
-        val protectionAad=if(protected==1){
+        val protectionFlag=env.optInt("h",0)
+        require(protectionFlag==0||protectionFlag==1)
+        val protectionAad=if(protectionFlag==1){
             require(!password.isNullOrEmpty()){"PASSWORD_REQUIRED"}
             val ops=env.getInt("l")
             val mem=env.getInt("m")
