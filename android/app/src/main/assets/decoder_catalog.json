@@ -25,7 +25,22 @@
     "pb",
     "aro",
     "ipt",
-    "gold"
+    "gold",
+    "agn",
+    "cly",
+    "fɴ",
+    "jvc",
+    "jvi",
+    "v2i",
+    "sksrv.png",
+    "xscks",
+    "mrc",
+    "mtl",
+    "jez",
+    "hrt",
+    "ziv",
+    "epro",
+    "npv2"
   ],
   "entries": [
     {
@@ -42,7 +57,7 @@
       "script": "decoders/Python/sksrv.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -87,7 +102,7 @@
       "script": "decoders/Python/xscks.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -114,7 +129,7 @@
       "script": "decoders/JavaScript/modulepro.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -150,7 +165,7 @@
       "script": "decoders/JavaScript/chicosp.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -186,7 +201,7 @@
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -204,7 +219,7 @@
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -231,7 +246,7 @@
       "script": "decoders/PHP/hrt.php",
       "originalRuntime": "php",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -258,7 +273,7 @@
       "script": "decoders/PHP/jez.php",
       "originalRuntime": "php",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -267,7 +282,7 @@
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -276,7 +291,7 @@
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -294,7 +309,7 @@
       "script": "decoders/Python/mrc.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -303,7 +318,7 @@
       "script": "decoders/Python/mtl.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -456,7 +471,7 @@
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -483,7 +498,7 @@
       "script": "decoders/Python/ziv.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -501,7 +516,7 @@
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
