@@ -91,7 +91,7 @@ jobs:
 
 
   android-parity:
-    name: Android emulator .v2 + TLS synthetic parity (API 35)
+    name: Android emulator 13 synthetic vectors (12 suffixes, API 35)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
