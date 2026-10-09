@@ -76,7 +76,7 @@ class A23Batch5Goldens(unittest.TestCase):
                 self.assertEqual(cases[case_id]["androidGolden"],"not_started")
                 self.assertEqual(cases[case_id]["linuxGolden"],"verified_linux_ci")
                 self.assertEqual(hashlib.sha256(gen()).hexdigest(),cases[case_id]["inputSha256"])
-        self.assertEqual(len([x for x in rows.values() if not x["caseIds"]]),11)
+        self.assertEqual(len([x for x in rows.values() if not x["caseIds"]]),1)
 
     def test_03_invalid_inputs_cannot_produce_a_valid_dummy_config(self):
         with tempfile.TemporaryDirectory(prefix="a23-b5-bad-") as folder:

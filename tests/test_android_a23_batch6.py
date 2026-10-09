@@ -61,7 +61,7 @@ class A23Batch6Goldens(unittest.TestCase):
                 self.assertEqual(byid[case_id]["linuxGolden"],"verified_linux_ci")
                 self.assertEqual(byid[case_id]["androidGolden"],"not_started")
                 self.assertEqual(get_supported_extension("synthetic."+suffix),suffix)
-        self.assertEqual(len([r for r in bysuffix.values() if not r["caseIds"]]),11)
+        self.assertEqual(len([r for r in bysuffix.values() if not r["caseIds"]]),1)
 
     def test_03_invalid_files_never_reveal_synthetic_profile(self):
         with tempfile.TemporaryDirectory(prefix="spdecode-b6-invalid-") as folder:
