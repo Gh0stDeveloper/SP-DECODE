@@ -62,7 +62,8 @@ class SSHFinalGoldenTests(unittest.TestCase):
         cases = {c["id"]: c for c in manifest["fixtureCaseDefinitions"]}
         self.assertEqual(len(rows), 59)
         self.assertEqual(len(cases), 60)
-        self.assertEqual({r["suffix"] for r in manifest["extensions"]}, set(registry))
+        self.assertEqual({r["suffix"] for r in manifest["extensions"]}, set(registry) - {"lnk"})
+        self.assertIn("lnk",registry)
         self.assertEqual(sum(not r["caseIds"] for r in rows.values()), 0)
         self.assertEqual(registry[SUFFIX]["script"], SCRIPT)
         self.assertEqual(get_supported_extension("synthetic.ssh"), SUFFIX)

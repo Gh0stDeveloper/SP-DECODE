@@ -2,9 +2,9 @@
 
 **Fecha de baseline:** 2026-10-08. **SHA:** 37965a3a349f38dc05560449bfe56dcd44b348ac.
 
-> **No anunciar compatibilidad Android solo por el registro.** Los 59 sufijos de esta tabla tienen estado **NO VERIFICADO en Android**. Algunas aplicaciones emisoras cambiaron algoritmos o versiones. Un estado verified exige al menos fixture positivo autorizado, fixture negativo, paridad de salida contra el bot, prueba arm64 y enlace a evidencia CI/QA.
+> **No anunciar compatibilidad Android solo por el registro.** Los 60 sufijos de esta tabla tienen estado **NO VERIFICADO en Android**. Algunas aplicaciones emisoras cambiaron algoritmos o versiones. Un estado verified exige al menos fixture positivo autorizado, fixture negativo, paridad de salida contra el bot, prueba arm64 y enlace a evidencia CI/QA.
 
-## Todos los sufijos (59)
+## Todos los sufijos (60)
 
 | Sufijo | Aplicación | Runtime original | Script original | Linux golden sintético | Android | Fase |
 |---|---|---|---|---|---|---|
@@ -67,6 +67,7 @@
 | .hc | HTTP Custom | python | decoders/Python/HTTPCUSTOM.py | 1 caso | No verificado | D |
 | .ehi | HTTP Injector | python | decoders/Python/HTTPINJECTOR.py | 1 caso | No verificado | D |
 | .ssc | SSC Custom | python | decoders/Python/SSCCUSTOM.py | 1 caso | No verificado | D |
+| .lnk | LinkLayer VPN | python | decoders/Python/linklayer.py | pruebas VER6 sintéticas + export real (fuera del repositorio) | Android: paridad por validar | D |
 
 **Nota:** `Linux golden sintético` solo indica que el script actual reproduce la salida de un input ficticio; no significa compatibilidad con la app exportadora real, tampoco Android. Ver [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
 
@@ -74,10 +75,10 @@
 
 | Runtime | Sufijos | Scripts distintos |
 |---|---:|---:|
-| Python | 48 | 39 |
+| Python | 49 | 40 |
 | Node.js | 8 | 6 |
 | PHP | 3 | 3 |
-| **TOTAL** | **59** | **48** |
+| **TOTAL** | **60** | **49** |
 
 ## Reglas de cobertura
 
@@ -92,7 +93,7 @@
 
 ## Textos y URIs (catálogo aparte)
 
-Procesos existentes por texto descritos en README y spdecode/handlers/text_protocols.py: SSC multipart (ssc://), TLS (tls://), Dark Tunnel (dark://, darktunnel://), familia nm-vmess/nm-vless/nm-dns/nm-trojan/nm-ssh/nm-ssr/nm-xray-json, ar-dns/ar-vless/ar-vmess/ar-trojan/ar-ssr/ar-socks/ar-trojan-go/ar-ssh, howdy://, N7pr://, pb-vmess/pb-ss/pb-socks/pb-vless/pb-trojan/pb-ssh, vmess://, zivpn://, v2box://locked=... Las URIs NO aumentan el conteo 59; hacer registry independiente y fixtures para cada esquema en Fase C/D.
+Procesos existentes por texto descritos en README y spdecode/handlers/text_protocols.py: SSC multipart (ssc://), TLS (tls://), Dark Tunnel (dark://, darktunnel://), familia nm-vmess/nm-vless/nm-dns/nm-trojan/nm-ssh/nm-ssr/nm-xray-json, ar-dns/ar-vless/ar-vmess/ar-trojan/ar-ssr/ar-socks/ar-trojan-go/ar-ssh, howdy://, N7pr://, pb-vmess/pb-ss/pb-socks/pb-vless/pb-trojan/pb-ssh, vmess://, zivpn://, v2box://locked=... Las URIs NO aumentan el conteo 60; hacer registry independiente y fixtures para cada esquema en Fase C/D.
 
 ## Plantilla de verificación por sufijo
 

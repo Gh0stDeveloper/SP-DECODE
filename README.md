@@ -29,7 +29,7 @@ A structured, extensible decoder platform for processing supported configuration
 ## SP-DECODE Android — Offline application (functional alpha)
 
 > [!NOTE]
-> **Android 0.3.0-alpha** is a functional offline preview, built by GitHub Actions with an installable debug APK. It is **not a production-certified release**: some real exporter versions and algorithm variants remain unsupported. No Telegram account, login, backend or Internet permission. The original Telegram bot remains unchanged. Download the APK artifact from the latest successful Android validation workflow.
+> **Android 1.0.3-rc.1 candidate** adds offline LinkLayer VPN `.lnk` VER6 support (60 Go gob fields), alongside the existing 59 formats, and an on-device localized one-time **What's New** notice after updating. Real Python export tested by Codex; Android parity must pass CI and a real device before claiming external exporter certification. Production signing uses the permanent GitHub Secrets keystore and public prereleases; stable release QA remains **NO-GO**. The Android app requires no Telegram, login, backend or Internet access. Download the APK artifact from the latest successful Android validation workflow.
 
 - [Official Android documentation and design references](docs/android/README.md)
 - [Visual identity, UI tokens and SVG mockups](docs/android/DESIGN_SYSTEM.md)
@@ -52,7 +52,7 @@ The project separates configuration, authorization, decoder registration, runtim
 
 ### Core features
 
-- **59 registered file extensions/suffixes**.
+- **60 registered file extensions/suffixes**, including LinkLayer VPN `.lnk` VER6 (Python and experimental offline Android port).
 - Python, Node.js and PHP decoder runtimes.
 - Centralized decoder registry through `decoders.json`.
 - Telegram file processing with automatic format detection.
@@ -149,10 +149,11 @@ The following extensions are currently registered in `decoders.json`. Detection 
 | JEZ Tunnel | `.jez` | PHP |
 | HRT Tunnel | `.hrt` | PHP |
 | HTTP Custom | `.hc` | Python |
+| LinkLayer VPN (VER6) | `.lnk` | Python |
 | HTTP Injector | `.ehi` | Python |
 | SSC Custom | `.ssc` | Python |
 
-> The registry currently contains **59 distinct supported suffixes**. Some applications intentionally map more than one extension to the same decoder.
+> The registry currently contains **60 distinct supported suffixes**. Some applications intentionally map more than one extension to the same decoder.
 
 ---
 

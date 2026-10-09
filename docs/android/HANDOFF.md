@@ -1,3 +1,12 @@
+## Integración LinkLayer VER6 — versión 1.0.3
+
+- Origen: `analysis/linklayer-ver6` y `decoders/Python/linklayer.py`, validado con una exportación real por Codex; archivo real privado, no subir al repositorio.
+- Port offline: `parity/LinkLayerPort.kt` (CFB Blowfish/CAST5/AES + Salsa20 + PBKDF2 + Go gob), 60 campos hoja incluidos valores cero.
+- Catálogo: 60 formatos. Tests dedicados sintéticos y dos variantes de bandera CAST.
+- UX: alerta multilingüe «Novedades» visible una sola vez por versión, después de splash y con estado de lectura persistido.
+- Enlace de diseño/portabilidad: [LINKLAYER_VER6_INTEGRATION.md](LINKLAYER_VER6_INTEGRATION.md).
+- Publicación: v1.0.3-rc.1 firmada únicamente tras CI Linux + Android verde; mantener stable NO-GO y pruebas reales Android pendientes.
+
 # Continuidad del proyecto entre chats — NO PERDER LA UI
 
 Este archivo es el punto de entrada para reanudar SP-DECODE Android en otro chat o tras perder contexto. **GitHub es la fuente durable**, no la memoria del chat.
@@ -9,7 +18,7 @@ Este archivo es el punto de entrada para reanudar SP-DECODE Android en otro chat
 - El bot existente se preserva sin cambios funcionales.
 - **Diseño visual aceptado:** cabecera con escudo y nombre SP-DECODE, panel grande central «Importar configuración», sección Resultado con campos legibles y secretos ocultos, acciones Copiar/Exportar, navegación inferior **Inicio · Historial · Formatos · Ajustes**, modo AMOLED, tarjetas suaves, tipografía limpia y SOLO ICONOS sin emojis.
 - Fuente visual: docs/android/DESIGN_SYSTEM.md, docs/android/design/home-dark.svg, docs/android/design/result-dark.svg. Las maquetas son referencias editables, NO screenshots de APK.
-- Los 59 sufijos del registro son solo inventario, no prueba de funcionamiento actual.
+- Actualmente **60 sufijos** registrados, incluido LinkLayer VPN `.lnk` VER6. El corpus A.2.3 congelado de 59 sufijos/60 fixtures sintéticos sigue siendo histórico; LinkLayer tiene pruebas Python/Android adicionales. Ningún inventario equivale por sí mismo a certificación en un exportador.
 - **Multidioma obligatorio en la interfaz**: español, inglés, portugués brasileño y árabe, con RTL para árabe. **Los resultados, campos, claves y texto original de los decodificadores NO se traducen**, aunque la UI se muestre en cualquier idioma. Véase docs/android/LOCALIZATION.md. Nunca perder este requisito en otro chat.
 
 ## Orden de recuperación (obligatorio)

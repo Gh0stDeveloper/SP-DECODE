@@ -18,12 +18,12 @@ class AndroidA2AuditTests(unittest.TestCase):
     def test_current_registry_inventory_and_all_source_paths(self):
         report = audit.analyze(ROOT)
         counts = report["counts"]
-        self.assertEqual(counts["registeredSuffixes"], 59)
-        self.assertEqual(counts["distinctScripts"], 48)
-        self.assertEqual(counts["pythonSuffixes"], 48)
+        self.assertEqual(counts["registeredSuffixes"], 60)
+        self.assertEqual(counts["distinctScripts"], 49)
+        self.assertEqual(counts["pythonSuffixes"], 49)
         self.assertEqual(counts["nodeSuffixes"], 8)
         self.assertEqual(counts["phpSuffixes"], 3)
-        self.assertEqual(len(report["scripts"]), 48)
+        self.assertEqual(len(report["scripts"]), 49)
         self.assertEqual(report["errors"], [])
         self.assertEqual(
             {x["suffix"] for x in report["registeredExtensions"]},

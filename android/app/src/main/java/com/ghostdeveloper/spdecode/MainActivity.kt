@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
 import com.ghostdeveloper.spdecode.parity.AndroidOfflineDecoderRouter
+import com.ghostdeveloper.spdecode.parity.LinkLayerPort
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -75,6 +76,8 @@ class MainActivity : ComponentActivity() {
     private var importGeneration=0
     private var navigationExplicit=false
     private var showBrandedSplash by mutableStateOf(true)
+    private var showWhatsNew by mutableStateOf(false)
+    private var runningVersionCode=0L
     private var message by mutableStateOf<String?>(null)
     private var reveal:Boolean
         get()=sessionVm.reveal
@@ -150,6 +153,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         selectedLanguage=settings.getString("language","system") ?: "system"
         hideCredentials=settings.getBoolean("mask_credentials",false)
+        @Suppress("DEPRECATION")
+        val installed=packageManager.getPackageInfo(packageName,0)
+        runningVersionCode=if(Build.VERSION.SDK_INT>=28)installed.longVersionCode else installed.versionCode.toLong()
+        showWhatsNew=settings.getLong("last_seen_whats_new_version",0L)<runningVersionCode
         @Suppress("DEPRECATION")
         window.statusBarColor=android.graphics.Color.BLACK
         @Suppress("DEPRECATION")
@@ -227,6 +234,11 @@ class MainActivity : ComponentActivity() {
                 onRetention={days->setRetention(days)},
                 onDismissError={message=null},
                 onDecodeText={input->decodeText(input)},
+                whatsNew=showWhatsNew,
+                onDismissWhatsNew={
+                    settings.edit().putLong("last_seen_whats_new_version",runningVersionCode).apply()
+                    showWhatsNew=false
+                },
             )
         }
         if(savedInstanceState==null)handleExternalIntent(intent)
@@ -356,7 +368,8 @@ class MainActivity : ComponentActivity() {
                     val supported=AndroidDecoderCatalog.detect(
                         name,AndroidDecoderCatalog.read(this@MainActivity))
                         ?:throw DecodeFailure(R.string.unsupported)
-                    val input=withContext(Dispatchers.IO){readBounded(uri)}
+                    val input=withContext(Dispatchers.IO){readBounded(uri,
+                        if(supported.suffix=="lnk")LinkLayerPort.MAX_INPUT else MAX_BYTES)}
                     progressStage=1
                     val text=withContext(Dispatchers.Default){
                         AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
@@ -480,7 +493,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private class DecodeFailure(val stringId:Int):Exception()
-    private fun readBounded(uri:Uri):ByteArray{
+    private fun readBounded(uri:Uri,maxBytes:Int=MAX_BYTES):ByteArray{
         val stream=contentResolver.openInputStream(uri)?:throw DecodeFailure(R.string.read_error)
         return stream.use {input->
             val out=ByteArrayOutputStream()
@@ -488,7 +501,7 @@ class MainActivity : ComponentActivity() {
             while(true){
                 val n=input.read(buf)
                 if(n<0)break
-                if(out.size().toLong()+n>MAX_BYTES)throw DecodeFailure(R.string.file_too_large)
+                if(out.size().toLong()+n>maxBytes)throw DecodeFailure(R.string.file_too_large)
                 out.write(buf,0,n)
             }
             out.toByteArray()

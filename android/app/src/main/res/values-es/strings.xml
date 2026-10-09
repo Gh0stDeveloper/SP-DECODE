@@ -27,7 +27,7 @@
     <string name="session_only">Guardado local · Historial cifrado</string>
     <string name="search_formats">Buscar aplicación o extensión</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">59 formatos experimentales sin conexión. No se garantiza compatibilidad con versiones actuales.</string>
+    <string name="catalog_note">60 formatos experimentales sin conexión. LinkLayer VER6 disponible; la compatibilidad depende de la versión.</string>
     <string name="settings_title">Ajustes</string>
     <string name="privacy_title">Privacidad</string>
     <string name="privacy_text">Los archivos originales no se copian. Los resultados decodificados se guardan cifrados en este dispositivo hasta que los elimines.</string>
@@ -129,4 +129,10 @@
     <string name="text_decode_private">Procesamiento local. Solo se guardan resultados decodificados correctamente.</string>
     <string name="text_decode_invalid">Protocolo no reconocido, texto inválido o límite de tamaño excedido.</string>
     <string name="text_decode_unsupported">No fue posible decodificar este texto. Puede estar incompleto, dañado o usar otra variante de cifrado.</string>
+    <string name="whats_new_title">Novedades de SP-DECODE</string>
+    <string name="whats_new_description">Versión 1.0.3 · Nuevo formato para decodificar sin conexión</string>
+    <string name="whats_new_linklayer">Compatibilidad con LinkLayer VPN (.lnk) VER6</string>
+    <string name="whats_new_fields">Se muestran los 60 campos de configuración, incluidos ajustes SSH, HTTP, SSL y DNS.</string>
+    <string name="whats_new_offline">Los archivos se procesan en tu dispositivo. Se conservan los decodificadores anteriores y tu historial.</string>
+    <string name="whats_new_continue">Entendido</string>
 </resources>

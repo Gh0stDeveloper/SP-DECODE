@@ -21,11 +21,11 @@
     "docs/android/design/result-dark.svg"
   ],
   "formats": {
-    "registeredSuffixes": 59,
-    "pythonSuffixes": 48,
+    "registeredSuffixes": 60,
+    "pythonSuffixes": 49,
     "nodeSuffixes": 8,
     "phpSuffixes": 3,
-    "distinctScripts": 48,
+    "distinctScripts": 49,
     "androidVerifiedSuffixes": 0
   },
   "phases": {
@@ -93,10 +93,10 @@
       }
     }
   },
-  "nextAction": "Run Linux and API35 HCCFG/SIP VER8 tests, review actual third-party fixture limitations; merge after green and produce permanent-key production-signed v1.0.2-rc.1. Stable GO remains blocked.",
-  "releaseStatus": "v1.0.2_HC_SIP_VARIANTS_IN_PR_NO_GO",
+  "nextAction": "Verify LinkLayer VER6 offline Kotlin/Python parity on synthetic fixtures and owner real-file comparison, then approve 1.0.3 prerelease. Stable GO remains blocked.",
+  "releaseStatus": "v1.0.3_LINKLAYER_VER6_PENDING_ANDROID_CI",
   "ciValidatedAndroid": true,
-  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge. Owner confirms manual genuine files, batch, ARM64/16K and audit passed, recorded as user attestation; signed release upgrade pending. 0.3.6 changes ONLY preview to JSON + metadata comments and branded splash. PR29 0.3.6 code HEAD 27df0bf66aa73b8d31674f4eb6816274875b0f5a passed Linux and 108/108 API35 emulator run 37910797924. Signing private keys are outside repository; manual candidate test remains pending. Owner reports production keystore added to GitHub Actions Secrets; actual signed workflow verification still outstanding. 0.3.7 adds native offline text protocols and private in-memory multipart sessions, retaining existing file imports, Android Keystore history and JSON results. Final source HEAD 1f8c99457a23b2d3740643809a30d244d183e6d4 passed Linux and connected Android API35 114/114 tests in run 37959678517. Documentation-only closing commit still needs final CI. On 2026-10-09 owner explicitly requested v1.0.0 production rather than test APK, and permanent GitHub Secrets keystore only, automated workflow. Stable version/name are source changes; cannot claim signed APK exists until workflow executes with secrets. Previous independent text-real compatibility, signing install/upgrade gate still open.",
+  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge. Owner confirms manual genuine files, batch, ARM64/16K and audit passed, recorded as user attestation; signed release upgrade pending. 0.3.6 changes ONLY preview to JSON + metadata comments and branded splash. PR29 0.3.6 code HEAD 27df0bf66aa73b8d31674f4eb6816274875b0f5a passed Linux and 108/108 API35 emulator run 37910797924. Signing private keys are outside repository; manual candidate test remains pending. Owner reports production keystore added to GitHub Actions Secrets; actual signed workflow verification still outstanding. 0.3.7 adds native offline text protocols and private in-memory multipart sessions, retaining existing file imports, Android Keystore history and JSON results. Final source HEAD 1f8c99457a23b2d3740643809a30d244d183e6d4 passed Linux and connected Android API35 114/114 tests in run 37959678517. Documentation-only closing commit still needs final CI. On 2026-10-09 owner explicitly requested v1.0.0 production rather than test APK, and permanent GitHub Secrets keystore only, automated workflow. Stable version/name are source changes; cannot claim signed APK exists until workflow executes with secrets. Previous independent text-real compatibility, signing install/upgrade gate still open. LinkLayer VPN 3.11.2 .lnk VER6 source validated by owner on an authentic file with 60 JSON leaf fields; Android port uses Go gob strict schema and multilayer ciphers. Additional registered suffix is distinct from the 59 frozen historic golden cases. Version popup added for release 1.0.3; real-file parity on physical Android remains pending until validated.",
   "localization": {
     "scope": "ui_only",
     "languages": [

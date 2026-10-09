@@ -77,6 +77,8 @@ fun SpDecodeApp(
     onRetention:(Int)->Unit,
     onDismissError:()->Unit,
     onDecodeText:(String)->Unit={},
+    whatsNew:Boolean=false,
+    onDismissWhatsNew:()->Unit={},
 ){
     var dialog by remember{mutableStateOf<String?>(null)}
     MaterialTheme(colorScheme=darkColorScheme(
@@ -106,6 +108,46 @@ fun SpDecodeApp(
             }
             BottomTabs(activeTab,onTab)
         }
+        if(whatsNew && !busy) AlertDialog(
+            onDismissRequest=onDismissWhatsNew,
+            icon={Icon(Icons.Outlined.NewReleases,null,tint=Green)},
+            title={Text(stringResource(R.string.whats_new_title),fontWeight=FontWeight.Bold)},
+            text={
+                Column(verticalArrangement=Arrangement.spacedBy(12.dp)) {
+                    Text(stringResource(R.string.whats_new_description),
+                        color=White,fontSize=14.sp)
+                    Row(verticalAlignment=Alignment.Top) {
+                        Icon(Icons.Outlined.CheckCircle,null,tint=Green,
+                            modifier=Modifier.size(21.dp))
+                        Spacer(Modifier.width(9.dp))
+                        Text(stringResource(R.string.whats_new_linklayer),
+                            color=White,fontSize=14.sp)
+                    }
+                    Row(verticalAlignment=Alignment.Top) {
+                        Icon(Icons.Outlined.DataObject,null,tint=Green,
+                            modifier=Modifier.size(21.dp))
+                        Spacer(Modifier.width(9.dp))
+                        Text(stringResource(R.string.whats_new_fields),
+                            color=Secondary,fontSize=13.sp)
+                    }
+                    Row(verticalAlignment=Alignment.Top) {
+                        Icon(Icons.Outlined.Shield,null,tint=Green,
+                            modifier=Modifier.size(21.dp))
+                        Spacer(Modifier.width(9.dp))
+                        Text(stringResource(R.string.whats_new_offline),
+                            color=Secondary,fontSize=13.sp)
+                    }
+                }
+            },
+            confirmButton={
+                TextButton(onClick=onDismissWhatsNew) {
+                    Text(stringResource(R.string.whats_new_continue),color=White)
+                }
+            },
+            containerColor=Panel,
+            titleContentColor=White,
+            textContentColor=Secondary,
+        )
         // Import progress is modal so it cannot be overlooked or mistaken for a
         // stalled app. Cancellation is explicit; Back never dismisses it silently.
         if(busy) Dialog(
