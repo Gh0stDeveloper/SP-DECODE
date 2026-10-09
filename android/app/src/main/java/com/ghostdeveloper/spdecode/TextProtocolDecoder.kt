@@ -33,6 +33,18 @@ object TextProtocolDecoder {
     data class Input(val protocol:String,val app:String,val suffix:String,
         val content:String,val multipart:Boolean=false)
 
+    fun appNameForSuffix(suffix:String):String?=when(suffix.lowercase(Locale.ROOT)){
+        "vmess"->"VMess"
+        "netmod"->"NetMod"
+        "armod"->"ARMod"
+        "xraypb"->"XrayPB"
+        "howdy"->"Howdy"
+        "zivpn"->"ZIVPN"
+        "v2box"->"V2Box"
+        "decssh"->"SSH"
+        else->null
+    }
+
     fun identify(raw:String):Input? {
         if(raw.length>MAX_CHARS)return null
         val clean=raw.trim().replace("\ufeff","").replace("\u200b","")
@@ -58,6 +70,12 @@ object TextProtocolDecoder {
                     return Input("xraypb","XrayPB","xraypb",body)
             }
         }
+        // The Telegram bot also accepts bare NetMod AES-ECB ciphertext in
+        // its fallback handler. Only a valid Base64 token is offered to this
+        // single known-key route; decryption must yield genuine JSON.
+        if(clean.length in 24..MAX_CHARS &&
+            Regex("^[A-Za-z0-9+/_=-]+$").matches(clean))
+            return Input("netmod","NetMod","netmod",clean)
         return null
     }
 
