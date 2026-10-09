@@ -11,7 +11,8 @@ import json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-CASES=("ev2ray-plain", "ev2ray-aes128", "tls-aesgcm")
+CASES=("ev2ray-plain", "ev2ray-aes128", "tls-aesgcm", "batch4-phc", "batch5-mina", "batch6-vpnlite", "batch4-cloudy", "batch4-mij", "batch4-fnnetwork", "batch4-uwu", "sksrv-sksrv", "batch5-maya", "batch5-xui")
+SUFFIX={"ev2ray-plain": "v2", "ev2ray-aes128": "v2", "tls-aesgcm": "tls", "batch4-phc": "phc", "batch5-mina": "mina", "batch6-vpnlite": "vpnlite", "batch4-cloudy": "cloudy", "batch4-mij": "mij", "batch4-fnnetwork": "fnnetwork", "batch4-uwu": "uwu", "sksrv-sksrv": "sksrv", "batch5-maya": "maya", "batch5-xui": "xui"}
 
 
 def sha(raw:bytes)->str:
@@ -36,7 +37,7 @@ def prepare(out:Path)->list[dict[str,str]]:
         truth=expected.read_bytes()
         if sha(source)!=case["inputSha256"] or sha(truth)!=case["expectedRawUtf8Sha256"]:
             raise ValueError("Frozen golden mismatch for "+cid)
-        (out/(cid+(".tls" if cid=="tls-aesgcm" else ".v2"))).write_bytes(source)
+        (out/(cid+"."+SUFFIX[cid])).write_bytes(source)
         (out/(cid+".txt")).write_bytes(truth)
         rows.append({"id":cid,"inputSha256":sha(source),"expectedRawUtf8Sha256":sha(truth)})
     (out/"checksums.json").write_text(json.dumps(rows,indent=2)+"\n","utf-8")

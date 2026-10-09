@@ -5,7 +5,17 @@
   "androidCertifiedSuffixes": 0,
   "androidPrototypeSuffixes": [
     "v2",
-    "tls"
+    "tls",
+    "phc",
+    "mina",
+    "vpnlite",
+    "cloudy",
+    "mij",
+    "fnnetwork",
+    "uwu",
+    "sksrv",
+    "maya",
+    "xui"
   ],
   "entries": [
     {
@@ -13,7 +23,7 @@
       "script": "decoders/Python/fnnetwork.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -40,7 +50,7 @@
       "script": "decoders/Python/vpnlite.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -49,7 +59,7 @@
       "script": "decoders/Python/cloudy.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -58,7 +68,7 @@
       "script": "decoders/Python/sksrv.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -112,7 +122,7 @@
       "script": "decoders/Python/maya.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -121,7 +131,7 @@
       "script": "decoders/Python/mina.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -265,7 +275,7 @@
       "script": "decoders/Python/mij.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -310,7 +320,7 @@
       "script": "decoders/Python/phc.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -427,7 +437,7 @@
       "script": "decoders/Python/uwu.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -454,7 +464,7 @@
       "script": "decoders/Python/xui.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },

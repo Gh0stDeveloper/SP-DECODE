@@ -82,3 +82,30 @@ nuevo commit; la aprobación del emulador será exclusiva para las muestras
 sintéticas. La validación sobre arm64, 16 KiB y exportadores actuales sigue
 sin estar realizada. El port TLS se añadió como referencia experimental y no
 se habilitó una UI de importación al usuario.
+
+## 7. Incremento A.2.4: lote de diez adaptadores Kotlin (PR #17, en revisión)
+
+**Nuevos formatos experimentales:** `.phc`, `.mina`, `.vpnlite`, `.cloudy`, `.mij`, `.fnnetwork`, `.uwu`, `.sksrv`, `.maya`, `.xui`. Se añaden **diez adaptadores separados**, cada uno con su contraseña/clave, IV/salt/nonce, contenedor y formateador original. Sólo se comparte JCA/PBKDF2, bytes, límites y utilidades neutras; esto no fusiona los algoritmos por extensión.
+
+- `PhcPort`: PBKDF2-SHA256/1000, AES-GCM y XML.
+- `MinaPort`: clave octal → SHA256 → AES-CBC, IV cero.
+- `VpnLitePort`: SHA256(password UTF-8), Base64(IV + AES-CBC), parser histórico.
+- `CloudyPort`: AES-CBC con clave/IV propios, JSON; conserva encabezado heredado `.aro`.
+- `MijPort`: PBKDF2-SHA256 con contraseña Ed+U+0001, AES-GCM y XML.
+- `FnNetworkPort`: contraseña/criptografía original FNNetwork y filtro XML independiente.
+- `UwuPort`: PBKDF2-SHA256 contraseña Ed, AES-GCM y encabezado heredado `.tnl`.
+- `SksrvPort`: contraseña propia SKSRV, AES-GCM y XML. El sufijo compuesto `.sksrv.png` sigue no implementado en este lote.
+- `MayaPort`: NoobCrypt AES-256-CBC exterior + AES-GCM para campos internos, clave propia.
+- `XuiPort`: misma librería NoobCrypt original, pero clave XUI diferente y adaptador separado.
+
+**Puertas de calidad:** 13 fixtures congelados con hashes SHA-256 (`.v2`×2, TLS×1, 10 nuevos), 10 tests positivos Kotlin separados y una prueba con 30 casos fallidos; tests del catálogo y Linux. Las referencias son **sintéticas**; no representan exportaciones actuales. Si CI no ha aprobado la rama, estos diez formatos permanecen `experimental_batch10_synthetic`, no certificados ni disponibles en UI. `androidVerifiedSuffixes=0`; quedan 47 sin port (y el sufijo `.sksrv.png` sin ruta propia). Debe probarse en arm64 y 16 KiB después.
+
+### Resultado CI inicial del lote (sin router)
+
+[GitHub Actions #37872655497](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37872655497):
+Linux `validate` **success** y Android emulador API 35 x86_64 **success**.
+Los 10 tests de paridad nuevos, pruebas de entrada inválida y regresión anterior
+pasaron en emulador. Se añade después `AndroidOfflineDecoderRouter`, que
+selecciona 1:1 por extensión y no intenta claves de otros decodificadores.
+La versión con router se somete a una segunda ejecución CI antes de fusionar.
+Ningún hardware arm64, exportador moderno ni página 16-KiB comprobado.
