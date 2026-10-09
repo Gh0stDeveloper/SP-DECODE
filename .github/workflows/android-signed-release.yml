@@ -232,7 +232,7 @@ jobs:
         run: rm -f "$RUNNER_TEMP/spdecode-production.p12"
 
   publication-gate:
-    name: Check independently verified stable release evidence
+    name: Check audited or owner-approved stable release evidence
     needs: [preflight, sign-production]
     if: needs['sign-production'].result == 'success'
     runs-on: ubuntu-latest
@@ -264,7 +264,7 @@ jobs:
           fi
 
   publish-stable:
-    name: Publish stable GitHub Release only after GO and completed signing
+    name: Publish stable GitHub Release only after release gate and production signing
     needs: [preflight, sign-production, publication-gate]
     if: needs['publication-gate'].outputs.approved == 'true'
     runs-on: ubuntu-latest
@@ -275,7 +275,7 @@ jobs:
         with:
           name: SP-DECODE-v${{ needs.preflight.outputs.version }}-PRODUCTION-SIGNED
           path: dist
-      - name: Publish verified stable APK only once per version
+      - name: Publish approved production-signed stable APK only once per version
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.preflight.outputs.version }}
@@ -286,12 +286,14 @@ jobs:
             echo "::notice::v$VERSION already exists; no tag/asset will be overwritten"
             exit 0
           fi
+          (cd dist && sha256sum --check SHA256SUMS.txt)
+          grep -Fx "Source commit: $SOURCE_SHA" dist/SIGNATURE_VERIFICATION.txt
           gh release create "v$VERSION" \
             "dist/SP-DECODE-v$VERSION-production-signed.apk" \
             "dist/SHA256SUMS.txt" "dist/SIGNATURE_VERIFICATION.txt" \
             --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" \
             --title "SP-DECODE Android v$VERSION" --latest \
-            --notes "Production-signed APK using the permanent repository keystore, independently verified APK Signature Schemes V1/V2/V3. Release checks and evidence: release/android-readiness.json."
+            --notes "SP-DECODE v$VERSION: decoded results now credit SP-DECODE, and ordered exports credit Ghost Developer with the official group/channel. Permanent production keystore, V1/V2/V3 signature and exact-main CI verified. Stable release approved by the project owner after real-device testing. Independent accessibility/performance and install/upgrade reports remain pending; this is owner-accepted production distribution, not independently certified compatibility for every exporter. See release/android-readiness.json and docs/android/USER_MANUAL_VALIDATION_2026-10-09.md."
 
   publish-signed-preview:
     name: Publish public production-signed prerelease (stable GO remains separate)
@@ -328,13 +330,13 @@ jobs:
 
           This is the real **release APK signed with the permanent production keystore** from GitHub Secrets, not a debug or temporary-key build.
 
-          **QA status: public prerelease.** The stable v1.0.0 publication gate remains **NO-GO** because documented evidence is incomplete. Physical ARM64, 16 KiB, real-file and batch results were reported by the project owner, but independent reproducible reports, accessibility/performance and signed-install/upgrade evidence have not all been recorded. Do not treat this prerelease as a fully verified stable build.
+          **QA status: public prerelease.** The stable publication gate remains **NO-GO** because documented evidence is incomplete. Physical ARM64, 16 KiB, real-file and batch results were reported by the project owner, but independent reproducible reports, accessibility/performance and signed-install/upgrade evidence have not all been recorded. Do not treat this prerelease as a fully verified stable build.
 
           Assets: APK, `SHA256SUMS.txt` for integrity checking, and `SIGNATURE_VERIFICATION.txt` with V1/V2/V3 checks and source commit.
 
           **Updating from debug:** A debug-signed APK has a different signing certificate and cannot update in place. Uninstalling it may delete locally encrypted history. Export results you want to retain first.
 
-          Once all stable release requirements are met and the audited status is changed to GO, the workflow can publish `v1.0.0` separately.
+          Once all stable release requirements are met and the audited status is changed to GO, the workflow can publish the stable release separately.
           NOTES
           gh release create "$TAG" \
             "$APK" dist/SHA256SUMS.txt dist/SIGNATURE_VERIFICATION.txt \
