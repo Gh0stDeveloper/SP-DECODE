@@ -24,6 +24,8 @@ import androidx.compose.runtime.setValue
 import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
 import com.ghostdeveloper.spdecode.parity.AndroidOfflineDecoderRouter
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -38,7 +40,7 @@ import java.util.Locale
 /**
  * First functional offline Android alpha.
  * No app-specific file paths, INTERNET permission, backend or original script
- * subprocess. Session records never persist cleartext to storage.
+ * subprocess. Decoded history persists in app-private encrypted storage.
  */
 class MainActivity : ComponentActivity() {
     private companion object { const val MAX_BYTES=1024*1024 }
@@ -47,6 +49,8 @@ class MainActivity : ComponentActivity() {
     private var hideCredentials by mutableStateOf(false)
     private val settings get()=getSharedPreferences("spdecode-ui-preferences",MODE_PRIVATE)
     private var job:Job?=null
+    private val historyStore by lazy { SecureDecodeHistory(applicationContext) }
+    private var historyLoad: Deferred<Unit>? = null
     private val sessionVm by viewModels<DecodeSessionViewModel>()
     private val recent get()=sessionVm.recent
     private var result:DecodeView?
@@ -135,6 +139,16 @@ class MainActivity : ComponentActivity() {
         window.navigationBarColor=android.graphics.Color.BLACK
         window.decorView.systemUiVisibility=0
 
+        historyLoad = scope.async {
+            try {
+                val saved = withContext(Dispatchers.IO) { historyStore.load() }
+                val existingIds = recent.map { it.id }.toSet()
+                saved.filterNot { it.id in existingIds }.forEach { recent.add(it) }
+                // In-memory entries from a locale recreation must not be dropped.
+            } catch (_: Exception) {
+                toast(R.string.history_storage_error)
+            }
+        }
         setContent {
             SpDecodeApp(
                 activeTab=tab,
@@ -156,7 +170,8 @@ class MainActivity : ComponentActivity() {
                 onMaskCredentials={value->hideCredentials=value;settings.edit().putBoolean("mask_credentials",value).apply()},
                 onExternalLink={url->openExternal(url)},
                 onSelect={result=it;tab=0;reveal=false},
-                onClear={recent.clear();result=null;reveal=false},
+                onClear={clearHistory()},
+                onDeleteSelected={ids->deleteHistory(ids)},
                 onDismissError={message=null},
             )
         }
@@ -189,6 +204,7 @@ class MainActivity : ComponentActivity() {
             message=null
             reveal=false
             try {
+                historyLoad?.await()
                 for(uri in uris.take(10)){
                     val processed=withContext(Dispatchers.IO){
                         val name=displayName(uri)
@@ -201,15 +217,58 @@ class MainActivity : ComponentActivity() {
                         DecodeView(name,supported.suffix,text,input.size)
                     }
                     result=processed
-                    recent.removeAll{it.filename==processed.filename}
+                    val saved = runCatching {
+                        withContext(Dispatchers.IO) { historyStore.save(processed) }
+                    }.isSuccess
                     recent.add(0,processed)
-                    while(recent.size>12)recent.removeAt(recent.lastIndex)
+                    if(!saved)toast(R.string.history_storage_error)
                     tab=0
                 }
             }catch(_:CancellationException){throw CancellationException()}
             catch(e:DecodeFailure){message=getString(e.stringId)}
             catch(_:Exception){message=getString(R.string.read_error)}
             finally{busy=false}
+        }
+    }
+
+    private fun clearHistory() {
+        scope.launch {
+            try {
+                historyLoad?.await()
+                withContext(Dispatchers.IO) { historyStore.clearAll() }
+                recent.clear()
+                result = null
+                reveal = false
+            } catch (_: Exception) {
+                toast(R.string.history_storage_error)
+            }
+        }
+    }
+
+    private fun deleteHistory(ids:Set<String>) {
+        scope.launch {
+            try {
+                historyLoad?.await()
+                val targets = if (ids.isEmpty()) recent.map { it.id }.toSet() else ids
+                if (targets.isEmpty()) return@launch
+                withContext(Dispatchers.IO) { historyStore.delete(targets) }
+                recent.removeAll { it.id in targets }
+                if (result?.id in targets) {
+                    result = null
+                    reveal = false
+                }
+            } catch (_: Exception) {
+                toast(R.string.history_storage_error)
+                // Resync after a partial disk failure, avoiding a false success.
+                val saved = runCatching {
+                    withContext(Dispatchers.IO) { historyStore.load() }
+                }.getOrNull()
+                if (saved != null) {
+                    recent.clear()
+                    recent.addAll(saved)
+                    if (result != null && recent.none { it.id == result?.id }) result = null
+                }
+            }
         }
     }
 

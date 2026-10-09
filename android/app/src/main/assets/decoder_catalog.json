@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "inventorySource": "decoders.json",
   "syntheticLinuxCoveredSuffixes": 59,
   "androidCertifiedSuffixes": 0,
@@ -67,6 +67,7 @@
   "entries": [
     {
       "suffix": "fnnetwork",
+      "name": "FN Network",
       "script": "decoders/Python/fnnetwork.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -76,6 +77,7 @@
     },
     {
       "suffix": "sksrv.png",
+      "name": "SKS Server",
       "script": "decoders/Python/sksrv.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -85,6 +87,7 @@
     },
     {
       "suffix": "sksplus",
+      "name": "SocksIP Plus",
       "script": "decoders/PHP/sksplus.php",
       "originalRuntime": "php",
       "linuxGoldenSynthetic": true,
@@ -94,6 +97,7 @@
     },
     {
       "suffix": "vpnlite",
+      "name": "VPN Lite",
       "script": "decoders/Python/vpnlite.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -103,6 +107,7 @@
     },
     {
       "suffix": "cloudy",
+      "name": "Cloudy Inject",
       "script": "decoders/Python/cloudy.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -112,6 +117,7 @@
     },
     {
       "suffix": "sksrv",
+      "name": "SKS Server",
       "script": "decoders/Python/sksrv.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -121,6 +127,7 @@
     },
     {
       "suffix": "xscks",
+      "name": "X-Socks",
       "script": "decoders/Python/xscks.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -130,6 +137,7 @@
     },
     {
       "suffix": "dark",
+      "name": "Dark Tunnel",
       "script": "decoders/Python/DARKTUNNEL.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -139,6 +147,7 @@
     },
     {
       "suffix": "ehil",
+      "name": "HTTP Injector Lite",
       "script": "decoders/Python/HTTPINJECTORLITE.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -148,6 +157,7 @@
     },
     {
       "suffix": "epro",
+      "name": "ePro Tunnel",
       "script": "decoders/JavaScript/modulepro.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
@@ -157,6 +167,7 @@
     },
     {
       "suffix": "gold",
+      "name": "Gold Tunnel",
       "script": "decoders/Python/gold.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -166,6 +177,7 @@
     },
     {
       "suffix": "maya",
+      "name": "Maya Tunnel",
       "script": "decoders/Python/maya.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -175,6 +187,7 @@
     },
     {
       "suffix": "mina",
+      "name": "MinaProNet",
       "script": "decoders/Python/mina.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -184,6 +197,7 @@
     },
     {
       "suffix": "npv2",
+      "name": "NPV Tunnel v2",
       "script": "decoders/JavaScript/chicosp.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
@@ -193,6 +207,7 @@
     },
     {
       "suffix": "npv4",
+      "name": "NPV Tunnel v4",
       "script": "decoders/Python/NPVTUNNEL.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -202,6 +217,7 @@
     },
     {
       "suffix": "npvt",
+      "name": "NPV Tunnel v4",
       "script": "decoders/Python/NPVTUNNEL.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -211,6 +227,7 @@
     },
     {
       "suffix": "rezl",
+      "name": "Rez Tunnel Lite",
       "script": "decoders/JavaScript/rez.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
@@ -220,6 +237,7 @@
     },
     {
       "suffix": "agn",
+      "name": "AGN Injector",
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -229,6 +247,7 @@
     },
     {
       "suffix": "aro",
+      "name": "ARMOD",
       "script": "decoders/Python/aro.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -238,6 +257,7 @@
     },
     {
       "suffix": "cly",
+      "name": "Cloudy",
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -247,6 +267,7 @@
     },
     {
       "suffix": "ehi",
+      "name": "HTTP Injector",
       "script": "decoders/Python/HTTPINJECTOR.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -256,6 +277,7 @@
     },
     {
       "suffix": "hat",
+      "name": "HA Tunnel Plus",
       "script": "decoders/JavaScript/hat.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
@@ -265,6 +287,7 @@
     },
     {
       "suffix": "hrt",
+      "name": "HRT Tunnel",
       "script": "decoders/PHP/hrt.php",
       "originalRuntime": "php",
       "linuxGoldenSynthetic": true,
@@ -274,6 +297,7 @@
     },
     {
       "suffix": "htb",
+      "name": "HTTP Tweak",
       "script": "decoders/Python/HTTPTWEAK.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -283,6 +307,7 @@
     },
     {
       "suffix": "ipt",
+      "name": "WeTunnel",
       "script": "decoders/Python/ipt.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -292,6 +317,7 @@
     },
     {
       "suffix": "jez",
+      "name": "JEZ Tunnel",
       "script": "decoders/PHP/jez.php",
       "originalRuntime": "php",
       "linuxGoldenSynthetic": true,
@@ -301,6 +327,7 @@
     },
     {
       "suffix": "jvc",
+      "name": "JVC Tunnel",
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -310,6 +337,7 @@
     },
     {
       "suffix": "jvi",
+      "name": "JVI Tunnel",
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -319,6 +347,7 @@
     },
     {
       "suffix": "mij",
+      "name": "MIJ Tunnel",
       "script": "decoders/Python/mij.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -328,6 +357,7 @@
     },
     {
       "suffix": "mrc",
+      "name": "MRC Tunnel",
       "script": "decoders/Python/mrc.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -337,6 +367,7 @@
     },
     {
       "suffix": "mtl",
+      "name": "MTL Tunnel",
       "script": "decoders/Python/mtl.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -346,6 +377,7 @@
     },
     {
       "suffix": "ost",
+      "name": "OUSS Tunnel",
       "script": "decoders/Python/ost.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -355,6 +387,7 @@
     },
     {
       "suffix": "pcx",
+      "name": "PCX Tunnel",
       "script": "decoders/Python/pcx.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -364,6 +397,7 @@
     },
     {
       "suffix": "phc",
+      "name": "PHC Tunnel",
       "script": "decoders/Python/phc.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -373,6 +407,7 @@
     },
     {
       "suffix": "rez",
+      "name": "Rez Tunnel",
       "script": "decoders/JavaScript/rez.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
@@ -382,6 +417,7 @@
     },
     {
       "suffix": "roy",
+      "name": "Royal Tunnel",
       "script": "decoders/Python/xtproy.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -391,6 +427,7 @@
     },
     {
       "suffix": "sbr",
+      "name": "SBR Injector",
       "script": "decoders/Python/sbr.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -400,6 +437,7 @@
     },
     {
       "suffix": "sip",
+      "name": "SocksIP Tunnel",
       "script": "decoders/Python/sockip.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -409,6 +447,7 @@
     },
     {
       "suffix": "sks",
+      "name": "SocksIP",
       "script": "decoders/JavaScript/sks.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
@@ -418,6 +457,7 @@
     },
     {
       "suffix": "ssc",
+      "name": "SSC Custom",
       "script": "decoders/Python/SSCCUSTOM.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -427,6 +467,7 @@
     },
     {
       "suffix": "ssh",
+      "name": "SSH Injector",
       "script": "decoders/Python/ssh.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -436,6 +477,7 @@
     },
     {
       "suffix": "stk",
+      "name": "Stark VPN",
       "script": "decoders/JavaScript/stk.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
@@ -445,6 +487,7 @@
     },
     {
       "suffix": "sut",
+      "name": "SUT Tunnel",
       "script": "decoders/Python/sut.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -454,6 +497,7 @@
     },
     {
       "suffix": "tls",
+      "name": "TLS Tunnel",
       "script": "decoders/Python/TLS.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -463,6 +507,7 @@
     },
     {
       "suffix": "tnl",
+      "name": "Tunnel",
       "script": "decoders/Python/tnl.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -472,6 +517,7 @@
     },
     {
       "suffix": "tvt",
+      "name": "TV Tunnel",
       "script": "decoders/JavaScript/rez.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
@@ -481,6 +527,7 @@
     },
     {
       "suffix": "uwu",
+      "name": "UWU Tunnel",
       "script": "decoders/Python/uwu.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -490,6 +537,7 @@
     },
     {
       "suffix": "v2i",
+      "name": "V2Ray Injector",
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -499,6 +547,7 @@
     },
     {
       "suffix": "xtp",
+      "name": "XTProy",
       "script": "decoders/Python/xtproy.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -508,6 +557,7 @@
     },
     {
       "suffix": "xui",
+      "name": "XUI Tunnel",
       "script": "decoders/Python/xui.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -517,6 +567,7 @@
     },
     {
       "suffix": "ziv",
+      "name": "ZIVPN",
       "script": "decoders/Python/ziv.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -526,6 +577,7 @@
     },
     {
       "suffix": "at",
+      "name": "ASH tunnel",
       "script": "decoders/Python/at.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -535,6 +587,7 @@
     },
     {
       "suffix": "fɴ",
+      "name": "FN Tunnel",
       "script": "decoders/Python/multides.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -544,6 +597,7 @@
     },
     {
       "suffix": "hc",
+      "name": "HTTP Custom",
       "script": "decoders/Python/HTTPCUSTOM.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -553,6 +607,7 @@
     },
     {
       "suffix": "ht",
+      "name": "HTTP Tweak",
       "script": "decoders/Python/HTTPTWEAK.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -562,6 +617,7 @@
     },
     {
       "suffix": "nm",
+      "name": "NetMod",
       "script": "decoders/Python/nms.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -571,6 +627,7 @@
     },
     {
       "suffix": "nt",
+      "name": "Net Tunnel",
       "script": "decoders/Python/nt.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -580,6 +637,7 @@
     },
     {
       "suffix": "pb",
+      "name": "XrayPB",
       "script": "decoders/Python/pb.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
@@ -589,6 +647,7 @@
     },
     {
       "suffix": "v2",
+      "name": "e-V2Ray",
       "script": "decoders/Python/EV2RAY.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,

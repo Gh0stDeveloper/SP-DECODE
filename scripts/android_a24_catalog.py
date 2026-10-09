@@ -23,6 +23,7 @@ def generate()->dict:
     for suffix,entry in registry.items():
         rows.append({
             "suffix":suffix,
+            "name":entry["name"],
             "script":entry["script"],
             "originalRuntime":entry["runtime"],
             "linuxGoldenSynthetic":True,
@@ -32,7 +33,7 @@ def generate()->dict:
         })
     rows.sort(key=lambda x:(-len(x["suffix"]),x["suffix"]))
     return {
-        "schemaVersion":1,"inventorySource":"decoders.json",
+        "schemaVersion":2,"inventorySource":"decoders.json",
         "syntheticLinuxCoveredSuffixes":59,"androidCertifiedSuffixes":0,
         "androidPrototypeSuffixes":list(PROTO),"entries":rows,
     }

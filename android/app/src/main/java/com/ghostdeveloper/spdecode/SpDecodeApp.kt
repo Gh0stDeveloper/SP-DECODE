@@ -4,6 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
@@ -63,6 +65,7 @@ fun SpDecodeApp(
     onExternalLink:(String)->Unit,
     onSelect:(DecodeView)->Unit,
     onClear:()->Unit,
+    onDeleteSelected:(Set<String>)->Unit,
     onDismissError:()->Unit
 ){
     var dialog by remember{mutableStateOf<String?>(null)}
@@ -83,7 +86,7 @@ fun SpDecodeApp(
                 when(activeTab) {
                     0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
                         onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect)
-                    1->HistoryScreen(session,onSelect,onClear,onImportMultiple)
+                    1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple)
                     2->FormatsScreen()
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
                         onLanguage,onMaskCredentials,onClear,onExternalLink)
@@ -251,82 +254,204 @@ private fun HomeScreen(
 }
 
 @Composable
-private fun HistoryScreen(session:List<DecodeView>,onSelect:(DecodeView)->Unit,
-                          onClear:()->Unit,onImportMultiple:()->Unit) {
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-        .padding(20.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
-        Text(stringResource(R.string.history),fontSize=24.sp,fontWeight=FontWeight.Bold)
-        Text(stringResource(R.string.session_only),color=Secondary,fontSize=13.sp)
-        if(session.isEmpty()){
-            CardText(stringResource(R.string.empty_history))
-        }else{
-            session.forEach{item->
-                Surface(
-                    color=Panel,shape=RoundedCornerShape(14.dp),
-                    modifier=Modifier.fillMaxWidth().clickable {onSelect(item)}
-                ){
-                    Row(Modifier.padding(16.dp),verticalAlignment=Alignment.CenterVertically){
-                        Icon(Icons.Outlined.InsertDriveFile,null,tint=White)
-                        Spacer(Modifier.width(12.dp))
-                        Column(Modifier.weight(1f)){
-                            Text(item.filename,color=White,maxLines=1,
-                                overflow=TextOverflow.Ellipsis)
-                            Text(item.extension.uppercase()+" · "+
-                                stringResource(R.string.experimental),
-                                color=Secondary,fontSize=12.sp)
-                        }
-                        Icon(Icons.Outlined.KeyboardArrowRight,null,tint=Secondary)
+private fun HistoryScreen(
+    session: List<DecodeView>,
+    onSelect: (DecodeView) -> Unit,
+    onDeleteSelected: (Set<String>) -> Unit,
+    onDeleteAll: () -> Unit,
+    onImportMultiple: () -> Unit,
+) {
+    var selecting by remember { mutableStateOf(false) }
+    val selected = remember { mutableStateListOf<String>() }
+    var deletion by remember { mutableStateOf<Set<String>?>(null) }
+    var deletingAll by remember { mutableStateOf(false) }
+    LaunchedEffect(session.map { it.id }) {
+        selected.retainAll(session.map { it.id }.toSet())
+        if (session.isEmpty()) selecting = false
+    }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(13.dp),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
+    ) {
+        item {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(stringResource(R.string.history), color = White,
+                    fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f))
+                if (session.isNotEmpty()) {
+                    TextButton(onClick = {
+                        selecting = !selecting
+                        selected.clear()
+                    }) {
+                        Text(stringResource(if (selecting) R.string.cancel
+                            else R.string.history_select))
                     }
                 }
             }
-            OutlinedButton(onClick=onClear){
-                Icon(Icons.Outlined.DeleteOutline,null)
-                Spacer(Modifier.width(8.dp))
-                Text(stringResource(R.string.delete_session))
+        }
+        item { Text(stringResource(R.string.session_only), color = Secondary, fontSize = 13.sp) }
+        if (session.isEmpty()) {
+            item { CardText(stringResource(R.string.empty_history)) }
+        } else {
+            if (selecting) item {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = {
+                        if (selected.size == session.size) selected.clear()
+                        else {
+                            selected.clear()
+                            selected.addAll(session.map { it.id })
+                        }
+                    }) {
+                        Text(stringResource(if (selected.size == session.size)
+                            R.string.history_deselect_all else R.string.history_select_all))
+                    }
+                    Spacer(Modifier.weight(1f))
+                    Text(stringResource(R.string.history_selected_count, selected.size),
+                        color = Secondary, fontSize = 12.sp)
+                }
+            }
+            items(session, key = { it.id }) { entry ->
+                val checked = entry.id in selected
+                Surface(
+                    color = Panel, shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().clickable {
+                        if (selecting) {
+                            if (checked) selected.remove(entry.id) else selected.add(entry.id)
+                        } else onSelect(entry)
+                    },
+                ) {
+                    Row(Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        if (selecting) {
+                            Checkbox(checked = checked, onCheckedChange = {
+                                if (it) { if (!checked) selected.add(entry.id) }
+                                else selected.remove(entry.id)
+                            })
+                        } else Icon(Icons.Outlined.InsertDriveFile, null, tint = White)
+                        Spacer(Modifier.width(10.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(entry.filename, color = White, maxLines = 1,
+                                overflow = TextOverflow.Ellipsis)
+                            Text("." + entry.extension + " · " +
+                                stringResource(R.string.experimental),
+                                color = Secondary, fontSize = 12.sp)
+                        }
+                        if (!selecting) {
+                            IconButton(onClick = {
+                                deletingAll = false
+                                deletion = setOf(entry.id)
+                            }) {
+                                Icon(Icons.Outlined.DeleteOutline,
+                                    stringResource(R.string.history_delete_one), tint = Secondary)
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                if (selecting) {
+                    Button(onClick = {
+                        deletingAll = false
+                        deletion = selected.toSet()
+                    },
+                        enabled = selected.isNotEmpty(),
+                        modifier = Modifier.fillMaxWidth()) {
+                        Icon(Icons.Outlined.DeleteOutline, null)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.history_delete_selected))
+                    }
+                } else OutlinedButton(onClick = {
+                    deletion = session.map { it.id }.toSet()
+                    deletingAll = true
+                }) {
+                    Icon(Icons.Outlined.DeleteOutline, null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.delete_session))
+                }
             }
         }
-        OutlinedButton(onClick=onImportMultiple){
-            Icon(Icons.Outlined.FileUpload,null)
-            Spacer(Modifier.width(8.dp))
-            Text(stringResource(R.string.select_file))
+        item {
+            OutlinedButton(onClick = onImportMultiple) {
+                Icon(Icons.Outlined.FileUpload, null)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.select_file))
+            }
         }
     }
+    if (deletion != null) AlertDialog(
+        onDismissRequest = { deletion = null; deletingAll = false },
+        title = { Text(stringResource(R.string.clear_confirm_title)) },
+        text = { Text(stringResource(R.string.history_delete_confirm, deletion!!.size)) },
+        confirmButton = {
+            TextButton(onClick = {
+                val ids = deletion.orEmpty()
+                deletion = null
+                selected.clear()
+                selecting = false
+                if (deletingAll) onDeleteAll()
+                else if (ids.isNotEmpty()) onDeleteSelected(ids)
+                deletingAll = false
+            }) { Text(stringResource(R.string.history_delete_selected)) }
+        },
+        dismissButton = { TextButton(onClick = { deletion = null; deletingAll = false }) {
+            Text(stringResource(R.string.cancel))
+        } },
+        containerColor = Panel,
+    )
 }
+
 @Composable
-private fun FormatsScreen(){
-    val context=LocalContext.current
-    val formats=remember(context){AndroidDecoderCatalog.read(context)}
-    var query by rememberSaveable{mutableStateOf("")}
-    val visible=remember(query,formats){
-        formats.filter{query.isBlank()||it.suffix.contains(query.trim(),ignoreCase=true)}
+private fun FormatsScreen() {
+    val context = LocalContext.current
+    val formats = remember(context) { AndroidDecoderCatalog.read(context) }
+    var query by rememberSaveable { mutableStateOf("") }
+    val groups = remember(query, formats) {
+        formats.groupBy { it.appName }.toList()
+            .filter { (name, entries) ->
+                query.isBlank() || name.contains(query.trim(), ignoreCase = true) ||
+                    entries.any { it.suffix.contains(query.trim(), ignoreCase = true) }
+            }
+            .sortedBy { it.first.lowercase(java.util.Locale.ROOT) }
     }
-    Column(Modifier.fillMaxSize().padding(horizontal=20.dp,vertical=12.dp)){
-        Text(stringResource(R.string.formats),fontSize=24.sp,fontWeight=FontWeight.Bold)
+    Column(Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp)) {
+        Text(stringResource(R.string.formats), fontSize = 24.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(8.dp))
-        Text(stringResource(R.string.catalog_note),fontSize=13.sp,
-            color=Secondary,lineHeight=20.sp)
+        Text(stringResource(R.string.catalog_note), fontSize = 13.sp,
+            color = Secondary, lineHeight = 20.sp)
         Spacer(Modifier.height(14.dp))
-        OutlinedTextField(value=query,onValueChange={query=it},
-            label={Text(stringResource(R.string.search_formats))},
-            leadingIcon={Icon(Icons.Outlined.Search,null)},
-            singleLine=true,modifier=Modifier.fillMaxWidth(),
-            shape=RoundedCornerShape(13.dp))
+        OutlinedTextField(value = query, onValueChange = { query = it },
+            label = { Text(stringResource(R.string.search_formats)) },
+            leadingIcon = { Icon(Icons.Outlined.Search, null) },
+            singleLine = true, modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(13.dp))
         Spacer(Modifier.height(8.dp))
-        androidx.compose.foundation.lazy.LazyColumn(
-            modifier=Modifier.fillMaxWidth(),
-            verticalArrangement=Arrangement.spacedBy(3.dp),
-            contentPadding=PaddingValues(bottom=20.dp)
-        ){
-            items(visible.size){i->
-                val f=visible[i]
-                Row(Modifier.fillMaxWidth().padding(vertical=10.dp,horizontal=4.dp),
-                    verticalAlignment=Alignment.CenterVertically){
-                    Icon(Icons.Outlined.Description,null,tint=Secondary)
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(3.dp),
+            contentPadding = PaddingValues(bottom = 20.dp),
+        ) {
+            items(groups, key = { it.first }) { (appName, extensions) ->
+                Row(Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Outlined.Description, null, tint = Secondary)
                     Spacer(Modifier.width(13.dp))
-                    Text("."+f.suffix,color=White,fontSize=16.sp,modifier=Modifier.weight(1f))
-                    Text(stringResource(R.string.experimental),color=Amber,fontSize=12.sp)
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                        Text(appName, color = White, fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold)
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            extensions.sortedBy { it.suffix }.forEach { ext ->
+                                Text("." + ext.suffix, color = White, fontSize = 12.sp,
+                                    modifier = Modifier.background(Raised,
+                                        RoundedCornerShape(7.dp))
+                                        .padding(horizontal = 9.dp, vertical = 5.dp))
+                            }
+                        }
+                    }
+                    Spacer(Modifier.width(5.dp))
+                    Text(stringResource(R.string.experimental), color = Amber, fontSize = 11.sp)
                 }
-                HorizontalDivider(color=Outline)
+                HorizontalDivider(color = Outline)
             }
         }
     }
