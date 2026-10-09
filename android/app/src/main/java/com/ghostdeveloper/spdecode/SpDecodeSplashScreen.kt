@@ -56,7 +56,7 @@ fun SpDecodeSplashScreen(){
             color=Color(0xFFABABAB),fontSize=12.sp,
             textAlign=TextAlign.Center,
             modifier=Modifier.align(Alignment.BottomCenter)
-                .padding(horizontal=20.dp,bottom=30.dp),
+                .padding(start=20.dp,end=20.dp,bottom=30.dp),
         )
     }
 }
