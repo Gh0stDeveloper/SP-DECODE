@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.13.0",
+  "documentationVersion": "1.14.1",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -40,7 +40,7 @@
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
         "A.2.3": "synthetic_linux_golden_complete_60_cases_59_of_59_vendor_and_android_pending",
-        "A.2.4": "in_progress_23_android_synthetic_goldens_passed_37_unported_pending_real_exporter_arm64_16k"
+        "A.2.4": "in_progress_38_android_synthetic_goldens_passed_22_unported_real_exporter_arm64_pending"
       }
     },
     "B": {
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Port remaining 37 distinct registered suffixes in ten-format batches with per-format golden tests; production UI/SAF and arm64/16KiB/real-exporter certification remain open.",
+  "nextAction": "Finish CI on final docs/asset integrity test, merge PR #19 if success; then handle 22 remaining suffixes and vendor/physical verification.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": true,
   "notes": "Planning only. No real Android decoder tested.",
@@ -357,9 +357,9 @@
       "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/pull/14"
     },
     "a24": {
-      "branch": "feat/android-a24-batch20-native-ports",
+      "branch": "feat/android-a24-batch15-native-ports",
       "pr": "pending",
-      "state": "23_synthetic_vectors_passed_api35_x86_64_22_prototype_suffixes_37_unported",
+      "state": "38_synthetic_vectors_passed_api35_x86_64_37_prototype_suffixes_22_unported",
       "androidPrototypePath": "android/",
       "referenceCorpusCases": 60,
       "referenceRegisteredSuffixes": 59,
@@ -385,7 +385,22 @@
         "pb",
         "aro",
         "ipt",
-        "gold"
+        "gold",
+        "agn",
+        "cly",
+        "fɴ",
+        "jvc",
+        "jvi",
+        "v2i",
+        "sksrv.png",
+        "xscks",
+        "mrc",
+        "mtl",
+        "jez",
+        "hrt",
+        "ziv",
+        "epro",
+        "npv2"
       ],
       "instrumentedCandidateCaseIds": [
         "ev2ray-plain",
@@ -410,7 +425,22 @@
         "batch6-pb",
         "aro-minus18",
         "batch6-ipt",
-        "batch7-gold"
+        "batch7-gold",
+        "multides-agn",
+        "multides-cly",
+        "multides-fɴ",
+        "multides-jvc",
+        "multides-jvi",
+        "multides-v2i",
+        "sksrv-sksrv-png",
+        "xscks-aescbc",
+        "batch5-mrc",
+        "batch5-mtl",
+        "batch5-jez",
+        "batch5-hrt",
+        "batch6-ziv",
+        "batch7-epro",
+        "batch7-npv2"
       ],
       "instrumentedPassedOnDevice": [
         "ev2ray-plain",
@@ -436,15 +466,16 @@
       "offlineSecurity": "manifest has no INTERNET, ACCESS_NETWORK_STATE or legacy storage permissions; emulator check pending",
       "whiteboxSecurity": "restricted data-only pickle with bounded decompression; global/REDUCE opcodes rejected and Linux regression checks",
       "nodePhpPortability": "not_started",
-      "remainingNativeSuffixes": 37,
-      "note": "31/31 instrumented tests passed Android API35 x86_64; Linux pass. 22 prototype suffixes and 37 unported. 0 verified on real exporters, arm64 or 16KiB.",
+      "remainingNativeSuffixes": 22,
+      "note": "47/47 Android API35 x86_64 tests green, Linux+Gradle success on source before new source-asset integrity test and docs. No real-exporter, arm64 or 16KiB certification. ePro/NPV2 variant coverage remains limited.",
       "emulatorEvidence": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37868719536",
-      "lastValidatedSourceSha": "4982af1ee273db343235f20a584c81867086d225",
+      "lastValidatedSourceSha": "0c6c5476ba8bf7c784976f3e2180aacb9876d875",
       "instrumentedTestCount": 4,
       "experimentalHostApkCompiled": true,
       "catalog59SuffixesGenerated": true,
       "emulatorBatch10Evidence": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37872655497",
-      "emulatorBatch20Evidence": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37876235386"
+      "emulatorBatch20Evidence": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37876235386",
+      "emulatorBatch15Evidence": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37881078999"
     }
   },
   "lastVerifiedCi": [

@@ -139,7 +139,7 @@ class Batch10InstrumentedTest {
     fun missingFormatsAndCompositeSuffixesNeverFallback() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val sksrv = asset("sksrv-sksrv.sksrv")
-        assertNull(AndroidOfflineDecoderRouter.decode(context, "sample.sksrv.png", sksrv))
+        assertArrayEquals(asset("sksrv-sksrv-png.txt"), AndroidOfflineDecoderRouter.decode(context, "sample.sksrv.png", sksrv)?.toByteArray(Charsets.UTF_8))
         assertNull(AndroidOfflineDecoderRouter.decode(context, "sample.random", sksrv))
         assertNull(AndroidOfflineDecoderRouter.decode(context, "sample.mij", sksrv))
         assertNull(AndroidOfflineDecoderRouter.decode(context, "sample.phc", ByteArray(1024 * 1024 + 1)))
