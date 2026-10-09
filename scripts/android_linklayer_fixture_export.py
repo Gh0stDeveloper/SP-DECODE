@@ -23,6 +23,7 @@ def export(directory: Path) -> None:
             json.dumps(decode(data), ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
+    (directory / "linklayer-ver6.gob").write_bytes(LinkLayerTests.gob)
     (directory / "linklayer-ver6-truncated.lnk").write_bytes(LinkLayerTests.fixture[:354])
     broken = bytearray(LinkLayerTests.fixture)
     broken[0:4] = b"VER7"
