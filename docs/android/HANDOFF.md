@@ -126,3 +126,6 @@ una positiva Android por nuevo formato + negativos y regresión del bot.
 **No habilitar en UI** hasta integrar SAF/flujo de importación y recibir
 resultados de CI emulador. `.sksrv.png` permanece separado y sin implementar.
 Los 59 goldens Linux son sintéticos, 0 certificados en Android físico.
+
+- Evidencia de 10 ports Android en emulador, CI inicial: [run 37872655497](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37872655497), jobs Linux y Android `success`.
+- `AndroidOfflineDecoderRouter` enlaza cada sufijo a su propio método; sin fallback de claves. Nuevos tests en PR pendientes de su propia validación CI.
