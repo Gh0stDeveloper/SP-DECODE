@@ -206,3 +206,23 @@ Branch: `feat/android-a24-final-remainder-batch`.
 
 The new 11 format routes have 11 SHA256-frozen synthetic Linux goldens. Combined catalog:
 48 experimental format routes, 49 reference vectors, 11 remaining unported, **0** certified against live vendor exporters. These counts describe **candidates pending CI** until Android instrumentation passes. API35 x86_64 does not constitute ARM64/16KiB proof.
+
+### Final increment: four more audited native routes
+
+- `.ht`/`.htb`: the 12-round proprietary inverse substitution,
+  permutation and chained XOR algorithms, **four original source table
+  variants** snapshotted offline from `HTTPTWEAK.py`. Bounded zlib
+  decompression. No shortcut through AES, no fallback to unrelated keys.
+- `.hat`: original AES-128-ECB, historical `hat.js` profile mapping
+  and unchanged `nodehat.json` label snapshot.
+- `.ehil`: original `HTTPINJECTORLITE.py` 5.4.0 independent
+  double AES-CBC layers with key and IV candidates, damaged JSON
+  first-block repair and inner field XOR decoding. Not combined with
+  EHI's different algorithm.
+- `test_android_a24_final_source_assets.py` prevents accidental drift
+  of embedded original table/label assets.
+
+This PR now holds **15 new suffix routes**, 53 SHA-pinned synthetic goldens,
+**52 Android candidates / 59 registered**, seven not yet ported. This
+describes experimental work pending the final emulator run, **not
+compatibility certification**.
