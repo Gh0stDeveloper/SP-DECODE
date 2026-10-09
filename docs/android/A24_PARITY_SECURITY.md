@@ -58,3 +58,25 @@ gradle --no-daemon :app:connectedDebugAndroidTest
 ## 5. Primer resultado instrumentado confirmado (PR #15)
 
 La ejecución [GitHub Actions #37868719536](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37868719536) compiló el host con Gradle8.11.1/AGP8.9.2 y arrancó un emulador Android API35 **x86_64**. Resultado: **4 pruebas instrumentadas aprobadas**, incluyendo raw UTF-8 exacto de e‑V2Ray plano y AES128, corrupción y permisos de red/almacenamiento. La suite Linux independiente también pasó. Este resultado certifica solamente los **dos vectores sintéticos**; no es una prueba en arm64 ni con exportadores externos. El nuevo catálogo generado registra 59 sufijos, pero mantiene **58 sin motor Android y 0 certificados**. La matriz se actualizará con CI definitivo del PR y de `main` tras integración.
+
+
+## 6. Incremento siguiente: TLS Tunnel AES-GCM nativo (PR pendiente)
+
+La rama `feat/android-a24-tls-aead-parity` incorpora el adaptador nativo
+`TlsReferencePort`, sin Chaquopy ni servicios de red. Reproduce el
+contenedor sintético `tls-aesgcm` con clave histórica de referencia,
+reconstrucción de nonce de 36 bytes, AES-256-GCM **autenticado** y los campos
+JSON ordenados sin traducir. Un tag incorrecto se rechaza sin producir texto
+parcial. El tamaño de entrada se limita a 1 MiB.
+
+La preparación `scripts/android_a24_prepare.py` genera ahora **tres**
+referencias con SHA-256 congelado: dos variantes e-V2Ray y un caso TLS.
+Hay pruebas instrumentadas de comparación byte por byte para TLS y rechazo de
+datos corruptos / input sobredimensionado. El catálogo contempla
+`v2` (2 muestras), `tls` (1 muestra), **57 sin port** y **0 certificados**.
+
+**Evidencia pendiente en este PR:** ejecución del job Android real sobre el
+nuevo commit; la aprobación del emulador será exclusiva para las muestras
+sintéticas. La validación sobre arm64, 16 KiB y exportadores actuales sigue
+sin estar realizada. El port TLS se añadió como referencia experimental y no
+se habilitó una UI de importación al usuario.
