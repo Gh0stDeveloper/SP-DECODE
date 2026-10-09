@@ -129,3 +129,11 @@ Los 59 goldens Linux son sintéticos, 0 certificados en Android físico.
 
 - Evidencia de 10 ports Android en emulador, CI inicial: [run 37872655497](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37872655497), jobs Linux y Android `success`.
 - `AndroidOfflineDecoderRouter` enlaza cada sufijo a su propio método; sin fallback de claves. Nuevos tests en PR pendientes de su propia validación CI.
+
+## Continuidad A.2.4 — lote adicional batch20
+
+Rama `feat/android-a24-batch20-native-ports`; diez Kotlin ports:
+at, nm, ost, sbr, pcx, nt, pb, aro, ipt, gold. Nuevo
+`Batch20InstrumentedTest` compara cada salida byte por byte y el enrutador
+estricto; 30 pruebas negativas. Ajustar las fallas CI **antes de fusionar**.
+Al aprobar: 22 prototipos, 37 sin port, 0 formatos certificados por exportador.
