@@ -146,3 +146,30 @@ se corrigieron y se revalidaron en esta ejecución.
 contenedor. Esas debilidades pertenecen a los formatos originales: el
 lector Android debe mantener estas rutas desconectadas, con límites y
 sin registrar secretos, sin atribuirles garantías de autenticación.
+
+## 9. Tanda Android A.2.4 — quince sufijos nativos (PR en revisión)
+
+Extensiones: `.agn`, `.cly`, `.fɴ`, `.jvc`, `.jvi`, `.v2i`,
+`.sksrv.png`, `.xscks`, `.mrc`, `.mtl`, `.jez`, `.hrt`,
+`.ziv`, `.epro`, `.npv2`.
+
+- **MultiDES:** seis dispatchers de extensión independientes usan la *misma secuencia de claves*
+  del script `multides.py`; éste no diferencia realmente las claves por extensión.
+  Los seis golden verifican el **primer miembro** de esa secuencia, no variantes
+  actuales de cada proveedor. DES-ECB no autentica los datos.
+- `.sksrv.png` reutiliza el motor de `.sksrv` porque `decoders.json` apunta
+  ambos al mismo script; detección prioriza el sufijo compuesto.
+- `.xscks`: AES-CBC con la contraseña Base64 literal del código original y SHA256.
+- `.mrc`/`.mtl`: AES-GCM + PBKDF2 con clave de su propio script y filtro XML,
+  manteniendo el formato histórico de cada salida.
+- `.jez`/`.hrt`: AES-CBC + SHA256, traducción del comportamiento PHP, con
+  filtros de impresión independientes.
+- `.ziv`: los dos passwords de ZIV únicamente, autenticación AES-GCM y campos XML.
+- `.epro`/`.npv2`: ports de `lib/methods/eProDecryptor.lib.js` y
+  `npv2Decryptor.lib.js`, con snapshots offline de las listas de claves fuente
+  y el layout inglés original, sin runtime Node, escritura de config ni Internet.
+
+Preparación de **38 vectores SHA256 sintéticos para 37 sufijos experimentales**;
+**22 sin portar**; 59 inventariados; **0 certificados de exportador actual**.
+La prueba Android nueva incluye 15 comparaciones completas, rutas deterministas
+y 45 entradas rechazadas. Pendiente CI API35 x86_64 y ARM64 físico/16KiB.
