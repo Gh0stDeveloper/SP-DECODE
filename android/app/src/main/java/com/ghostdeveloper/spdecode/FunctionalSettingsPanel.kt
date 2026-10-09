@@ -130,7 +130,7 @@ fun FunctionalSettingsPanel(
                 "https://github.com/Gh0stDeveloper/SP-DECODE/issues",onExternalLink)
         }
         Text(stringResource(R.string.about_text),color=MutedText,fontSize=12.sp)
-        Text("SP-DECODE · 0.3.2-alpha",color=MutedText,fontSize=12.sp,
+        Text("SP-DECODE · 0.3.3-alpha",color=MutedText,fontSize=12.sp,
             modifier=Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(6.dp))
     }
