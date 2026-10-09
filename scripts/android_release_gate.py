@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed release gate: a green synthetic emulator run is not stable GO."""
+"""Fail-closed release gates: public signed preview does not imply stable GO."""
 from __future__ import annotations
 import argparse
 import json
@@ -23,6 +23,19 @@ def check(evidence: dict, mode: str, version: str) -> list[str]:
             problems.append("candidate must use a prerelease version")
         if evidence.get("candidateVersion") != version:
             problems.append("candidateVersion does not match requested build")
+        return problems
+    if mode == "public-preview":
+        # Owner-authorized public distribution of the production-signed APK.
+        # The release MUST remain a GitHub prerelease and must never imply
+        # complete vendor/device certification or change the stable NO-GO.
+        if not re.fullmatch(r"[1-9][0-9]*\.[0-9]+\.[0-9]+", version):
+            problems.append("public preview requires stable APK versionName")
+        if evidence.get("stableVersion") != version:
+            problems.append("stableVersion does not match public preview APK")
+        if evidence.get("decision") != "NO-GO":
+            problems.append("preview channel only applies while stable release is NO-GO")
+        if evidence.get("ownerApproval") is not True or evidence.get("publicPreviewApproval") is not True:
+            problems.append("explicit owner public-preview approval required")
         return problems
     if mode != "stable":
         return ["unknown release mode"]
@@ -52,7 +65,7 @@ def check(evidence: dict, mode: str, version: str) -> list[str]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("candidate", "stable"), required=True)
+    parser.add_argument("--mode", choices=("candidate", "public-preview", "stable"), required=True)
     parser.add_argument("--version", required=True)
     parser.add_argument("--file", type=Path, default=SOURCE)
     opts = parser.parse_args()

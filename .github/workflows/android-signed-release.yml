@@ -238,6 +238,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       approved: ${{ steps.check.outputs.approved }}
+      preview_allowed: ${{ steps.check.outputs.preview_allowed }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -250,9 +251,16 @@ jobs:
           set -euo pipefail
           if python scripts/android_release_gate.py --mode stable --version "$VERSION"; then
             echo "approved=true" >> "$GITHUB_OUTPUT"
+            echo "preview_allowed=false" >> "$GITHUB_OUTPUT"
           else
             echo "approved=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::Signed production APK is available as an artifact; public release stays blocked until GO evidence is complete."
+            if python scripts/android_release_gate.py --mode public-preview --version "$VERSION"; then
+              echo "preview_allowed=true" >> "$GITHUB_OUTPUT"
+              echo "::notice::Public signed prerelease authorized; verified stable release remains NO-GO."
+            else
+              echo "preview_allowed=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::All public GitHub Releases remain blocked pending explicit owner approval."
+            fi
           fi
 
   publish-stable:
@@ -284,3 +292,52 @@ jobs:
             --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" \
             --title "SP-DECODE Android v$VERSION" --latest \
             --notes "Production-signed APK using the permanent repository keystore, independently verified APK Signature Schemes V1/V2/V3. Release checks and evidence: release/android-readiness.json."
+
+  publish-signed-preview:
+    name: Publish public production-signed prerelease (stable GO remains separate)
+    needs: [preflight, sign-production, publication-gate]
+    if: needs['publication-gate'].outputs.preview_allowed == 'true' && needs['publication-gate'].outputs.approved != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: SP-DECODE-v${{ needs.preflight.outputs.version }}-PRODUCTION-SIGNED
+          path: dist
+      - name: Verify release assets and publish signed public preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+          SOURCE_SHA: ${{ needs.preflight.outputs.source_sha }}
+        run: |
+          set -euo pipefail
+          TAG="v${VERSION}-rc.1"
+          APK="dist/SP-DECODE-v${VERSION}-production-signed.apk"
+          test -s "$APK"
+          test -s dist/SHA256SUMS.txt
+          test -s dist/SIGNATURE_VERIFICATION.txt
+          (cd dist && sha256sum --check SHA256SUMS.txt)
+          grep -Fx "Source commit: $SOURCE_SHA" dist/SIGNATURE_VERIFICATION.txt
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::notice::Public prerelease $TAG already exists; no tag or asset will be overwritten"
+            exit 0
+          fi
+          cat > "$RUNNER_TEMP/release-preview-notes.md" <<'NOTES'
+          ## SP-DECODE Android — Signed Release Preview
+
+          This is the real **release APK signed with the permanent production keystore** from GitHub Secrets, not a debug or temporary-key build.
+
+          **QA status: public prerelease.** The stable v1.0.0 publication gate remains **NO-GO** because documented evidence is incomplete. Physical ARM64, 16 KiB, real-file and batch results were reported by the project owner, but independent reproducible reports, accessibility/performance and signed-install/upgrade evidence have not all been recorded. Do not treat this prerelease as a fully verified stable build.
+
+          Assets: APK, `SHA256SUMS.txt` for integrity checking, and `SIGNATURE_VERIFICATION.txt` with V1/V2/V3 checks and source commit.
+
+          **Updating from debug:** A debug-signed APK has a different signing certificate and cannot update in place. Uninstalling it may delete locally encrypted history. Export results you want to retain first.
+
+          Once all stable release requirements are met and the audited status is changed to GO, the workflow can publish `v1.0.0` separately.
+          NOTES
+          gh release create "$TAG" \
+            "$APK" dist/SHA256SUMS.txt dist/SIGNATURE_VERIFICATION.txt \
+            --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" \
+            --title "SP-DECODE Android v${VERSION} - Signed Release Preview" \
+            --prerelease --notes-file "$RUNNER_TEMP/release-preview-notes.md"

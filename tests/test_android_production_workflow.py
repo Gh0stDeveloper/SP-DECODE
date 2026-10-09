@@ -68,5 +68,21 @@ class AndroidProductionWorkflowTest(unittest.TestCase):
         self.assertIn("already exists; no tag/asset will be overwritten", w)
 
 
+    def test_public_signed_preview_never_bypasses_stable_gate(self):
+        w = self.workflow
+        self.assertIn('preview_allowed: ${{ steps.check.outputs.preview_allowed }}', w)
+        self.assertIn('python scripts/android_release_gate.py --mode public-preview', w)
+        self.assertIn("needs['publication-gate'].outputs.preview_allowed == 'true'", w)
+        self.assertIn("needs['publication-gate'].outputs.approved != 'true'", w)
+        self.assertIn("publish-signed-preview:", w)
+        self.assertIn("--prerelease --notes-file", w)
+        self.assertIn('TAG="v${VERSION}-rc.1"', w)
+        self.assertIn("sha256sum --check SHA256SUMS.txt", w)
+        self.assertIn('grep -Fx "Source commit: $SOURCE_SHA"', w)
+        self.assertIn("public prerelease", w.lower())
+        self.assertIn("stable release remains", w.lower())
+
+
+
 if __name__ == "__main__":
     unittest.main()

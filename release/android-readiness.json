@@ -38,5 +38,6 @@
       "report": ""
     }
   },
-  "notes": "The owner explicitly requested the definitive Android 1.0.0 production APK signed only with the permanent GitHub Secrets keystore and automatic signing after successful main CI (2026-10-09). Owner previously reported successful physical ARM64/16KiB, genuine files, batches and personal audit. These are user attestations, not independent evidence. Signed production APK build is automatic, but public GitHub Release remains NO-GO until a successful permanent-key workflow signature report, installation/upgrade test, and remaining documented evidence are verified. Never create ephemeral/debug signing keys."
+  "notes": "The owner explicitly requested the definitive Android 1.0.0 production APK signed only with the permanent GitHub Secrets keystore and automatic signing after successful main CI (2026-10-09). Owner previously reported successful physical ARM64/16KiB, genuine files, batches and personal audit. These are user attestations, not independent evidence. Signed production APK build is automatic, but public GitHub Release remains NO-GO until a successful permanent-key workflow signature report, installation/upgrade test, and remaining documented evidence are verified. Never create ephemeral/debug signing keys. On 2026-10-09 the owner requested immediate public GitHub Releases distribution of the permanently signed release APK; explicitly authorize a separately labeled public prerelease while keeping stable NO-GO and evidence unchanged.",
+  "publicPreviewApproval": true
 }
