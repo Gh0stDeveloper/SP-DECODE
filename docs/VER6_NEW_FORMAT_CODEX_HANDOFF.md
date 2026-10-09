@@ -5,11 +5,13 @@
 **Repositorio:** https://github.com/Gh0stDeveloper/SP-DECODE  
 **Destinatario:** nueva sesión de Codex con acceso al repositorio y capacidad de ejecutar pruebas.
 
+**Alcance prioritario confirmado por el propietario:** entregar **solo un script Python funcional de descifrado para el bot Telegram SP-DECODE**. El port Kotlin/Android, cambios de interfaz, APK, firma y Releases quedan **pospuestos a otra sesión**. El propietario ya obtuvo scripts con Codex y Sol, y desea **economizar tokens de Sol**: concentrarse en analizar la aplicación y el archivo, implementar el script y probarlo; evitar informes repetitivos, exploraciones innecesarias y tareas Android adelantadas, sin sacrificar pruebas ni exactitud.
+
 > **ACLARACIÓN CRÍTICA:** El `VER6` de este encargo **NO pertenece a SocksIP ni a la extensión `.sip`**. El propietario enviará una aplicación distinta y un archivo de otro formato en el próximo chat. No asumir que `VER6` es una cabecera, versión o algoritmo compartido. No reutilizar claves, offsets, cifrados ni transformaciones de SocksIP, HC o cualquier otro decodificador sin evidencia directa del **nuevo** par aplicación–archivo.
 
 ## 1. Objetivo de la nueva sesión
 
-Analizar, con evidencia reproducible, cómo la aplicación original **importa y procesa** el nuevo archivo de configuración; determinar su formato y las etapas relevantes; desarrollar un decodificador compatible para SP-DECODE (primero Python/bot y después Kotlin/Android si se logra comprobar la compatibilidad); y conservar intactos los decodificadores de versiones y formatos existentes.
+Analizar, con evidencia reproducible, cómo la aplicación original **importa y procesa** el nuevo archivo de configuración; determinar su formato y las etapas relevantes; desarrollar un **decodificador Python compatible con el bot de SP-DECODE** (único entregable funcional exigido ahora); y conservar intactos los decodificadores de versiones y formatos existentes.
 
 **No fabricar compatibilidad:** reconocer extensiones, cabeceras o cadenas como `VER6` no prueba la decodificación. Si no se reproduce la importación original de manera verificable, documentar el punto alcanzado y continuar el análisis, sin marcar el soporte como confirmado.
 
@@ -48,7 +50,9 @@ El nuevo decodificador del bot debe ser **no interactivo**, aceptar una ruta de 
 
 Si la extensión ya existe, añadir una ruta de versión **dentro de su decodificador** conservando el algoritmo viejo. Si es completamente nueva, registrarla con un nombre inequívoco, ruta real y runtime válido.
 
-### 4.2 Aplicación Android / Kotlin
+### 4.2 Aplicación Android / Kotlin — referencia para otro chat; fuera del alcance actual
+
+**No implementar ni compilar Android en esta sesión.** Estos archivos se enumeran solo para que, posteriormente, el propietario pueda integrar o portar el decoder Python al motor Kotlin offline. Esa adaptación no es automática.
 
 - App offline con Kotlin + Jetpack Compose; importación mediante Storage Access Framework, resultados completos y almacenamiento local cifrado del historial.
 - Despacho: `android/app/src/main/java/com/ghostdeveloper/spdecode/parity/AndroidOfflineDecoderRouter.kt`.
@@ -58,7 +62,7 @@ Si la extensión ya existe, añadir una ruta de versión **dentro de su decodifi
 - Pruebas del catálogo: `tests/test_android_a24_catalog.py`.
 - UI de resultados: `CompleteResultCard.kt`, `ResultPresentation.kt`, `SpDecodeApp.kt` según requiera el formato.
 
-**Advertencia técnica comprobada:** actualmente hay contadores y aserciones literales de `59` en el generador del catálogo, pruebas y lector Android, además de las etiquetas de CI. Al **añadir** una extensión, actualizar toda la cadena de generación, aserciones y documentación (no únicamente `decoders.json`); al añadir una variante a una extensión existente, mantener el conteo si no cambia el registro. No incrementar cifras de formatos verificados basándose solo en un parser sintético.
+**Nota para integración futura:** hay contadores y aserciones literales de `59` en el catálogo y las pruebas Android. Registrar una extensión nueva en `decoders.json` exigirá adaptar ese catálogo en la fase posterior. **No registrar una extensión nueva en `main` ni fusionar PR experimental ahora** si rompe el catálogo; mantener el script Python probado en una rama separada. No incrementar contadores de formatos verificados sin evidencia.
 
 Android no debe requerir Python, Node, PHP, red, credenciales externas o acceso root para descifrar. No cambiar el diseño de inicio ni deshacer los resultados completos, el historial y el comportamiento offline ya incorporados.
 
@@ -68,7 +72,7 @@ Android no debe requerir Python, Node, PHP, red, credenciales externas o acceso 
 - Workflow de validación: `.github/workflows/validate.yml`, Linux y pruebas instrumentadas Android API 35.
 - Firma de producción con keystore **definitiva en GitHub Secrets**, verificación V1/V2/V3 y archivos SHA-256. **Jamás usar keystore temporal, subir una keystore ni copiar secretos al repositorio.**
 - Puerta estable `GO/NO-GO`: `release/android-readiness.json` y `scripts/android_release_gate.py`.
-- La fusión en `main` puede disparar automáticamente firma y publicación de APK, según la versión y los controles vigentes. **No fusionar trabajo experimental ni reutilizar un tag publicado**. Incrementar `versionCode` y `versionName` solamente cuando el parche esté listo para distribuirse, con validación previa del usuario.
+- La fusión en `main` puede disparar firma y publicación automática de APK. **En este encargo NO fusionar a `main`, NO incrementar `versionCode` ni `versionName`, NO firmar ni publicar APKs**. Entregar solo el motor Python validado en una rama/PR separada.
 
 ## 5. Fases de investigación e implementación
 
