@@ -246,10 +246,14 @@ class MainActivity : ComponentActivity() {
             } catch (_: Exception) {
                 toast(R.string.history_storage_error)
                 // Resync after a partial disk failure, avoiding a false success.
-                val saved = withContext(Dispatchers.IO) { historyStore.load() }
-                recent.clear()
-                recent.addAll(saved)
-                if (result != null && recent.none { it.id == result?.id }) result = null
+                val saved = runCatching {
+                    withContext(Dispatchers.IO) { historyStore.load() }
+                }.getOrNull()
+                if (saved != null) {
+                    recent.clear()
+                    recent.addAll(saved)
+                    if (result != null && recent.none { it.id == result?.id }) result = null
+                }
             }
         }
     }
