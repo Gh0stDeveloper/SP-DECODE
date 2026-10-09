@@ -1,11 +1,13 @@
-# SP-DECODE Android 1.0.0 — firma permanente automática
+# SP-DECODE Android 1.0.1 — firma permanente automática
 
 **Actualizado:** 2026-10-09
 
+Parche de interfaz: fila compacta para importar archivos y abrir el editor de texto bajo demanda, pegado completo sin fragmentos de Telegram y splash de marca visible durante al menos 1,6 s. El lanzamiento firmado original `v1.0.0-rc.1` permanece publicado e inalterado; este parche se distribuye como una nueva pre-release `v1.0.1-rc.1`, con `versionCode = 12`.
+
 ## Compilación y firma de producción
 
-La APK de producción es un `assembleRelease` con `versionName = "1.0.0"`
-y `versionCode = 11`. **No se usa una clave provisional, APK debug ni
+La APK de producción es un `assembleRelease` con `versionName = "1.0.1"`
+y `versionCode = 12`. **No se usa una clave provisional, APK debug ni
 certificado generado en CI.** GitHub Actions toma la misma keystore PKCS#12
 definitiva que el propietario configuró mediante los cuatro Secrets:
 
@@ -33,8 +35,8 @@ actualizaciones compatibles con la misma identidad Android.
    del paquete y versión con `aapt`. Si cualquiera falla, se marca
    **FAILURE** y no se publica una APK.
 6. El artefacto de GitHub Actions se llama
-   `SP-DECODE-v1.0.0-PRODUCTION-SIGNED`. Contiene:
-   - `SP-DECODE-v1.0.0-production-signed.apk`
+   `SP-DECODE-v1.0.1-PRODUCTION-SIGNED`. Contiene:
+   - `SP-DECODE-v1.0.1-production-signed.apk`
    - `SHA256SUMS.txt`
    - `SIGNATURE_VERIFICATION.txt` (SHA-256 público del certificado,
      verificación de esquemas y SHA del commit)
@@ -52,10 +54,10 @@ clave definitiva**, apta para pruebas de instalación y actualización. No
 se debe confundir con la publicación pública en GitHub Releases.
 
 La publicación estable se realiza automáticamente **solo cuando** la
-verificación `scripts/android_release_gate.py --mode stable --version 1.0.0`
+verificación `scripts/android_release_gate.py --mode stable --version 1.0.1`
 aprueba todas las evidencias existentes en
 `release/android-readiness.json`, cuya decisión actual es `NO-GO`.
-El propietario ha aprobado pasar a 1.0.0 y ha declarado pasar pruebas
+El propietario ha aprobado pasar a 1.0.1 y ha declarado pasar pruebas
 ARM64/16 KiB, archivos reales, lotes y auditoría personal; no hay que
 inventar informes externos para cambiar los checks a `verified`.
 La firma y prueba de actualización con la clave definitiva todavía requieren
@@ -65,7 +67,7 @@ en dispositivo de los protocolos nuevos de texto también debe incorporarse.
 Cuando los controles estén completos y el propietario confirme la
 compatibilidad de instalación/actualización, registrar los informes y
 cambiar `decision` a `GO`. El siguiente CI verde de `main` publicará
-v1.0.0 una sola vez, sin sobrescribir tags o binarios ya publicados.
+v1.0.1 una sola vez, sin sobrescribir tags o binarios ya publicados.
 
 ### GitHub Releases: distribución pública del APK firmado
 
@@ -74,8 +76,8 @@ publicar **automáticamente una versión preliminar pública** mientras se
 mantiene el control estricto de estabilidad `NO-GO`. Esta autorización
 es distinta de una auditoría independiente completa.
 
-- Tag publicado automáticamente: `v1.0.0-rc.1` (GitHub **Pre-release**).
-- APK: `SP-DECODE-v1.0.0-production-signed.apk`, compilado mediante
+- Tag publicado automáticamente: `v1.0.1-rc.1` (GitHub **Pre-release**).
+- APK: `SP-DECODE-v1.0.1-production-signed.apk`, compilado mediante
   `assembleRelease` con la **keystore definitiva** de GitHub Secrets.
 - Evidencias adjuntas: `SHA256SUMS.txt` y `SIGNATURE_VERIFICATION.txt`.
 - Condiciones: CI exitoso en el **SHA exacto** de `main`, firmación y
@@ -86,7 +88,7 @@ es distinta de una auditoría independiente completa.
 - El texto público avisa que la certificación independiente de todas las
   variantes y pruebas de instalación/actualización sigue pendiente.
 
-El mismo workflow publicará **`v1.0.0` estable** (sin sufijo) únicamente
+El mismo workflow publicará **`v1.0.1` estable** (sin sufijo) únicamente
 cuando `scripts/android_release_gate.py --mode stable` verifique todas
 las evidencias y la decisión cambie a `GO`. La distribución preliminar
 **no altera** ni sustituye las evidencias pendientes de `release/android-readiness.json`.

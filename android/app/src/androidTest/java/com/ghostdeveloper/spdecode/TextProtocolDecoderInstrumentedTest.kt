@@ -94,26 +94,17 @@ class TextProtocolDecoderInstrumentedTest {
         assertEquals("B",ssh.get("password").asString)
     }
 
-    @Test fun darkAndSscFragmentSessionDoesNotFabricateAResult() {
-        val first=TextMultipartAssembler.next(null,"ssc://aabb",1000)
-        assertNotNull(first)
-        assertEquals(1,first!!.parts)
-        assertNull(TextProtocolDecoder.decode(ctx,first.input))
-        val second=TextMultipartAssembler.next(first," ccddee ",2000)
-        assertEquals(2,second!!.parts)
-        assertEquals("ssc://aabbccddee",second.input.content)
-        assertNull(TextMultipartAssembler.next(second,"chat message",3000))
-        assertNull(TextMultipartAssembler.next(second,"ff",602001))
-        // A long hex chunk also looks like generic bare Base64; the
-        // assembler must prioritize the *existing* SSC session instead.
-        val longHex="ab".repeat(80)
-        val third=TextMultipartAssembler.next(second,longHex,2500)
-        assertNotNull(third)
-        assertEquals(3,third!!.parts)
-        assertTrue(third.input.content.endsWith(longHex))
-        val dark=TextMultipartAssembler.next(null,"dtunnel://abcd+/==",1000)
-        assertNotNull(dark)
-        assertEquals(2,TextMultipartAssembler.next(dark,"efgh",1200)?.parts)
+    @Test fun fullPasteAcceptsWrappedLinksWithoutSessions() {
+        val ssc=TextProtocolDecoder.identify("ssc://aabb\n ccdd ee")
+        assertNotNull(ssc)
+        assertEquals("ssc://aabbccddee",ssc!!.content)
+        assertNull(TextProtocolDecoder.decode(ctx,ssc))
+        val dark=TextProtocolDecoder.identify("dtunnel://abcd+/\n==")
+        assertEquals("dtunnel://abcd+/==",dark?.content)
+        // A continuation alone never attaches to a previous pasted link.
+        assertNull(TextProtocolDecoder.identify("ee ff"))
+        // The app processes each complete paste; Telegram part labels are invalid.
+        assertNull(TextProtocolDecoder.identify("parte 2/2"))
     }
 
     @Test fun negativeTamperedTextNeverReportsSuccess() {

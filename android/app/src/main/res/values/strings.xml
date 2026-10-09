@@ -5,6 +5,7 @@
     <string name="import_title">Import configuration</string>
     <string name="import_detail">Select a compatible file from your device</string>
     <string name="select_file">Select file</string>
+    <string name="home_import_action">Import file</string>
     <string name="offline_status">Local processing · Offline</string>
     <string name="result">Result</string>
     <string name="illustrative">Illustrative example</string>
@@ -123,11 +124,9 @@
     <string name="splash_powered_by">Powered by Ghost Developer</string>
     <string name="text_decode_title">Decode text</string>
     <string name="text_decode_description">Paste a configuration link or encoded text. TLS, VMess, SSC, Dark Tunnel and other supported schemes work fully offline.</string>
-    <string name="text_decode_hint">Paste the text or the next fragment</string>
+    <string name="text_decode_hint">Paste the full link or encoded text</string>
     <string name="text_decode_action">Decode text</string>
-    <string name="text_decode_reset">Discard parts</string>
-    <string name="text_decode_pending">%1$s: %2$d part(s) received. Paste the next fragment and decode again, or discard.</string>
-    <string name="text_decode_private">Locally processed. Incomplete fragments are never saved.</string>
-    <string name="text_decode_invalid">No recognized text protocol, invalid fragment, or size limit exceeded.</string>
+    <string name="text_decode_private">Processed offline. Only successfully decoded results are saved.</string>
+    <string name="text_decode_invalid">Unrecognized text protocol, invalid input or size limit exceeded.</string>
     <string name="text_decode_unsupported">Could not decode this text. It may be incomplete, corrupted or a different cipher version.</string>
 </resources>

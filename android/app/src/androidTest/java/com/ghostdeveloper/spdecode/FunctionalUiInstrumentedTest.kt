@@ -1,6 +1,7 @@
 package com.ghostdeveloper.spdecode
 
 import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -30,13 +31,27 @@ class FunctionalUiInstrumentedTest {
         ui.onNodeWithText("SP-DECODE").assertExists()
         // The last tab is intentionally persistent; navigate explicitly.
         ui.onNodeWithContentDescription(ctx.getString(R.string.home)).performClick()
-        ui.onNodeWithText(ctx.getString(R.string.import_title)).assertExists()
-        ui.onNodeWithText(ctx.getString(R.string.select_file)).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.home_import_action)).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.text_decode_title)).assertExists()
+        // No permanent large text editor on the default home screen.
+        ui.onNodeWithText(ctx.getString(R.string.text_decode_hint)).assertDoesNotExist()
         ui.onNodeWithText(ctx.getString(R.string.illustrative)).assertExists()
         ui.onNodeWithContentDescription(ctx.getString(R.string.home)).assertExists()
         ui.onNodeWithContentDescription(ctx.getString(R.string.history)).assertExists()
         ui.onNodeWithContentDescription(ctx.getString(R.string.formats)).assertExists()
         ui.onNodeWithContentDescription(ctx.getString(R.string.settings)).assertExists()
+    }
+
+    @Test fun textEditorExpandsAndCollapsesWithoutRemovingResultArea(){
+        awaitStartup()
+        val ctx=ui.activity
+        ui.onNodeWithContentDescription(ctx.getString(R.string.home)).performClick()
+        ui.onNodeWithText(ctx.getString(R.string.text_decode_title)).performClick()
+        ui.onNodeWithText(ctx.getString(R.string.text_decode_hint)).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.result)).assertExists()
+        ui.onAllNodesWithText(ctx.getString(R.string.text_decode_title))[0].performClick()
+        ui.onNodeWithText(ctx.getString(R.string.text_decode_hint)).assertDoesNotExist()
+        ui.onNodeWithText(ctx.getString(R.string.result)).assertExists()
     }
 
     @Test fun formatsTabExposesExperimentalSuffixesNotCertified(){
