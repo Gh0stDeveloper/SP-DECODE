@@ -23,7 +23,7 @@ class SettingsEnhancementsInstrumentedTest {
         ui.onNodeWithText("Português (Brasil)").assertExists()
         ui.onNodeWithText("العربية").assertExists()
         ui.onNodeWithText("Ghost Developer · @Gh0stDeveloper").assertExists()
-        ui.onNodeWithText("Repositorio · GitHub").assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.project_repo)).assertExists()
         ui.onNodeWithText(ctx.getString(R.string.mask_passwords_title)).assertExists()
     }
 }
