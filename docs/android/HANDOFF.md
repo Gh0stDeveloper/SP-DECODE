@@ -137,3 +137,11 @@ at, nm, ost, sbr, pcx, nt, pb, aro, ipt, gold. Nuevo
 `Batch20InstrumentedTest` compara cada salida byte por byte y el enrutador
 estricto; 30 pruebas negativas. Ajustar las fallas CI **antes de fusionar**.
 Al aprobar: 22 prototipos, 37 sin port, 0 formatos certificados por exportador.
+
+- Segunda tanda Android CI final `https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37876235386` — Linux `success`,
+  Android API35 x86_64 `success` y **31/31 tests instrumentados**.
+  `.at` y `.nm` corregidos para la indentación JSON de Python (2 espacios).
+- PR #18 listo para cierre tras esta documentación y revisión.
+- Catálogo: 22 prototipos, 37 sin implementar y 0 certificados en
+  exportaciones de proveedores. Android offline UI/SAF, arm64, 16KiB
+  y archivos reales siguen pendientes.
