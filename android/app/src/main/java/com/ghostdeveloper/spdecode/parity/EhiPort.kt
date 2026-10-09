@@ -1,6 +1,13 @@
 package com.ghostdeveloper.spdecode.parity
 
 import org.json.JSONObject
+import android.util.Base64
+import org.bouncycastle.crypto.generators.Argon2BytesGenerator
+import org.bouncycastle.crypto.modes.ChaCha20Poly1305
+import org.bouncycastle.crypto.params.AEADParameters
+import org.bouncycastle.crypto.params.Argon2Parameters
+import org.bouncycastle.crypto.params.KeyParameter
+import java.security.MessageDigest
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -8,17 +15,20 @@ import java.nio.ByteOrder
  * HTTP Injector .ehi original bypass IV route:
  * Java UTF-8 container -> AES-256-CBC -> AES-128-CBC -> XXTEA
  * -> original field-local custom Base64 XOR decoding.
- * Argon2id/ChaCha20-Poly1305 standard-IV profiles require a separate
- * approved Argon2 implementation and are explicitly not guessed.
+ * Standard IV path: authenticated Argon2id + XChaCha20-Poly1305 (24-byte nonce).
+ * The original Python decoder is the parity reference, not a fallback engine.
  */
 object EhiPort {
     private val p=LegacyPortPrimitives
     private val l1=p.hex("7e1210f7aab956f7a668bda6e57feddb7f84ad840aef8d27b1b969959be3ab6c")
     private val l2=p.hex("b2bc617c32d8b9eb1943a5ffa8051eea")
     private val eoo="null=V5kU5+FFrY\u0000".toByteArray(Charsets.UTF_8)
-    private val ivs=listOf("221d572349555f1d112133236b1f4a3f",
+    private val bypassIvs=listOf("221d572349555f1d112133236b1f4a3f",
         "5543494c53443e3f4a6a4539384e776a",
         "374c2541575e4d531a3c327b75431e5f").map{p.hex(it)}
+    private val standardIvs=listOf("2c5d1147bbad422b3b334d4d235f1a53",
+        "522b01433a5e8b2fc7549e1ad368e541",
+        "337a1035aaedf3458ca167e92d74b839").map{p.hex(it)}
     private const val NORMAL="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     private const val CUSTOM="RkLC2QaVMPYgGJW/A4f7qzDb9e+t6Hr0Zp8OlNyjuxKcTw1o5EIimhBn3UvdSFXs"
     private fun unwrap(input:ByteArray):ByteArray {
@@ -87,10 +97,130 @@ object EhiPort {
             p.utf8(decoded)
         }catch(_:Exception){null}
     }
+    private fun configMessage(encoded: String): String {
+        if (encoded.isBlank()) return encoded
+        return try {
+            val bytes = Base64.decode(encoded.padEnd((encoded.length + 3) / 4 * 4, '='), Base64.DEFAULT)
+            val chars = String(bytes, Charsets.UTF_8).toCharArray()
+            val salt = "EHIMSG"
+            String(CharArray(chars.size) { i -> (chars[i].code xor salt[i % salt.length].code).toChar() })
+        } catch (_: Exception) { encoded }
+    }
+
+    private fun pythonScalar(value: Any?): String = when (value) {
+        null, JSONObject.NULL -> "None"
+        is Boolean -> if (value) "True" else "False"
+        else -> value.toString()
+    }
+
+    /** Preserve the exact concatenation order and default timestamp zeroes. */
+    private fun masterKey(config: JSONObject): ByteArray {
+        val fields = listOf("configAesKey", "configIdentifier", "configSalt",
+            "configTimestamp", "configExpiryTimestamp", "lockModes", "lockModesHash",
+            "configHwid", "configLockMobileOperatorId")
+        val parts = fields.mapIndexed { i, name ->
+            val value = if (!config.has(name) && i in 3..4) 0 else config.opt(name) ?: ""
+            pythonScalar(value).takeUnless { value == "" } ?: ""
+        }
+        return MessageDigest.getInstance("SHA-256")
+            .digest(parts.joinToString("").toByteArray(Charsets.UTF_8))
+    }
+
+    private fun intLe(bytes: ByteArray, offset: Int): Long =
+        (bytes[offset].toLong() and 255) or
+        ((bytes[offset + 1].toLong() and 255) shl 8) or
+        ((bytes[offset + 2].toLong() and 255) shl 16) or
+        ((bytes[offset + 3].toLong() and 255) shl 24)
+
+    private fun le(bytes: ByteArray, at: Int): Int =
+        (bytes[at].toInt() and 255) or
+        ((bytes[at+1].toInt() and 255) shl 8) or
+        ((bytes[at+2].toInt() and 255) shl 16) or
+        ((bytes[at+3].toInt() and 255) shl 24)
+
+    private fun putLe(out: ByteArray, at: Int, word: Int) {
+        for (i in 0..3) out[at+i] = (word ushr (8*i)).toByte()
+    }
+
+    /** HChaCha20 for the 24-byte XChaCha20 nonce used by PyCryptodome. */
+    private fun subkey(key: ByteArray, nonce: ByteArray): ByteArray {
+        require(key.size == 32 && nonce.size == 24)
+        val constants = intArrayOf(0x61707865, 0x3320646e, 0x79622d32, 0x6b206574)
+        val words = IntArray(16) { i ->
+            when {
+                i < 4 -> constants[i]
+                i < 12 -> le(key, (i - 4) * 4)
+                else -> le(nonce, (i - 12) * 4)
+            }
+        }
+        fun qr(a:Int,b:Int,c:Int,d:Int) {
+            words[a] += words[b]
+            words[d] = Integer.rotateLeft(words[d] xor words[a],16)
+            words[c] += words[d]
+            words[b] = Integer.rotateLeft(words[b] xor words[c],12)
+            words[a] += words[b]
+            words[d] = Integer.rotateLeft(words[d] xor words[a],8)
+            words[c] += words[d]
+            words[b] = Integer.rotateLeft(words[b] xor words[c],7)
+        }
+        repeat(10) {
+            qr(0,4,8,12);qr(1,5,9,13);qr(2,6,10,14);qr(3,7,11,15)
+            qr(0,5,10,15);qr(1,6,11,12);qr(2,7,8,13);qr(3,4,9,14)
+        }
+        return ByteArray(32).also { out ->
+            val indices = intArrayOf(0,1,2,3,12,13,14,15)
+            indices.forEachIndexed { i, index -> putLe(out, i * 4, words[index]) }
+        }
+    }
+
+    private fun standard(config: JSONObject, salt: String): JSONObject {
+        val encoded = config.optString("configData")
+        require(encoded.isNotBlank())
+        val decoded = field(encoded, salt) ?: error("Invalid configData")
+        val raw = p.b64(decoded)
+        require(raw.size > 50)
+        val passes = intLe(raw,1)
+        val memoryKiB = intLe(raw,5)
+        val lanes = raw[9].toInt() and 255
+        // Untrusted file parameters: do not permit memory/CPU exhaustion.
+        require(lanes in 1..8 && passes in 1..8 &&
+            memoryKiB in (8L * lanes)..65536L)
+        val saltBytes = raw.copyOfRange(10,26)
+        val nonce = raw.copyOfRange(26,50)
+        val key = ByteArray(32)
+        val master = masterKey(config)
+        try {
+            val params = Argon2Parameters.Builder(Argon2Parameters.ARGON2_id)
+                .withVersion(Argon2Parameters.ARGON2_VERSION_13)
+                .withSalt(saltBytes)
+                .withIterations(passes.toInt())
+                .withMemoryAsKB(memoryKiB.toInt())
+                .withParallelism(lanes)
+                .build()
+            Argon2BytesGenerator().apply { init(params) }.generateBytes(master,key)
+            val derived = subkey(key,nonce)
+            try {
+                val nonce12 = ByteArray(12).also { System.arraycopy(nonce,16,it,4,8) }
+                val aad = raw.copyOfRange(0,26)
+                val encrypted = raw.copyOfRange(50,raw.size)
+                val cipher = ChaCha20Poly1305()
+                cipher.init(false, AEADParameters(KeyParameter(derived),128,nonce12,aad))
+                val output = ByteArray(cipher.getOutputSize(encrypted.size))
+                val first = cipher.processBytes(encrypted,0,encrypted.size,output,0)
+                val count = first + cipher.doFinal(output,first)
+                return JSONObject(p.utf8(output.copyOf(count)))
+            } finally { derived.fill(0) }
+        } finally {
+            key.fill(0)
+            master.fill(0)
+        }
+    }
+
     fun decode(input:ByteArray):String?=p.safeDecode {
         val payload=unwrap(input)
-        var config:JSONObject?=null
-        for(iv in ivs) {
+        var profile:JSONObject?=null
+        var bypass=false
+        for(iv in bypassIvs+standardIvs) {
             val first=try{p.utf8(p.cbc(payload,l1,iv))}catch(_:Exception){continue}
             val parts=first.split(':')
             if(parts.size<3)continue
@@ -100,16 +230,17 @@ object EhiPort {
             val clear=xxtea(raw)
             val begin=clear.indexOf('{'.code.toByte())
             if(begin<0)continue
-            config=try{JSONObject(p.utf8(clear.copyOfRange(begin,clear.size)))}catch(_:Exception){null}
-            if(config!=null)break
+            profile=try{JSONObject(p.utf8(clear.copyOfRange(begin,clear.size)))}catch(_:Exception){null}
+            if(profile!=null){bypass=bypassIvs.any{it.contentEquals(iv)};break}
         }
-        val profile=config?:error("EHI bypass variant did not authenticate")
-        val salt=profile.optString("configSalt","EVZJNI")
+        val config=profile?:error("Unknown EHI envelope")
+        val salt=config.optString("configSalt","EVZJNI")
+        val parsed=if(bypass) config else standard(config,salt)
         val filtered=JSONObject()
-        for(key in p.keys(profile)){
-            val v=profile.get(key)
+        for(key in p.keys(parsed)){
+            val v=parsed.get(key)
             if(v is String&&v.isNotBlank()){
-                val decoded=if(key=="configMessage")v else field(v,salt)
+                val decoded=if(key=="configMessage")configMessage(v) else field(v,salt)
                 if(decoded!=null)filtered.put(key,decoded)
                 else if(key=="overwriteServerData")filtered.put(key,v)
             }else filtered.put(key,v)
