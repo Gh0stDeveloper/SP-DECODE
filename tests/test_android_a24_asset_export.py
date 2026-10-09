@@ -13,7 +13,7 @@ from scripts.android_a24_prepare import CASES,ROOT,SUFFIX,prepare
 
 
 class AndroidA24AssetTests(unittest.TestCase):
-    def test_asset_export_is_exactly_fifty_three_frozen_synthetic_vectors(self):
+    def test_asset_export_is_exactly_sixty_frozen_synthetic_vectors(self):
         with tempfile.TemporaryDirectory(prefix="spdecode-a24-") as tmp:
             output=Path(tmp)/"assets"
             results=prepare(output)
@@ -24,7 +24,7 @@ class AndroidA24AssetTests(unittest.TestCase):
                 self.assertTrue((output/(row["id"]+"."+SUFFIX[row["id"]])).is_file())
                 self.assertEqual((output/(row["id"]+".txt")).is_file(),True)
                 reference=(output/(row["id"]+".txt")).read_bytes()
-                self.assertTrue(reference.startswith(b"TLS Tunnel") if row["id"]=="tls-aesgcm" else reference.startswith(b"{") if row["id"] in {"batch6-at","batch6-nm"} else reference.startswith("╔".encode()) if row["id"]=="batch7-gold" else reference.lstrip().startswith("┌".encode()) if row["id"] not in {"batch5-tnl"} else reference.startswith(b"{"))
+                self.assertTrue(reference.startswith(b"TLS Tunnel") if row["id"]=="tls-aesgcm" else reference.startswith(b"{") if row["id"] in {"batch6-at","batch6-nm","batch6-sip"} else reference.startswith("╔".encode()) if row["id"]=="batch7-gold" else reference.lstrip().startswith("┌".encode()) if row["id"] not in {"batch5-tnl"} else reference.startswith(b"{"))
 
     def test_manifest_still_declares_zero_real_android_certifications(self):
         manifest=json.loads((ROOT/"tests/golden/manifest.json").read_text("utf-8"))
