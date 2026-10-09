@@ -84,4 +84,5 @@
     <string name="json_option">JSON · completo y ordenado</string>
     <string name="ordered_option">Estructurado · todos los campos</string>
     <string name="original_option">Texto original del decodificador</string>
+    <string name="raw_masked_explanation">El texto original puede incluir contraseñas dentro de JSON. Desactiva la ocultación en Ajustes para verlo.</string>
 </resources>
