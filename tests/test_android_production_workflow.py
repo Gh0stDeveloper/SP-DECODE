@@ -44,10 +44,15 @@ class AndroidProductionWorkflowTest(unittest.TestCase):
         for scheme in ("v1", "v2", "v3"):
             self.assertIn(f'enable{scheme.upper()}Signing=true', self.gradle)
             self.assertIn(f"--{scheme}-signing-enabled true", w)
-        # Verify every scheme explicitly; any missing signature fails closed.
-        self.assertIn("for scheme in v1 v2 v3; do", w)
+        # V1 is independently verified in its JAR-era API23 range.
+        self.assertIn("--min-sdk-version 23 --max-sdk-version 23", w)
+        self.assertIn("signature-v1.txt", w)
+        self.assertIn("Verified using v1 scheme .*: true", w)
+        # V2/V3 are independently verified for our real minSdkVersion=24+.
+        self.assertIn("for scheme in v2 v3; do", w)
         self.assertIn('grep -Eiq "^Verified using $scheme scheme .*: true$"', w)
         self.assertIn('echo "::error::APK $scheme signature was not verified"', w)
+        self.assertIn("V1 and V2/V3 certificates differ", w)
         self.assertIn("zipalign", w)
         self.assertIn("SHA256SUMS.txt", w)
         self.assertIn("production-signed.apk", w)
