@@ -288,3 +288,13 @@ Detalles en `ALPHA_INSTALL.md`.
 - **Aún NO certifica** actualizaciones de firma debug→producción, ARM64, memoria de páginas 16 KB, exportadores reales ni lotes SAF sobre hardware. No iniciar publicación estable hasta aprobar los ocho gates `release/android-readiness.json`.
 - Estos cambios documentales exigen CI de PR otra vez, aunque no alteran la APK; no fusionar el PR #28 si el HEAD tiene comprobaciones fallidas.
 
+
+## 0.3.6-alpha — JSON exclusivo, pantalla de carga y firma (2026-10-09)
+
+- Usuario solicitó que el resultado de la pantalla sea **solo JSON indentado**, sin caracteres decorativos `┌├└│`, con tres comentarios visuales **fuera** del JSON: `// Decodificado por <nombre de aplicación>`, `// Fecha: <fecha local>` y `// Powered by Ghost Developer`. El nombre se obtiene de `AndroidDecoderCatalog`, no de una tabla ficticia.
+- `ResultJsonDisplay`: visualización con Gson, tipos y JSON anidados; conserva campos repetidos y convierte salidas sin claves a `content` JSON para no perder la información útil, ocultando decoración de bot. `rawText`, historial AES-GCM y acciones de copia/exportación existentes **no se alteran**.
+- Nuevo arranque AMOLED: `Theme.SPDecode.Starting` con SplashScreen API + pantalla Compose usando **icono existente** de escudo, SP-DECODE y `Powered by Ghost Developer`, indicador mientras se inicializa historial, límite de espera.
+- El usuario confirma manualmente resultados correctos en ARM64, páginas 16 KiB, archivos reales y lotes, además de auditoría propia. Registro docs/android/USER_MANUAL_VALIDATION_2026-10-09.md. **USER-VERIFIED**, sin inventar dispositivo, datos ADB, cobertura por versiones ni reporte independiente.
+- Keystore de producción RSA-4096/PKCS#12 generado **fuera del repositorio** y entregado solo al propietario en artefacto privado. Los cuatro secrets se introducirán manualmente en GitHub; NO copiar contraseñas al GitHub PR o documentos. Workflow manual ya exige v1/v2/v3 y versiones coincidentes.
+- Estado release: **NO-GO hasta probar candidato firmado, firma de actualizaciones y confirmación final**, aun cuando los tests de usuario sean positivos.
+
