@@ -38,6 +38,21 @@ object AndroidOfflineDecoderRouter {
             "aro" -> AroPort.decode(input)
             "ipt" -> IptPort.decode(input)
             "gold" -> GoldPort.decode(input)
+            "agn" -> AgnPort.decode(input)
+            "cly" -> ClyPort.decode(input)
+            "fɴ" -> FnLegacyPort.decode(input)
+            "jvc" -> JvcPort.decode(input)
+            "jvi" -> JviPort.decode(input)
+            "v2i" -> V2iPort.decode(input)
+            "sksrv.png" -> SksrvPngPort.decode(input)
+            "xscks" -> XscksPort.decode(input)
+            "mrc" -> MrcPort.decode(input)
+            "mtl" -> MtlPort.decode(input)
+            "jez" -> JezPort.decode(input)
+            "hrt" -> HrtPort.decode(input)
+            "ziv" -> ZivPort.decode(input)
+            "epro" -> EproPort.decode(context,input)
+            "npv2" -> Npv2Port.decode(context,input)
             else -> null
         }
     }
