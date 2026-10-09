@@ -110,4 +110,39 @@ class Batch10InstrumentedTest {
         assertNull("Xui malformed", XuiPort.decode("NOT_A_PROFILE".toByteArray()))
         assertNull("Xui oversized", XuiPort.decode(ByteArray(1024 * 1024 + 1)))
     }
+    @Test
+    fun explicitPerSuffixDispatchNeverGuessesAnotherKey() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        assertArrayEquals(asset("batch4-phc.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.PHC", asset("batch4-phc.phc"))?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(asset("batch5-mina.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.MINA", asset("batch5-mina.mina"))?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(asset("batch6-vpnlite.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.VPNLITE", asset("batch6-vpnlite.vpnlite"))?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(asset("batch4-cloudy.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.CLOUDY", asset("batch4-cloudy.cloudy"))?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(asset("batch4-mij.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.MIJ", asset("batch4-mij.mij"))?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(asset("batch4-fnnetwork.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.FNNETWORK", asset("batch4-fnnetwork.fnnetwork"))?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(asset("batch4-uwu.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.UWU", asset("batch4-uwu.uwu"))?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(asset("sksrv-sksrv.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.SKSRV", asset("sksrv-sksrv.sksrv"))?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(asset("batch5-maya.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.MAYA", asset("batch5-maya.maya"))?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(asset("batch5-xui.txt"),
+            AndroidOfflineDecoderRouter.decode(context, "TEST.XUI", asset("batch5-xui.xui"))?.toByteArray(Charsets.UTF_8))
+    }
+
+    @Test
+    fun missingFormatsAndCompositeSuffixesNeverFallback() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val sksrv = asset("sksrv-sksrv.sksrv")
+        assertNull(AndroidOfflineDecoderRouter.decode(context, "sample.sksrv.png", sksrv))
+        assertNull(AndroidOfflineDecoderRouter.decode(context, "sample.random", sksrv))
+        assertNull(AndroidOfflineDecoderRouter.decode(context, "sample.mij", sksrv))
+        assertNull(AndroidOfflineDecoderRouter.decode(context, "sample.phc", ByteArray(1024 * 1024 + 1)))
+    }
+
 }
