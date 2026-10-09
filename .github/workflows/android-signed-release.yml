@@ -176,14 +176,117 @@ jobs:
             sed -E '/^Signer #.*certificate DN:/d' "$RUNNER_TEMP/signature.txt" | tail -n 45
             exit 1
           fi
-          # Print non-secret scheme results so failures are diagnosable.
-          grep -Ei 'Verified using v[123] scheme|Signer #1 certificate SHA-256 digest' "$RUNNER_TEMP/signature.txt" || true
-          for scheme in v1 v2 v3; do
+          # Android minSdk=24, so default apksigner chooses V2/V3 and may
+          # print "v1: false" even when a valid JAR signature is present.
+          # Independently verify JAR/V1 in its native API23 range; do not
+          # weaken or replace the production API24+ V2/V3 verification.
+          if ! "$TOOLS/apksigner" verify --verbose --print-certs \
+              --min-sdk-version 23 --max-sdk-version 23 "$APK" \
+              > "$RUNNER_TEMP/signature-v1.txt" 2>&1; then
+            echo "::error::V1 JAR signature failed verification at Android API 23"
+            tail -n 30 "$RUNNER_TEMP/signature-v1.txt"
+            exit 1
+          fi
+          if ! grep -Eiq '^Verified using v1 scheme .*: true
+          "$TOOLS/aapt" dump badging "$APK" > "$RUNNER_TEMP/badging.txt"
+          grep -F "package: name='com.ghostdeveloper.spdecode'" "$RUNNER_TEMP/badging.txt"
+          grep -F "versionName='$VERSION'" "$RUNNER_TEMP/badging.txt"
+          mkdir -p dist
+          cp "$APK" "dist/SP-DECODE-v$VERSION-production-signed.apk"
+          (cd dist && sha256sum *.apk > SHA256SUMS.txt)
+          {
+            printf 'Version: %s\nSource commit: %s\n' "$VERSION" "$SOURCE_SHA"
+            printf '%s\\n' 'V1: checked against Android API 23'
+            grep -E 'Verified using v1 scheme' "$RUNNER_TEMP/signature-v1.txt"
+            printf '%s\\n' 'V2/V3: checked against supported Android API 24+'
+            grep -E 'Verified using v[23] scheme|Signer #1 certificate SHA-256 digest:' \
+              "$RUNNER_TEMP/signature.txt"
+          } > dist/SIGNATURE_VERIFICATION.txt
+      - name: Upload production-signed APK (never a debug certificate)
+        uses: actions/upload-artifact@v4
+        with:
+          name: SP-DECODE-v${{ needs.preflight.outputs.version }}-PRODUCTION-SIGNED
+          path: dist/
+          if-no-files-found: error
+          retention-days: 90
+      - name: Destroy temporary copy of private keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/spdecode-production.p12"
+
+  publication-gate:
+    name: Check independently verified stable release evidence
+    needs: [preflight, sign-production]
+    if: needs['sign-production'].result == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      approved: ${{ steps.check.outputs.approved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preflight.outputs.source_sha }}
+          persist-credentials: false
+      - id: check
+        env:
+          VERSION: ${{ needs.preflight.outputs.version }}
+        run: |
+          set -euo pipefail
+          if python scripts/android_release_gate.py --mode stable --version "$VERSION"; then
+            echo "approved=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Signed production APK is available as an artifact; public release stays blocked until GO evidence is complete."
+          fi
+
+  publish-stable:
+    name: Publish stable GitHub Release only after GO and completed signing
+    needs: [preflight, sign-production, publication-gate]
+    if: needs['publication-gate'].outputs.approved == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: SP-DECODE-v${{ needs.preflight.outputs.version }}-PRODUCTION-SIGNED
+          path: dist
+      - name: Publish verified stable APK only once per version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+          SOURCE_SHA: ${{ needs.preflight.outputs.source_sha }}
+        run: |
+          set -euo pipefail
+          if gh release view "v$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::notice::v$VERSION already exists; no tag/asset will be overwritten"
+            exit 0
+          fi
+          gh release create "v$VERSION" \
+            "dist/SP-DECODE-v$VERSION-production-signed.apk" \
+            "dist/SHA256SUMS.txt" "dist/SIGNATURE_VERIFICATION.txt" \
+            --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" \
+            --title "SP-DECODE Android v$VERSION" --latest \
+            --notes "Production-signed APK using the permanent repository keystore, independently verified APK Signature Schemes V1/V2/V3. Release checks and evidence: release/android-readiness.json."
+ "$RUNNER_TEMP/signature-v1.txt"; then
+            echo "::error::APK is missing a valid V1 JAR signature"
+            exit 1
+          fi
+          # Independently validate the normal supported platform signature schemes.
+          for scheme in v2 v3; do
             if ! grep -Eiq "^Verified using $scheme scheme .*: true$" "$RUNNER_TEMP/signature.txt"; then
               echo "::error::APK $scheme signature was not verified"
               exit 1
             fi
           done
+          # V1 and V2/V3 must be issued by the same permanent certificate.
+          V1_CERT="$(grep -m1 'Signer #1 certificate SHA-256 digest:' "$RUNNER_TEMP/signature-v1.txt")"
+          V23_CERT="$(grep -m1 'Signer #1 certificate SHA-256 digest:' "$RUNNER_TEMP/signature.txt")"
+          if [[ -z "$V1_CERT" || "$V1_CERT" != "$V23_CERT" ]]; then
+            echo "::error::V1 and V2/V3 certificates differ"
+            exit 1
+          fi
+          echo "V1 JAR verified at API 23; V2 and V3 verified at minSdk 24+"
+          grep -Ei 'Verified using v1 scheme|Signer #1 certificate SHA-256 digest' "$RUNNER_TEMP/signature-v1.txt"
+          grep -Ei 'Verified using v[23] scheme' "$RUNNER_TEMP/signature.txt"
           "$TOOLS/zipalign" -c -P 16 -v 4 "$APK"
           "$TOOLS/aapt" dump badging "$APK" > "$RUNNER_TEMP/badging.txt"
           grep -F "package: name='com.ghostdeveloper.spdecode'" "$RUNNER_TEMP/badging.txt"
