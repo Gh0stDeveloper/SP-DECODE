@@ -35,6 +35,6 @@ object AtPort {
     fun decode(input: ByteArray): String? = p.safeDecode {
         p.bounded(input)
         val json = JSONObject(openHex(p.utf8(input).trim()))
-        p.prettyJson(expand(json,0)) + "\n"
+        p.prettyJson(expand(json,0)).replace(Regex("(?m)^ +")) { m -> " ".repeat(m.value.length / 2) } + "\n"
     }
 }
