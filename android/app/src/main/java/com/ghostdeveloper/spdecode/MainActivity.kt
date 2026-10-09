@@ -155,7 +155,7 @@ class MainActivity : ComponentActivity() {
                 retentionDays=preferences.retentionDays
                 // Restore only navigation metadata; the decoded payload always
                 // comes from the Keystore-encrypted record, never from DataStore.
-                if(tab==0)tab=preferences.lastTab
+                if(!navigationExplicit && tab==0)tab=preferences.lastTab
                 val saved=withContext(Dispatchers.IO) {
                     val days=preferences.retentionDays
                     if(days>0) historyStore.pruneOlderThan(
