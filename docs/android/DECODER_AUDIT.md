@@ -160,3 +160,7 @@ Diez nuevos casos Linux positivos: .nm, .pb, .pcx, .nt, .ziv, .vpnlite, .sip, .a
 ### Actualización final A.2.3 — Golden sintético SSH, lote 8
 
 El corpus de referencia **Linux sintético** completó **60 casos exactos / 59 sufijos / 48 scripts**. `.ssh` incluye perfil ficticio Blowfish-CBC, stdout completo con un emoji estabilizado exclusivamente por `SPDECODE_SSH_GOLDEN_TEST=1`, hashes inmutables y negativos que deben fallar cerrados. Sin la variable de prueba, el emoji mantiene selección aleatoria histórica. Mantener la evaluación separada de la compatibilidad real de exportadores y ejecución Android (0/59). La carga `pickle.loads` del blob whitebox NPV permanece riesgo de seguridad no resuelto. Ver [A23_GOLDEN_CORPUS.md](A23_GOLDEN_CORPUS.md).
+
+### A.2.4 seguridad: carga restringida de NPV whitebox
+
+La tabla `NPVTUNNEL.py` era un pickle descomprimido directamente mediante `pickle.loads`. Ahora el cargador solo acepta estructuras de datos primitivas, examina los opcodes para impedir globales, factories y reduce, bloquea referencias externas con un `Unpickler` de clases prohibidas, limita los bytes descomprimidos a 96 MiB y rechaza datos sobrantes. La auditoría estática **continúa marcando el uso de pickle** porque sigue siendo un riesgo estructural que requiere seguimiento y pruebas dinámicas. Este cambio NO convierte NPV4/NPVT en formato Android verificado. La migración ideal posterior es generar un artefacto de tablas en formato declarativo verificable con digest y presupuesto de memoria.
