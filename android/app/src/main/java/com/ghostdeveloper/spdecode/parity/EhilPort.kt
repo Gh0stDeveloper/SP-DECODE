@@ -109,7 +109,7 @@ object EhilPort {
         require(fields.isNotEmpty())
         return "┌───────────────\n│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (.ehil)\n"+
             "│[۞] Aplicación: HTTP Injector Lite\n├───────────────\n"+
-            fields+"\n\n"+p.footer().drop(0)
+            fields+"\n\n"+p.footer().dropLast(1)
     }
     fun decode(input:ByteArray):String?=p.safeDecode {
         val outer=payload(input)
