@@ -307,3 +307,14 @@ Detalles en `ALPHA_INSTALL.md`.
 - **No se han alterado** las rutas SAF por lotes, los puertos de archivo existentes ni la publicación estable automática.
 - Documento de alcance: `docs/android/TEXT_PROTOCOLS.md`. Pendiente CI final de PR #30 y pruebas del usuario con cadenas reales/fragmentos.
 
+
+## 1.0.0 — APK producción automática, keystore definitiva (09/oct/2026)
+
+- Autorización explícita del propietario: **versión estable 1.0.0**, `versionCode 11` y **solo la keystore permanente de GitHub Secrets**, no una clave temporal ni firma debug.
+- Nuevo `Android Production Signed APK`: `workflow_run` cuando `Validate SP-DECODE` termina en SUCCESS después de **push a main**; rechaza forks/PR y comprueba que el SHA aprobado coincide con HEAD de main. Permite ejecución manual del mismo flujo con CI comprobado.
+- Se instala el SDK, generan activos NPV a partir de los scripts fuente auditados y se ejecuta `assembleRelease` con cuatro secretos `SPDECODE_SIGNING_*`. La APK solo se sube después de verificar V1/V2/V3, `zipalign -P16`, ID del paquete y versión. Artefacto: `SP-DECODE-v1.0.0-PRODUCTION-SIGNED`, con SHA256 y certificado público.
+- **Los checks internos en el workflow todavía NO prueban la firma física**: observar la ejecución real con Secrets, comprobar identidad del certificado y probar instalación y actualización. No cambiar `decision: NO-GO` hasta que la matriz documental esté completa.
+- Publicación pública separada: el job `publish-stable` se habilita automáticamente **solo** cuando `android_release_gate.py --mode stable` valida todos los bloques de `release/android-readiness.json` (incluida firma/instalación), el dueño está registrado como aprobador y GO. No hay publicación pública automática prematura.
+- El CI principal sigue generando una APK debug para pruebas de regresión; el nombre la marca inequívocamente `CI-DEBUG-NOT-PRODUCTION` y nunca se distribuye como APK firmada estable.
+- Runbook actualizado: `docs/android/RELEASE_RUNBOOK.md`.
+
