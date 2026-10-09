@@ -43,7 +43,11 @@ class AndroidProductionWorkflowTest(unittest.TestCase):
         self.assertIn("signingConfig=signingConfigs.findByName(\"production\")", self.gradle)
         for scheme in ("v1", "v2", "v3"):
             self.assertIn(f'enable{scheme.upper()}Signing=true', self.gradle)
-            self.assertIn(f"Verified using {scheme} scheme", w)
+            self.assertIn(f"--{scheme}-signing-enabled true", w)
+        # Verify every scheme explicitly; any missing signature fails closed.
+        self.assertIn("for scheme in v1 v2 v3; do", w)
+        self.assertIn('grep -Eiq "^Verified using $scheme scheme .*: true$"', w)
+        self.assertIn('echo "::error::APK $scheme signature was not verified"', w)
         self.assertIn("zipalign", w)
         self.assertIn("SHA256SUMS.txt", w)
         self.assertIn("production-signed.apk", w)
