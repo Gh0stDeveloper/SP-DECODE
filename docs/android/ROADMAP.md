@@ -149,3 +149,14 @@ temporalmente sin persistencia. Ver `docs/android/TEXT_PROTOCOLS.md`.
 Estado: implementación pendiente de validación CI y pruebas con textos reales.
 Mantener H stable en NO-GO hasta firmado real V1/V2/V3 y upgrades verificados.
 
+
+### Preparación de producción Android 1.0.0
+
+El propietario autorizó nombrar 1.0.0 estable y firmar exclusivamente mediante su
+keystore de GitHub Secrets. Tras pasar Validate SP-DECODE en `main`, un segundo
+workflow ejecuta `assembleRelease`, inspecciona V1/V2/V3, verifica alineación
+a 16 KiB, genera SHA-256 y publica el **artefacto privado de producción**.
+No se dispara desde PR. La publicación pública GitHub Release conserva un gate
+GO basado en evidencia, donde aún debe documentarse instalación/actualización
+con la nueva firma definitiva y pruebas reales de los textos recientes.
+

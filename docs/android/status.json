@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.24.0",
+  "documentationVersion": "1.25.0",
   "referenceDate": "2026-10-09",
   "baselineBranch": "main",
   "baselineHead": "e24733fcaae9608f37a6a362f0aab4327a9681ac",
   "documentationBranch": "docs/android-offline-architecture",
-  "productStatus": "android_0_3_7_native_text_decoders_API35_114_of_114_success_pr30_pending_merge",
+  "productStatus": "android_1_0_0_stable_named_production_signing_automatic_after_main_success_PENDING_CI_AND_SECRETS_EXECUTION",
   "androidSourceExists": true,
   "apkProduced": true,
   "offlineRequired": true,
@@ -81,22 +81,22 @@
       }
     },
     "H": {
-      "status": "user_validation_reported_release_signing_candidate_pending_NO_GO",
+      "status": "production_1_0_0_signing_automation_pending_ci_public_release_no_go",
       "subphases": {
-        "H.1": "Linux_SUCCESS_Android_API35_x86_64_108_of_108_success_run_37910797924",
+        "H.1": "CI_main_full_linux_android_114_of_114_API35_prior_alpha_success_new_1_0_0_ci_pending",
         "H.2": "real_vendor_format_matrix_user_testing_no_GO",
         "H.3": "owner_reported_security_audit_passed_no_independent_artifact_yet",
         "H.4": "owner_reported_arm64_and_16KiB_passed_no_independent_report_yet",
         "H.5": "launcher_icon_reused_native_and_compose_splash_verified_api35_not_physical",
-        "H.6": "new_production_PKCS12_RSA4096_generated_off_repository_secrets_not_connected_signed_candidate_pending",
-        "H.7": "release_runbook_and_fail_closed_gate_prepared_pending_CI"
+        "H.6": "permanent_PKCS12_gitHubSecrets_ASSEMBLE_RELEASE_v1_v2_v3_AUTOMATIC_workflow_run_on_main_after_validate_SUCCESS_pending_actual_run",
+        "H.7": "production_release_artifact_automatic_public_release_separately_evidence_gated_NO_GO"
       }
     }
   },
-  "nextAction": "Merge PR30 only after final HEAD success; owner install 0.3.7 alpha and test genuine text links, SSC/Dark multipart. Trigger signed candidate from main with GitHub Secrets and verify v1/v2/v3 + install upgrade before stable GO.",
-  "releaseStatus": "DEBUG_ALPHA_0_3_7_TEXT_PR_GREEN_SIGNED_CANDIDATE_NOT_VERIFIED_NO_GO",
+  "nextAction": "Merge production signing automation only after CI successful. Next main push automatically triggers Android Production Signed APK, requiring configured repo secrets, issuing signed V1/V2/V3 production APK artifact. Check auto-run, certificate digest and installation/upgrade in person. Public GitHub Release remains NO-GO until independent release evidence is complete.",
+  "releaseStatus": "v1.0.0_PRODUCTION_SIGNED_WORKFLOW_PREPARED_PENDING_SECRETS_BUILD_GO_PUBLICATION_BLOCKED",
   "ciValidatedAndroid": true,
-  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge. Owner confirms manual genuine files, batch, ARM64/16K and audit passed, recorded as user attestation; signed release upgrade pending. 0.3.6 changes ONLY preview to JSON + metadata comments and branded splash. PR29 0.3.6 code HEAD 27df0bf66aa73b8d31674f4eb6816274875b0f5a passed Linux and 108/108 API35 emulator run 37910797924. Signing private keys are outside repository; manual candidate test remains pending. Owner reports production keystore added to GitHub Actions Secrets; actual signed workflow verification still outstanding. 0.3.7 adds native offline text protocols and private in-memory multipart sessions, retaining existing file imports, Android Keystore history and JSON results. Final source HEAD 1f8c99457a23b2d3740643809a30d244d183e6d4 passed Linux and connected Android API35 114/114 tests in run 37959678517. Documentation-only closing commit still needs final CI.",
+  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge. Owner confirms manual genuine files, batch, ARM64/16K and audit passed, recorded as user attestation; signed release upgrade pending. 0.3.6 changes ONLY preview to JSON + metadata comments and branded splash. PR29 0.3.6 code HEAD 27df0bf66aa73b8d31674f4eb6816274875b0f5a passed Linux and 108/108 API35 emulator run 37910797924. Signing private keys are outside repository; manual candidate test remains pending. Owner reports production keystore added to GitHub Actions Secrets; actual signed workflow verification still outstanding. 0.3.7 adds native offline text protocols and private in-memory multipart sessions, retaining existing file imports, Android Keystore history and JSON results. Final source HEAD 1f8c99457a23b2d3740643809a30d244d183e6d4 passed Linux and connected Android API35 114/114 tests in run 37959678517. Documentation-only closing commit still needs final CI. On 2026-10-09 owner explicitly requested v1.0.0 production rather than test APK, and permanent GitHub Secrets keystore only, automated workflow. Stable version/name are source changes; cannot claim signed APK exists until workflow executes with secrets. Previous independent text-real compatibility, signing install/upgrade gate still open.",
   "localization": {
     "scope": "ui_only",
     "languages": [
@@ -757,5 +757,26 @@
     "failed": 0,
     "platform": "API 35 x86_64 emulator",
     "realTextVendorSamples": "not certified in this CI"
+  },
+  "productionAutomation": {
+    "version": "1.0.0",
+    "versionCode": 11,
+    "sourceVersion": "v0.3.7-alpha",
+    "workflow": ".github/workflows/android-signed-release.yml",
+    "trigger": "workflow_run Validate SP-DECODE push main success; manual fallback",
+    "onlyMainTip": true,
+    "onlyTrustedPush": true,
+    "buildVariant": "release",
+    "signingOrigin": "four repository GitHub Secrets from permanent PKCS12 keystore",
+    "requiredSchemes": [
+      "v1",
+      "v2",
+      "v3"
+    ],
+    "apksignerRequired": true,
+    "zipalign16KB": true,
+    "artifact": "SP-DECODE-v1.0.0-PRODUCTION-SIGNED",
+    "status": "implemented_pending_ci_and_signing_secrets_real_run",
+    "publicRelease": "blocked_until_readiness_GO"
   }
 }

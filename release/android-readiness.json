@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "decision": "NO-GO",
   "candidateVersion": "0.3.7-alpha",
-  "stableVersion": null,
-  "ownerApproval": false,
+  "stableVersion": "1.0.0",
+  "ownerApproval": true,
   "evidence": {
     "arm64Physical": {
       "status": "user_verified_pending_reproducible_report",
@@ -38,5 +38,5 @@
       "report": ""
     }
   },
-  "notes": "Owner reported successful manual ARM64, 16KiB, genuine files, batch handling and own security audit on 2026-10-09; see docs/android/USER_MANUAL_VALIDATION_2026-10-09.md. These are user-attested results, not independently logged measurements. Stable release remains NO-GO pending signed candidate install/update verification, security evidence and owner release approval. Owner reports signing keystore values integrated in GitHub Secrets; signed candidate build and v1/v2/v3 plus installation/upgrade must be independently verified. Text protocol integration 0.3.7 requires CI and real-text smoke tests."
+  "notes": "The owner explicitly requested the definitive Android 1.0.0 production APK signed only with the permanent GitHub Secrets keystore and automatic signing after successful main CI (2026-10-09). Owner previously reported successful physical ARM64/16KiB, genuine files, batches and personal audit. These are user attestations, not independent evidence. Signed production APK build is automatic, but public GitHub Release remains NO-GO until a successful permanent-key workflow signature report, installation/upgrade test, and remaining documented evidence are verified. Never create ephemeral/debug signing keys."
 }

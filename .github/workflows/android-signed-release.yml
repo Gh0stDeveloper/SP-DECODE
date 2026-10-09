@@ -1,130 +1,145 @@
-name: Android Signed Release (Manual Gates)
+name: Android Production Signed APK
 
+# This is a production keystore build, never a debug or generated test key.
+# Trigger ONLY after the full main push workflow succeeds. Manual rerun allowed.
 on:
+  workflow_run:
+    workflows: ["Validate SP-DECODE"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
-    inputs:
-      kind:
-        description: "Signed prerelease candidate or evidence-verified stable release"
-        required: true
-        default: candidate
-        type: choice
-        options: [candidate, stable]
-      version:
-        description: "Must equal Gradle versionName (e.g. 0.3.5-alpha)"
-        required: true
-        type: string
-      publish:
-        description: "Publish stable GitHub Release only after GO and human confirmation"
-        required: true
-        default: false
-        type: boolean
-      confirmation:
-        description: "For stable publication only, type PUBLISH_STABLE"
-        required: false
-        type: string
 
 permissions:
   contents: read
   actions: read
 
 concurrency:
-  group: spdecode-manual-signed-release
+  group: spdecode-production-sign-${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
   cancel-in-progress: false
 
 jobs:
-  gate:
-    name: Reconfirm source, CI and production evidence
-    if: github.ref == 'refs/heads/main' && github.repository == 'Gh0stDeveloper/SP-DECODE'
+  preflight:
+    name: Require successful main validation at exact revision
+    if: >-
+      github.repository == 'Gh0stDeveloper/SP-DECODE' &&
+      (
+        (
+          github.event_name == 'workflow_run' &&
+          github.event.workflow_run.event == 'push' &&
+          github.event.workflow_run.head_branch == 'main' &&
+          github.event.workflow_run.head_repository.full_name == github.repository &&
+          github.event.workflow_run.conclusion == 'success'
+        ) ||
+        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+      )
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.preflight.outputs.version }}
+      eligible: ${{ steps.verify.outputs.eligible }}
+      version: ${{ steps.verify.outputs.version }}
+      source_sha: ${{ steps.verify.outputs.source_sha }}
     steps:
       - uses: actions/checkout@v4
-      - id: preflight
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          persist-credentials: false
+      - id: verify
         env:
-          RELEASE_KIND: ${{ inputs.kind }}
-          VERSION: ${{ inputs.version }}
-          PUBLISH: ${{ inputs.publish }}
-          CONFIRMATION: ${{ inputs.confirmation }}
-        run: |
-          set -euo pipefail
-          [[ "$VERSION" != *$'\n'* ]] || exit 1
-          [[ "$VERSION" != *$'\r'* ]] || exit 1
-          python scripts/android_release_gate.py --mode "$RELEASE_KIND" --version "$VERSION"
-          APP_VERSION=$(sed -nE 's/.*versionName = "([^"]+)".*/\1/p' android/app/build.gradle.kts)
-          test "$APP_VERSION" = "$VERSION" || { echo "::error::versionName mismatch"; exit 1; }
-          if [[ "$PUBLISH" == "true" ]]; then
-            test "$RELEASE_KIND" = "stable" && test "$CONFIRMATION" = "PUBLISH_STABLE" || {
-              echo "::error::Publishing requires stable evidence and explicit confirmation"
-              exit 1
-            }
-          fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-      - name: Require green validate workflow on this exact main commit
-        env:
+          SOURCE_SHA: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          EVENT_KIND: ${{ github.event_name }}
           GH_TOKEN: ${{ github.token }}
-          SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          gh api -X GET "repos/$GITHUB_REPOSITORY/actions/workflows/validate.yml/runs" \
-            -f head_sha="$SHA" -f per_page=20 > "$RUNNER_TEMP/ci.json"
-          jq -e --arg sha "$SHA" 'any(.workflow_runs[]; .head_sha == $sha and .conclusion == "success")' \
-            "$RUNNER_TEMP/ci.json" > /dev/null || {
-              echo "::error::Main CI has not passed for the exact source commit"
-              exit 1
-            }
+          test "$(git rev-parse HEAD)" = "$SOURCE_SHA"
+          MAIN_SHA="$(git ls-remote origin refs/heads/main | cut -f1)"
+          if [[ "$SOURCE_SHA" != "$MAIN_SHA" ]]; then
+            echo "Skipping old main commit: $SOURCE_SHA (current: $MAIN_SHA)"
+            echo "eligible=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [[ "$EVENT_KIND" == "workflow_dispatch" ]]; then
+            gh api -X GET "repos/$GITHUB_REPOSITORY/actions/workflows/validate.yml/runs" \
+              -f head_sha="$SOURCE_SHA" -f branch=main -f event=push -f per_page=30 \
+              > "$RUNNER_TEMP/ci.json"
+            jq -e --arg sha "$SOURCE_SHA" \
+              'any(.workflow_runs[]; .head_sha == $sha and .event == "push" and .head_branch == "main" and .conclusion == "success")' \
+              "$RUNNER_TEMP/ci.json" >/dev/null || {
+                echo "::error::Exact main SHA has no successful full Validate SP-DECODE run"
+                exit 1
+              }
+          fi
+          VERSION="$(sed -nE 's/.*versionName = "([^"]+)".*/\1/p' android/app/build.gradle.kts)"
+          [[ "$VERSION" =~ ^[1-9][0-9]*\.[0-9]+\.[0-9]+$ ]] || {
+            echo "::error::Production APK requires a stable versionName, not an alpha"
+            exit 1
+          }
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "source_sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
+          echo "eligible=true" >> "$GITHUB_OUTPUT"
 
-  signed-apk:
-    name: Build, verify and optionally publish a signed APK
-    needs: gate
+  sign-production:
+    name: Build production APK with permanent GitHub keystore (V1/V2/V3)
+    needs: preflight
+    if: needs.preflight.outputs.eligible == 'true'
     runs-on: ubuntu-latest
-    environment: ${{ inputs.kind == 'stable' && 'spdecode-production' || 'spdecode-candidate' }}
-    permissions:
-      contents: write
-      actions: read
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preflight.outputs.source_sha }}
+          persist-credentials: false
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.11.1"
-      - name: Install Android SDK 35 tools
+      - name: Install required Android SDK
         run: |
           set -euo pipefail
           MANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | sort -V | tail -n 1)"
+          test -x "$MANAGER"
           "$MANAGER" --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
-      - name: Check offline permissions and signing secrets availability
+      - name: Generate the same audited local assets as validated by CI
+        run: |
+          set -euo pipefail
+          python -m pip install -r requirements.txt
+          PYTHONPATH=. python scripts/android_a24_whitebox_export.py \
+            --output android/app/src/main/assets/npv_whitebox.bin
+      - name: Load permanent signing keystore exclusively from GitHub Secrets
         env:
-          STORE_B64: ${{ secrets.SPDECODE_SIGNING_KEYSTORE_BASE64 }}
+          STORE_BASE64: ${{ secrets.SPDECODE_SIGNING_KEYSTORE_BASE64 }}
           STORE_PASSWORD: ${{ secrets.SPDECODE_SIGNING_STORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.SPDECODE_SIGNING_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.SPDECODE_SIGNING_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          for value in "$STORE_B64" "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD"; do
-            test -n "$value" || { echo "::error::Required signing secret is missing"; exit 1; }
-          done
-          ! grep -Eq '<uses-permission[^>]+(INTERNET|MANAGE_EXTERNAL_STORAGE)' \
-            android/app/src/main/AndroidManifest.xml || {
-              echo "::error::Offline manifest regression"; exit 1
+          for secret in "$STORE_BASE64" "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD"; do
+            test -n "$secret" || {
+              echo "::error::One or more permanent SPDECODE_SIGNING_* secrets are missing"
+              exit 1
             }
+          done
           umask 077
-          printf '%s' "$STORE_B64" | base64 --decode > "$RUNNER_TEMP/spdecode-release.jks"
-      - name: Assemble signed production variant
+          printf '%s' "$STORE_BASE64" | base64 --decode > "$RUNNER_TEMP/spdecode-production.p12"
+          test "$(stat -c %s "$RUNNER_TEMP/spdecode-production.p12")" -gt 1000
+          keytool -list -keystore "$RUNNER_TEMP/spdecode-production.p12" \
+            -storetype PKCS12 -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null
+      - name: Assemble real Android release using the repository keystore
         working-directory: android
         env:
-          SPDECODE_RELEASE_STORE_FILE: ${{ runner.temp }}/spdecode-release.jks
+          SPDECODE_RELEASE_STORE_FILE: ${{ runner.temp }}/spdecode-production.p12
           SPDECODE_RELEASE_STORE_PASSWORD: ${{ secrets.SPDECODE_SIGNING_STORE_PASSWORD }}
           SPDECODE_RELEASE_KEY_ALIAS: ${{ secrets.SPDECODE_SIGNING_KEY_ALIAS }}
           SPDECODE_RELEASE_KEY_PASSWORD: ${{ secrets.SPDECODE_SIGNING_KEY_PASSWORD }}
         run: gradle --no-daemon :app:assembleRelease
-      - name: Validate real APK signature and byte alignment
-        id: verify
+      - name: Verify release signature schemes, package, version and 16 KiB alignment
         env:
-          VERSION: ${{ needs.gate.outputs.version }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+          SOURCE_SHA: ${{ needs.preflight.outputs.source_sha }}
         run: |
           set -euo pipefail
           APK=android/app/build/outputs/apk/release/app-release.apk
@@ -135,26 +150,78 @@ jobs:
           grep -F 'Verified using v2 scheme (APK Signature Scheme v2): true' "$RUNNER_TEMP/signature.txt"
           grep -F 'Verified using v3 scheme (APK Signature Scheme v3): true' "$RUNNER_TEMP/signature.txt"
           "$TOOLS/zipalign" -c -P 16 -v 4 "$APK"
+          "$TOOLS/aapt" dump badging "$APK" > "$RUNNER_TEMP/badging.txt"
+          grep -F "package: name='com.ghostdeveloper.spdecode'" "$RUNNER_TEMP/badging.txt"
+          grep -F "versionName='$VERSION'" "$RUNNER_TEMP/badging.txt"
           mkdir -p dist
-          cp "$APK" "dist/SP-DECODE-$VERSION-signed.apk"
+          cp "$APK" "dist/SP-DECODE-v$VERSION-production-signed.apk"
           (cd dist && sha256sum *.apk > SHA256SUMS.txt)
-      - name: Upload signed artifact for internal installation checks
+          {
+            printf 'Version: %s\nSource commit: %s\n' "$VERSION" "$SOURCE_SHA"
+            grep -E 'Verified using v[123] scheme|Signer #1 certificate SHA-256 digest:' \
+              "$RUNNER_TEMP/signature.txt"
+          } > dist/SIGNATURE_VERIFICATION.txt
+      - name: Upload production-signed APK (never a debug certificate)
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-${{ needs.gate.outputs.version }}-signed-candidate
+          name: SP-DECODE-v${{ needs.preflight.outputs.version }}-PRODUCTION-SIGNED
           path: dist/
           if-no-files-found: error
-          retention-days: 14
-      - name: Publish only after stable GO and protected environment review
-        if: inputs.kind == 'stable' && inputs.publish
+          retention-days: 90
+      - name: Destroy temporary copy of private keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/spdecode-production.p12"
+
+  publication-gate:
+    name: Check independently verified stable release evidence
+    needs: [preflight, sign-production]
+    if: needs['sign-production'].result == 'success'
+    runs-on: ubuntu-latest
+    outputs:
+      approved: ${{ steps.check.outputs.approved }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preflight.outputs.source_sha }}
+          persist-credentials: false
+      - id: check
         env:
-          GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ needs.gate.outputs.version }}
+          VERSION: ${{ needs.preflight.outputs.version }}
         run: |
           set -euo pipefail
-          gh release create "v$VERSION" "dist/SP-DECODE-$VERSION-signed.apk" "dist/SHA256SUMS.txt" \
-            --target "$GITHUB_SHA" --title "SP-DECODE Android v$VERSION" \
-            --notes "Signed Android release. See release/android-readiness.json and docs/android/RELEASE_RUNBOOK.md for verified gate evidence."
-      - name: Remove temporary keystore
-        if: always()
-        run: rm -f "$RUNNER_TEMP/spdecode-release.jks"
+          if python scripts/android_release_gate.py --mode stable --version "$VERSION"; then
+            echo "approved=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Signed production APK is available as an artifact; public release stays blocked until GO evidence is complete."
+          fi
+
+  publish-stable:
+    name: Publish stable GitHub Release only after GO and completed signing
+    needs: [preflight, sign-production, publication-gate]
+    if: needs['publication-gate'].outputs.approved == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: SP-DECODE-v${{ needs.preflight.outputs.version }}-PRODUCTION-SIGNED
+          path: dist
+      - name: Publish verified stable APK only once per version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+          SOURCE_SHA: ${{ needs.preflight.outputs.source_sha }}
+        run: |
+          set -euo pipefail
+          if gh release view "v$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "::notice::v$VERSION already exists; no tag/asset will be overwritten"
+            exit 0
+          fi
+          gh release create "v$VERSION" \
+            "dist/SP-DECODE-v$VERSION-production-signed.apk" \
+            "dist/SHA256SUMS.txt" "dist/SIGNATURE_VERIFICATION.txt" \
+            --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" \
+            --title "SP-DECODE Android v$VERSION" --latest \
+            --notes "Production-signed APK using the permanent repository keystore, independently verified APK Signature Schemes V1/V2/V3. Release checks and evidence: release/android-readiness.json."
