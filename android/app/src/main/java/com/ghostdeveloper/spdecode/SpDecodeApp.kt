@@ -75,7 +75,11 @@ fun SpDecodeApp(
     onFavorite:(String,Boolean)->Unit,
     retentionDays:Int,
     onRetention:(Int)->Unit,
-    onDismissError:()->Unit
+    onDismissError:()->Unit,
+    onDecodeText:(String)->Unit={},
+    onClearTextSession:()->Unit={},
+    textPartCount:Int=0,
+    textProtocolName:String?=null,
 ){
     var dialog by remember{mutableStateOf<String?>(null)}
     MaterialTheme(colorScheme=darkColorScheme(
@@ -94,7 +98,9 @@ fun SpDecodeApp(
             Box(Modifier.weight(1f)) {
                 when(activeTab) {
                     0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
-                        onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect)
+                        onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect,
+                        onDecodeText=onDecodeText,onClearTextSession=onClearTextSession,
+                        textPartCount=textPartCount,textProtocolName=textProtocolName)
                     1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple,onFavorite)
                     2->FormatsScreen()
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
@@ -236,6 +242,10 @@ private fun HomeScreen(
     onCopy:()->Unit,
     onExport:()->Unit,
     onSelect:(DecodeView)->Unit,
+    onDecodeText:(String)->Unit,
+    onClearTextSession:()->Unit,
+    textPartCount:Int,
+    textProtocolName:String?,
 ) {
     Column(
         modifier=Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -269,6 +279,14 @@ private fun HomeScreen(
                 }
             }
         }
+
+        TextDecoderPanel(
+            enabled=!busy,
+            onDecode=onDecodeText,
+            onClearSession=onClearTextSession,
+            pendingParts=textPartCount,
+            pendingProtocol=textProtocolName,
+        )
 
         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
             Text(stringResource(R.string.result),color=White,fontWeight=FontWeight.Bold,
