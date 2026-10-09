@@ -2,9 +2,9 @@
 
 **Actualizado:** 2026-10-09
 
-La actualización `v1.0.4-rc.1` modifica **solo los créditos**: en la pantalla se muestra «Decodificado por SP-DECODE» y la copia/exportación **ordenada** añade «Desarrollado por Ghost Developer», grupo y canal oficiales. El JSON continúa siendo JSON válido sin campos publicitarios y el resultado original no se reescribe. Los motores (.lnk VER6, .hc HCCFG, .sip VER8 y anteriores) no se modifican. `versionName = "1.0.4"`, `versionCode = 15`, con la misma keystore definitiva que `v1.0.3-rc.1`.
+La actualización estable `v1.0.4` modifica **solo los créditos**: en la pantalla se muestra «Decodificado por SP-DECODE» y la copia/exportación **ordenada** añade «Desarrollado por Ghost Developer», grupo y canal oficiales. El JSON continúa siendo JSON válido sin campos publicitarios y el resultado original no se reescribe. Los motores (.lnk VER6, .hc HCCFG, .sip VER8 y anteriores) no se modifican. `versionName = "1.0.4"`, `versionCode = 15`, con la misma keystore definitiva que `v1.0.3-rc.1`.
 
-**Evidencia:** CI `main` de v1.0.3 pasó Linux y **125 pruebas API35**, incluidos casos de paridad Python/Kotlin con fixtures sintéticos. El propietario también confirmó pruebas reales de `.lnk`, `.hc`, otros archivos, lotes y funcionamiento en Android (capturas privadas), y aprobó la distribución pública. No equivale a un informe reproducible de todos los exportadores ni a una auditoría independiente. La firma V1/V2/V3 del release anterior está documentada en GitHub Actions. El gate estable sigue separado de la **APK de producción firmada** distribuible bajo un tag pre-release.
+**Evidencia:** CI `main` de v1.0.3 pasó Linux y **125 pruebas API35**, incluidos casos de paridad Python/Kotlin con fixtures sintéticos. El propietario también confirmó pruebas reales de `.lnk`, `.hc`, otros archivos, lotes y funcionamiento en Android (capturas privadas), y aprobó la distribución pública. No equivale a un informe reproducible de todos los exportadores ni a una auditoría independiente. La firma V1/V2/V3 del release anterior está documentada en GitHub Actions. La autorización para distribución estable está documentada por el propietario y no se presenta como una certificación independiente de todos los exportadores.
 
 ## Compilación y firma de producción
 
