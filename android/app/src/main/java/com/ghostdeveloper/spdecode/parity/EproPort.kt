@@ -55,10 +55,11 @@ object EproPort {
         p.bounded(input)
         val json=LegacyModuleText.keys(context).getJSONArray("eproPasswords")
         val keys=json.getJSONArray(0)
-        val rawText=p.utf8(input)
+        // ePro raw container is binary AES-ECB. UTF-8 is only valid for the
+        // separate legacy XOR+Base64 envelope; probing it must not abort raw.
         val rawVariants=listOfNotNull(
             input.takeIf {it.size%16==0},
-            try { p.b64(xorUnwrap(rawText)) } catch(_:Exception) {null}
+            try { p.b64(xorUnwrap(p.utf8(input))) } catch(_:Exception) {null}
         )
         var decoded:LinkedHashMap<String,String>?=null
         for(i in 0 until keys.length()) {
