@@ -91,7 +91,7 @@ jobs:
 
 
   android-parity:
-    name: Android emulator 38 synthetic vectors (37 suffixes, API 35)
+    name: Android emulator 49 synthetic vectors (48 suffixes, API 35)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
