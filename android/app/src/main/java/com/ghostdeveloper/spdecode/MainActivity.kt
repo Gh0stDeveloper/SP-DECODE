@@ -69,6 +69,7 @@ class MainActivity : ComponentActivity() {
     private var progressPosition by mutableIntStateOf(1)
     private var progressTotal by mutableIntStateOf(1)
     private var importGeneration=0
+    private var navigationExplicit=false
     private var message by mutableStateOf<String?>(null)
     private var reveal:Boolean
         get()=sessionVm.reveal
