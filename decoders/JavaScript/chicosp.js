@@ -90,7 +90,9 @@ if (showHelp) {
 // Función de ciclo
 function loopFunction() {
     try {
-        fs.writeFileSync(path.join(PROJECT_ROOT, "cfg/config.inc.json"), JSON.stringify(configFile, null, "\t"));
+        if (process.argv.some(arg => ["--keyFile", "-k", "--language", "-l"].includes(arg))) {
+            fs.writeFileSync(path.join(PROJECT_ROOT, "cfg/config.inc.json"), JSON.stringify(configFile, null, "\t"));
+        }
     } catch (error) {
         console.log("[ERROR] - Ocurrió un error al escribir el archivo de configuración.");
         process.exit();

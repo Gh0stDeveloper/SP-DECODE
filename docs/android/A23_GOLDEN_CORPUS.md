@@ -1,6 +1,6 @@
 # A.2.3 — Corpus de pruebas golden reproducibles
 
-> **Estado 2026-10-08: EN PROGRESO.** Hay **49 casos sintéticos positivos con salida íntegra congelada en 48 de 59 extensiones**. Faltan **11 extensiones sin muestra positiva**. Ninguna extensión está verificada en Android y ninguna prueba demuestra compatibilidad con versiones modernas de las apps exportadoras.
+> **Estado 2026-10-08: EN PROGRESO.** Hay **59 casos sintéticos positivos con salida íntegra congelada en 58 de 59 extensiones**. Falta **1 extensión sin muestra positiva**. Ninguna extensión está verificada en Android y ninguna prueba demuestra compatibilidad con versiones modernas de las apps exportadoras.
 
 ## 1. Evidencia y alcance
 
@@ -18,7 +18,8 @@ Los tests comparan el **`stdout` original byte por byte**, sin traducción ni no
 | **4** | **10** | **10: .hat, .sks, .sksplus, .cloudy, .mij, .fnnetwork, .uwu, .phc, .ost, .sbr** | **10** |
 | 5 | 10 | 10: .jez, .hrt, .rez, .rezl, .maya, .xui, .mrc, .mtl, .mina, .tnl | 9 |
 | 6 | 10 | 10: .nm, .pb, .pcx, .nt, .ziv, .vpnlite, .sip, .at, .ipt, .stk | 10 |
-| **Total** | **49** | **48 de 59** | **40** |
+| **7** | **10** | **10: .ehi, .epro, .gold, .npv2, .npv4, .npvt, .roy, .sut, .tvt, .xtp** | **7** |
+| **Total** | **59** | **58 de 59** | **47** |
 
 ### Detalle del lote 4
 
@@ -99,7 +100,7 @@ PYTHONPATH=. python tests/golden/a23_export.py --output-dir out/a23/samples
 
 ## 5. Problemas y continuación
 
-**A.2.3 permanece ABIERTA:** 11 sufijos sin golden positivo. Los próximos candidatos más difíciles son `.ehi`, `.npv4`, `.npvt`, `.npv2`, `.epro` y `.tvt`; requieren trabajo separado de XXTEA/Argon2, whitebox, ruta Node con estado compartido y errores de selección de extensión. Continuar con un máximo de diez por PR **sin forzar pases**. Estos scripts aún no cuentan con pruebas para las versiones actuales de sus aplicaciones.
+**A.2.3 permanece ABIERTA:** solo `.ssh` carece de golden positivo. Su decodificador Blowfish imprime un emoji aleatorio, por lo que necesita una estrategia explícita para estabilizar la salida sin ocultar diferencias. La futura certificación de archivos de exportadores actuales y la paridad Android también siguen pendientes. Estos scripts aún no cuentan con pruebas para las versiones actuales de sus aplicaciones.
 
 **A.2.4 pendiente:** aún no existe bridge Android, ni APK, ni prueba arm64/16 KB/RTL de resultados crudos. El soporte real de una extensión debe anunciarse únicamente cuando se haya confirmado en Android y para las versiones explícitas de exportador cubiertas.
 
@@ -126,6 +127,25 @@ Los diez tienen `expectedRawText` byte-exact, `inputSha256` y `expectedRawUtf8Sh
 
 ### Casos expresamente pendientes
 
-**11 sufijos pendientes:** `.ehi`, `.epro`, `.gold`, `.npv2`, `.npv4`, `.npvt`, `.roy`, `.ssh`, `.sut`, `.tvt`, `.xtp`. Requieren pruebas de rutas de red inexistentes, capas whitebox, contenedores complejos, fuentes con aleatoriedad o formatos no despachados correctamente. No usar pruebas de error como golden positivo.
+**Nota histórica del cierre del lote 6:** los 11 sufijos citados estaban pendientes al finalizar esa tanda. El lote 7 incorporó diez y únicamente `.ssh` continúa sin golden positivo. No tratar pruebas de error como golden.
 
 **Evidencia de exploración (10 salidas positivas):** [GitHub Actions 37861105855](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37861105855). El CI final tras congelar hashes es la fuente autorizada para fusionar este lote.
+
+## 7. Lote 7 — diez nuevas rutas verificadas en Linux
+
+| Sufijo | Método sintético comprobado | Limitaciones verificadas |
+|---|---|---|
+| `.ehi` | EHI contenedor binario; AES-CBC L1/L2 y XXTEA en variante BYPASS_IV | **solo BYPASS_IV**; capas estándar Argon2/ChaCha, versiones de exportador y Android no comprobados |
+| `.epro` | AES-ECB con SHA1 truncado y separadores `[splitConfig]` | usa primera clave del repositorio; Node comparte librerías antiguas |
+| `.gold` | SHA-256 + AES-CBC; parsea `network` local | helper de banner faltante reparado; lector de archivo añadido |
+| `.npv2` | XOR del módulo Node NPV2 con VMess sintético | primera clave de `cfg/keyFile.json`; referencia de CLI sin proveedor |
+| `.npv4`, `.npvt` | whitebox-CTR + prefijos NPV1/NPVTSUB1 | **misma rutina whitebox**; su blob fijo usa `pickle.loads`, riesgo de seguridad abierto |
+| `.roy`, `.xtp` | transformación de nibbles + AES-CBC original | exactamente el mismo motor `xtproy.py` y muestra sintética |
+| `.sut` | dos capas AES-CBC; 11 propiedades cifradas dentro de JSON | solo ejemplo ficticio; no prueba todas las versiones |
+| `.tvt` | motor TEA de `rez.js` y ruta `.tvt` reactivada | reutiliza el ejemplo cifrado REZ; imprime cabecera histórica `(.rez)` |
+
+**Pruebas:** `tests/test_android_a23_batch7.py` compara `stdout` completo, entradas inválidas, hashes SHA256, registro de extensiones y verifica que Node no altere `cfg/config.inc.json` durante una importación normal. Los casos están en `tests/golden/a23_batch7.py` y `tests/golden/expected/`. El generador TEA/REZ sigue siendo una autoparidad del código fuente, no un vector criptográfico independiente.
+
+**Reparaciones incluidas:** `gold.py` admite `archivo.gold` como argumento y ya no falla por `stylize_math` indefinida; `rez.js` acepta `.tvt`; `chicosp.js`/`modulepro.js` no reescriben el archivo de configuración por una simple ejecución de descifrado. Los comandos explícitos de configuración siguen teniendo ese comportamiento heredado.
+
+**Criterio de compatibilidad:** 58/59 indica solo muestras artificiales Linux golden. **0/59 dispositivos Android verificados**, y **ninguna versión de exportadores externos certificada**. Para cerrar A.2.3 faltan `.ssh`, validación de versiones autorizadas y análisis de seguridad/per-portabilidad.

@@ -1,0 +1,15 @@
+
+
+┌───────────────
+│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 
+│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu
+├───────────────
+│[۞] Payload: GET example.org
+│[۞] Proxy Address: example.org:443
+│[۞] Locked for root devices?: false
+│[۞] Lock Payload and Server?: false
+│[۞] Expiration Date: 0
+│[۞] File has notes?: false
+│[۞] Note field 1: A23 synthetic
+│[۞] SSH Address: dummy@example.org
+

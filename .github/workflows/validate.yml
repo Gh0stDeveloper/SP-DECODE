@@ -50,6 +50,9 @@ jobs:
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
 
+      - name: Probe batch-seven synthetic decoder candidates
+        run: PYTHONPATH=. python tests/golden/a23_probe7.py
+
       - name: A.2 static decoder source audit (read-only)
         run: python docs/android/audit_decoders.py --output-dir "$RUNNER_TEMP/spdecode-a2"
 

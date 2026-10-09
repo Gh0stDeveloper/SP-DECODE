@@ -1,0 +1,12 @@
+╔━━━━━━━━━━━━━━━═╗
+╠▸ ◉ *Universal Decodez Bot* ◉
+╠━━━━━━━━━━━━━━━ ★
+╠▸ Code by : `𝕭𝖔𝖓𝖞 𝕸𝕷 🇨🇩`
+╠▸ 𝑇𝑒𝑙𝑒𝑔𝑟𝑎𝑚 : `t.me/+vrk0HxI_av9iNDg0`
+╚━━━━━━━━━━━━━━━═╝
+
+╔━━━━━༺ - ༻━━━━━╗
+╠▸ App Name : `Gold Tunnel`
+╚━━━━━༺ - ༻━━━━━╝
+
+{'network': {'Host': 'example.org', 'Port': 443}, 'name': 'A23 synthetic'}
