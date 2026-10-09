@@ -39,7 +39,7 @@ class ImportFeedbackInstrumentedTest {
     }
 
     @Test fun failedDecoderIsExplainedInDismissibleDialog() {
-        var error by mutableStateOf(ctx.getString(R.string.unsupported_variant_message))
+        var error by mutableStateOf<String?>(ctx.getString(R.string.unsupported_variant_message))
         render({false},{0},{error},{},{error=null})
         ui.onNodeWithText(ctx.getString(R.string.decode_notice_title)).assertExists()
         ui.onNodeWithText(error!!).assertExists()
