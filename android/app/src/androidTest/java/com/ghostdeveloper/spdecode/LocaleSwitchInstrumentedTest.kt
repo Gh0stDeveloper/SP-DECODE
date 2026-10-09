@@ -1,0 +1,48 @@
+package com.ghostdeveloper.spdecode
+
+import android.content.Context
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import androidx.lifecycle.ViewModelProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Assert.*
+import org.junit.Rule
+import org.junit.Test
+import org.junit.runner.RunWith
+
+/** Actual Activity locale recreation and no decoded session disk persistence. */
+@RunWith(AndroidJUnit4::class)
+class LocaleSwitchInstrumentedTest {
+    @get:Rule val ui=createAndroidComposeRule<MainActivity>()
+
+    @Test fun selectingSpanishPreservesDecodedSessionInMemory() {
+        val ctx=ui.activity
+        val before=ctx.getSharedPreferences("spdecode-ui-preferences",Context.MODE_PRIVATE)
+            .getString("language","system")?:"system"
+        val sample=DecodeView("test.xui","xui",
+            "┌─\n│SP-DECODE (.xui)\n{\n  \"Password\":\"example\"\n}\n└─",64)
+        try{
+            ui.runOnUiThread{
+                val vm=ViewModelProvider(ui.activity)[DecodeSessionViewModel::class.java]
+                vm.current=sample
+                vm.recent.add(0,sample)
+                vm.tab=3
+            }
+            ui.waitForIdle()
+            ui.onNodeWithText("Español").performClick()
+            ui.waitUntil(10000){
+                ui.activity.getSharedPreferences("spdecode-ui-preferences",Context.MODE_PRIVATE)
+                    .getString("language","")=="es" &&
+                ui.activity.getString(R.string.settings_title)=="Ajustes"
+            }
+            val active=ViewModelProvider(ui.activity)[DecodeSessionViewModel::class.java]
+            assertEquals(sample.rawText,active.current?.rawText)
+            assertEquals(1,active.recent.size)
+        } finally {
+            // This is a test-only setting: do not contaminate other tests.
+            ui.activity.getSharedPreferences("spdecode-ui-preferences",Context.MODE_PRIVATE)
+                .edit().putString("language",before).commit()
+        }
+    }
+}
