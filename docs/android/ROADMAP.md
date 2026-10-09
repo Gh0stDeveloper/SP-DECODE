@@ -5,7 +5,7 @@
 ## Actualización de seguimiento (2026-10-09)
 
 - **Usuario:** A.2.4.3 ARM64/Android físico/16 KiB y A.2.4.4 archivos reales/variantes/versiones, pruebas en ejecución por su parte, aún sin evidencia consolidada en el repositorio.
-- **Ingeniería:** PR #27 · B.5 y G.2–G.5. Filtros/orden/favoritos cifrados/retención/cola de 30 archivos/DataStore último UUID. Estado: pendiente de pruebas CI; Room y DI aún abiertos en B.5.
+- **Ingeniería:** PR #27 · B.5 y G.2–G.5. Filtros/orden/favoritos cifrados/retención/cola de 30 archivos/DataStore último UUID. Estado: CI #37903456589 Linux SUCCESS, Android API35 100/100 SUCCESS; nuevas correcciones de UX aguardando la última CI. Room y DI aún abiertos en B.5.
 - **H:** seguridad final, firma y publicación estable pospuestas; no apto para declarar GO de producción.
 
 ## Cadena de dependencias
