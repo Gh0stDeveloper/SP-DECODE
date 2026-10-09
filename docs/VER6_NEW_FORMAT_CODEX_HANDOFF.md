@@ -48,7 +48,7 @@ Trabajar sobre una copia del APK y de los archivos; obtener y registrar SHA-256,
 
 El nuevo decodificador del bot debe ser **no interactivo**, aceptar una ruta de entrada en el CLI, usar errores explícitos, producir resultados deterministas y respetar límites de tamaño/tiempo. No registrar claves privadas ni entradas completas en logs. El bot divide sus respuestas largas por límites de Telegram; **esta numeración no forma parte de la salida en Android**.
 
-Si la extensión ya existe, añadir una ruta de versión **dentro de su decodificador** conservando el algoritmo viejo. Si es completamente nueva, registrarla con un nombre inequívoco, ruta real y runtime válido.
+Si la extensión ya existe, añadir una ruta de versión **dentro de su decodificador** conservando el algoritmo viejo. Si es nueva, determinar el nombre, la ruta y el runtime del futuro registro, pero **no modificar todavía `decoders.json` en `main`** sin adaptar el catálogo Android. El propietario integrará ese paso posteriormente.
 
 ### 4.2 Aplicación Android / Kotlin — referencia para otro chat; fuera del alcance actual
 
@@ -155,21 +155,22 @@ Android no debe requerir Python, Node, PHP, red, credenciales externas o acceso 
 
 Si una etapa no es posible, declarar **PARCIAL / BLOQUEADO / NO CONFIRMADO**, indicar la evidencia faltante y avanzar en pruebas o análisis que sí sean verificables. No marcar “terminado” sin pruebas.
 
-## 7. Formato del informe que debe entregar Codex por iteración
+## 7. Uso eficiente de tokens con Codex/Sol
 
-Cada fase debe comunicar, de manera verificable:
+El propietario ya ha desarrollado scripts de descifrado con Sol y desea aprovechar su capacidad de programación **sin gastar tokens en tareas que no pidió**. Priorizar el resultado funcional, usar herramientas dirigidas y evitar explorar secciones irrelevantes del repositorio o volver a explicar hallazgos ya verificados. No reducir comprobaciones esenciales por ahorrar tokens.
 
-- **Avance:** fase, estado, rama, PR y commit.
-- **Evidencia:** origen, archivo o clase/línea, herramienta, salida no sensible.
-- **Hallazgos:** hechos, hipótesis y alternativas descartadas por pruebas.
-- **Pruebas:** casos, cantidad, estado, ejecución/URL de CI.
-- **Riesgos y pendientes:** bloqueantes reales, permisos o archivos necesarios.
-- **Siguiente paso técnico:** acción concreta; no responder únicamente con planificación si ya se puede implementar.
+Cada respuesta de progreso debe ser compacta: **qué código avanzó, qué prueba pasó/falló y qué impide obtener la salida correcta**. Trabajar directamente en Python y usar evidencias de APK/archivo; no abrir trabajos Android, propuestas gráficas ni largos documentos si el script todavía no descifra.
+
+En la entrega final bastan: ruta del script, comando para probarlo, dependencias, pruebas ejecutadas y limitaciones reales. No afirmar éxito por identificar una cabecera o extraer bytes no interpretados.
 
 ## 8. Indicaciones para abrir el siguiente chat con Codex
 
-Entregar en el mismo mensaje **la APK y el archivo de configuración**. Solicitar lectura de este documento desde `main`, análisis del formato, y comienzo inmediato de fases 0 y 1. Codex deberá preguntar solo por información estrictamente indispensable que no se pueda extraer de los adjuntos.
+Entregar en el mismo mensaje **la APK y el archivo de configuración**. Solicitar lectura de este documento desde `main` e inicio inmediato del análisis. **Objetivo final: script Python funcional para el bot; NO Android ahora.** Codex deberá preguntar solo por información indispensable que no se pueda extraer de los adjuntos.
 
 **No iniciar VER6 dentro de `.sip`. No reutilizar el trabajo experimental del `VER7` de SocksIP ni deducir que VER6 utiliza las mismas claves. Son investigaciones distintas.**
+### Prompt corto recomendado para el nuevo chat con Sol
+
+> Usa el conector de GitHub en `Gh0stDeveloper/SP-DECODE` y lee `docs/VER6_NEW_FORMAT_CODEX_HANDOFF.md`. Adjunto la APK original y un archivo de configuración que utiliza **otro formato: VER6 no corresponde a `.sip`**. Analiza el flujo de importación real y crea **únicamente el script Python de descifrado para el bot**, con CLI sin interacción, resultado completo y pruebas con el archivo proporcionado. Conserva los decodificadores anteriores y trabaja en una rama independiente. **No programes Android/Kotlin, no compiles APK y no publiques Releases**; la integración Android la haremos después. Para ahorrar tokens evita explicaciones repetitivas y cambios fuera del alcance, sin inventar métodos ni omitir pruebas.
+
 
 Como material de ejemplo metodológico, la rama `main` contiene `analysis/SOCKSIP_VER8_VER7_VER6_STUDY.md`, pero ese documento trata de **SocksIP y no describe el nuevo archivo**. Solo consultarlo para observar cómo separar evidencias, no como fuente criptográfica del nuevo objetivo.
