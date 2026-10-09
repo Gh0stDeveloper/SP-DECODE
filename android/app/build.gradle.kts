@@ -25,8 +25,31 @@ android {
             excludes += "META-INF/versions/**"
         }
     }
+    // Production keystore passwords are injected only at build time by CI.
+    // Never commit keystores, signing secrets or their obfuscated equivalents.
+    signingConfigs {
+        val path=providers.environmentVariable("SPDECODE_RELEASE_STORE_FILE").orNull
+        val storePass=providers.environmentVariable("SPDECODE_RELEASE_STORE_PASSWORD").orNull
+        val alias=providers.environmentVariable("SPDECODE_RELEASE_KEY_ALIAS").orNull
+        val keyPass=providers.environmentVariable("SPDECODE_RELEASE_KEY_PASSWORD").orNull
+        if(!path.isNullOrBlank() && !storePass.isNullOrBlank() &&
+            !alias.isNullOrBlank() && !keyPass.isNullOrBlank()) {
+            create("production") {
+                storeFile=file(path)
+                storePassword=storePass
+                keyAlias=alias
+                keyPassword=keyPass
+                enableV1Signing=true
+                enableV2Signing=true
+                enableV3Signing=true
+            }
+        }
+    }
     buildTypes {
-        release { isMinifyEnabled = false }
+        release {
+            isMinifyEnabled = false
+            signingConfig=signingConfigs.findByName("production")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
