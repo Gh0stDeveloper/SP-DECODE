@@ -170,7 +170,7 @@ class MainActivity : ComponentActivity() {
                 onMaskCredentials={value->hideCredentials=value;settings.edit().putBoolean("mask_credentials",value).apply()},
                 onExternalLink={url->openExternal(url)},
                 onSelect={result=it;tab=0;reveal=false},
-                onClear={deleteHistory(recent.map { it.id }.toSet())},
+                onClear={clearHistory()},
                 onDeleteSelected={ids->deleteHistory(ids)},
                 onDismissError={message=null},
             )
@@ -228,6 +228,20 @@ class MainActivity : ComponentActivity() {
             catch(e:DecodeFailure){message=getString(e.stringId)}
             catch(_:Exception){message=getString(R.string.read_error)}
             finally{busy=false}
+        }
+    }
+
+    private fun clearHistory() {
+        scope.launch {
+            try {
+                historyLoad?.await()
+                withContext(Dispatchers.IO) { historyStore.clearAll() }
+                recent.clear()
+                result = null
+                reveal = false
+            } catch (_: Exception) {
+                toast(R.string.history_storage_error)
+            }
         }
     }
 
