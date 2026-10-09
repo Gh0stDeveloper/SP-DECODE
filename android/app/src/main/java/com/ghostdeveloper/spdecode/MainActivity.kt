@@ -112,7 +112,7 @@ class MainActivity : ComponentActivity() {
     @Suppress("DEPRECATION")
     private fun handleExternalIntent(incoming:Intent?){
         if(incoming==null)return
-        val uris:List<Uri>=when(incoming.action){
+        val uris: List<Uri> = when(incoming.action){
             Intent.ACTION_VIEW->listOfNotNull(incoming.data)
             Intent.ACTION_SEND->listOfNotNull(incoming.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri)
             Intent.ACTION_SEND_MULTIPLE->
