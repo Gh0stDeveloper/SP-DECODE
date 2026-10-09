@@ -29,6 +29,8 @@ def ssh_injector(file):
 
     # Proceso de extracción de datos
     extracted_data = re.findall(r'<entry key="([^"]+)">([^"]+)</entry>', decrypt_text)
+    if not extracted_data:
+        raise ValueError('SSH Injector decrypted file contains no entry records')
     
     # Lista de emojis
     emojis = ["💠", "🔵", "💀", "🤖",  "😈", "🔥", "🚀", "🔐"]
