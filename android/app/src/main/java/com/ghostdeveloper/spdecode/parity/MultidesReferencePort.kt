@@ -42,6 +42,6 @@ internal object MultidesReferencePort {
             }
         }.joinToString("")
         require(fields.isNotEmpty())
-        p.header("")+"\n"+fields+p.footer()+"\n"
+        p.header("")+"\n"+fields+p.footer()
     }
 }
