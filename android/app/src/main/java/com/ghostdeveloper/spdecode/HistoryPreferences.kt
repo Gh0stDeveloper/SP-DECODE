@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 
 private val Context.historyPreferencesStore by preferencesDataStore("spdecode-history-settings")
 
-data class SavedHistoryPreferences(val retentionDays:Int=0,val selectedId:String?=null)
+data class SavedHistoryPreferences(val retentionDays:Int=0,val selectedId:String?=null,val lastTab:Int=0)
 
 /**
  * DataStore contains ONLY non-secret settings / an optional opaque UUID.
@@ -23,6 +23,7 @@ class HistoryPreferences(context:Context) {
     private val store=context.applicationContext.historyPreferencesStore
     private val retentionKey=intPreferencesKey("retention_days")
     private val currentKey=stringPreferencesKey("current_result_id")
+    private val tabKey=intPreferencesKey("last_tab")
 
     val values:Flow<SavedHistoryPreferences> = store.data
         .catch { if(it is IOException) emit(androidx.datastore.preferences.core.emptyPreferences())
@@ -31,9 +32,14 @@ class HistoryPreferences(context:Context) {
             SavedHistoryPreferences(
                 retentionDays=prefs[retentionKey].takeIf { it in choices }?:0,
                 selectedId=prefs[currentKey],
+                lastTab=prefs[tabKey]?.takeIf{it in 0..3}?:0,
             )
         }
 
+    suspend fun setLastTab(tab:Int) {
+        require(tab in 0..3)
+        store.edit { it[tabKey]=tab }
+    }
     suspend fun setRetentionDays(days:Int) {
         require(days in choices)
         store.edit { it[retentionKey]=days }
