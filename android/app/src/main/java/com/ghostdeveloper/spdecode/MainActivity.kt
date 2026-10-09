@@ -181,7 +181,8 @@ class MainActivity : ComponentActivity() {
             // The splash never blocks the user indefinitely if file I/O stalls.
             withTimeoutOrNull(5000L) { historyLoad?.await() }
             val elapsed=SystemClock.elapsedRealtime()-splashStarted
-            delay((750L-elapsed).coerceAtLeast(0L))
+            // Minimum visible branded splash; avoid an artificial delay beyond history load.
+            delay((1600L-elapsed).coerceAtLeast(0L))
             showBrandedSplash=false
         }
         setContent {
