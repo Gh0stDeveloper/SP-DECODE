@@ -6,6 +6,8 @@ data class DecodeView(
     val extension:String,
     val rawText:String,
     val fileBytes:Int,
+    val id:String=java.util.UUID.randomUUID().toString(),
+    val savedAtMillis:Long=System.currentTimeMillis(),
 ) {
     val document:ResultDocument by lazy(LazyThreadSafetyMode.PUBLICATION) {
         ResultPresentation.parse(rawText,extension)
