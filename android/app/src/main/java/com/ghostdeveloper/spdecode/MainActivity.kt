@@ -72,9 +72,6 @@ class MainActivity : ComponentActivity() {
     private var progressFilename by mutableStateOf<String?>(null)
     private var progressPosition by mutableIntStateOf(1)
     private var progressTotal by mutableIntStateOf(1)
-    private var textParts:TextPartSession?=null
-    private var textPartCount by mutableIntStateOf(0)
-    private var textProtocolName by mutableStateOf<String?>(null)
     private var importGeneration=0
     private var navigationExplicit=false
     private var showBrandedSplash by mutableStateOf(true)
@@ -229,9 +226,6 @@ class MainActivity : ComponentActivity() {
                 onRetention={days->setRetention(days)},
                 onDismissError={message=null},
                 onDecodeText={input->decodeText(input)},
-                onClearTextSession={clearTextFragments()},
-                textPartCount=textPartCount,
-                textProtocolName=textProtocolName,
             )
         }
         if(savedInstanceState==null)handleExternalIntent(intent)
@@ -257,7 +251,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun cancelImport() {
-        clearTextFragments()
         // An obsolete worker must not close the new import's progress dialog.
         importGeneration++
         job?.cancel()
@@ -266,35 +259,15 @@ class MainActivity : ComponentActivity() {
         progressFilename=null
     }
 
-    private fun clearTextFragments() {
-        textParts=null
-        textPartCount=0
-        textProtocolName=null
-    }
-
+    // The Android editor accepts a complete pasted configuration once.
+    // Telegram's multipart chat-session protocol does not apply here.
     private fun decodeText(userText:String) {
         if(busy)return
         if(userText.isBlank()||userText.length>TextProtocolDecoder.MAX_CHARS) {
             message=getString(R.string.text_decode_invalid)
             return
         }
-        val detected=TextProtocolDecoder.identify(userText)
-        val candidate=when {
-            detected?.multipart==true ||
-                (textParts!=null && (detected==null ||
-                    (detected.protocol=="netmod" && "://" !in userText)))->
-                TextMultipartAssembler.next(textParts,userText,SystemClock.elapsedRealtime())
-                    ?.also {
-                        textParts=it
-                        textPartCount=it.parts
-                        textProtocolName=it.input.app
-                    }?.input
-            detected!=null->{
-                clearTextFragments()
-                detected
-            }
-            else->null
-        }
+        val candidate=TextProtocolDecoder.identify(userText)
         if(candidate==null) {
             message=getString(R.string.text_decode_invalid)
             return
@@ -314,9 +287,7 @@ class MainActivity : ComponentActivity() {
                     TextProtocolDecoder.decode(this@MainActivity,candidate)
                 }
                 if(decoded==null) {
-                    if(candidate.multipart && textParts!=null) {
-                        // Incomplete text remains pending, never a false success.
-                    }else message=getString(R.string.text_decode_unsupported)
+                    message=getString(R.string.text_decode_unsupported)
                     return@launch
                 }
                 progressStage=2
@@ -336,7 +307,6 @@ class MainActivity : ComponentActivity() {
                 catch(e:CancellationException){throw e}
                 catch(_:Exception){toast(R.string.history_storage_error)}
                 tab=0
-                clearTextFragments()
             }catch(e:CancellationException){throw e}
             catch(_:Exception){if(generation==importGeneration)
                 message=getString(R.string.text_decode_unsupported)
