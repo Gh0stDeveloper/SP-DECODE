@@ -43,6 +43,6 @@ object NmPort {
         for ((key,values) in flat) {
             out.put(key,if(values.size == 1) values[0] else JSONArray(values))
         }
-        p.prettyJson(out) + "\n"
+        p.prettyJson(out).replace(Regex("(?m)^ +")) { m -> " ".repeat(m.value.length / 2) } + "\n"
     }
 }
