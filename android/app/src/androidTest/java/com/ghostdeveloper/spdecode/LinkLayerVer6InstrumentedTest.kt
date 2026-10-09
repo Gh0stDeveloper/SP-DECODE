@@ -52,6 +52,20 @@ class LinkLayerVer6InstrumentedTest {
         }
     }
 
+    @Test fun longPayloadCrossesComplete1500ByteMaskBoundary() {
+        val filename="linklayer-ver6-long.lnk"
+        val input=asset(filename)
+        val expected=JSONObject(String(asset("linklayer-ver6-long.json"),Charsets.UTF_8))
+        assertTrue(expected.getString("MessageConfig").length>1500)
+        val decrypted=LinkLayerPort.decryptGob(input)
+        assertTrue(decrypted.size>1500)
+        val standalone=LinkLayerPort.decodeGob(decrypted)
+        assertEquals(flatten(expected),flatten(standalone))
+        val routed=JSONObject(route(filename,input) ?: error("Long LinkLayer VER6 rejected"))
+        assertEquals(60,flatten(routed).size)
+        assertEquals(flatten(expected),flatten(routed))
+    }
+
     @Test fun corruptTruncatedUnknownAreNeverReportedAsSuccess(){
         assertNull(route("invalid.lnk",asset("linklayer-ver6-truncated.lnk")))
         assertNull(route("invalid.lnk",asset("linklayer-ver6-unknown.lnk")))
