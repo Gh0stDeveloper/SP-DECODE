@@ -46,6 +46,21 @@ class ParityInstrumentedTest {
     }
 
     @Test
+    fun registryHas59SuffixesButNeverClaims59WorkingAndroidDecoders() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val formats = com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog.read(context)
+        val resolver = com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
+        assertEquals(59, formats.size)
+        assertEquals("sksrv.png", resolver.detect("MYCONFIG.SKSRV.PNG", formats)?.suffix)
+        assertEquals("fɴ", resolver.detect("MYCONFIG.Fɴ", formats)?.suffix)
+        assertEquals("v2", resolver.detect("test.v2", formats)?.suffix)
+        assertEquals("prototype_two_synthetic_cases", resolver.detect("test.v2", formats)?.portStatus)
+        assertEquals(0, formats.count { it.androidVerified })
+        assertEquals(58, formats.count { it.portStatus == "not_implemented" })
+        assertNull(resolver.detect("unrecognized.unknown", formats))
+    }
+
+    @Test
     fun mergedManifestHasNoInternetAndNoStoragePermissions() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val info = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)

@@ -30,7 +30,7 @@ object AndroidDecoderCatalog {
     }
 
     fun detect(filename: String, formats: List<Format>): Format? {
-        val candidate = filename.substringAfterLast('/').substringAfterLast('\\\\')
+        val candidate = filename.substringAfterLast('/').substringAfterLast('\\')
             .lowercase(Locale.ROOT)
         if (candidate.isBlank()) return null
         return formats.filter { candidate.endsWith("." + it.suffix.lowercase(Locale.ROOT)) }

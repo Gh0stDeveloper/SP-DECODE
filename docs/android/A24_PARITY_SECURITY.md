@@ -54,3 +54,7 @@ cd android && gradle --no-daemon :app:assembleDebug :app:assembleAndroidTest
 # Con emulador conectado:
 gradle --no-daemon :app:connectedDebugAndroidTest
 \`\`\`
+
+## 5. Primer resultado instrumentado confirmado (PR #15)
+
+La ejecución [GitHub Actions #37868719536](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37868719536) compiló el host con Gradle8.11.1/AGP8.9.2 y arrancó un emulador Android API35 **x86_64**. Resultado: **4 pruebas instrumentadas aprobadas**, incluyendo raw UTF-8 exacto de e‑V2Ray plano y AES128, corrupción y permisos de red/almacenamiento. La suite Linux independiente también pasó. Este resultado certifica solamente los **dos vectores sintéticos**; no es una prueba en arm64 ni con exportadores externos. El nuevo catálogo generado registra 59 sufijos, pero mantiene **58 sin motor Android y 0 certificados**. La matriz se actualizará con CI definitivo del PR y de `main` tras integración.

@@ -40,7 +40,7 @@
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
         "A.2.3": "synthetic_linux_golden_complete_60_cases_59_of_59_vendor_and_android_pending",
-        "A.2.4": "in_progress_native_v2_two_synthetic_vectors_emulator_gate_pending"
+        "A.2.4": "in_progress_two_v2_synthetic_android_api35_parity_passed_58_suffixes_unported"
       }
     },
     "B": {
@@ -65,9 +65,9 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Finish PR #15 Linux and connected Android API35 emulator gates. Expand Kotlin adapter coverage, test arm64 and 16KB, validate all 59 against authorized exporter-version samples. Do not claim A.2.4 closed.",
+  "nextAction": "Expand native format ports (currently only .v2 experimental); check CI on latest commit and postmerge main. Arm64/16KiB and real exporter variants remain blocking for Android verification.",
   "releaseStatus": "NO-APK-NO-GO",
-  "ciValidatedAndroid": false,
+  "ciValidatedAndroid": true,
   "notes": "Planning only. No real Android decoder tested.",
   "localization": {
     "scope": "ui_only",
@@ -359,7 +359,7 @@
     "a24": {
       "branch": "feat/android-a24-parity-runtime-security-baseline",
       "pr": 15,
-      "state": "in_progress",
+      "state": "in_progress_two_synthetic_v2_vectors_passed_api35_x86_64_remaining_58_suffixes",
       "androidPrototypePath": "android/",
       "referenceCorpusCases": 60,
       "referenceRegisteredSuffixes": 59,
@@ -370,7 +370,10 @@
         "ev2ray-plain",
         "ev2ray-aes128"
       ],
-      "instrumentedPassedOnDevice": [],
+      "instrumentedPassedOnDevice": [
+        "ev2ray-plain",
+        "ev2ray-aes128"
+      ],
       "androidVerifiedSuffixes": 0,
       "emulatorTargetApi": 35,
       "emulatorTargetAbi": "x86_64",
@@ -381,7 +384,12 @@
       "whiteboxSecurity": "restricted data-only pickle with bounded decompression; global/REDUCE opcodes rejected and Linux regression checks",
       "nodePhpPortability": "not_started",
       "remainingNativeSuffixes": 58,
-      "note": "Compile or synthetic emulator test does not certify real modern exporter files. Only two .v2 synthetic variants are targeted."
+      "note": "Compile or synthetic emulator test does not certify real modern exporter files. Only two .v2 synthetic variants are targeted.",
+      "emulatorEvidence": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37868719536",
+      "lastValidatedSourceSha": "865740e3c9fea0ccb98c0526ff4796704511d44d",
+      "instrumentedTestCount": 4,
+      "experimentalHostApkCompiled": true,
+      "catalog59SuffixesGenerated": true
     }
   },
   "lastVerifiedCi": [
