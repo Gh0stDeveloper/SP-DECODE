@@ -7,7 +7,7 @@
   "baselineBranch": "main",
   "baselineHead": "e24733fcaae9608f37a6a362f0aab4327a9681ac",
   "documentationBranch": "docs/android-offline-architecture",
-  "productStatus": "android_0_3_5_single_result_room_index_release_gate_PR_pending_ci",
+  "productStatus": "android_0_3_5_room_single_result_pr28_104_connected_tests_success",
   "androidSourceExists": true,
   "apkProduced": true,
   "offlineRequired": true,
@@ -45,13 +45,13 @@
       }
     },
     "B": {
-      "status": "B5_room_secondary_index_manual_DI_last_tab_restore_implemented_CI_pending",
+      "status": "B5_Room_metadata_index_DI_DataStore_VM_recovery_API35_104_success",
       "subphases": {
         "B.1": "verified_compose_apk_api35_in_pr22",
         "B.2": "reference_screenshot_baseline_verified_apk_0_2_real_user",
         "B.3": "home_history_formats_settings_real_language_and_credits_verified_emulator",
         "B.4": "SAF_import_and_JSON_ordered_original_copy_export_verified_emulator",
-        "B.5": "Room_metadata_index_v1_pre_0_3_5_ciphertext_compatibility_Application_DI_DataStore_last_tab_and_uuid_ViewModel_persistent_process_recovery_pending_CI_NavigationCompose_not_implemented",
+        "B.5": "Room_secondary_index_preexisting_keystore_records_compatible_App_DI_DataStore_tab_and_UUID_ViewModel_persistent_restore_API35_104_tests_verified_NavigationCompose_optional_future",
         "B.6": "82_of_82_connected_instrumentation_tests_api35_success_linux_success"
       }
     },
@@ -65,16 +65,16 @@
       "status": "not_started"
     },
     "F": {
-      "status": "single_screenshot_approved_decoder_output_without_extra_raw_or_detailed_panels_0_3_5_pending_CI"
+      "status": "one_approved_decoder_layout_no_duplicate_detail_or_raw_sections_verified_API35"
     },
     "G": {
       "status": "G2_G5_implemented_API35_100_tests_green_final_pr_head_gate_pending",
       "subphases": {
-        "G.1": "Keystore_AES_GCM_atomic_ciphertext_authoritative_Room_opaque_uuid_and_timestamp_only_index_rebuild_pending_CI",
+        "G.1": "Keystore_AESGCM_ciphertext_canonical_Room_uuid_timestamp_index_v1_rebuild_legacy_records_verified_API35",
         "G.2": "metadata_only_search_extension_sort_favorites_encrypted_v2_verified_api35_run_37903456589",
         "G.3": "selective_delete_retention_excluding_favorites_backup_off_verified_api35_run_37903456589",
         "G.4": "30_file_sequential_failure_isolated_cancel_batch_verified_api35_run_37903456589",
-        "G.5": "DataStore_retention_selected_UUID_last_tab_Room_reindex_process_death_restoration_pending_CI"
+        "G.5": "DataStore_tab_and_UUID_process_recreation_Room_rebuild_verified_API35_104_tests"
       }
     },
     "H": {
@@ -90,10 +90,10 @@
       }
     }
   },
-  "nextAction": "Run PR CI after 0.3.5 Room+single-view patch; verify Room migration from encrypted 0.3.4 history, 100+ Android connected tests, release gate NO-GO. User continues ARM64/16KB, real files, and 30-file SAF tests. Do not publish signed stable until evidence and signing keys plus human GO.",
+  "nextAction": "Revalidate docs-only final PR28 HEAD before merge; no stable GO. User to continue real-file compatibility A.2.4.3/A.2.4.4 and G.4 batches. Production signing waits for secrets and evidence.",
   "releaseStatus": "DEBUG-ALPHA-0.3.5-PR-PENDING-CI-NO-STABLE-GO",
   "ciValidatedAndroid": true,
-  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed.",
+  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge.",
   "localization": {
     "scope": "ui_only",
     "languages": [
@@ -676,5 +676,20 @@
     ],
     "signingSecretsAvailable": "unknown_not_accessed",
     "productionPublished": false
+  },
+  "android035Qa": {
+    "runId": 37906990733,
+    "url": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37906990733",
+    "status": "success",
+    "connectedTestsPassed": 104,
+    "connectedTestsFailed": 0,
+    "platform": "API35 x86_64 emulator",
+    "whatItDoesNotVerify": [
+      "ARM64 physical",
+      "16KB pages physical",
+      "current vendor exporter formats",
+      "real SAF 30-file batch",
+      "actual signing secrets/stable release"
+    ]
   }
 }
