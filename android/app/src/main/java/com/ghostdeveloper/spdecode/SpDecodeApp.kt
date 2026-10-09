@@ -363,8 +363,9 @@ private fun HistoryScreen(
                 )
             }
             item {
-                Row(verticalAlignment=Alignment.CenterVertically,
+                FlowRow(
                     horizontalArrangement=Arrangement.spacedBy(7.dp),
+                    verticalArrangement=Arrangement.spacedBy(5.dp),
                     modifier=Modifier.fillMaxWidth()) {
                     FilterChip(selected=favoritesOnly,onClick={favoritesOnly=!favoritesOnly},
                         label={Text(stringResource(R.string.history_favorites))},
