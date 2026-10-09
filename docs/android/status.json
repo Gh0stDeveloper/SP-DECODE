@@ -93,8 +93,8 @@
       }
     }
   },
-  "nextAction": "Merge production signing automation only after CI successful. Next main push automatically triggers Android Production Signed APK, requiring configured repo secrets, issuing signed V1/V2/V3 production APK artifact. Check auto-run, certificate digest and installation/upgrade in person. Public GitHub Release remains NO-GO until independent release evidence is complete.",
-  "releaseStatus": "v1.0.0_PRODUCTION_SIGNED_WORKFLOW_PREPARED_PENDING_SECRETS_BUILD_GO_PUBLICATION_BLOCKED",
+  "nextAction": "Finish compact Android UI patch v1.0.1 (versionCode 12), run Linux + API35 Android instrumentation CI on PR, merge when green to trigger signed APK and public v1.0.1-rc.1 prerelease. Stable 1.0.1 remains NO-GO pending reproducible evidence.",
+  "releaseStatus": "v1.0.1_SIGNED_UI_PATCH_IN_DEVELOPMENT_PUBLIC_PRERELEASE_AFTER_CI",
   "ciValidatedAndroid": true,
   "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge. Owner confirms manual genuine files, batch, ARM64/16K and audit passed, recorded as user attestation; signed release upgrade pending. 0.3.6 changes ONLY preview to JSON + metadata comments and branded splash. PR29 0.3.6 code HEAD 27df0bf66aa73b8d31674f4eb6816274875b0f5a passed Linux and 108/108 API35 emulator run 37910797924. Signing private keys are outside repository; manual candidate test remains pending. Owner reports production keystore added to GitHub Actions Secrets; actual signed workflow verification still outstanding. 0.3.7 adds native offline text protocols and private in-memory multipart sessions, retaining existing file imports, Android Keystore history and JSON results. Final source HEAD 1f8c99457a23b2d3740643809a30d244d183e6d4 passed Linux and connected Android API35 114/114 tests in run 37959678517. Documentation-only closing commit still needs final CI. On 2026-10-09 owner explicitly requested v1.0.0 production rather than test APK, and permanent GitHub Secrets keystore only, automated workflow. Stable version/name are source changes; cannot claim signed APK exists until workflow executes with secrets. Previous independent text-real compatibility, signing install/upgrade gate still open.",
   "localization": {
@@ -608,7 +608,7 @@
       "scope": "bot regression + A2 static inventory + documentation; NOT Android execution"
     }
   ],
-  "versionName": "0.3.0-alpha",
+  "versionName": "1.0.1",
   "ci": {
     "latestAndroidRun": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37892276304",
     "androidInstrumentedTests": 82,
@@ -678,7 +678,8 @@
       "G.4 real SAF batch"
     ],
     "signingSecretsAvailable": "unknown_not_accessed",
-    "productionPublished": false
+    "productionPublished": true,
+    "publishedChannel": "v1.0.0-rc.1 production signed public prerelease"
   },
   "android035Qa": {
     "runId": 37906990733,
@@ -759,8 +760,8 @@
     "realTextVendorSamples": "not certified in this CI"
   },
   "productionAutomation": {
-    "version": "1.0.0",
-    "versionCode": 11,
+    "version": "1.0.1",
+    "versionCode": 12,
     "sourceVersion": "v0.3.7-alpha",
     "workflow": ".github/workflows/android-signed-release.yml",
     "trigger": "workflow_run Validate SP-DECODE push main success; manual fallback",
@@ -776,7 +777,7 @@
     "apksignerRequired": true,
     "zipalign16KB": true,
     "artifact": "SP-DECODE-v1.0.0-PRODUCTION-SIGNED",
-    "status": "implemented_pending_ci_and_signing_secrets_real_run",
-    "publicRelease": "blocked_until_readiness_GO"
+    "status": "v1.0.1 patch awaiting PR CI and main release flow",
+    "publicRelease": "owner authorized public signed prerelease; stable NO-GO"
   }
 }
