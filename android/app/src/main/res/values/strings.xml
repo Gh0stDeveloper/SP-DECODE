@@ -94,7 +94,7 @@
     <string name="history_delete_selected">Delete selected</string>
     <string name="history_delete_confirm">Delete %1$d saved result(s) permanently from this device?</string>
     <string name="history_storage_error">Could not access encrypted history. Check available device storage.</string>
-    <string name="decode_notice_title">Oops! We couldn't decode this file</string>
+    <string name="decode_notice_title">Oops! We could not decode this file</string>
     <string name="decode_notice_contact">Contact the developer</string>
     <string name="unsupported_variant_message">This version or variant is not compatible yet, or the file may be damaged. You can contact the developer so support for this format can be reviewed.</string>
 </resources>
