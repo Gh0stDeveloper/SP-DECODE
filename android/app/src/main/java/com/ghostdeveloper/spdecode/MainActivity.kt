@@ -33,6 +33,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.first
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.Locale
@@ -50,6 +51,8 @@ class MainActivity : ComponentActivity() {
     private val settings get()=getSharedPreferences("spdecode-ui-preferences",MODE_PRIVATE)
     private var job:Job?=null
     private val historyStore by lazy { SecureDecodeHistory(applicationContext) }
+    private val historyPreferences by lazy { HistoryPreferences(applicationContext) }
+    private var retentionDays by mutableIntStateOf(0)
     private var historyLoad: Deferred<Unit>? = null
     private val sessionVm by viewModels<DecodeSessionViewModel>()
     private val recent get()=sessionVm.recent
@@ -62,6 +65,8 @@ class MainActivity : ComponentActivity() {
     private var busy by mutableStateOf(false)
     private var progressStage by mutableIntStateOf(0)
     private var progressFilename by mutableStateOf<String?>(null)
+    private var progressPosition by mutableIntStateOf(1)
+    private var progressTotal by mutableIntStateOf(1)
     private var importGeneration=0
     private var message by mutableStateOf<String?>(null)
     private var reveal:Boolean
@@ -87,7 +92,7 @@ class MainActivity : ComponentActivity() {
         if(uri!=null)importFiles(listOf(uri))
     }
     private val multiPicker=registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()){uris->
-        if(uris.isNotEmpty())importFiles(uris.take(10))
+        if(uris.isNotEmpty())importFiles(uris.take(BatchImportQueue.MAX_FILES))
     }
     private val exporter=registerForActivityResult(
         ActivityResultContracts.CreateDocument("text/plain")){uri->saveExport(uri)}
@@ -144,13 +149,21 @@ class MainActivity : ComponentActivity() {
 
         historyLoad = scope.async {
             try {
-                val saved = withContext(Dispatchers.IO) { historyStore.load() }
-                val existingIds = recent.map { it.id }.toSet()
-                saved.filterNot { it.id in existingIds }.forEach { recent.add(it) }
-                // In-memory entries from a locale recreation must not be dropped.
-            } catch (_: Exception) {
-                toast(R.string.history_storage_error)
-            }
+                val preferences = historyPreferences.values.first()
+                retentionDays=preferences.retentionDays
+                val saved=withContext(Dispatchers.IO) {
+                    val days=preferences.retentionDays
+                    if(days>0) historyStore.pruneOlderThan(
+                        System.currentTimeMillis()-days.toLong()*86_400_000L)
+                    historyStore.load()
+                }
+                // Process death: restore the last result by an opaque UUID only.
+                val existingIds=recent.map{it.id}.toSet()
+                saved.filterNot{it.id in existingIds}.forEach{recent.add(it)}
+                if(result==null && preferences.selectedId!=null)
+                    result=recent.firstOrNull{it.id==preferences.selectedId}
+            }catch(_:CancellationException){throw CancellationException()}
+            catch(_:Exception){toast(R.string.history_storage_error)}
         }
         setContent {
             SpDecodeApp(
@@ -161,6 +174,8 @@ class MainActivity : ComponentActivity() {
                 error=message,
                 progressStage=progressStage,
                 progressFilename=progressFilename,
+                progressPosition=progressPosition,
+                progressTotal=progressTotal,
                 reveal=reveal,
                 onTab={tab=it;reveal=false},
                 onImport={picker.launch(arrayOf("*/*"))},
@@ -174,9 +189,12 @@ class MainActivity : ComponentActivity() {
                 onLanguage={tag->setLanguage(tag)},
                 onMaskCredentials={value->hideCredentials=value;settings.edit().putBoolean("mask_credentials",value).apply()},
                 onExternalLink={url->openExternal(url)},
-                onSelect={result=it;tab=0;reveal=false},
+                onSelect={selectResult(it)},
                 onClear={clearHistory()},
                 onDeleteSelected={ids->deleteHistory(ids)},
+                onFavorite={id,favorite->updateFavorite(id,favorite)},
+                retentionDays=retentionDays,
+                onRetention={days->setRetention(days)},
                 onDismissError={message=null},
             )
         }
@@ -196,10 +214,10 @@ class MainActivity : ComponentActivity() {
             Intent.ACTION_VIEW->listOfNotNull(incoming.data)
             Intent.ACTION_SEND->listOfNotNull(incoming.getParcelableExtra(Intent.EXTRA_STREAM) as? Uri)
             Intent.ACTION_SEND_MULTIPLE->
-                incoming.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)?.take(10).orEmpty()
+                incoming.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)?.take(BatchImportQueue.MAX_FILES).orEmpty()
             else->emptyList()
         }
-        if(uris.isNotEmpty())importFiles(uris)
+        if(uris.isNotEmpty())importFiles(uris.take(BatchImportQueue.MAX_FILES))
     }
 
     private fun cancelImport() {
@@ -211,18 +229,35 @@ class MainActivity : ComponentActivity() {
         progressFilename=null
     }
 
+    private fun selectResult(entry:DecodeView) {
+        result=entry
+        tab=0
+        reveal=false
+        scope.launch {
+            try{historyPreferences.setSelectedId(entry.id)}
+            catch(_:CancellationException){throw CancellationException()}
+            catch(_:Exception){toast(R.string.history_storage_error)}
+        }
+    }
+
     private fun importFiles(uris:List<Uri>){
         job?.cancel()
         val generation=++importGeneration
+        val inputs=uris.take(BatchImportQueue.MAX_FILES)
+        if(inputs.isEmpty())return
         job=scope.launch {
             busy=true
             progressStage=0
             progressFilename=null
+            progressPosition=1
+            progressTotal=inputs.size
             message=null
             reveal=false
             try {
                 historyLoad?.await()
-                for(uri in uris.take(10)){
+                val report=BatchImportQueue.process(inputs){uri,index,total->
+                    progressPosition=index
+                    progressTotal=total
                     progressStage=0
                     val name=withContext(Dispatchers.IO){displayName(uri)}
                     progressFilename=name
@@ -244,12 +279,15 @@ class MainActivity : ComponentActivity() {
                     result=processed
                     recent.add(0,processed)
                     if(!saved)toast(R.string.history_storage_error)
+                    historyPreferences.setSelectedId(processed.id)
+                    tab=0
+                }
+                if(generation==importGeneration && report.failures>0) {
+                    message=getString(R.string.batch_import_summary,
+                        report.successes,report.failures)
                     tab=0
                 }
             }catch(e:CancellationException){throw e}
-            catch(e:DecodeFailure){if(generation==importGeneration){
-                message=getString(e.stringId);tab=0
-            }}
             catch(_:Exception){if(generation==importGeneration){
                 message=getString(R.string.read_error);tab=0
             }}
@@ -257,8 +295,48 @@ class MainActivity : ComponentActivity() {
                 if(generation==importGeneration) {
                     busy=false
                     progressFilename=null
+                    progressPosition=1
+                    progressTotal=1
                 }
             }
+        }
+    }
+
+    private fun updateFavorite(id:String,favorite:Boolean) {
+        scope.launch {
+            try {
+                historyLoad?.await()
+                val updated=withContext(Dispatchers.IO) {
+                    historyStore.setFavorite(id,favorite)
+                }
+                val index=recent.indexOfFirst{it.id==id}
+                if(index>=0)recent[index]=updated
+                if(result?.id==id)result=updated
+            }catch(_:CancellationException){throw CancellationException()}
+            catch(_:Exception){toast(R.string.history_storage_error)}
+        }
+    }
+
+    private fun setRetention(days:Int) {
+        if(days !in HistoryPreferences.choices)return
+        scope.launch {
+            try {
+                historyLoad?.await()
+                historyPreferences.setRetentionDays(days)
+                retentionDays=days
+                if(days>0) {
+                    val pruned=withContext(Dispatchers.IO) {
+                        historyStore.pruneOlderThan(
+                            System.currentTimeMillis()-days.toLong()*86_400_000L)
+                    }
+                    recent.removeAll { it.id in pruned }
+                    if(result?.id in pruned) {
+                        result=null
+                        historyPreferences.setSelectedId(null)
+                    }
+                }
+            }catch(_:CancellationException){throw CancellationException()}
+            catch(_:Exception){toast(R.string.history_storage_error)}
         }
     }
 
@@ -267,6 +345,7 @@ class MainActivity : ComponentActivity() {
             try {
                 historyLoad?.await()
                 withContext(Dispatchers.IO) { historyStore.clearAll() }
+                historyPreferences.setSelectedId(null)
                 recent.clear()
                 result = null
                 reveal = false
@@ -285,6 +364,7 @@ class MainActivity : ComponentActivity() {
                 withContext(Dispatchers.IO) { historyStore.delete(targets) }
                 recent.removeAll { it.id in targets }
                 if (result?.id in targets) {
+                    historyPreferences.setSelectedId(null)
                     result = null
                     reveal = false
                 }
