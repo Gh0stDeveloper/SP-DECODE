@@ -68,6 +68,13 @@ object AndroidOfflineDecoderRouter {
             "htb" -> HtbPort.decode(context,input)
             "hat" -> HatPort.decode(context,input)
             "ehil" -> EhilPort.decode(input)
+            "dark" -> DarkPort.decode(input)
+            "ehi" -> EhiPort.decode(input)
+            "npv4" -> Npv4Port.decode(context,input)
+            "npvt" -> NpvtPort.decode(context,input)
+            "sip" -> SipPort.decode(input)
+            "ssc" -> SscPort.decode(input)
+            "hc" -> HcPort.decode(context,input)
             else -> null
         }
     }
