@@ -17,6 +17,13 @@ android {
         resourceConfigurations += listOf("en", "es", "pt-rBR", "ar")
     }
     buildFeatures { compose = true }
+    packaging {
+        resources {
+            // Bouncy Castle and jspecify both ship JVM 9 multi-release metadata;
+            // Android does not execute those JVM-specific OSGi descriptors.
+            excludes += "META-INF/versions/**"
+        }
+    }
     buildTypes {
         release { isMinifyEnabled = false }
     }
