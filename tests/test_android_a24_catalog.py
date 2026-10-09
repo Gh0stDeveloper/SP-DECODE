@@ -23,7 +23,7 @@ class AndroidA24CatalogTests(unittest.TestCase):
         bysuffix={x["suffix"]:x for x in generate()["entries"]}
         self.assertIn("sksrv.png",bysuffix)
         self.assertIn("fɴ",bysuffix)
-        self.assertEqual(next(x for x in generate()["entries"] if x["suffix"]=="sksrv.png")["androidPortStatus"],"not_implemented")
+        self.assertEqual(next(x for x in generate()["entries"] if x["suffix"]=="sksrv.png")["androidPortStatus"],"experimental_batch15_synthetic")
 
 
 if __name__=="__main__":
