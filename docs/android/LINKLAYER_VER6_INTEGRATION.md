@@ -16,7 +16,7 @@ VER6 + Blowfish-CFB (clave 8 bytes al final)
  -> contenedor Salsa20 + reordenamiento
  -> 3 segmentos, seleccionar el segmento central
  -> CAST5-CFB + bandera de orden
- -> PBKDF2-HMAC-SHA1 (1500 iteraciones) para XOR inicial
+ -> PBKDF2-HMAC-SHA1 (32 iteraciones, 1500 bytes derivados) para XOR inicial
  -> reconstrucción de clave/ciphertext
  -> AES-CFB
  -> lector Go gob de solo datos (NativeConfig)
@@ -44,7 +44,7 @@ archivos `.lnk`**; el resto continúa limitado a 1 MiB en importación Android.
   el código en preferencias, sin mostrarla en cada apertura.
 - Versión candidata `1.0.3`, código 14; Release estable sigue NO-GO.
 
-## Pruebas
+**Corrección de paridad:** la API Python `hashlib.pbkdf2_hmac(\"sha1\", password, salt, 32, 1500)` expresa **32 iteraciones** y **1500 bytes de salida**. El puerto Kotlin anterior invirtió estos parámetros (1500 iteraciones, 32 bytes), lo que corrompía el resultado Go gob. Ahora aplica la misma derivación que Python en todos los bytes hasta 1500.\n\n## Pruebas
 
 - Python: `tests/test_linklayer_ver6.py` (10 pruebas originales, contrato CLI,
   esquema íntegro, entradas inválidas y revisión del ejecutor del bot).
