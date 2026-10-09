@@ -369,6 +369,10 @@ def run(file_bytes: bytes) -> Optional[str]:
     try:
         value = decrypt(file_bytes)
     except HCError as exc:
+        # Corrupted/unrecognized envelopes are normal negative inputs: keep
+        # the original run(bytes)->None contract used by 59-format testing.
+        if str(exc) == "Not a valid HTTP Custom envelope":
+            return None
         # Authenticated envelopes may require credentials that cannot be
         # safely collected inside a non-interactive Telegram file worker.
         raise ValueError("HTTP Custom HCCFG: " + str(exc)) from exc
