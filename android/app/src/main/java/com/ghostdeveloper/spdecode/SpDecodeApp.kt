@@ -13,6 +13,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -50,6 +52,8 @@ fun SpDecodeApp(
     session:List<DecodeView>,
     busy:Boolean,
     error:String?,
+    progressStage:Int,
+    progressFilename:String?,
     reveal:Boolean,
     onTab:(Int)->Unit,
     onImport:()->Unit,
@@ -84,10 +88,8 @@ fun SpDecodeApp(
             BrandHeader(onSettings={onTab(3)})
             Box(Modifier.weight(1f)) {
                 when(activeTab) {
-                    0->HomeScreen(current,session,busy,error,reveal,hideCredentials,onImport,onCancel,onReveal,
-                        onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect,
-                        onDismissNotice=onDismissError,
-                        onContact={onExternalLink("https://t.me/Gh0stDeveloper")})
+                    0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
+                        onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect)
                     1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple)
                     2->FormatsScreen()
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
@@ -96,7 +98,58 @@ fun SpDecodeApp(
             }
             BottomTabs(activeTab,onTab)
         }
-        // Import failures are presented as non-blocking inline notices on Home.
+        // Import progress is modal so it cannot be overlooked or mistaken for a
+        // stalled app. Cancellation is explicit; Back never dismisses it silently.
+        if(busy) Dialog(
+            onDismissRequest={},
+            properties=DialogProperties(
+                dismissOnBackPress=false,dismissOnClickOutside=false),
+        ) {
+            Surface(color=Panel,shape=RoundedCornerShape(22.dp),
+                modifier=Modifier.fillMaxWidth(),
+                border=BorderStroke(1.dp,Outline)) {
+                Column(
+                    Modifier.padding(horizontal=24.dp,vertical=27.dp),
+                    verticalArrangement=Arrangement.spacedBy(14.dp),
+                    horizontalAlignment=Alignment.CenterHorizontally,
+                ) {
+                    CircularProgressIndicator(color=White,strokeWidth=3.dp,
+                        modifier=Modifier.size(43.dp))
+                    Text(stringResource(R.string.decode_progress_title),
+                        color=White,fontSize=19.sp,fontWeight=FontWeight.Bold)
+                    Text(stringResource(when(progressStage){
+                        0->R.string.decode_progress_reading
+                        2->R.string.decode_progress_saving
+                        else->R.string.decode_progress_decoding
+                    }),color=Secondary,fontSize=14.sp,textAlign=TextAlign.Center)
+                    if(!progressFilename.isNullOrBlank()) Text(progressFilename,
+                        color=Secondary,fontSize=12.sp,maxLines=2,
+                        overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Center)
+                    OutlinedButton(onClick=onCancel,modifier=Modifier.fillMaxWidth(),
+                        colors=ButtonDefaults.outlinedButtonColors(contentColor=White)) {
+                        Text(stringResource(R.string.processing_cancel))
+                    }
+                }
+            }
+        }
+        if(error!=null && !busy) AlertDialog(
+            onDismissRequest=onDismissError,
+            icon={Icon(Icons.Outlined.Info,null,tint=Amber)},
+            title={Text(stringResource(R.string.decode_notice_title))},
+            text={Text(error,color=Secondary)},
+            confirmButton={TextButton(onClick=onDismissError){
+                Text(stringResource(R.string.close),color=White)
+            }},
+            dismissButton={TextButton(onClick={
+                onDismissError()
+                onExternalLink("https://t.me/Gh0stDeveloper")
+            }) {
+                Text(stringResource(R.string.decode_notice_contact),color=White)
+            }},
+            containerColor=Panel,
+            titleContentColor=White,
+            textContentColor=Secondary,
+        )
         if(dialog!=null && current!=null) {
             val copy=dialog=="copy"
             AlertDialog(
@@ -166,7 +219,6 @@ private fun HomeScreen(
     current:DecodeView?,
     session:List<DecodeView>,
     busy:Boolean,
-    error:String?,
     reveal:Boolean,
     hideCredentials:Boolean,
     onImport:()->Unit,
@@ -175,8 +227,6 @@ private fun HomeScreen(
     onCopy:()->Unit,
     onExport:()->Unit,
     onSelect:(DecodeView)->Unit,
-    onDismissNotice:()->Unit,
-    onContact:()->Unit,
 ) {
     Column(
         modifier=Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -196,53 +246,21 @@ private fun HomeScreen(
                 Text(stringResource(R.string.import_detail),color=Secondary,
                     fontSize=15.sp,lineHeight=23.sp,textAlign=TextAlign.Center)
                 Spacer(Modifier.height(12.dp))
-                if(busy) {
-                    CircularProgressIndicator(color=White,modifier=Modifier.size(24.dp),
-                        strokeWidth=2.dp)
-                    Spacer(Modifier.height(8.dp))
-                    Text(stringResource(R.string.file_processing),color=Secondary,fontSize=13.sp)
-                    TextButton(onClick=onCancel){Text(stringResource(R.string.processing_cancel))}
-                }else{
-                    Button(
-                        onClick=onImport,
-                        shape=RoundedCornerShape(40.dp),
-                        colors=ButtonDefaults.buttonColors(containerColor=Raised,contentColor=White),
-                        contentPadding=PaddingValues(horizontal=18.dp,vertical=9.dp),
-                    ){Text(stringResource(R.string.select_file),fontSize=15.sp,
-                        fontWeight=FontWeight.SemiBold)}
+                Button(
+                    onClick=onImport,
+                    enabled=!busy,
+                    shape=RoundedCornerShape(40.dp),
+                    colors=ButtonDefaults.buttonColors(
+                        containerColor=Raised,contentColor=White,
+                        disabledContainerColor=Raised,disabledContentColor=Secondary),
+                    contentPadding=PaddingValues(horizontal=18.dp,vertical=9.dp),
+                ) {
+                    Text(stringResource(R.string.select_file),fontSize=15.sp,
+                        fontWeight=FontWeight.SemiBold)
                 }
             }
         }
 
-        if(error!=null) {
-            Surface(
-                color=Panel,
-                shape=RoundedCornerShape(16.dp),
-                modifier=Modifier.fillMaxWidth(),
-                border=BorderStroke(1.dp, Outline),
-            ) {
-                Column(Modifier.padding(16.dp),
-                    verticalArrangement=Arrangement.spacedBy(9.dp)) {
-                    Row(verticalAlignment=Alignment.CenterVertically) {
-                        Icon(Icons.Outlined.Info,null,tint=Amber,modifier=Modifier.size(22.dp))
-                        Spacer(Modifier.width(10.dp))
-                        Text(stringResource(R.string.decode_notice_title),color=White,
-                            fontSize=16.sp,fontWeight=FontWeight.SemiBold,
-                            modifier=Modifier.weight(1f))
-                        IconButton(onClick=onDismissNotice) {
-                            Icon(Icons.Outlined.Close,stringResource(R.string.close),
-                                tint=Secondary)
-                        }
-                    }
-                    Text(error,color=Secondary,fontSize=14.sp,lineHeight=21.sp)
-                    TextButton(onClick=onContact) {
-                        Icon(Icons.Outlined.ContactSupport,null)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.decode_notice_contact))
-                    }
-                }
-            }
-        }
         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
             Text(stringResource(R.string.result),color=White,fontWeight=FontWeight.Bold,
                 fontSize=18.sp,modifier=Modifier.weight(1f))
