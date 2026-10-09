@@ -132,7 +132,7 @@ object TlsReferencePort {
                 '\b' -> append("\\b")
                 '\t' -> append("\\t")
                 '\n' -> append("\\n")
-                '\f' -> append("\\f")
+                '\u000C' -> append("\\f")
                 '\r' -> append("\\r")
                 else -> {
                     if (ch.code < 0x20) {
