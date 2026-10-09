@@ -338,7 +338,10 @@ private fun HistoryScreen(
                                 color = Secondary, fontSize = 12.sp)
                         }
                         if (!selecting) {
-                            IconButton(onClick = { deletion = setOf(entry.id) }) {
+                            IconButton(onClick = {
+                                deletingAll = false
+                                deletion = setOf(entry.id)
+                            }) {
                                 Icon(Icons.Outlined.DeleteOutline,
                                     stringResource(R.string.history_delete_one), tint = Secondary)
                             }
@@ -348,7 +351,10 @@ private fun HistoryScreen(
             }
             item {
                 if (selecting) {
-                    Button(onClick = { deletion = selected.toSet() },
+                    Button(onClick = {
+                        deletingAll = false
+                        deletion = selected.toSet()
+                    },
                         enabled = selected.isNotEmpty(),
                         modifier = Modifier.fillMaxWidth()) {
                         Icon(Icons.Outlined.DeleteOutline, null)
@@ -374,7 +380,7 @@ private fun HistoryScreen(
         }
     }
     if (deletion != null) AlertDialog(
-        onDismissRequest = { deletion = null },
+        onDismissRequest = { deletion = null; deletingAll = false },
         title = { Text(stringResource(R.string.clear_confirm_title)) },
         text = { Text(stringResource(R.string.history_delete_confirm, deletion!!.size)) },
         confirmButton = {
@@ -388,7 +394,7 @@ private fun HistoryScreen(
                 deletingAll = false
             }) { Text(stringResource(R.string.history_delete_selected)) }
         },
-        dismissButton = { TextButton(onClick = { deletion = null }) {
+        dismissButton = { TextButton(onClick = { deletion = null; deletingAll = false }) {
             Text(stringResource(R.string.cancel))
         } },
         containerColor = Panel,
