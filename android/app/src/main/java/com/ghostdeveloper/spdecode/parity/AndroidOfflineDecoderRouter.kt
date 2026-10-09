@@ -28,6 +28,16 @@ object AndroidOfflineDecoderRouter {
             "sksrv" -> SksrvPort.decode(input)
             "maya" -> MayaPort.decode(input)
             "xui" -> XuiPort.decode(input)
+            "at" -> AtPort.decode(input)
+            "nm" -> NmPort.decode(input)
+            "ost" -> OstPort.decode(input)
+            "sbr" -> SbrPort.decode(input)
+            "pcx" -> PcxPort.decode(input)
+            "nt" -> NtPort.decode(input)
+            "pb" -> PbPort.decode(input)
+            "aro" -> AroPort.decode(input)
+            "ipt" -> IptPort.decode(input)
+            "gold" -> GoldPort.decode(input)
             else -> null
         }
     }
