@@ -362,7 +362,10 @@ def run(file_bytes: bytes) -> Optional[str]:
     legacy = HCDecryptor.execute(file_bytes)
     if legacy is not None:
         return legacy
-    from _hc_hccfg import HCError, decrypt
+    if __package__:
+        from ._hc_hccfg import HCError, decrypt
+    else:
+        from _hc_hccfg import HCError, decrypt
     try:
         value = decrypt(file_bytes)
     except HCError as exc:
