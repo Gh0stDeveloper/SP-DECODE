@@ -40,7 +40,7 @@ exportadores externos. Firmar la APK tampoco certifica la compatibilidad.
 2. Proteger el entorno `spdecode-production` con revisores obligatorios
    y limitarlo a la rama `main`; opcionalmente `spdecode-candidate`.
 3. GitHub → Actions → **Android Signed Release (Manual Gates)** →
-   Run workflow, elegir `candidate`, versión `0.3.5-alpha`,
+   Run workflow, elegir `candidate`, versión `0.3.6-alpha`,
    `publish=false`.
 4. La acción exige código de `main`, CI verde del **mismo SHA**,
    compila `assembleRelease` y verifica con `apksigner` v1/v2/v3,
@@ -80,3 +80,15 @@ El proceso Android recrea el ViewModel y vuelve a cargar los registros desde
 disco; una restauración fallida del índice NO debe borrar archivos cifrados.
 La navegación por pestañas sigue con Compose ligero; no declarar integración
 Navigation Compose/Hilt realizada si no existe.
+
+## Keystore nuevo preparado el 2026-10-09
+
+El usuario recibió el paquete privado `SP-DECODE-Android-Signing-Private.zip`
+generado fuera del repositorio. Es un **nuevo** certificado RSA de 4096 bits
+almacenado como PKCS#12. Debe conservar el keystore y contraseña originales
+en un sitio seguro sin subirlos a commits; los valores secret se introducen
+desde el paquete privado en GitHub Actions. La configuración original en
+`android/app/build.gradle.kts` fuerza las firmas APK v1/v2/v3 para release.
+No se ha probado la firma con secretos alojados en el repositorio,
+ni la instalación de un candidato firmado. El flujo sigue manual y
+bloqueado para stable hasta una aprobación futura.
