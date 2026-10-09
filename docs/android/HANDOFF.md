@@ -184,3 +184,21 @@ source mechanisms correctly reused for multiple registry suffixes.
 Latest emulation must also check `FinalExtra4InstrumentedTest`;
 the successful older workflow covering only 11 does NOT validate
 the four new ports. No revision of the original bot.
+
+## Final seven batch A.2.4
+
+Branch `feat/android-a24-final-seven-native-ports`; explicit Kotlin adapters
+dark, ehi, npv4, npvt, sip, ssc, hc, plus `LegacyChaCha8`,
+`StrictMessagePack`, `SockipObjectReader` and
+`NpvWhiteboxReferencePort`. `scripts/android_a24_whitebox_export.py`
+must execute **before Android Gradle build**, in CI; the resulting
+binary is embedded as an APK read-only offline asset.
+
+60 synthetic goldens, 59 candidate suffixes, **zero real-exporter-certified**.
+The 7 new Android golden positives and 21 negative cases have **not yet
+passed a full emulator CI** at documentation authoring. Keep PR draft and
+do not merge until both jobs green.
+
+Technical debt remains even after synthetic success: EHI standard Argon2id
+variant, HC extra inner field variants, SIP VER7, NPV other app versions,
+plus ARM64/16KiB and authorized real exporter fixtures, UI/SAF.
