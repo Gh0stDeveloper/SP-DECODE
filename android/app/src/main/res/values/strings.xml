@@ -84,4 +84,5 @@
     <string name="json_option">JSON · typed and formatted</string>
     <string name="ordered_option">Structured · full ordered fields</string>
     <string name="original_option">Original decoder text</string>
+    <string name="raw_masked_explanation">Raw decoder text may include credentials in embedded JSON. Disable masking in Settings to see it.</string>
 </resources>
