@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -18,6 +19,10 @@ import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
+import java.text.DateFormat
+import java.util.Date
+import java.util.Locale
 
 private val Ink=Color(0xFFF7F7F7)
 private val Muted=Color(0xFFABABAB)
@@ -25,10 +30,9 @@ private val Edge=Color(0xFF292929)
 private val Tile=Color(0xFF242424)
 
 /**
- * The screenshot-approved original bot-style output is PRIMARY. No flattening,
- * cap, loss of nested fields, reordering, or accidental JSON-to-text export.
- * Organized nested JSON is the only DISPLAY view; rawText remains immutable
- * and accessible through the established original copy/export actions.
+ * JSON is the ONLY on-screen decoded data representation.
+ * Decoder raw text is NEVER rewritten. Copy/export continue to support the
+ * exact original. The metadata and developer attribution are outside JSON.
  */
 @Composable
 fun CompleteResultCard(
@@ -38,46 +42,62 @@ fun CompleteResultCard(
     onReveal:(Boolean)->Unit,
     onCopy:()->Unit,
     onExport:()->Unit,
-){
+) {
+    val context=LocalContext.current
     val sample=current==null
     val mask=hideCredentials&&!reveal
-    // Cache formatting by the immutable raw input and active privacy mode.
     val primary=remember(current?.id,mask) {
-        current?.let { RawResultFormatter.render(it.rawText,mask) }.orEmpty()
+        current?.let { ResultJsonDisplay.render(it.rawText,it.extension,mask) }.orEmpty()
+    }
+    val appName=remember(current?.filename,current?.extension) {
+        if(current==null)""
+        else runCatching {
+            AndroidDecoderCatalog.detect(current.filename,
+                AndroidDecoderCatalog.read(context))?.appName
+        }.getOrNull() ?: current.extension.uppercase(Locale.ROOT)
+    }
+    val formattedDate=remember(current?.savedAtMillis,
+        context.resources.configuration.locales[0]) {
+        current?.let {
+            val locale=context.resources.configuration.locales[0]
+            DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.SHORT,locale)
+                .format(Date(it.savedAtMillis))
+        }.orEmpty()
     }
     Surface(
         modifier=Modifier.fillMaxWidth(),
         shape=RoundedCornerShape(17.dp),
         color=Color.Black,
         border=BorderStroke(1.dp,Edge),
-    ){
-        Column(
-            modifier=Modifier.padding(16.dp),
-            verticalArrangement=Arrangement.spacedBy(14.dp),
-        ){
-            Row(verticalAlignment=Alignment.CenterVertically){
-                Icon(Icons.Outlined.Description,null,tint=Muted,
+    ) {
+        Column(modifier=Modifier.padding(16.dp),
+            verticalArrangement=Arrangement.spacedBy(14.dp)) {
+            Row(verticalAlignment=Alignment.CenterVertically) {
+                Icon(Icons.Outlined.DataObject,null,tint=Muted,
                     modifier=Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
                 Text(current?.filename ?: stringResource(R.string.example_file),
                     color=Ink,fontSize=14.sp,fontWeight=FontWeight.SemiBold,
                     maxLines=2,overflow=TextOverflow.Ellipsis,
                     modifier=Modifier.weight(1f))
-                if(!sample) {
-                    Spacer(Modifier.width(5.dp))
-                    Text(stringResource(R.string.experimental),
-                        color=Muted,fontSize=11.sp)
-                }
             }
-            HorizontalDivider(color=Edge)
             if(sample) {
                 Text(stringResource(R.string.no_result),
                     color=Muted,fontSize=14.sp,lineHeight=20.sp)
                 Text(stringResource(R.string.illustrative_warning),
                     color=Muted,fontSize=12.sp)
-            }else{
-                // Full decoder appearance, with JSON objects expanded *inside*
-                // the original key/value blocks. User text remains selectable.
+            } else {
+                Column(verticalArrangement=Arrangement.spacedBy(4.dp)) {
+                    Text("// "+stringResource(R.string.result_decoded_by,appName),
+                        color=Muted,fontSize=12.sp,lineHeight=17.sp,
+                        style=TextStyle(textDirection=TextDirection.Ltr))
+                    Text("// "+stringResource(R.string.result_decoded_date,formattedDate),
+                        color=Muted,fontSize=12.sp,lineHeight=17.sp,
+                        style=TextStyle(textDirection=TextDirection.Ltr))
+                    Text("// "+stringResource(R.string.splash_powered_by),
+                        color=Muted,fontSize=12.sp,lineHeight=17.sp,
+                        style=TextStyle(textDirection=TextDirection.Ltr))
+                }
                 SelectionContainer {
                     Text(primary,color=Ink,fontSize=13.sp,lineHeight=19.sp,
                         style=TextStyle(textDirection=TextDirection.Ltr),
@@ -93,13 +113,11 @@ fun CompleteResultCard(
                             color=Ink)
                     }
                 }
-
             }
-            Row(horizontalArrangement=Arrangement.spacedBy(10.dp)){
+            Row(horizontalArrangement=Arrangement.spacedBy(10.dp)) {
                 val buttons=ButtonDefaults.buttonColors(
                     containerColor=Tile,contentColor=Ink,
-                    disabledContainerColor=Tile,disabledContentColor=Muted,
-                )
+                    disabledContainerColor=Tile,disabledContentColor=Muted)
                 Button(onClick=onCopy,enabled=!sample,
                     modifier=Modifier.weight(1f),colors=buttons,
                     shape=RoundedCornerShape(11.dp)) {
@@ -111,7 +129,7 @@ fun CompleteResultCard(
                 }
                 Button(onClick=onExport,enabled=!sample,
                     modifier=Modifier.weight(1f),colors=buttons,
-                    shape=RoundedCornerShape(11.dp)){
+                    shape=RoundedCornerShape(11.dp)) {
                     Icon(Icons.Outlined.FileDownload,null,tint=if(sample)Muted else Ink,
                         modifier=Modifier.size(17.dp))
                     Spacer(Modifier.width(8.dp))
