@@ -27,7 +27,8 @@ private val Tile=Color(0xFF242424)
 /**
  * The screenshot-approved original bot-style output is PRIMARY. No flattening,
  * cap, loss of nested fields, reordering, or accidental JSON-to-text export.
- * Organized nested JSON is a DISPLAY view; the raw text is immutable.
+ * Organized nested JSON is the only DISPLAY view; rawText remains immutable
+ * and accessible through the established original copy/export actions.
  */
 @Composable
 fun CompleteResultCard(
@@ -38,10 +39,7 @@ fun CompleteResultCard(
     onCopy:()->Unit,
     onExport:()->Unit,
 ){
-    var rawExpanded by remember(current?.id){mutableStateOf(false)}
-    var fieldsExpanded by remember(current?.id){mutableStateOf(false)}
     val sample=current==null
-    val fields=current?.document?.fields.orEmpty()
     val mask=hideCredentials&&!reveal
     // Cache formatting by the immutable raw input and active privacy mode.
     val primary=remember(current?.id,mask) {
@@ -95,47 +93,7 @@ fun CompleteResultCard(
                             color=Ink)
                     }
                 }
-                Row(verticalAlignment=Alignment.CenterVertically,
-                    horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-                    TextButton(onClick={rawExpanded=!rawExpanded},
-                        contentPadding=PaddingValues(0.dp)) {
-                        Text(stringResource(R.string.raw_text),color=Ink,fontSize=12.sp)
-                        Spacer(Modifier.width(4.dp))
-                        Icon(if(rawExpanded)Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
-                            null,tint=Ink,modifier=Modifier.size(18.dp))
-                    }
-                    if(fields.isNotEmpty()) TextButton(
-                        onClick={fieldsExpanded=!fieldsExpanded},
-                        contentPadding=PaddingValues(0.dp)) {
-                        Text(stringResource(R.string.detailed_fields),color=Muted,fontSize=12.sp)
-                        Icon(if(fieldsExpanded)Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
-                            null,tint=Muted,modifier=Modifier.size(18.dp))
-                    }
-                }
-                if(rawExpanded) {
-                    if(mask) Text(stringResource(R.string.raw_masked_explanation),
-                        color=Muted,fontSize=12.sp,lineHeight=18.sp)
-                    else SelectionContainer {
-                        Text(current.rawText,color=Ink,fontSize=12.sp,lineHeight=18.sp,
-                            style=TextStyle(textDirection=TextDirection.Ltr))
-                    }
-                }
-                if(fieldsExpanded) {
-                    Text(stringResource(R.string.complete_fields_count,fields.size),
-                        color=Muted,fontSize=12.sp)
-                    fields.forEach { field ->
-                        Column(verticalArrangement=Arrangement.spacedBy(3.dp)) {
-                            Text(field.path,color=Muted,fontSize=12.sp,
-                                style=TextStyle(textDirection=TextDirection.Ltr))
-                            SelectionContainer {
-                                Text(if(mask&&field.confidential)"••••••••" else field.value,
-                                    color=Ink,fontSize=13.sp,lineHeight=19.sp,
-                                    style=TextStyle(textDirection=TextDirection.Ltr))
-                            }
-                        }
-                        HorizontalDivider(color=Edge)
-                    }
-                }
+
             }
             Row(horizontalArrangement=Arrangement.spacedBy(10.dp)){
                 val buttons=ButtonDefaults.buttonColors(
