@@ -94,4 +94,7 @@
     <string name="history_delete_selected">Apagar selecionados</string>
     <string name="history_delete_confirm">Apagar permanentemente %1$d resultado(s) deste dispositivo?</string>
     <string name="history_storage_error">Não foi possível acessar o histórico criptografado. Verifique o espaço disponível.</string>
+    <string name="decode_notice_title">Ops! Não foi possível decodificar este arquivo</string>
+    <string name="decode_notice_contact">Contatar o desenvolvedor</string>
+    <string name="unsupported_variant_message">Esta versão ou variante ainda não é compatível, ou o arquivo pode estar danificado. Entre em contato com o desenvolvedor para solicitar análise do formato.</string>
 </resources>
