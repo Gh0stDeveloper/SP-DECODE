@@ -69,10 +69,14 @@ class HistoryRepository(
         mutex.withLock {
             val records=encrypted.load()
             val rows=records.map { HistoryIndexRow(it.id,it.savedAtMillis) }
-            index.withTransaction {
-                index.records().clear()
-                if(rows.isNotEmpty())index.records().upsertAll(rows)
-            }
+            // The index is an optimization, never a prerequisite to see an
+            // authenticated encrypted file. Rebuild on the next successful load.
+            runCatching {
+                index.withTransaction {
+                    index.records().clear()
+                    if(rows.isNotEmpty())index.records().upsertAll(rows)
+                }
+            }.onFailure { if(it is kotlinx.coroutines.CancellationException)throw it }
             records
         }
     }
@@ -80,7 +84,9 @@ class HistoryRepository(
     suspend fun save(entry:DecodeView) = withContext(Dispatchers.IO) {
         mutex.withLock {
             encrypted.save(entry)
-            index.records().upsert(HistoryIndexRow(entry.id,entry.savedAtMillis))
+            runCatching {
+                index.records().upsert(HistoryIndexRow(entry.id,entry.savedAtMillis))
+            }.onFailure { if(it is kotlinx.coroutines.CancellationException)throw it }
         }
     }
 
@@ -91,14 +97,16 @@ class HistoryRepository(
     suspend fun delete(ids:Set<String>) = withContext(Dispatchers.IO) {
         mutex.withLock {
             encrypted.delete(ids)
-            if(ids.isNotEmpty())index.records().delete(ids)
+            if(ids.isNotEmpty())runCatching {index.records().delete(ids)}
+                .onFailure { if(it is kotlinx.coroutines.CancellationException)throw it }
         }
     }
 
     suspend fun clear() = withContext(Dispatchers.IO) {
         mutex.withLock {
             encrypted.clearAll()
-            index.records().clear()
+            runCatching { index.records().clear() }
+                .onFailure { if(it is kotlinx.coroutines.CancellationException)throw it }
         }
     }
 
@@ -106,7 +114,8 @@ class HistoryRepository(
         withContext(Dispatchers.IO) {
             mutex.withLock {
                 val removed=encrypted.pruneOlderThan(cutoffMillis)
-                if(removed.isNotEmpty())index.records().delete(removed)
+                if(removed.isNotEmpty())runCatching {index.records().delete(removed)}
+                    .onFailure { if(it is kotlinx.coroutines.CancellationException)throw it }
                 removed
             }
         }
