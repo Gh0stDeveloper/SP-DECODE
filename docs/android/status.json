@@ -358,7 +358,7 @@
     },
     "a24": {
       "branch": "feat/android-a24-tls-aead-parity",
-      "pr": "pending",
+      "pr": 16,
       "state": "tls_reference_port_added_emulator_verification_pending_57_unported",
       "androidPrototypePath": "android/",
       "referenceCorpusCases": 60,
