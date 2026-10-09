@@ -263,3 +263,10 @@ Detalles en `ALPHA_INSTALL.md`.
 - Pruebas nuevas `HistoryManagementInstrumentedTest`: búsquedas sin secretos, persistencia de favorito y retención, preferencias en DataStore, cola 30 mixtos, cancelación; suite existente deberá pasar API35.
 - H sigue en espera: no firmar/publicar estable antes de completar validación de versiones, ARM64/16 KiB, seguridad y release gates.
 
+
+### Evidencia de calidad del PR #27 (2026-10-09)
+
+- [GitHub Actions run #37903456589](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37903456589): Linux **SUCCESS**; Gradle build **SUCCESS**; **100 de 100 pruebas instrumentadas Android API35 x86_64**, 0 fallos; artefacto APK debug `SP-DECODE-Android-v0.3.4-alpha-debug-APK`.
+- Se mejoró posteriormente el resultado de lote ante fallos de DataStore y el ajuste adaptable de filtros en pantallas estrechas. **Se exige nuevo CI SUCCESS del HEAD de PR #27 antes de hacer merge**.
+- Los tests del emulador no sustituyen verificación de importación real de 30 URIs SAF, ARM64, páginas 16 KiB ni exportadores vigentes. El usuario está comprobando A.2.4.3 / A.2.4.4 de manera independiente.
+- B.5 sigue **parcial** por migración Room / DI aún pendiente. G.2–G.5 disponibles en versión debug experimental; H producción no iniciada.
