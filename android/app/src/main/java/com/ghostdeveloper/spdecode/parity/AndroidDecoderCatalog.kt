@@ -6,7 +6,7 @@ import java.util.Locale
 
 /**
  * Catalog is sourced from the canonical Linux registry and deliberately
- * marks 7 suffixes as NOT IMPLEMENTED on Android.
+ * marks 0 suffixes as NOT IMPLEMENTED on Android (experimental only).
  */
 object AndroidDecoderCatalog {
     data class Format(val suffix: String, val portStatus: String, val androidVerified: Boolean)
