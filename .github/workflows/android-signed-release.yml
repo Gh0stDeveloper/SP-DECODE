@@ -175,7 +175,7 @@ jobs:
   publication-gate:
     name: Check independently verified stable release evidence
     needs: [preflight, sign-production]
-    if: needs.sign-production.result == 'success'
+    if: needs['sign-production'].result == 'success'
     runs-on: ubuntu-latest
     outputs:
       approved: ${{ steps.check.outputs.approved }}
@@ -199,7 +199,7 @@ jobs:
   publish-stable:
     name: Publish stable GitHub Release only after GO and completed signing
     needs: [preflight, sign-production, publication-gate]
-    if: needs.publication-gate.outputs.approved == 'true'
+    if: needs['publication-gate'].outputs.approved == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
