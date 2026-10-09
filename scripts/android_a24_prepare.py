@@ -11,8 +11,8 @@ import json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
-CASES=("ev2ray-plain", "ev2ray-aes128", "tls-aesgcm", "batch4-phc", "batch5-mina", "batch6-vpnlite", "batch4-cloudy", "batch4-mij", "batch4-fnnetwork", "batch4-uwu", "sksrv-sksrv", "batch5-maya", "batch5-xui")
-SUFFIX={"ev2ray-plain": "v2", "ev2ray-aes128": "v2", "tls-aesgcm": "tls", "batch4-phc": "phc", "batch5-mina": "mina", "batch6-vpnlite": "vpnlite", "batch4-cloudy": "cloudy", "batch4-mij": "mij", "batch4-fnnetwork": "fnnetwork", "batch4-uwu": "uwu", "sksrv-sksrv": "sksrv", "batch5-maya": "maya", "batch5-xui": "xui"}
+CASES=("ev2ray-plain", "ev2ray-aes128", "tls-aesgcm", "batch4-phc", "batch5-mina", "batch6-vpnlite", "batch4-cloudy", "batch4-mij", "batch4-fnnetwork", "batch4-uwu", "sksrv-sksrv", "batch5-maya", "batch5-xui", "batch6-at", "batch6-nm", "batch4-ost", "batch4-sbr", "batch6-pcx", "batch6-nt", "batch6-pb", "aro-minus18", "batch6-ipt", "batch7-gold")
+SUFFIX={"ev2ray-plain": "v2", "ev2ray-aes128": "v2", "tls-aesgcm": "tls", "batch4-phc": "phc", "batch5-mina": "mina", "batch6-vpnlite": "vpnlite", "batch4-cloudy": "cloudy", "batch4-mij": "mij", "batch4-fnnetwork": "fnnetwork", "batch4-uwu": "uwu", "sksrv-sksrv": "sksrv", "batch5-maya": "maya", "batch5-xui": "xui", "batch6-at": "at", "batch6-nm": "nm", "batch4-ost": "ost", "batch4-sbr": "sbr", "batch6-pcx": "pcx", "batch6-nt": "nt", "batch6-pb": "pb", "aro-minus18": "aro", "batch6-ipt": "ipt", "batch7-gold": "gold"}
 
 
 def sha(raw:bytes)->str:
