@@ -129,6 +129,9 @@ jobs:
       - name: Generate verified standard-IV EHI Android parity sample
         run: PYTHONPATH=. python scripts/android_ehi_standard_fixture.py --output-dir android/app/src/androidTest/assets/parity
 
+      - name: Export HTTP Custom HCCFG and SocksIP VER8 synthetic parity samples
+        run: PYTHONPATH=. python scripts/android_hc_sip_fixture_export.py --output-dir android/app/src/androidTest/assets/parity
+
       - name: Compile audited NPV white-box to offline data-only Android asset
         run: PYTHONPATH=. python scripts/android_a24_whitebox_export.py --output android/app/src/main/assets/npv_whitebox.bin
 
