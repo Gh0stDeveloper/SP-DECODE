@@ -72,6 +72,9 @@ class MainActivity : ComponentActivity() {
     private var progressFilename by mutableStateOf<String?>(null)
     private var progressPosition by mutableIntStateOf(1)
     private var progressTotal by mutableIntStateOf(1)
+    private var textParts:TextPartSession?=null
+    private var textPartCount by mutableIntStateOf(0)
+    private var textProtocolName by mutableStateOf<String?>(null)
     private var importGeneration=0
     private var navigationExplicit=false
     private var showBrandedSplash by mutableStateOf(true)
@@ -225,6 +228,10 @@ class MainActivity : ComponentActivity() {
                 retentionDays=retentionDays,
                 onRetention={days->setRetention(days)},
                 onDismissError={message=null},
+                onDecodeText={input->decodeText(input)},
+                onClearTextSession={clearTextFragments()},
+                textPartCount=textPartCount,
+                textProtocolName=textProtocolName,
             )
         }
         if(savedInstanceState==null)handleExternalIntent(intent)
@@ -250,12 +257,95 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun cancelImport() {
+        clearTextFragments()
         // An obsolete worker must not close the new import's progress dialog.
         importGeneration++
         job?.cancel()
         job=null
         busy=false
         progressFilename=null
+    }
+
+    private fun clearTextFragments() {
+        textParts=null
+        textPartCount=0
+        textProtocolName=null
+    }
+
+    private fun decodeText(userText:String) {
+        if(busy)return
+        if(userText.isBlank()||userText.length>TextProtocolDecoder.MAX_CHARS) {
+            message=getString(R.string.text_decode_invalid)
+            return
+        }
+        val detected=TextProtocolDecoder.identify(userText)
+        val candidate=when {
+            detected?.multipart==true || (detected==null&&textParts!=null)->
+                TextMultipartAssembler.next(textParts,userText,SystemClock.elapsedRealtime())
+                    ?.also {
+                        textParts=it
+                        textPartCount=it.parts
+                        textProtocolName=it.input.app
+                    }?.input
+            detected!=null->{
+                clearTextFragments()
+                detected
+            }
+            else->null
+        }
+        if(candidate==null) {
+            message=getString(R.string.text_decode_invalid)
+            return
+        }
+        val generation=++importGeneration
+        job=scope.launch {
+            busy=true
+            progressStage=1
+            progressPosition=1
+            progressTotal=1
+            progressFilename=getString(R.string.text_decode_title)
+            message=null
+            reveal=false
+            try {
+                historyLoad?.await()
+                val decoded=withContext(Dispatchers.Default) {
+                    TextProtocolDecoder.decode(this@MainActivity,candidate)
+                }
+                if(decoded==null) {
+                    if(candidate.multipart && textParts!=null) {
+                        // Incomplete text remains pending, never a false success.
+                    }else message=getString(R.string.text_decode_unsupported)
+                    return@launch
+                }
+                progressStage=2
+                val safeName=candidate.protocol.filter { it.isLetterOrDigit()||it=='-' }
+                val record=DecodeView("text-"+safeName+"."+candidate.suffix,
+                    candidate.suffix,decoded,
+                    userText.toByteArray(Charsets.UTF_8).size)
+                val stored=try {
+                    withContext(Dispatchers.IO){historyStore.save(record)}
+                    true
+                }catch(e:CancellationException){throw e}
+                catch(_:Exception){false}
+                result=record
+                recent.add(0,record)
+                if(!stored)toast(R.string.history_storage_error)
+                try{historyPreferences.setSelectedId(record.id)}
+                catch(e:CancellationException){throw e}
+                catch(_:Exception){toast(R.string.history_storage_error)}
+                tab=0
+                clearTextFragments()
+            }catch(e:CancellationException){throw e}
+            catch(_:Exception){if(generation==importGeneration)
+                message=getString(R.string.text_decode_unsupported)
+            }finally {
+                if(generation==importGeneration) {
+                    busy=false
+                    progressFilename=null
+                    progressStage=0
+                }
+            }
+        }
     }
 
     private fun selectResult(entry:DecodeView) {
