@@ -30,6 +30,7 @@ import javax.crypto.spec.GCMParameterSpec
 class SecureDecodeHistory(context: Context) {
     private val directory = File(context.noBackupFilesDir, "decode-history")
     private val alias = "spdecode.history.aes.v1"
+    private val secretKey: SecretKey by lazy { key() }
 
     private fun key(): SecretKey {
         val store = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
@@ -70,7 +71,7 @@ class SecureDecodeHistory(context: Context) {
             .put("savedAtMillis", record.savedAtMillis)
             .toString().toByteArray(Charsets.UTF_8)
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        cipher.init(Cipher.ENCRYPT_MODE, key())
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey)
         val bytes = ByteArrayOutputStream()
         DataOutputStream(bytes).use {
             it.writeInt(MAGIC)
@@ -102,6 +103,13 @@ class SecureDecodeHistory(context: Context) {
         }
     }
 
+    /** Remove even unreadable/corrupt ciphertext on explicit clear-all request. */
+    fun clearAll() {
+        if (directory.exists()) check(directory.deleteRecursively()) {
+            "Unable to remove private history directory"
+        }
+    }
+
     private fun read(file: File): DecodeView {
         // Avoid exhausting heap on a corrupted or maliciously oversized record.
         val atomic = AtomicFile(file)
@@ -120,7 +128,7 @@ class SecureDecodeHistory(context: Context) {
             val encrypted = it.readBytes()
             require(encrypted.size >= 16)
             val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            cipher.init(Cipher.DECRYPT_MODE, key(), GCMParameterSpec(128, iv))
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(128, iv))
             cipher.doFinal(encrypted)
         }
         val objectData = JSONObject(payload.toString(Charsets.UTF_8))
