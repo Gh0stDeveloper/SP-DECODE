@@ -9,22 +9,22 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.android_a24_prepare import CASES,ROOT,prepare
+from scripts.android_a24_prepare import CASES,ROOT,SUFFIX,prepare
 
 
 class AndroidA24AssetTests(unittest.TestCase):
-    def test_asset_export_is_exactly_three_frozen_synthetic_vectors(self):
+    def test_asset_export_is_exactly_thirteen_frozen_synthetic_vectors(self):
         with tempfile.TemporaryDirectory(prefix="spdecode-a24-") as tmp:
             output=Path(tmp)/"assets"
             results=prepare(output)
             self.assertEqual({r["id"] for r in results},set(CASES))
-            self.assertEqual(len(list(output.iterdir())),7)
+            self.assertEqual(len(list(output.iterdir())),2*len(CASES)+1)
             self.assertEqual(json.loads((output/"checksums.json").read_text()),results)
             for row in results:
-                self.assertTrue((output/(row["id"]+(".tls" if row["id"]=="tls-aesgcm" else ".v2"))).is_file())
+                self.assertTrue((output/(row["id"]+"."+SUFFIX[row["id"]])).is_file())
                 self.assertEqual((output/(row["id"]+".txt")).is_file(),True)
                 reference=(output/(row["id"]+".txt")).read_bytes()
-                self.assertTrue(reference.startswith(b"TLS Tunnel") if row["id"]=="tls-aesgcm" else reference.startswith("┌".encode()))
+                self.assertTrue(reference.startswith(b"TLS Tunnel") if row["id"]=="tls-aesgcm" else reference.lstrip().startswith("┌".encode()))
 
     def test_manifest_still_declares_zero_real_android_certifications(self):
         manifest=json.loads((ROOT/"tests/golden/manifest.json").read_text("utf-8"))
