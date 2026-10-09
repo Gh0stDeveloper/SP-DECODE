@@ -260,3 +260,21 @@ and 21 malformed/empty/oversized negative checks. The exact test run remains
 pending. Variant compatibility is narrower than suffix dispatch coverage:
 **0 currently vendor-certified formats, ARM64 physical device and 16 KiB
 page-size evidence still pending**. No production APK/GO.
+
+### Evidencia CI final de los 59 sufijos experimentales
+
+GitHub Actions [#37885309397](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37885309397) confirmó:
+**Linux `validate` = success (60 tests); Android compile =
+success; Android API35 x86_64 instrumentación = 72/72 tests success**.
+Los 60 goldens congelados de las 59 rutas y las pruebas negativas de
+los siete puertos nuevos pasaron. El asset `npv_whitebox.bin` fue
+exportado y validado antes de compilar Android. No se añadió ejecución
+de Python, PHP, Node.js ni pickle al APK.
+
+**Alcance preciso:** la subetapa de *paridad sintética de sufijos*
+ha completado 59/59. A.2.4 como fase global **no está cerrada**:
+persisten EHI Argon2id estándar, SIP VER7 (tampoco soportado por el
+motor Linux analizado), variantes secundarias HC, certificación con
+exportaciones de proveedores, ARM64 y tamaños de página de 16KiB,
+revisión de riesgos criptográficos y UI/SAF offline. No publicar APK
+de producción por el resultado sintético.
