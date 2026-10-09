@@ -164,3 +164,23 @@ desajustes exactos antes de autorizar merge. Bot original inalterado.
   Su ejecución se confirma en el próximo workflow, no el anterior.
 - Cobertura `epro` raw ECB y `npv2` vmess sintética.
   Faltan subvariantes, exportaciones reales, ARM64 físico y 16KiB.
+
+### Incremental A.2.4 final remainder: 11 native source-specific ports
+
+`feat/android-a24-final-remainder-batch` adds source-derived Android Kotlin ports
+for rez, rezl, tvt, stk, xtp, roy, sksplus, sks, sut, tnl, ssh.
+Tests in `Final11InstrumentedTest`: 11 exact byte-level positive Linux
+goldens, strict extension routing and 33 reject assertions.
+Reference inventory after passing these tests: 48 experimental of 59,
+11 unported. Never claim this batch is verified before GitHub API35
+emulator CI succeeds. Do not merge while failing. No change to Telegram bot.
+
+### A.2.4 — final incremental addendum
+
+Added `.ht`, `.htb`, `.hat`, `.ehil` to the same PR #20.
+15 new original suffix routes (11 prior, four new), two shared
+source mechanisms correctly reused for multiple registry suffixes.
+53 synthetic Linux goldens, 52 candidate suffixes, seven outstanding.
+Latest emulation must also check `FinalExtra4InstrumentedTest`;
+the successful older workflow covering only 11 does NOT validate
+the four new ports. No revision of the original bot.

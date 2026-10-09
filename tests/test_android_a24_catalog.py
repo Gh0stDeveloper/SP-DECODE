@@ -12,11 +12,11 @@ class AndroidA24CatalogTests(unittest.TestCase):
         self.assertEqual(source,committed)
         self.assertEqual(len(source["entries"]),59)
         self.assertEqual(source["androidCertifiedSuffixes"],0)
-        self.assertEqual(len(source["androidPrototypeSuffixes"]),37)
-        self.assertEqual(len(set(source["androidPrototypeSuffixes"])),37)
+        self.assertEqual(len(source["androidPrototypeSuffixes"]),52)
+        self.assertEqual(len(set(source["androidPrototypeSuffixes"])),52)
         self.assertTrue(all(not r["androidVerified"] and not r["exporterVersionsVerified"] for r in source["entries"]))
-        self.assertEqual(sum(r["androidPortStatus"]!="not_implemented" for r in source["entries"]),37)
-        self.assertEqual(sum(r["androidPortStatus"]=="not_implemented" for r in source["entries"]),22)
+        self.assertEqual(sum(r["androidPortStatus"]!="not_implemented" for r in source["entries"]),52)
+        self.assertEqual(sum(r["androidPortStatus"]=="not_implemented" for r in source["entries"]),7)
         self.assertEqual(next(r for r in source["entries"] if r["suffix"]=="tls")["androidPortStatus"],"prototype_tls_aesgcm_synthetic_case")
 
     def test_compound_suffix_and_unicode_names_are_preserved(self):

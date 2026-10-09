@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.14.1",
+  "documentationVersion": "1.16.0",
   "referenceDate": "2026-10-08",
   "baselineBranch": "main",
   "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
@@ -40,7 +40,7 @@
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
         "A.2.3": "synthetic_linux_golden_complete_60_cases_59_of_59_vendor_and_android_pending",
-        "A.2.4": "in_progress_38_android_synthetic_goldens_passed_22_unported_real_exporter_arm64_pending"
+        "A.2.4": "in_progress_15_new_ports_53_goldens_7_unported_latest_ci_pending"
       }
     },
     "B": {
@@ -65,7 +65,7 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Finish CI on final docs/asset integrity test, merge PR #19 if success; then handle 22 remaining suffixes and vendor/physical verification.",
+  "nextAction": "Fix and verify all 53 golden synthetic vectors in Android API35, 15 fresh source adapters, then consider PR #20 merge. Seven highly complex suffixes remain.",
   "releaseStatus": "NO-APK-NO-GO",
   "ciValidatedAndroid": true,
   "notes": "Planning only. No real Android decoder tested.",
@@ -357,9 +357,9 @@
       "ciReference": "https://github.com/Gh0stDeveloper/SP-DECODE/pull/14"
     },
     "a24": {
-      "branch": "feat/android-a24-batch15-native-ports",
-      "pr": "pending",
-      "state": "38_synthetic_vectors_passed_api35_x86_64_37_prototype_suffixes_22_unported",
+      "branch": "feat/android-a24-final-remainder-batch",
+      "pr": 20,
+      "state": "53_synthetic_vector_candidates_52_prototype_suffixes_7_unported_pending_extra4_ci",
       "androidPrototypePath": "android/",
       "referenceCorpusCases": 60,
       "referenceRegisteredSuffixes": 59,
@@ -400,7 +400,22 @@
         "hrt",
         "ziv",
         "epro",
-        "npv2"
+        "npv2",
+        "rez",
+        "rezl",
+        "tvt",
+        "stk",
+        "xtp",
+        "roy",
+        "sksplus",
+        "sks",
+        "sut",
+        "tnl",
+        "ssh",
+        "ht",
+        "htb",
+        "hat",
+        "ehil"
       ],
       "instrumentedCandidateCaseIds": [
         "ev2ray-plain",
@@ -440,7 +455,22 @@
         "batch5-hrt",
         "batch6-ziv",
         "batch7-epro",
-        "batch7-npv2"
+        "batch7-npv2",
+        "batch5-rez",
+        "batch5-rezl",
+        "batch7-tvt",
+        "batch6-stk",
+        "batch7-xtp",
+        "batch7-roy",
+        "batch4-sksplus",
+        "batch4-sks",
+        "batch7-sut",
+        "batch5-tnl",
+        "batch8-ssh",
+        "httptweak-v1-ht",
+        "httptweak-v2-htb",
+        "batch4-hat",
+        "ehil-aescbc-double"
       ],
       "instrumentedPassedOnDevice": [
         "ev2ray-plain",
@@ -466,8 +496,8 @@
       "offlineSecurity": "manifest has no INTERNET, ACCESS_NETWORK_STATE or legacy storage permissions; emulator check pending",
       "whiteboxSecurity": "restricted data-only pickle with bounded decompression; global/REDUCE opcodes rejected and Linux regression checks",
       "nodePhpPortability": "not_started",
-      "remainingNativeSuffixes": 22,
-      "note": "47/47 Android API35 x86_64 tests green, Linux+Gradle success on source before new source-asset integrity test and docs. No real-exporter, arm64 or 16KiB certification. ePro/NPV2 variant coverage remains limited.",
+      "remainingNativeSuffixes": 7,
+      "note": "Eleven port increment previously green on emulator, four more source-specific ports HT/HTB/HAT/EHIL pending validation. Seven unported: dark,ehi,npv4,npvt,sip,ssc,hc. 0 certified vendor exports.",
       "emulatorEvidence": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37868719536",
       "lastValidatedSourceSha": "0c6c5476ba8bf7c784976f3e2180aacb9876d875",
       "instrumentedTestCount": 4,

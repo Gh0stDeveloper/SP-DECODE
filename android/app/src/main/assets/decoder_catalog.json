@@ -40,7 +40,22 @@
     "hrt",
     "ziv",
     "epro",
-    "npv2"
+    "npv2",
+    "rez",
+    "rezl",
+    "tvt",
+    "stk",
+    "xtp",
+    "roy",
+    "sksplus",
+    "sks",
+    "sut",
+    "tnl",
+    "ssh",
+    "ht",
+    "htb",
+    "hat",
+    "ehil"
   ],
   "entries": [
     {
@@ -66,7 +81,7 @@
       "script": "decoders/PHP/sksplus.php",
       "originalRuntime": "php",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -120,7 +135,7 @@
       "script": "decoders/Python/HTTPINJECTORLITE.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -192,7 +207,7 @@
       "script": "decoders/JavaScript/rez.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -237,7 +252,7 @@
       "script": "decoders/JavaScript/hat.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -255,7 +270,7 @@
       "script": "decoders/Python/HTTPTWEAK.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -354,7 +369,7 @@
       "script": "decoders/JavaScript/rez.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -363,7 +378,7 @@
       "script": "decoders/Python/xtproy.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -390,7 +405,7 @@
       "script": "decoders/JavaScript/sks.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -408,7 +423,7 @@
       "script": "decoders/Python/ssh.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -417,7 +432,7 @@
       "script": "decoders/JavaScript/stk.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -426,7 +441,7 @@
       "script": "decoders/Python/sut.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -444,7 +459,7 @@
       "script": "decoders/Python/tnl.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -453,7 +468,7 @@
       "script": "decoders/JavaScript/rez.js",
       "originalRuntime": "node",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -480,7 +495,7 @@
       "script": "decoders/Python/xtproy.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
@@ -534,7 +549,7 @@
       "script": "decoders/Python/HTTPTWEAK.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": true,
-      "androidPortStatus": "not_implemented",
+      "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
       "exporterVersionsVerified": []
     },
