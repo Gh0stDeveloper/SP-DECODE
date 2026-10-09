@@ -130,9 +130,9 @@
     <string name="text_decode_invalid">Protocolo desconhecido, texto inválido ou limite de tamanho excedido.</string>
     <string name="text_decode_unsupported">Não foi possível decodificar o texto. Pode estar incompleto, danificado ou usar outra versão de criptografia.</string>
     <string name="whats_new_title">Novidades do SP-DECODE</string>
-    <string name="whats_new_description">Versão 1.0.3 · Novo formato de configuração offline</string>
-    <string name="whats_new_linklayer">Suporte a LinkLayer VPN (.lnk) VER6</string>
-    <string name="whats_new_fields">Exibe os 60 campos de configuração, incluindo SSH, HTTP, SSL e DNS.</string>
-    <string name="whats_new_offline">Decodificação no dispositivo. Os decodificadores anteriores e o histórico permanecem disponíveis.</string>
+    <string name="whats_new_description">Versão 1.0.4 · Créditos aprimorados nos resultados</string>
+    <string name="whats_new_linklayer">Os resultados agora indicam SP-DECODE como aplicativo de decodificação.</string>
+    <string name="whats_new_fields">Cópias e exportações ordenadas incluem os créditos de Ghost Developer.</string>
+    <string name="whats_new_offline">Grupo e canal oficiais aparecem no final. JSON e saída original permanecem inalterados.</string>
     <string name="whats_new_continue">Entendi</string>
 </resources>
