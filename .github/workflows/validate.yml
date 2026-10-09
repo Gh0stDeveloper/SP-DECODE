@@ -167,7 +167,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v0.3.6-alpha-home-screenshot
+          name: SP-DECODE-Android-v0.3.7-alpha-home-screenshot
           path: android/app/build/outputs/spdecode-ui/home.png
           if-no-files-found: error
           retention-days: 30
@@ -187,7 +187,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v0.3.6-alpha-debug-APK
+          name: SP-DECODE-Android-v0.3.7-alpha-debug-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
