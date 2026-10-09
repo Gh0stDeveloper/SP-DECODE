@@ -32,10 +32,11 @@ class FunctionalUiInstrumentedTest {
         ui.onNodeWithContentDescription(ctx.getString(R.string.formats)).performClick()
         ui.onNode(hasSetTextAction()).performTextInput("sksrv.png")
         ui.onNodeWithText(".sksrv.png").assertExists()
+        ui.onNodeWithText("SKS Server").assertExists()
         ui.onNodeWithText(ctx.getString(R.string.catalog_note)).assertExists()
     }
 
-    @Test fun settingsTabClarifiesLocalAndNoPersistentHistory(){
+    @Test fun settingsTabClarifiesLocalEncryptedPersistentHistory(){
         val ctx=ui.activity
         ui.onNodeWithContentDescription(ctx.getString(R.string.settings)).performClick()
         ui.onNodeWithText(ctx.getString(R.string.privacy_text)).assertExists()
