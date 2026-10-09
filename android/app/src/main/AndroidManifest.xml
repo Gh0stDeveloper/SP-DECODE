@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 100% offline: no INTERNET, storage-all-files, or network permissions. -->
     <application
+        android:name=".SpDecodeApplication"
         android:allowBackup="false"
         android:fullBackupContent="false"
         android:usesCleartextTraffic="false"
