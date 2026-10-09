@@ -97,4 +97,9 @@
     <string name="decode_notice_title">¡Oops! No pudimos decodificar este archivo</string>
     <string name="decode_notice_contact">Contactar al desarrollador</string>
     <string name="unsupported_variant_message">Esta versión o variante todavía no es compatible, o el archivo podría estar dañado. Puedes contactar al desarrollador para que revise cómo incorporar soporte.</string>
+    <string name="detailed_fields">Campos detallados</string>
+    <string name="decode_progress_title">Procesando configuración</string>
+    <string name="decode_progress_reading">Leyendo archivo seleccionado…</string>
+    <string name="decode_progress_decoding">Decodificando configuración localmente…</string>
+    <string name="decode_progress_saving">Guardando resultado cifrado…</string>
 </resources>
