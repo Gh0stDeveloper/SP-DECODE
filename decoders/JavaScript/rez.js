@@ -8,7 +8,7 @@ if (!process.argv[2]) {
 
 var file = process.argv[2];
 
-if (path.parse(file).ext != ".rez" && path.parse(file).ext != ".rezl" && path.parse(file).ext != ".rez") {
+if (path.parse(file).ext != ".rez" && path.parse(file).ext != ".rezl" && path.parse(file).ext != ".tvt") {
     console.log("El archivo debe tener la extensión '.rez', '.rezl' o '.tvt'");
     process.exit(1);
 }

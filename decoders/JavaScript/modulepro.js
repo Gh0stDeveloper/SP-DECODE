@@ -95,7 +95,9 @@ if(showHelp) {
 function loopFunction() {
     //this function will execute in an interval method every few seconds
     try {
-        fs.writeFileSync(path.join(PROJECT_ROOT, "cfg/config.inc.json"), JSON.stringify(configFile, null, "\t"));
+        if (process.argv.some(arg => ["--keyFile", "-k", "--language", "-l"].includes(arg))) {
+            fs.writeFileSync(path.join(PROJECT_ROOT, "cfg/config.inc.json"), JSON.stringify(configFile, null, "\t"));
+        }
     } catch(error) {
         console.log("[ERROR] - An error occured writing the configuration file.");
         process.exit();

@@ -77,6 +77,11 @@ def decrypt_file(password: str, filename: str) -> str:
 
     return decrypt(password, data_b64)
     
+def stylize_math(text: str) -> str:
+    """Compatibility fallback for missing historical banner helper."""
+    return text
+
+
 def dec_gold(config):
     password = "goldtunnel"
     decrypted = decrypt(password, config)
@@ -98,5 +103,13 @@ def dec_gold(config):
 
 {decrypted}"""
 
-gold = input("Gold config : ")
-print(dec_gold(gold))
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) == 2:
+        from pathlib import Path
+        gold = Path(sys.argv[1]).read_text(encoding="utf-8").strip()
+    elif len(sys.argv) == 1:
+        gold = input("Gold config : ")
+    else:
+        raise SystemExit("Usage: gold.py [file.gold]")
+    print(dec_gold(gold))
