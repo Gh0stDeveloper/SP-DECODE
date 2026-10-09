@@ -27,7 +27,7 @@
     <string name="session_only">محفوظ محليًا · سجل مشفر</string>
     <string name="search_formats">البحث عن تطبيق أو امتداد</string>
     <string name="experimental">تجريبي</string>
-    <string name="catalog_note">59 صيغة تجريبية تعمل دون اتصال. التوافق مع الإصدارات الحالية غير معتمد.</string>
+    <string name="catalog_note">60 صيغة تجريبية تعمل دون إنترنت. يتوفر LinkLayer VER6؛ وقد يختلف التوافق حسب الإصدار.</string>
     <string name="settings_title">الإعدادات</string>
     <string name="privacy_title">الخصوصية</string>
     <string name="privacy_text">لا يتم نسخ الملفات الأصلية. تحفظ نتائج فك الترميز مشفرة على هذا الجهاز حتى تحذفها.</string>
@@ -129,4 +129,10 @@
     <string name="text_decode_private">تتم المعالجة محليًا. تُحفظ النتائج المفككة بنجاح فقط.</string>
     <string name="text_decode_invalid">بروتوكول غير معروف أو نص غير صالح أو تجاوز حد الحجم.</string>
     <string name="text_decode_unsupported">تعذر فك ترميز النص. ربما يكون غير مكتمل أو تالفًا أو يستخدم تشفيرًا مختلفًا.</string>
+    <string name="whats_new_title">الجديد في SP-DECODE</string>
+    <string name="whats_new_description">الإصدار 1.0.3 · دعم صيغة إعدادات جديدة دون اتصال</string>
+    <string name="whats_new_linklayer">دعم LinkLayer VPN (.lnk) VER6</string>
+    <string name="whats_new_fields">عرض 60 حقلاً للإعدادات، بما فيها إعدادات SSH وHTTP وSSL وDNS.</string>
+    <string name="whats_new_offline">تتم المعالجة على جهازك. تبقى أدوات فك الترميز السابقة والسجل متاحة.</string>
+    <string name="whats_new_continue">فهمت</string>
 </resources>
