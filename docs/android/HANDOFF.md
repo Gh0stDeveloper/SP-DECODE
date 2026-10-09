@@ -237,3 +237,16 @@ NI VERIFICADO AÚN EN EMULADOR.** No atribuirle funciones de historial
 cifrado persistente, selector manual de idioma, release firmada, ni
 compatibilidad certificada con exportadores modernos.
 Detalles en `ALPHA_INSTALL.md`.
+
+## 0.3.3-alpha — parche UX de capturas del usuario (2026-10-09)
+
+**PR #26** · rama `feat/android-ui-structured-result-dialogs-settings`. Estado: **implementado en rama; CI de PR pendiente** en la fecha de este registro. No atribuirle pruebas ni disponibilidad APK antes de confirmar runs para el SHA final.
+
+- Vista principal: salida completa original de cada decodificador, con recuadros, encabezados, créditos, valores largos, saltos y orden originales. Objetos/arrays JSON anidados dentro de valores se formatean visualmente bajo su clave; el `rawText` no se modifica jamás. El usuario puede mostrar campos detallados y la salida exacta, además de copiar/exportar original.
+- `RawResultFormatter.kt`: lectura defensiva y formato de valores JSON; censura explícita opcional del resultado y campos JSON internos; no añade red de datos.
+- Idiomas: sección compacta en Ajustes y `ModalBottomSheet` con catálogo central `SupportedLanguages`; los 4 idiomas actuales más `system`, extensible.
+- Importación: diálogo modal localizado con fases lectura/decodificación/guardado y cancelación explícita; error Oops en `AlertDialog` con cerrar/contacto. Mensajes de compatibilidad no afirman incorrectamente la versión.
+- Copiar/exportar: contenido e iconos con contraste blanco sobre gris oscuro, sin alterar acciones ni controles de privacidad.
+- Aserciones instrumentadas para conservación del texto fuente, claves repetidas, JSON anidado, máscara, idioma y avisos/progreso; no confundir pruebas sintéticas con exportadores reales.
+- **Pendiente de cierre:** CI Linux/Android API35, APK debug verificable, prueba física ARM64, 16 KiB y formatos reales EHI/EHIL/HC/XUI. Después retomar A.2.4.3–A.2.4.4. Documentación inicial de A–H puede contener estados históricos; comprobar `status.json` y CI para el estado actual.
+

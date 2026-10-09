@@ -97,4 +97,9 @@
     <string name="decode_notice_title">عذرًا، تعذر فك ترميز هذا الملف</string>
     <string name="decode_notice_contact">التواصل مع المطور</string>
     <string name="unsupported_variant_message">قد تكون هذه النسخة أو الصيغة غير مدعومة حاليًا، أو قد يكون الملف تالفًا. يمكنك التواصل مع المطور لمراجعة دعم هذا التنسيق.</string>
+    <string name="detailed_fields">الحقول التفصيلية</string>
+    <string name="decode_progress_title">جارٍ معالجة الإعدادات</string>
+    <string name="decode_progress_reading">جارٍ قراءة الملف المحدد…</string>
+    <string name="decode_progress_decoding">جارٍ فك ترميز الإعدادات محليًا…</string>
+    <string name="decode_progress_saving">جارٍ حفظ النتيجة المشفرة…</string>
 </resources>

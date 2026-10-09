@@ -97,4 +97,9 @@
     <string name="decode_notice_title">Oops! We could not decode this file</string>
     <string name="decode_notice_contact">Contact the developer</string>
     <string name="unsupported_variant_message">This version or variant is not compatible yet, or the file may be damaged. You can contact the developer so support for this format can be reviewed.</string>
+    <string name="detailed_fields">Detailed fields</string>
+    <string name="decode_progress_title">Processing configuration</string>
+    <string name="decode_progress_reading">Reading selected file…</string>
+    <string name="decode_progress_decoding">Decoding configuration locally…</string>
+    <string name="decode_progress_saving">Saving encrypted result…</string>
 </resources>

@@ -30,6 +30,7 @@ class LocaleSwitchInstrumentedTest {
                 vm.tab=3
             }
             ui.waitForIdle()
+            ui.onNodeWithText(ctx.getString(R.string.language_title)).performClick()
             ui.onNodeWithText("Español").performClick()
             ui.waitUntil(10000){
                 ui.activity.getSharedPreferences("spdecode-ui-preferences",Context.MODE_PRIVATE)
