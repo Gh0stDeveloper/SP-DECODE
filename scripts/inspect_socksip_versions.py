@@ -26,7 +26,9 @@ from decoders.Python.sockip import (
     _decrypt_aes_ecb,
 )
 
-_VER = re.compile(rb"^VER([0-9]{1,3})")
+# Existing formats use exactly four marker bytes (VER6/VER7/VER8).
+# Never greedily consume digits from the following encrypted nonce/ciphertext.
+_VER = re.compile(rb"^VER([0-9])")
 _ASCII_HEX = re.compile(rb"^[0-9a-fA-F]+$")
 _ASCII_B64 = re.compile(rb"^[A-Za-z0-9+/=_-]+$")
 _MAX_FILE = 4 * 1024 * 1024
