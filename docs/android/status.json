@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.22.0",
+  "documentationVersion": "1.23.0",
   "referenceDate": "2026-10-09",
   "baselineBranch": "main",
   "baselineHead": "e24733fcaae9608f37a6a362f0aab4327a9681ac",
   "documentationBranch": "docs/android-offline-architecture",
-  "productStatus": "android_0_3_5_room_single_result_pr28_104_connected_tests_success",
+  "productStatus": "android_0_3_6_json_only_splash_production_signing_credentials_generated_ci_pending",
   "androidSourceExists": true,
   "apkProduced": true,
   "offlineRequired": true,
@@ -41,7 +41,9 @@
         "A.2.1": "verified",
         "A.2.2": "verified_static_findings_remediation_pending",
         "A.2.3": "synthetic_linux_golden_complete_60_cases_59_of_59_vendor_and_android_pending",
-        "A.2.4": "synthetic_suffix_parity_complete_59_of_59_api35_x86_64_real_exporter_arm64_variant_audit_pending"
+        "A.2.4": "synthetic_suffix_parity_complete_59_of_59_api35_x86_64_real_exporter_arm64_variant_audit_pending",
+        "A.2.4.3": "passed_by_owner_user_report_2026_10_09_no_device_metrics_uploaded",
+        "A.2.4.4": "passed_by_owner_user_report_2026_10_09_no_version_matrix_uploaded"
       }
     },
     "B": {
@@ -65,7 +67,7 @@
       "status": "not_started"
     },
     "F": {
-      "status": "one_approved_decoder_layout_no_duplicate_detail_or_raw_sections_verified_API35"
+      "status": "json_only_screen_with_decoded_by_app_date_and_credits_metadata_0_3_6_pending_ci"
     },
     "G": {
       "status": "G2_G5_implemented_API35_100_tests_green_final_pr_head_gate_pending",
@@ -73,27 +75,27 @@
         "G.1": "Keystore_AESGCM_ciphertext_canonical_Room_uuid_timestamp_index_v1_rebuild_legacy_records_verified_API35",
         "G.2": "metadata_only_search_extension_sort_favorites_encrypted_v2_verified_api35_run_37903456589",
         "G.3": "selective_delete_retention_excluding_favorites_backup_off_verified_api35_run_37903456589",
-        "G.4": "30_file_sequential_failure_isolated_cancel_batch_verified_api35_run_37903456589",
+        "G.4": "owner_confirmed_30_file_batches_success_and_failure_paths_2026_10_09",
         "G.5": "DataStore_tab_and_UUID_process_recreation_Room_rebuild_verified_API35_104_tests"
       }
     },
     "H": {
-      "status": "MANUAL_SIGNED_RELEASE_PREPARATION_NO_GO",
+      "status": "user_validation_reported_release_signing_candidate_pending_NO_GO",
       "subphases": {
         "H.1": "GitHub_Linux_Android_validate_gate_preexisting_manual_release_gate_pending_CI",
         "H.2": "real_vendor_format_matrix_user_testing_no_GO",
-        "H.3": "security_review_dependencies_required",
-        "H.4": "arm64_16kb_compatibility_user_testing_no_GO",
+        "H.3": "owner_reported_security_audit_passed_no_independent_artifact_yet",
+        "H.4": "owner_reported_arm64_and_16KiB_passed_no_independent_report_yet",
         "H.5": "icon_changelog_release_docs_need_final_verification",
-        "H.6": "production_signing_manual_workflow_prepared_no_keys_or_release_created",
+        "H.6": "new_production_PKCS12_RSA4096_generated_off_repository_secrets_not_connected_signed_candidate_pending",
         "H.7": "release_runbook_and_fail_closed_gate_prepared_pending_CI"
       }
     }
   },
-  "nextAction": "Revalidate docs-only final PR28 HEAD before merge; no stable GO. User to continue real-file compatibility A.2.4.3/A.2.4.4 and G.4 batches. Production signing waits for secrets and evidence.",
-  "releaseStatus": "DEBUG-ALPHA-0.3.5-PR-PENDING-CI-NO-STABLE-GO",
+  "nextAction": "Complete 0.3.6 CI, release debug alpha. Owner adds four GitHub signing secrets from private generated keystore ZIP, triggers signed candidate manually from main, validates v1/v2/v3 signature and upgrade/installation, and approves stable GO only with final evidence.",
+  "releaseStatus": "DEBUG-ALPHA-0.3.6-PR-PENDING_CI-SIGNING_SECRETS_USER_SETUP-NO_GO",
   "ciValidatedAndroid": true,
-  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge.",
+  "notes": "v0.3.3-alpha merged (PR26), GitHub Actions main success run 37901852673. PR27 adds encrypted favorites v2 (v1 read compatible), filter/sort, retention/DataStore UUID, 30-item isolation/cancellation, multilingual UI. User testing ARM64/exporters; do not claim certified. B5 Room/DI still pending. Run 37903456589 success: Linux and API35 connected emulator 100/100; responsive filters and DataStore batch classification follow-up committed and new CI pending. Subsequent 0.3.5 patch removes extra panels, adds Room UUID/timestamp-only index and explicit Application DI, restores tab and UUID, and prepares manually gated signed release. Pre-0.3.5 ciphertext remains canonical; no stable publication claimed. Final code commit PR28 54f5a0ad886004a98c3f4bfec4619e44c4346c96 passed Linux and Android x86_64 API35 104/104 at GitHub Actions run 37906990733. Documentation is updated in subsequent commits; CI for final HEAD required before merge. Owner confirms manual genuine files, batch, ARM64/16K and audit passed, recorded as user attestation; signed release upgrade pending. 0.3.6 changes ONLY preview to JSON + metadata comments and branded splash.",
   "localization": {
     "scope": "ui_only",
     "languages": [
@@ -691,5 +693,19 @@
       "real SAF 30-file batch",
       "actual signing secrets/stable release"
     ]
+  },
+  "userValidation": {
+    "reportedOn": "2026-10-09",
+    "source": "docs/android/USER_MANUAL_VALIDATION_2026-10-09.md",
+    "status": "user_confirmed_pass",
+    "checks": [
+      "A.2.4.3 ARM64 device",
+      "A.2.4.3 16KiB pages",
+      "A.2.4.4 genuine files/variants",
+      "G.4 real batch imports including errors",
+      "H manual security audit (owner)"
+    ],
+    "independentReports": "not provided",
+    "doNotInfer": "59/59 certification"
   }
 }
