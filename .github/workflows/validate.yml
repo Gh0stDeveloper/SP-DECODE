@@ -47,7 +47,7 @@ jobs:
       - name: Validate project
         run: python validate_project.py
 
-      - name: Verify Android catalog against canonical 59-suffix registry
+      - name: Verify Android catalog against canonical 60-suffix registry
         run: PYTHONPATH=. python scripts/android_a24_catalog.py
 
       - name: Run unit tests
@@ -94,7 +94,7 @@ jobs:
 
 
   android-parity:
-    name: Android v1.0.2 production source regression (API 35)
+    name: Android v1.0.3 production source regression (API 35)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -131,6 +131,9 @@ jobs:
 
       - name: Export HTTP Custom HCCFG and SocksIP VER8 synthetic parity samples
         run: PYTHONPATH=. python scripts/android_hc_sip_fixture_export.py --output-dir android/app/src/androidTest/assets/parity
+
+      - name: Export LinkLayer VER6 synthetic Python parity samples
+        run: PYTHONPATH=. python scripts/android_linklayer_fixture_export.py --output-dir android/app/src/androidTest/assets/parity
 
       - name: Compile audited NPV white-box to offline data-only Android asset
         run: PYTHONPATH=. python scripts/android_a24_whitebox_export.py --output android/app/src/main/assets/npv_whitebox.bin
@@ -170,7 +173,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v1.0.2-ci-home-screenshot
+          name: SP-DECODE-Android-v1.0.3-ci-home-screenshot
           path: android/app/build/outputs/spdecode-ui/home.png
           if-no-files-found: error
           retention-days: 30
@@ -190,7 +193,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v1.0.2-CI-DEBUG-NOT-PRODUCTION
+          name: SP-DECODE-Android-v1.0.3-CI-DEBUG-NOT-PRODUCTION
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
