@@ -86,7 +86,7 @@ fun SpDecodeApp(
                 when(activeTab) {
                     0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
                         onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect)
-                    1->HistoryScreen(session,onSelect,onDeleteSelected,onImportMultiple)
+                    1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple)
                     2->FormatsScreen()
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
                         onLanguage,onMaskCredentials,onClear,onExternalLink)
@@ -258,11 +258,13 @@ private fun HistoryScreen(
     session: List<DecodeView>,
     onSelect: (DecodeView) -> Unit,
     onDeleteSelected: (Set<String>) -> Unit,
+    onDeleteAll: () -> Unit,
     onImportMultiple: () -> Unit,
 ) {
     var selecting by remember { mutableStateOf(false) }
     val selected = remember { mutableStateListOf<String>() }
     var deletion by remember { mutableStateOf<Set<String>?>(null) }
+    var deletingAll by remember { mutableStateOf(false) }
     LaunchedEffect(session.map { it.id }) {
         selected.retainAll(session.map { it.id }.toSet())
         if (session.isEmpty()) selecting = false
@@ -353,7 +355,10 @@ private fun HistoryScreen(
                         Spacer(Modifier.width(8.dp))
                         Text(stringResource(R.string.history_delete_selected))
                     }
-                } else OutlinedButton(onClick = { deletion = session.map { it.id }.toSet() }) {
+                } else OutlinedButton(onClick = {
+                    deletion = session.map { it.id }.toSet()
+                    deletingAll = true
+                }) {
                     Icon(Icons.Outlined.DeleteOutline, null)
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.delete_session))
@@ -378,7 +383,9 @@ private fun HistoryScreen(
                 deletion = null
                 selected.clear()
                 selecting = false
-                if (ids.isNotEmpty()) onDeleteSelected(ids)
+                if (deletingAll) onDeleteAll()
+                else if (ids.isNotEmpty()) onDeleteSelected(ids)
+                deletingAll = false
             }) { Text(stringResource(R.string.history_delete_selected)) }
         },
         dismissButton = { TextButton(onClick = { deletion = null }) {
