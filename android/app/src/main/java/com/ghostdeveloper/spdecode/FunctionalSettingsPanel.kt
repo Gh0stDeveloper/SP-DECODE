@@ -33,9 +33,12 @@ fun FunctionalSettingsPanel(
     onMaskCredentials:(Boolean)->Unit,
     onClear:()->Unit,
     onExternalLink:(String)->Unit,
+    retentionDays:Int,
+    onRetention:(Int)->Unit,
 ){
     var clearDialog by remember { mutableStateOf(false) }
     var languageSheet by remember { mutableStateOf(false) }
+    var retentionDialog by remember { mutableStateOf(false) }
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             .padding(horizontal=20.dp,vertical=12.dp),
@@ -99,6 +102,25 @@ fun FunctionalSettingsPanel(
             }
             Text(stringResource(R.string.privacy_text),color=MutedText,
                 fontSize=13.sp,lineHeight=19.sp)
+            Row(
+                modifier=Modifier.fillMaxWidth().clickable{retentionDialog=true}
+                    .padding(vertical=5.dp),
+                verticalAlignment=Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Outlined.History,null,tint=MutedText,
+                    modifier=Modifier.size(21.dp))
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(stringResource(R.string.history_retention),
+                        color=TitleText,fontSize=14.sp)
+                    Text(if(retentionDays==0)stringResource(R.string.history_keep_forever)
+                        else stringResource(R.string.history_keep_days,retentionDays),
+                        color=MutedText,fontSize=12.sp)
+                }
+                Icon(Icons.Outlined.ChevronRight,null,tint=MutedText)
+            }
+            Text(stringResource(R.string.history_retention_note),
+                color=MutedText,fontSize=12.sp,lineHeight=17.sp)
             OutlinedButton(onClick={clearDialog=true},modifier=Modifier.fillMaxWidth()){
                 Icon(Icons.Outlined.DeleteOutline,null)
                 Spacer(Modifier.width(8.dp))
@@ -131,7 +153,7 @@ fun FunctionalSettingsPanel(
                 "https://github.com/Gh0stDeveloper/SP-DECODE/issues",onExternalLink)
         }
         Text(stringResource(R.string.about_text),color=MutedText,fontSize=12.sp)
-        Text("SP-DECODE · 0.3.3-alpha",color=MutedText,fontSize=12.sp,
+        Text("SP-DECODE · 0.3.4-alpha",color=MutedText,fontSize=12.sp,
             modifier=Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(6.dp))
     }
@@ -180,6 +202,38 @@ fun FunctionalSettingsPanel(
             }
         }
     }
+    if(retentionDialog) AlertDialog(
+        onDismissRequest={retentionDialog=false},
+        title={Text(stringResource(R.string.history_retention),color=TitleText)},
+        text={
+            Column(verticalArrangement=Arrangement.spacedBy(5.dp)) {
+                listOf(0,7,30,90,365).forEach { days ->
+                    Row(
+                        modifier=Modifier.fillMaxWidth()
+                            .clickable{
+                                retentionDialog=false
+                                if(days!=retentionDays) onRetention(days)
+                            }.padding(vertical=4.dp),
+                        verticalAlignment=Alignment.CenterVertically
+                    ) {
+                        RadioButton(selected=retentionDays==days,
+                            onClick={
+                                retentionDialog=false
+                                if(days!=retentionDays) onRetention(days)
+                            })
+                        Spacer(Modifier.width(8.dp))
+                        Text(if(days==0)stringResource(R.string.history_keep_forever)
+                            else stringResource(R.string.history_keep_days,days),
+                            color=TitleText)
+                    }
+                }
+            }
+        },
+        confirmButton={TextButton(onClick={retentionDialog=false}) {
+            Text(stringResource(R.string.close))
+        }},
+        containerColor=Pane,
+    )
     if(clearDialog) AlertDialog(
         onDismissRequest={clearDialog=false},
         title={Text(stringResource(R.string.clear_confirm_title))},

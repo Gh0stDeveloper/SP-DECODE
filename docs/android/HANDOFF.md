@@ -250,3 +250,23 @@ Detalles en `ALPHA_INSTALL.md`.
 - Aserciones instrumentadas para conservación del texto fuente, claves repetidas, JSON anidado, máscara, idioma y avisos/progreso; no confundir pruebas sintéticas con exportadores reales.
 - **Pendiente de cierre:** CI Linux/Android API35, APK debug verificable, prueba física ARM64, 16 KiB y formatos reales EHI/EHIL/HC/XUI. Después retomar A.2.4.3–A.2.4.4. Documentación inicial de A–H puede contener estados históricos; comprobar `status.json` y CI para el estado actual.
 
+
+## 0.3.4-alpha — B.5 / G.2–G.5 (2026-10-09)
+
+- Usuario confirma pruebas de A.2.4.3 (ARM64/16 KB) y A.2.4.4 (muestras/variantes reales) en ejecución **por su cuenta**. No se han compartido matrices ni resultados por versión verificables aquí: mantener compatibilidad certificada Android = 0/59 hasta evidencia.
+- Base verificada: `main` 0.3.3-alpha, PR #26 fusionado, Android API35 95/95 tests SUCCESS. Ejecutado por GitHub CI tras merge: #37901852673 SUCCESS.
+- Nueva rama `feat/android-b5-g2-g5-history-batch`, **PR #27 pendiente de gates CI**.
+- G.2: búsqueda SOLO nombre/extensión y favoritos; orden reciente, antiguo y alfabético; no FTS de `rawText` ni de passwords.
+- G.3: bandera `favorite` almacenada en ciphertext Android Keystore AES-GCM; escritura atómica de registro v2, lectura v1 compatible (por defecto no favorito); borrado selectivo/todos y retención de 7/30/90/365 días o indefinida; favoritos exentos de limpieza automática.
+- G.4: importación múltiple SAF de hasta 30 URIs por lote, cola secuencial, progreso `N/30`, cancelación y aislamiento de fallos por archivo. El error global resume éxitos/fallos; no registra nombres ni datos descifrados en logs.
+- G.5 / B.5 (parcial): `HistoryPreferences` DataStore sin secretos para retención y último UUID seleccionado, restauración tras cierre de proceso; `DecodeSessionViewModel` ya existía. **Room y DI/navegación formal pendientes**, no cerrar B.5 ni G.1 Room.
+- Pruebas nuevas `HistoryManagementInstrumentedTest`: búsquedas sin secretos, persistencia de favorito y retención, preferencias en DataStore, cola 30 mixtos, cancelación; suite existente deberá pasar API35.
+- H sigue en espera: no firmar/publicar estable antes de completar validación de versiones, ARM64/16 KiB, seguridad y release gates.
+
+
+### Evidencia de calidad del PR #27 (2026-10-09)
+
+- [GitHub Actions run #37903456589](https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37903456589): Linux **SUCCESS**; Gradle build **SUCCESS**; **100 de 100 pruebas instrumentadas Android API35 x86_64**, 0 fallos; artefacto APK debug `SP-DECODE-Android-v0.3.4-alpha-debug-APK`.
+- Se mejoró posteriormente el resultado de lote ante fallos de DataStore y el ajuste adaptable de filtros en pantallas estrechas. **Se exige nuevo CI SUCCESS del HEAD de PR #27 antes de hacer merge**.
+- Los tests del emulador no sustituyen verificación de importación real de 30 URIs SAF, ARM64, páginas 16 KiB ni exportadores vigentes. El usuario está comprobando A.2.4.3 / A.2.4.4 de manera independiente.
+- B.5 sigue **parcial** por migración Room / DI aún pendiente. G.2–G.5 disponibles en versión debug experimental; H producción no iniciada.

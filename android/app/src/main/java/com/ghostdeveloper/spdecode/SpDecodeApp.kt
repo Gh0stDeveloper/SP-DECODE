@@ -54,6 +54,8 @@ fun SpDecodeApp(
     error:String?,
     progressStage:Int,
     progressFilename:String?,
+    progressPosition:Int,
+    progressTotal:Int,
     reveal:Boolean,
     onTab:(Int)->Unit,
     onImport:()->Unit,
@@ -70,6 +72,9 @@ fun SpDecodeApp(
     onSelect:(DecodeView)->Unit,
     onClear:()->Unit,
     onDeleteSelected:(Set<String>)->Unit,
+    onFavorite:(String,Boolean)->Unit,
+    retentionDays:Int,
+    onRetention:(Int)->Unit,
     onDismissError:()->Unit
 ){
     var dialog by remember{mutableStateOf<String?>(null)}
@@ -90,10 +95,11 @@ fun SpDecodeApp(
                 when(activeTab) {
                     0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
                         onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect)
-                    1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple)
+                    1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple,onFavorite)
                     2->FormatsScreen()
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
-                        onLanguage,onMaskCredentials,onClear,onExternalLink)
+                        onLanguage,onMaskCredentials,onClear,onExternalLink,
+                        retentionDays,onRetention)
                 }
             }
             BottomTabs(activeTab,onTab)
@@ -122,6 +128,9 @@ fun SpDecodeApp(
                         2->R.string.decode_progress_saving
                         else->R.string.decode_progress_decoding
                     }),color=Secondary,fontSize=14.sp,textAlign=TextAlign.Center)
+                    if(progressTotal>1) Text(
+                        stringResource(R.string.batch_progress_count,progressPosition,progressTotal),
+                        color=White,fontSize=13.sp)
                     if(!progressFilename.isNullOrBlank()) Text(progressFilename,
                         color=Secondary,fontSize=12.sp,maxLines=2,
                         overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Center)
@@ -302,144 +311,210 @@ private fun HistoryScreen(
     onDeleteSelected: (Set<String>) -> Unit,
     onDeleteAll: () -> Unit,
     onImportMultiple: () -> Unit,
+    onFavorite: (String, Boolean) -> Unit,
 ) {
     var selecting by remember { mutableStateOf(false) }
     val selected = remember { mutableStateListOf<String>() }
     var deletion by remember { mutableStateOf<Set<String>?>(null) }
     var deletingAll by remember { mutableStateOf(false) }
+    var query by rememberSaveable { mutableStateOf("") }
+    var format by rememberSaveable { mutableStateOf<String?>(null) }
+    var favoritesOnly by rememberSaveable { mutableStateOf(false) }
+    var sort by rememberSaveable { mutableStateOf(HistorySort.NEWEST) }
+    var formatMenu by remember { mutableStateOf(false) }
+    var sortMenu by remember { mutableStateOf(false) }
+    val formats = session.map { it.extension }.distinct().sorted()
+    val visible = HistorySearch.apply(session,HistoryFilter(query,format,favoritesOnly,sort))
+    val visibleIds = visible.map { it.id }.toSet()
+    val selectedVisible = selected.filter { it in visibleIds }.toSet()
     LaunchedEffect(session.map { it.id }) {
         selected.retainAll(session.map { it.id }.toSet())
         if (session.isEmpty()) selecting = false
     }
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(13.dp),
-        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
+        modifier=Modifier.fillMaxSize(),
+        verticalArrangement=Arrangement.spacedBy(12.dp),
+        contentPadding=PaddingValues(horizontal=20.dp,vertical=16.dp),
     ) {
         item {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(R.string.history), color = White,
-                    fontSize = 24.sp, fontWeight = FontWeight.Bold,
-                    modifier = Modifier.weight(1f))
-                if (session.isNotEmpty()) {
-                    TextButton(onClick = {
-                        selecting = !selecting
-                        selected.clear()
-                    }) {
-                        Text(stringResource(if (selecting) R.string.cancel
-                            else R.string.history_select))
-                    }
-                }
+            Row(verticalAlignment=Alignment.CenterVertically) {
+                Text(stringResource(R.string.history),color=White,
+                    fontSize=24.sp,fontWeight=FontWeight.Bold,
+                    modifier=Modifier.weight(1f))
+                if(session.isNotEmpty()) TextButton(onClick={
+                    selecting=!selecting;selected.clear()
+                }) { Text(stringResource(if(selecting)R.string.cancel else R.string.history_select)) }
             }
         }
-        item { Text(stringResource(R.string.session_only), color = Secondary, fontSize = 13.sp) }
-        if (session.isEmpty()) {
-            item { CardText(stringResource(R.string.empty_history)) }
-        } else {
-            if (selecting) item {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = {
-                        if (selected.size == session.size) selected.clear()
-                        else {
-                            selected.clear()
-                            selected.addAll(session.map { it.id })
+        item { Text(stringResource(R.string.session_only),color=Secondary,fontSize=13.sp) }
+        if(session.isNotEmpty()) {
+            item {
+                OutlinedTextField(
+                    value=query,onValueChange={query=it},
+                    modifier=Modifier.fillMaxWidth(),
+                    singleLine=true,shape=RoundedCornerShape(14.dp),
+                    label={Text(stringResource(R.string.history_search))},
+                    leadingIcon={Icon(Icons.Outlined.Search,null)},
+                    trailingIcon={
+                        if(query.isNotEmpty()) IconButton(onClick={query=""}) {
+                            Icon(Icons.Outlined.Close,stringResource(R.string.close))
                         }
-                    }) {
-                        Text(stringResource(if (selected.size == session.size)
-                            R.string.history_deselect_all else R.string.history_select_all))
-                    }
-                    Spacer(Modifier.weight(1f))
-                    Text(stringResource(R.string.history_selected_count, selected.size),
-                        color = Secondary, fontSize = 12.sp)
-                }
-            }
-            items(session, key = { it.id }) { entry ->
-                val checked = entry.id in selected
-                Surface(
-                    color = Panel, shape = RoundedCornerShape(14.dp),
-                    modifier = Modifier.fillMaxWidth().clickable {
-                        if (selecting) {
-                            if (checked) selected.remove(entry.id) else selected.add(entry.id)
-                        } else onSelect(entry)
                     },
-                ) {
-                    Row(Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
-                        verticalAlignment = Alignment.CenterVertically) {
-                        if (selecting) {
-                            Checkbox(checked = checked, onCheckedChange = {
-                                if (it) { if (!checked) selected.add(entry.id) }
-                                else selected.remove(entry.id)
-                            })
-                        } else Icon(Icons.Outlined.InsertDriveFile, null, tint = White)
-                        Spacer(Modifier.width(10.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text(entry.filename, color = White, maxLines = 1,
-                                overflow = TextOverflow.Ellipsis)
-                            Text("." + entry.extension + " · " +
-                                stringResource(R.string.experimental),
-                                color = Secondary, fontSize = 12.sp)
+                )
+            }
+            item {
+                FlowRow(
+                    horizontalArrangement=Arrangement.spacedBy(7.dp),
+                    verticalArrangement=Arrangement.spacedBy(5.dp),
+                    modifier=Modifier.fillMaxWidth()) {
+                    FilterChip(selected=favoritesOnly,onClick={favoritesOnly=!favoritesOnly},
+                        label={Text(stringResource(R.string.history_favorites))},
+                        leadingIcon={Icon(Icons.Outlined.StarBorder,null,
+                            modifier=Modifier.size(16.dp))})
+                    Box {
+                        OutlinedButton(onClick={formatMenu=true},
+                            contentPadding=PaddingValues(horizontal=10.dp)) {
+                            Text(format?.let{"." + it}?:stringResource(R.string.all_formats),
+                                fontSize=12.sp)
+                            Icon(Icons.Outlined.ArrowDropDown,null)
                         }
-                        if (!selecting) {
-                            IconButton(onClick = {
-                                deletingAll = false
-                                deletion = setOf(entry.id)
-                            }) {
-                                Icon(Icons.Outlined.DeleteOutline,
-                                    stringResource(R.string.history_delete_one), tint = Secondary)
+                        DropdownMenu(expanded=formatMenu,onDismissRequest={formatMenu=false},
+                            containerColor=Panel) {
+                            DropdownMenuItem(
+                                text={Text(stringResource(R.string.all_formats))},
+                                onClick={format=null;formatMenu=false})
+                            formats.forEach { extension ->
+                                DropdownMenuItem(text={Text("." + extension)},
+                                    onClick={format=extension;formatMenu=false})
+                            }
+                        }
+                    }
+                    Box {
+                        OutlinedButton(onClick={sortMenu=true},
+                            contentPadding=PaddingValues(horizontal=10.dp)) {
+                            Icon(Icons.Outlined.Sort,null,modifier=Modifier.size(15.dp))
+                            Spacer(Modifier.width(4.dp))
+                            Text(stringResource(R.string.history_sort),fontSize=12.sp)
+                        }
+                        DropdownMenu(expanded=sortMenu,onDismissRequest={sortMenu=false},
+                            containerColor=Panel) {
+                            listOf(
+                                HistorySort.NEWEST to R.string.history_newest,
+                                HistorySort.OLDEST to R.string.history_oldest,
+                                HistorySort.NAME to R.string.history_name,
+                            ).forEach { (value,label) ->
+                                DropdownMenuItem(text={Text(stringResource(label))},
+                                    onClick={sort=value;sortMenu=false})
                             }
                         }
                     }
                 }
             }
             item {
-                if (selecting) {
-                    Button(onClick = {
-                        deletingAll = false
-                        deletion = selected.toSet()
-                    },
-                        enabled = selected.isNotEmpty(),
-                        modifier = Modifier.fillMaxWidth()) {
-                        Icon(Icons.Outlined.DeleteOutline, null)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.history_delete_selected))
+                Text(stringResource(R.string.history_matches,visible.size),
+                    color=Secondary,fontSize=12.sp)
+            }
+        }
+        if(session.isEmpty()) {
+            item { CardText(stringResource(R.string.empty_history)) }
+        } else {
+            if(selecting) item {
+                Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
+                    TextButton(onClick={
+                        if(visibleIds.isNotEmpty() && visibleIds.all { it in selected }) {
+                            selected.removeAll(visibleIds)
+                        } else selected.addAll(visibleIds.filterNot { it in selected })
+                    }) {
+                        Text(stringResource(if(visibleIds.isNotEmpty() &&
+                            visibleIds.all{it in selected}) R.string.history_deselect_all
+                            else R.string.history_select_visible))
                     }
-                } else OutlinedButton(onClick = {
-                    deletion = session.map { it.id }.toSet()
-                    deletingAll = true
+                    Spacer(Modifier.weight(1f))
+                    Text(stringResource(R.string.history_selected_count,selected.size),
+                        color=Secondary,fontSize=12.sp)
+                }
+            }
+            if(visible.isEmpty()) item {
+                CardText(stringResource(R.string.history_no_matches))
+            }
+            items(visible,key={it.id}) { entry ->
+                val checked=entry.id in selected
+                Surface(color=Panel,shape=RoundedCornerShape(14.dp),
+                    modifier=Modifier.fillMaxWidth().clickable {
+                        if(selecting) {
+                            if(checked) selected.remove(entry.id) else selected.add(entry.id)
+                        }else onSelect(entry)
+                    }) {
+                    Row(Modifier.padding(horizontal=12.dp,vertical=12.dp),
+                        verticalAlignment=Alignment.CenterVertically) {
+                        if(selecting) Checkbox(checked=checked,onCheckedChange={
+                            if(it && !checked)selected.add(entry.id)
+                            else if(!it)selected.remove(entry.id)
+                        }) else Icon(Icons.Outlined.InsertDriveFile,null,tint=White)
+                        Spacer(Modifier.width(10.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(entry.filename,color=White,maxLines=1,
+                                overflow=TextOverflow.Ellipsis)
+                            Text("." + entry.extension + " · " +
+                                stringResource(R.string.experimental),
+                                color=Secondary,fontSize=12.sp)
+                        }
+                        if(!selecting) {
+                            IconButton(onClick={onFavorite(entry.id,!entry.favorite)}) {
+                                Icon(if(entry.favorite)Icons.Outlined.Star
+                                    else Icons.Outlined.StarBorder,
+                                    stringResource(R.string.history_favorites),
+                                    tint=if(entry.favorite)Amber else Secondary)
+                            }
+                            IconButton(onClick={
+                                deletingAll=false;deletion=setOf(entry.id)
+                            }) {
+                                Icon(Icons.Outlined.DeleteOutline,
+                                    stringResource(R.string.history_delete_one),tint=Secondary)
+                            }
+                        }
+                    }
+                }
+            }
+            item {
+                if(selecting) Button(
+                    onClick={deletingAll=false;deletion=selected.toSet()},
+                    enabled=selected.isNotEmpty(),modifier=Modifier.fillMaxWidth()) {
+                    Icon(Icons.Outlined.DeleteOutline,null)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.history_delete_selected))
+                }else OutlinedButton(onClick={
+                    deletion=session.map{it.id}.toSet();deletingAll=true
                 }) {
-                    Icon(Icons.Outlined.DeleteOutline, null)
+                    Icon(Icons.Outlined.DeleteOutline,null)
                     Spacer(Modifier.width(8.dp))
                     Text(stringResource(R.string.delete_session))
                 }
             }
         }
         item {
-            OutlinedButton(onClick = onImportMultiple) {
-                Icon(Icons.Outlined.FileUpload, null)
+            OutlinedButton(onClick=onImportMultiple) {
+                Icon(Icons.Outlined.FileUpload,null)
                 Spacer(Modifier.width(8.dp))
-                Text(stringResource(R.string.select_file))
+                Text(stringResource(R.string.history_import_batch))
             }
         }
     }
-    if (deletion != null) AlertDialog(
-        onDismissRequest = { deletion = null; deletingAll = false },
-        title = { Text(stringResource(R.string.clear_confirm_title)) },
-        text = { Text(stringResource(R.string.history_delete_confirm, deletion!!.size)) },
-        confirmButton = {
-            TextButton(onClick = {
-                val ids = deletion.orEmpty()
-                deletion = null
-                selected.clear()
-                selecting = false
-                if (deletingAll) onDeleteAll()
-                else if (ids.isNotEmpty()) onDeleteSelected(ids)
-                deletingAll = false
-            }) { Text(stringResource(R.string.history_delete_selected)) }
-        },
-        dismissButton = { TextButton(onClick = { deletion = null; deletingAll = false }) {
+    if(deletion!=null) AlertDialog(
+        onDismissRequest={deletion=null;deletingAll=false},
+        title={Text(stringResource(R.string.clear_confirm_title))},
+        text={Text(stringResource(R.string.history_delete_confirm,deletion!!.size))},
+        confirmButton={TextButton(onClick={
+            val ids=deletion.orEmpty()
+            deletion=null;selected.clear();selecting=false
+            if(deletingAll)onDeleteAll()
+            else if(ids.isNotEmpty())onDeleteSelected(ids)
+            deletingAll=false
+        }){ Text(stringResource(R.string.history_delete_selected)) }},
+        dismissButton={TextButton(onClick={deletion=null;deletingAll=false}){
             Text(stringResource(R.string.cancel))
-        } },
-        containerColor = Panel,
+        }},
+        containerColor=Panel,
     )
 }
 

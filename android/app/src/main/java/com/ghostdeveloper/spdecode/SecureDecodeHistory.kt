@@ -62,13 +62,14 @@ class SecureDecodeHistory(context: Context) {
             error("Unable to create private history directory")
         }
         val json = JSONObject()
-            .put("version", 1)
+            .put("version", 2)
             .put("id", record.id)
             .put("filename", record.filename)
             .put("extension", record.extension)
             .put("rawText", record.rawText)
             .put("fileBytes", record.fileBytes)
             .put("savedAtMillis", record.savedAtMillis)
+            .put("favorite", record.favorite)
             .toString().toByteArray(Charsets.UTF_8)
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, secretKey)
@@ -103,6 +104,25 @@ class SecureDecodeHistory(context: Context) {
         }
     }
 
+    /** Atomic favorite update: metadata remains encrypted in its full record. */
+    fun setFavorite(id:String, favorite:Boolean):DecodeView {
+        require(UUID.fromString(id).toString() == id)
+        val file=File(directory,"${id}.bin")
+        val previous=read(file)
+        val updated=previous.copy(favorite=favorite)
+        save(updated)
+        return updated
+    }
+
+    /** User-configured retention. Favorited records are deliberately exempt. */
+    fun pruneOlderThan(cutoffMillis:Long):Set<String> {
+        val expired=load().filter {
+            !it.favorite && it.savedAtMillis < cutoffMillis
+        }.map { it.id }.toSet()
+        if(expired.isNotEmpty()) delete(expired)
+        return expired
+    }
+
     /** Remove even unreadable/corrupt ciphertext on explicit clear-all request. */
     fun clearAll() {
         if (directory.exists()) check(directory.deleteRecursively()) {
@@ -132,7 +152,8 @@ class SecureDecodeHistory(context: Context) {
             cipher.doFinal(encrypted)
         }
         val objectData = JSONObject(payload.toString(Charsets.UTF_8))
-        require(objectData.getInt("version") == 1)
+        val version = objectData.getInt("version")
+        require(version == 1 || version == 2)
         val id = objectData.getString("id")
         require(file.name == "${id}.bin" && UUID.fromString(id).toString() == id)
         return DecodeView(
@@ -142,6 +163,7 @@ class SecureDecodeHistory(context: Context) {
             fileBytes = objectData.getInt("fileBytes"),
             id = id,
             savedAtMillis = objectData.getLong("savedAtMillis"),
+            favorite = if(version >= 2) objectData.optBoolean("favorite",false) else false,
         )
     }
 

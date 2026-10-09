@@ -102,4 +102,20 @@
     <string name="decode_progress_reading">Leyendo archivo seleccionado…</string>
     <string name="decode_progress_decoding">Decodificando configuración localmente…</string>
     <string name="decode_progress_saving">Guardando resultado cifrado…</string>
+    <string name="history_search">Buscar por nombre o extensión</string>
+    <string name="history_favorites">Favoritos</string>
+    <string name="history_sort">Ordenar</string>
+    <string name="history_newest">Más recientes</string>
+    <string name="history_oldest">Más antiguos</string>
+    <string name="history_name">Por nombre</string>
+    <string name="history_matches">%1$d resultados</string>
+    <string name="history_select_visible">Seleccionar visibles</string>
+    <string name="history_no_matches">No hay archivos que coincidan con estos filtros</string>
+    <string name="history_import_batch">Importar hasta 30 archivos</string>
+    <string name="history_retention">Conservar historial</string>
+    <string name="history_keep_forever">Conservar siempre</string>
+    <string name="history_keep_days">Conservar %1$d días</string>
+    <string name="history_retention_note">Los resultados antiguos se eliminan automáticamente. Los favoritos se conservan.</string>
+    <string name="batch_progress_count">Archivo %1$d de %2$d</string>
+    <string name="batch_import_summary">Lote terminado: %1$d descifrados y %2$d fallidos. Algunos archivos pueden tener versiones incompatibles o estar dañados.</string>
 </resources>

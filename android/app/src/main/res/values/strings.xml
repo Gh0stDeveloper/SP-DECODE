@@ -102,4 +102,20 @@
     <string name="decode_progress_reading">Reading selected file…</string>
     <string name="decode_progress_decoding">Decoding configuration locally…</string>
     <string name="decode_progress_saving">Saving encrypted result…</string>
+    <string name="history_search">Search by filename or extension</string>
+    <string name="history_favorites">Favorites</string>
+    <string name="history_sort">Sort</string>
+    <string name="history_newest">Newest first</string>
+    <string name="history_oldest">Oldest first</string>
+    <string name="history_name">By name</string>
+    <string name="history_matches">%1$d results</string>
+    <string name="history_select_visible">Select visible</string>
+    <string name="history_no_matches">No files match these filters</string>
+    <string name="history_import_batch">Import up to 30 files</string>
+    <string name="history_retention">History retention</string>
+    <string name="history_keep_forever">Keep forever</string>
+    <string name="history_keep_days">Keep for %1$d days</string>
+    <string name="history_retention_note">Old results are cleared automatically. Favorites are always kept.</string>
+    <string name="batch_progress_count">File %1$d of %2$d</string>
+    <string name="batch_import_summary">Batch finished: %1$d decoded, %2$d failed. Some versions may not be supported or files may be damaged.</string>
 </resources>

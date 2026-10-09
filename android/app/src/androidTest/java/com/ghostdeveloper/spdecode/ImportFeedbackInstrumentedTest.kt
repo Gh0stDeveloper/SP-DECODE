@@ -26,11 +26,13 @@ class ImportFeedbackInstrumentedTest {
                 activeTab=0,current=null,session=emptyList(),
                 busy=busy(),error=error(),progressStage=stage(),
                 progressFilename=if(busy())"sample.ehi" else null,
+                progressPosition=1,progressTotal=1,
                 reveal=false,onTab={},onImport={},onImportMultiple={},
                 onCancel=onCancel,onReveal={},onCopy={},onExport={},
                 selectedLanguage="system",hideCredentials=false,
                 onLanguage={},onMaskCredentials={},onExternalLink={},
                 onSelect={},onClear={},onDeleteSelected={},
+                onFavorite={_,_->},retentionDays=0,onRetention={},
                 onDismissError=onDismiss,
             )
         }

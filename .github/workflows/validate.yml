@@ -94,7 +94,7 @@ jobs:
 
 
   android-parity:
-    name: Android 0.3.3 structured results + modal UX (API 35)
+    name: Android 0.3.4 encrypted favorites, filters and 30-file batches (API 35)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -167,7 +167,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v0.3.3-alpha-home-screenshot
+          name: SP-DECODE-Android-v0.3.4-alpha-home-screenshot
           path: android/app/build/outputs/spdecode-ui/home.png
           if-no-files-found: error
           retention-days: 30
@@ -187,7 +187,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v0.3.3-alpha-debug-APK
+          name: SP-DECODE-Android-v0.3.4-alpha-debug-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
