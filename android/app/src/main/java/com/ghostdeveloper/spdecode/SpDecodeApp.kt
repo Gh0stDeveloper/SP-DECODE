@@ -77,9 +77,6 @@ fun SpDecodeApp(
     onRetention:(Int)->Unit,
     onDismissError:()->Unit,
     onDecodeText:(String)->Unit={},
-    onClearTextSession:()->Unit={},
-    textPartCount:Int=0,
-    textProtocolName:String?=null,
 ){
     var dialog by remember{mutableStateOf<String?>(null)}
     MaterialTheme(colorScheme=darkColorScheme(
@@ -99,8 +96,7 @@ fun SpDecodeApp(
                 when(activeTab) {
                     0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
                         onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect,
-                        onDecodeText=onDecodeText,onClearTextSession=onClearTextSession,
-                        textPartCount=textPartCount,textProtocolName=textProtocolName)
+                        onDecodeText=onDecodeText)
                     1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple,onFavorite)
                     2->FormatsScreen()
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
@@ -243,49 +239,67 @@ private fun HomeScreen(
     onExport:()->Unit,
     onSelect:(DecodeView)->Unit,
     onDecodeText:(String)->Unit,
-    onClearTextSession:()->Unit,
-    textPartCount:Int,
-    textProtocolName:String?,
 ) {
     Column(
         modifier=Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             .padding(horizontal=20.dp,vertical=11.dp),
         verticalArrangement=Arrangement.spacedBy(19.dp),
     ) {
-        Surface(shape=RoundedCornerShape(18.dp),color=Panel,modifier=Modifier.fillMaxWidth()){
-            Column(
-                modifier=Modifier.fillMaxWidth().padding(horizontal=22.dp,vertical=25.dp),
-                horizontalAlignment=Alignment.CenterHorizontally,
-            ){
-                Icon(Icons.Outlined.FileUpload,null,tint=White,modifier=Modifier.size(34.dp))
-                Spacer(Modifier.height(16.dp))
-                Text(stringResource(R.string.import_title),color=White,
-                    fontSize=19.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
-                Spacer(Modifier.height(12.dp))
-                Text(stringResource(R.string.import_detail),color=Secondary,
-                    fontSize=15.sp,lineHeight=23.sp,textAlign=TextAlign.Center)
-                Spacer(Modifier.height(12.dp))
-                Button(
-                    onClick=onImport,
-                    enabled=!busy,
-                    shape=RoundedCornerShape(40.dp),
-                    colors=ButtonDefaults.buttonColors(
-                        containerColor=Raised,contentColor=White,
-                        disabledContainerColor=Raised,disabledContentColor=Secondary),
-                    contentPadding=PaddingValues(horizontal=18.dp,vertical=9.dp),
-                ) {
-                    Text(stringResource(R.string.select_file),fontSize=15.sp,
-                        fontWeight=FontWeight.SemiBold)
-                }
+        var textExpanded by rememberSaveable { mutableStateOf(false) }
+        var awaitingTextResult by remember { mutableStateOf(false) }
+        // Keep previous results visible. Hide the editor only after a new,
+        // successfully decoded result arrives; failures leave text editable.
+        LaunchedEffect(current?.id) {
+            if(awaitingTextResult && current != null) {
+                textExpanded=false
+                awaitingTextResult=false
             }
         }
-
-        TextDecoderPanel(
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement=Arrangement.spacedBy(10.dp),
+            verticalAlignment=Alignment.CenterVertically,
+        ) {
+            Button(
+                onClick=onImport,
+                enabled=!busy,
+                modifier=Modifier.weight(1f).heightIn(min=52.dp),
+                shape=RoundedCornerShape(14.dp),
+                contentPadding=PaddingValues(horizontal=8.dp,vertical=12.dp),
+                colors=ButtonDefaults.buttonColors(
+                    containerColor=Panel,contentColor=White,
+                    disabledContainerColor=Panel,disabledContentColor=Secondary),
+            ) {
+                Icon(Icons.Outlined.FileUpload,null,modifier=Modifier.size(20.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(stringResource(R.string.home_import_action),
+                    fontSize=13.sp,maxLines=2,lineHeight=16.sp,
+                    textAlign=TextAlign.Center)
+            }
+            Button(
+                onClick={textExpanded=!textExpanded},
+                enabled=!busy,
+                modifier=Modifier.weight(1f).heightIn(min=52.dp),
+                shape=RoundedCornerShape(14.dp),
+                contentPadding=PaddingValues(horizontal=8.dp,vertical=12.dp),
+                colors=ButtonDefaults.buttonColors(
+                    containerColor=if(textExpanded)Raised else Panel,
+                    contentColor=White,disabledContainerColor=Panel,
+                    disabledContentColor=Secondary),
+            ) {
+                Icon(Icons.Outlined.DataObject,null,modifier=Modifier.size(20.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(stringResource(R.string.text_decode_title),
+                    fontSize=13.sp,maxLines=2,lineHeight=16.sp,
+                    textAlign=TextAlign.Center)
+            }
+        }
+        if(textExpanded) TextDecoderPanel(
             enabled=!busy,
-            onDecode=onDecodeText,
-            onClearSession=onClearTextSession,
-            pendingParts=textPartCount,
-            pendingProtocol=textProtocolName,
+            onDecode={input->
+                awaitingTextResult=true
+                onDecodeText(input)
+            },
         )
 
         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
