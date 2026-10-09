@@ -53,7 +53,7 @@ def make() -> tuple[bytes, bytes]:
         "configHwid": "",
         "configLockMobileOperatorId": "",
     }
-    header = b"\\x01" + struct.pack("<I", 2) + struct.pack("<I", 32) + b"\\x01" + bytes(range(16)) + bytes(range(24))
+    header = b"\x01" + struct.pack("<I", 2) + struct.pack("<I", 32) + b"\x01" + bytes(range(16)) + bytes(range(24))
     assert len(header) == 50
     kdf = hash_secret_raw(
         secret=EHIDecryptor._generate_master_key(outer),
