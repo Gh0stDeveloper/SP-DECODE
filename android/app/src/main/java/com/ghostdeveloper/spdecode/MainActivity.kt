@@ -183,6 +183,7 @@ class MainActivity : ComponentActivity() {
                 progressTotal=progressTotal,
                 reveal=reveal,
                 onTab={ newTab ->
+                    navigationExplicit=true
                     tab=newTab
                     reveal=false
                     scope.launch {
