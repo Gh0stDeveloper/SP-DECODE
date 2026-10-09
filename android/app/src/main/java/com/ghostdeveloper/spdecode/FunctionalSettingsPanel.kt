@@ -34,6 +34,7 @@ fun FunctionalSettingsPanel(
     onExternalLink:(String)->Unit,
 ){
     var clearDialog by remember { mutableStateOf(false) }
+    var languageSheet by remember { mutableStateOf(false) }
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             .padding(horizontal=20.dp,vertical=12.dp),
@@ -42,38 +43,28 @@ fun FunctionalSettingsPanel(
         Text(stringResource(R.string.settings_title),fontSize=24.sp,
             fontWeight=FontWeight.Bold,color=TitleText)
 
+        // One compact row instead of a permanently expanded radio list.
         SettingsCard {
-            Row(verticalAlignment=Alignment.CenterVertically){
-                Icon(Icons.Outlined.Language,null,tint=TitleText)
-                Spacer(Modifier.width(10.dp))
-                Text(stringResource(R.string.language_title),color=TitleText,
-                    fontWeight=FontWeight.SemiBold,fontSize=17.sp)
-            }
-            Text(stringResource(R.string.language_pick_description),
-                color=MutedText,fontSize=13.sp)
-            val options=listOf(
-                "system" to stringResource(R.string.language_system),
-                "es" to "Español",
-                "en" to "English",
-                "pt-BR" to "Português (Brasil)",
-                "ar" to "العربية",
-            )
-            options.forEach{(tag,title)->
-                Row(
-                    modifier=Modifier.fillMaxWidth().clickable {onLanguage(tag)}
-                        .padding(vertical=5.dp),
-                    verticalAlignment=Alignment.CenterVertically,
-                ){
-                    RadioButton(
-                        selected=language==tag,
-                        onClick={onLanguage(tag)},
-                        colors=RadioButtonDefaults.colors(
-                            selectedColor=TitleText,unselectedColor=MutedText
-                        )
-                    )
-                    Spacer(Modifier.width(10.dp))
-                    Text(title,color=TitleText,fontSize=14.sp)
+            Row(
+                modifier=Modifier.fillMaxWidth().clickable{languageSheet=true}
+                    .padding(vertical=5.dp),
+                verticalAlignment=Alignment.CenterVertically,
+            ) {
+                Icon(Icons.Outlined.Language,null,tint=TitleText,
+                    modifier=Modifier.size(25.dp))
+                Spacer(Modifier.width(13.dp))
+                Column(modifier=Modifier.weight(1f),
+                    verticalArrangement=Arrangement.spacedBy(4.dp)) {
+                    Text(stringResource(R.string.language_title),color=TitleText,
+                        fontWeight=FontWeight.SemiBold,fontSize=16.sp)
+                    val languageName=SupportedLanguages.options
+                        .firstOrNull{it.tag==language}?.nativeName.orEmpty()
+                    Text(if(language=="system")stringResource(R.string.language_system)
+                        else languageName.ifBlank{stringResource(R.string.language_system)},
+                        color=MutedText,fontSize=13.sp)
                 }
+                Icon(Icons.Outlined.ChevronRight,
+                    stringResource(R.string.language_title),tint=MutedText)
             }
         }
         SettingsCard{
@@ -142,6 +133,51 @@ fun FunctionalSettingsPanel(
         Text("SP-DECODE · 0.3.2-alpha",color=MutedText,fontSize=12.sp,
             modifier=Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(6.dp))
+    }
+    if(languageSheet) ModalBottomSheet(
+        onDismissRequest={languageSheet=false},
+        containerColor=Pane,
+        contentColor=TitleText,
+        scrimColor=Color.Black.copy(alpha=0.72f),
+    ) {
+        Column(
+            Modifier.fillMaxWidth().heightIn(max=550.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(start=22.dp,end=22.dp,bottom=25.dp),
+            verticalArrangement=Arrangement.spacedBy(8.dp),
+        ) {
+            Text(stringResource(R.string.language_title),color=TitleText,
+                fontWeight=FontWeight.Bold,fontSize=21.sp)
+            Text(stringResource(R.string.language_pick_description),
+                color=MutedText,fontSize=13.sp,lineHeight=19.sp)
+            Spacer(Modifier.height(7.dp))
+            SupportedLanguages.options.forEach { option ->
+                Row(
+                    modifier=Modifier.fillMaxWidth()
+                        .clickable {
+                            languageSheet=false
+                            if(language!=option.tag) onLanguage(option.tag)
+                        }
+                        .padding(vertical=8.dp),
+                    verticalAlignment=Alignment.CenterVertically,
+                ) {
+                    RadioButton(
+                        selected=language==option.tag,
+                        onClick={
+                            languageSheet=false
+                            if(language!=option.tag) onLanguage(option.tag)
+                        },
+                        colors=RadioButtonDefaults.colors(
+                            selectedColor=TitleText,unselectedColor=MutedText,
+                        ),
+                    )
+                    Spacer(Modifier.width(11.dp))
+                    Text(if(option.tag=="system")stringResource(R.string.language_system)
+                        else option.nativeName,
+                        color=TitleText,fontSize=15.sp)
+                }
+            }
+        }
     }
     if(clearDialog) AlertDialog(
         onDismissRequest={clearDialog=false},
