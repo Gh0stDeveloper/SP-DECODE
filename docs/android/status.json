@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "product": "SP-DECODE Android",
   "repository": "Gh0stDeveloper/SP-DECODE",
-  "documentationVersion": "1.19.1",
-  "referenceDate": "2026-10-08",
+  "documentationVersion": "1.20.0",
+  "referenceDate": "2026-10-09",
   "baselineBranch": "main",
-  "baselineHead": "37965a3a349f38dc05560449bfe56dcd44b348ac",
+  "baselineHead": "1a57445e38e6a1d3318f5c880027dbe47570084f",
   "documentationBranch": "docs/android-offline-architecture",
-  "productStatus": "android_0_3_full_result_export_language_picker_credits_verified_api35",
+  "productStatus": "android_0_3_3_nested_json_primary_view_compact_languages_modal_import_patch_pending_ci",
   "androidSourceExists": true,
   "apkProduced": true,
   "offlineRequired": true,
@@ -45,7 +45,7 @@
       }
     },
     "B": {
-      "status": "v0_3_debug_alpha_full_results_manual_locales_credits_82_tests_pass",
+      "status": "v0_3_3_ui_patch_pending_ci_previous_0_3_2_88_tests_success",
       "subphases": {
         "B.1": "verified_compose_apk_api35_in_pr22",
         "B.2": "reference_screenshot_baseline_verified_apk_0_2_real_user",
@@ -65,7 +65,7 @@
       "status": "not_started"
     },
     "F": {
-      "status": "v0_3_complete_typed_json_nested_fields_full_preview_three_copy_export_modes_api35_verified"
+      "status": "v0_3_3_original_style_main_result_inline_nested_json_modal_import_preview_mask_and_contrast_pending_ci"
     },
     "G": {
       "status": "not_started"
@@ -74,10 +74,10 @@
       "status": "not_started"
     }
   },
-  "nextAction": "Install v0.3 debug APK from successful GitHub Actions artifact on ARM64 user phone, verify long XUI/HC real-exporter results and multilingual UX, then harden remaining advanced exporter variants and physical 16KiB compatibility for release.",
-  "releaseStatus": "DEBUG-ALPHA-0.3-VERIFIED-API35-NO-PRODUCTION-GO",
+  "nextAction": "Finish PR #26 CI (Linux and Android emulator), merge only on green, then install v0.3.3 debug APK on real ARM64 device; compare EHI/EHIL nested JSON, cancel and locale sheet against screenshots before A.2.4.3 and A.2.4.4.",
+  "releaseStatus": "DEBUG-ALPHA-0.3.3-IN-REVIEW-NO-PRODUCTION-GO",
   "ciValidatedAndroid": true,
-  "notes": "User verified v0.2 on Android phone and provided 3 screenshots; v0.3 fixes full XUI and nested HC presentation, copy/export JSON ordered original, five UI locales, credits; 82/82 API35 instrumentation tests and Linux success in run #37892276304. Still 0 certified modern vendor formats, ARM64/16KiB and production APK signing pending.",
+  "notes": "PR #25 HTTP Injector standard route merged and validated on API35 with 88 tests; PR #26 implements user screenshot primary decoder text and inline nested JSON viewer, compact language sheet, modal error/progress, high-contrast actions. Await CI on PR #26; external exporters, arm64/16KiB and physical tests still pending.",
   "localization": {
     "scope": "ui_only",
     "languages": [
@@ -597,5 +597,31 @@
     "linuxStatus": "success",
     "alphaApkArtifact": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37892276304/artifacts/11599006603",
     "emulatorScreenshotArtifact": "https://github.com/Gh0stDeveloper/SP-DECODE/actions/runs/37892276304/artifacts/11599276005"
+  },
+  "uiPatch": {
+    "branch": "feat/android-ui-structured-result-dialogs-settings",
+    "pr": 26,
+    "version": "0.3.3-alpha",
+    "state": "implemented_pending_ci",
+    "primaryResult": "original source headers and labels; nested JSON expanded in display only",
+    "immutableDecoderOriginal": true,
+    "nestedJsonPreviewMask": true,
+    "languageSheet": true,
+    "supportedLocales": [
+      "system",
+      "es",
+      "en",
+      "pt-BR",
+      "ar"
+    ],
+    "errorDialog": true,
+    "progressStages": [
+      "read",
+      "decode",
+      "save"
+    ],
+    "cancel": true,
+    "contrastingActions": true,
+    "hardwareValidation": "pending"
   }
 }
