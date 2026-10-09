@@ -33,6 +33,11 @@ class LinkLayerVer6InstrumentedTest {
         for(filename in listOf("linklayer-ver6.lnk","linklayer-ver6-reordered.lnk")){
             val bytes=asset(filename)
             val expected=JSONObject(String(asset(filename.removeSuffix(".lnk")+".json")))
+            // Distinguish cipher-layer incompatibility from Go gob parser drift.
+            val payload=try { LinkLayerPort.decryptGob(bytes) }
+                catch(e:Exception){throw AssertionError("LinkLayer crypt stage: ${e.message}",e)}
+            try { LinkLayerPort.decodeGob(payload) }
+                catch(e:Exception){throw AssertionError("LinkLayer gob stage: ${e.message} (size=${payload.size})",e)}
             val actual=JSONObject(route(filename,bytes) ?: error("Kotlin failed: $filename"))
             assertEquals(60,flatten(actual).size)
             assertEquals(flatten(expected),flatten(actual))
