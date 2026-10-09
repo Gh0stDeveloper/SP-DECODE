@@ -136,6 +136,32 @@ jobs:
           SPDECODE_RELEASE_KEY_ALIAS: ${{ secrets.SPDECODE_SIGNING_KEY_ALIAS }}
           SPDECODE_RELEASE_KEY_PASSWORD: ${{ secrets.SPDECODE_SIGNING_KEY_PASSWORD }}
         run: gradle --no-daemon :app:assembleRelease
+      - name: Align and explicitly sign V1/V2/V3 using the permanent repository keystore
+        env:
+          SIGNING_STORE_PASSWORD: ${{ secrets.SPDECODE_SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SPDECODE_SIGNING_KEY_PASSWORD }}
+          SIGNING_ALIAS: ${{ secrets.SPDECODE_SIGNING_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          test -s "$APK"
+          TOOLS="$ANDROID_HOME/build-tools/35.0.0"
+          # Same permanent certificate from Secrets; NEVER generate a new key.
+          "$TOOLS/zipalign" -P 16 -f 4 "$APK" "$RUNNER_TEMP/production-aligned.apk"
+          export SPDECODE_STORE_PASS="$SIGNING_STORE_PASSWORD"
+          export SPDECODE_KEY_PASS="$SIGNING_KEY_PASSWORD"
+          "$TOOLS/apksigner" sign \
+            --ks "$RUNNER_TEMP/spdecode-production.p12" --ks-type PKCS12 \
+            --ks-key-alias "$SIGNING_ALIAS" \
+            --ks-pass env:SPDECODE_STORE_PASS \
+            --key-pass env:SPDECODE_KEY_PASS \
+            --v1-signing-enabled true \
+            --v2-signing-enabled true \
+            --v3-signing-enabled true \
+            --out "$RUNNER_TEMP/production-v1-v2-v3.apk" \
+            "$RUNNER_TEMP/production-aligned.apk"
+          mv "$RUNNER_TEMP/production-v1-v2-v3.apk" "$APK"
+          unset SPDECODE_STORE_PASS SPDECODE_KEY_PASS
       - name: Verify release signature schemes, package, version and 16 KiB alignment
         env:
           VERSION: ${{ needs.preflight.outputs.version }}
@@ -145,10 +171,19 @@ jobs:
           APK=android/app/build/outputs/apk/release/app-release.apk
           test -s "$APK"
           TOOLS="$ANDROID_HOME/build-tools/35.0.0"
-          "$TOOLS/apksigner" verify --verbose --print-certs "$APK" > "$RUNNER_TEMP/signature.txt"
-          grep -F 'Verified using v1 scheme (JAR signing): true' "$RUNNER_TEMP/signature.txt"
-          grep -F 'Verified using v2 scheme (APK Signature Scheme v2): true' "$RUNNER_TEMP/signature.txt"
-          grep -F 'Verified using v3 scheme (APK Signature Scheme v3): true' "$RUNNER_TEMP/signature.txt"
+          if ! "$TOOLS/apksigner" verify --verbose --print-certs "$APK" > "$RUNNER_TEMP/signature.txt" 2>&1; then
+            echo "::error::apksigner could not verify the production APK"
+            sed -E '/^Signer #.*certificate DN:/d' "$RUNNER_TEMP/signature.txt" | tail -n 45
+            exit 1
+          fi
+          # Print non-secret scheme results so failures are diagnosable.
+          grep -Ei 'Verified using v[123] scheme|Signer #1 certificate SHA-256 digest' "$RUNNER_TEMP/signature.txt" || true
+          for scheme in v1 v2 v3; do
+            if ! grep -Eiq "^Verified using $scheme scheme .*: true$" "$RUNNER_TEMP/signature.txt"; then
+              echo "::error::APK $scheme signature was not verified"
+              exit 1
+            fi
+          done
           "$TOOLS/zipalign" -c -P 16 -v 4 "$APK"
           "$TOOLS/aapt" dump badging "$APK" > "$RUNNER_TEMP/badging.txt"
           grep -F "package: name='com.ghostdeveloper.spdecode'" "$RUNNER_TEMP/badging.txt"
