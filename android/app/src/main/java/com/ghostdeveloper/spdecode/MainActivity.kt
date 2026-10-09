@@ -279,7 +279,11 @@ class MainActivity : ComponentActivity() {
                     result=processed
                     recent.add(0,processed)
                     if(!saved)toast(R.string.history_storage_error)
-                    historyPreferences.setSelectedId(processed.id)
+                    // Preference failure must not misreport a valid decoded file
+                    // as failed after its encrypted record has already been saved.
+                    try { historyPreferences.setSelectedId(processed.id) }
+                    catch(e:CancellationException){throw e}
+                    catch(_:Exception){toast(R.string.history_storage_error)}
                     tab=0
                 }
                 if(generation==importGeneration && report.failures>0) {
