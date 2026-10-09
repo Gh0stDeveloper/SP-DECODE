@@ -16,8 +16,8 @@ import com.google.gson.JsonPrimitive
  * history must continue storing the exact decoder response.
  */
 object RawResultFormatter {
-    private val fieldLine = Regex("""^(\\s*│\\[[^]]+]\\s*[^:\\r\\n]+:\\s*)(.*)$""")
-    private val keyLine = Regex("""^\\s*│\\[[^]]+]\\s*([^:\\r\\n]+):""")
+    private val fieldLine = Regex("""^(\s*│\[[^]]+]\s*[^:\r\n]+:\s*)(.*)$""")
+    private val keyLine = Regex("""^\s*│\[[^]]+]\s*([^:\r\n]+):""")
     private val pretty = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
     private const val MAX_JSON_CHARS = 256 * 1024
     private const val MAX_RENDER_CHARS = 2 * 1024 * 1024
