@@ -1,15 +1,15 @@
-# SP-DECODE Android 1.0.3 — firma permanente automática
+# SP-DECODE Android 1.0.4 — firma permanente automática
 
 **Actualizado:** 2026-10-09
 
-La actualización `v1.0.3-rc.1` incorpora **LinkLayer VPN (.lnk) VER6**, los 60 campos Go gob, decodificación Kotlin completamente local y un aviso de novedades visible una vez por versión. Conserva todos los motores anteriores, incluidos HC HCCFG y SIP VER8 de `v1.0.2-rc.1`. Esta candidata usa `versionName = "1.0.3"`, `versionCode = 14` y la misma keystore definitiva.
+La actualización `v1.0.4-rc.1` modifica **solo los créditos**: en la pantalla se muestra «Decodificado por SP-DECODE» y la copia/exportación **ordenada** añade «Desarrollado por Ghost Developer», grupo y canal oficiales. El JSON continúa siendo JSON válido sin campos publicitarios y el resultado original no se reescribe. Los motores (.lnk VER6, .hc HCCFG, .sip VER8 y anteriores) no se modifican. `versionName = "1.0.4"`, `versionCode = 15`, con la misma keystore definitiva que `v1.0.4-rc.1`.
 
-**Evidencia:** el script Python fue verificado por Codex con un archivo real aportado por el propietario. El port Android debe demostrar primero paridad con fixtures sintéticos y después con archivos reales de forma privada; no se declara certificación de todos los exportadores. Estable sigue en **NO-GO**, distribución pública como **pre-release**.
+**Evidencia:** CI `main` de v1.0.4 pasó Linux y **125 pruebas API35**, incluidos casos de paridad Python/Kotlin con fixtures sintéticos. El propietario también confirmó pruebas reales de `.lnk`, `.hc`, otros archivos, lotes y funcionamiento en Android (capturas privadas), y aprobó la distribución pública. No equivale a un informe reproducible de todos los exportadores ni a una auditoría independiente. La firma V1/V2/V3 del release anterior está documentada en GitHub Actions. El gate estable sigue separado de la **APK de producción firmada** distribuible bajo un tag pre-release.
 
 ## Compilación y firma de producción
 
-La APK de producción es un `assembleRelease` con `versionName = "1.0.3"`
-y `versionCode = 14`. **No se usa una clave provisional, APK debug ni
+La APK de producción es un `assembleRelease` con `versionName = "1.0.4"`
+y `versionCode = 15`. **No se usa una clave provisional, APK debug ni
 certificado generado en CI.** GitHub Actions toma la misma keystore PKCS#12
 definitiva que el propietario configuró mediante los cuatro Secrets:
 
@@ -37,8 +37,8 @@ actualizaciones compatibles con la misma identidad Android.
    del paquete y versión con `aapt`. Si cualquiera falla, se marca
    **FAILURE** y no se publica una APK.
 6. El artefacto de GitHub Actions se llama
-   `SP-DECODE-v1.0.3-PRODUCTION-SIGNED`. Contiene:
-   - `SP-DECODE-v1.0.3-production-signed.apk`
+   `SP-DECODE-v1.0.4-PRODUCTION-SIGNED`. Contiene:
+   - `SP-DECODE-v1.0.4-production-signed.apk`
    - `SHA256SUMS.txt`
    - `SIGNATURE_VERIFICATION.txt` (SHA-256 público del certificado,
      verificación de esquemas y SHA del commit)
@@ -56,20 +56,20 @@ clave definitiva**, apta para pruebas de instalación y actualización. No
 se debe confundir con la publicación pública en GitHub Releases.
 
 La publicación estable se realiza automáticamente **solo cuando** la
-verificación `scripts/android_release_gate.py --mode stable --version 1.0.3`
+verificación `scripts/android_release_gate.py --mode stable --version 1.0.4`
 aprueba todas las evidencias existentes en
 `release/android-readiness.json`, cuya decisión actual es `NO-GO`.
-El propietario ha aprobado pasar a 1.0.3 y ha declarado pasar pruebas
+El propietario ha aprobado la distribución en producción y ha declarado pasar pruebas
 ARM64/16 KiB, archivos reales, lotes y auditoría personal; no hay que
 inventar informes externos para cambiar los checks a `verified`.
-La firma y prueba de actualización con la clave definitiva todavía requieren
-evidencia tras ejecutar el primer APK release. La validación específica
+La firma permanente ha superado el workflow anterior; la prueba reproducible
+de instalación/actualización de esta build 1.0.4 todavía necesita evidencia. La validación específica
 en dispositivo de los protocolos nuevos de texto también debe incorporarse.
 
 Cuando los controles estén completos y el propietario confirme la
 compatibilidad de instalación/actualización, registrar los informes y
 cambiar `decision` a `GO`. El siguiente CI verde de `main` publicará
-v1.0.3 una sola vez, sin sobrescribir tags o binarios ya publicados.
+v1.0.4 una sola vez, sin sobrescribir tags o binarios ya publicados.
 
 ### GitHub Releases: distribución pública del APK firmado
 
@@ -78,8 +78,8 @@ publicar **automáticamente una versión preliminar pública** mientras se
 mantiene el control estricto de estabilidad `NO-GO`. Esta autorización
 es distinta de una auditoría independiente completa.
 
-- Tag publicado automáticamente: `v1.0.3-rc.1` (GitHub **Pre-release**).
-- APK: `SP-DECODE-v1.0.3-production-signed.apk`, compilado mediante
+- Tag publicado automáticamente: `v1.0.4-rc.1` (GitHub **Pre-release**).
+- APK: `SP-DECODE-v1.0.4-production-signed.apk`, compilado mediante
   `assembleRelease` con la **keystore definitiva** de GitHub Secrets.
 - Evidencias adjuntas: `SHA256SUMS.txt` y `SIGNATURE_VERIFICATION.txt`.
 - Condiciones: CI exitoso en el **SHA exacto** de `main`, firmación y
@@ -90,7 +90,7 @@ es distinta de una auditoría independiente completa.
 - El texto público avisa que la certificación independiente de todas las
   variantes y pruebas de instalación/actualización sigue pendiente.
 
-El mismo workflow publicará **`v1.0.3` estable** (sin sufijo) únicamente
+El mismo workflow publicará **`v1.0.4` estable** (sin sufijo) únicamente
 cuando `scripts/android_release_gate.py --mode stable` verifique todas
 las evidencias y la decisión cambie a `GO`. La distribución preliminar
 **no altera** ni sustituye las evidencias pendientes de `release/android-readiness.json`.
