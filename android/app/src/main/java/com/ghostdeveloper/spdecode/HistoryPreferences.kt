@@ -1,7 +1,7 @@
 package com.ghostdeveloper.spdecode
 
 import android.content.Context
-import androidx.datastore.core.IOException
+import java.io.IOException
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
