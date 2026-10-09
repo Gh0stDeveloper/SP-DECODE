@@ -139,3 +139,13 @@ Objetivo; rama; SHA; rutas cambiadas; formatos/fixtures; CI job+URL+estado; resu
 
 Se elimina la duplicación de vistas crudas/detalladas del resultado. B.5 añade Room exclusivamente para índices UUID/fecha sin credenciales, una capa de servicios local y restauración de pestaña, con pruebas de migración desde registros cifrados anteriores; Navigation Compose completo sigue pendiente si se decide necesario. H incorpora preparación de firmado y validación con puertas NO-GO; firma con credenciales reales, auditoría final y publicación quedan bloqueadas hasta pruebas A.2.4.3, A.2.4.4 y seguridad/QA.
 
+
+### Nuevo incremento 0.3.7-alpha — textos cifrados
+
+Solicitado tras integrar los Secrets de keystore. Se añade una entrada independiente
+de texto para el catálogo específico del bot, portando los protocolos textuales
+con algoritmos locales. Los formatos multipart SSC y Dark retienen partes
+temporalmente sin persistencia. Ver `docs/android/TEXT_PROTOCOLS.md`.
+Estado: implementación pendiente de validación CI y pruebas con textos reales.
+Mantener H stable en NO-GO hasta firmado real V1/V2/V3 y upgrades verificados.
+
