@@ -28,7 +28,7 @@ def check(evidence: dict, mode: str, version: str) -> list[str]:
         # Owner-authorized public distribution of the production-signed APK.
         # The release MUST remain a GitHub prerelease and must never imply
         # complete vendor/device certification or change the stable NO-GO.
-        if not re.fullmatch(r"[1-9][0-9]*\\.[0-9]+\\.[0-9]+", version):
+        if not re.fullmatch(r"[1-9][0-9]*\.[0-9]+\.[0-9]+", version):
             problems.append("public preview requires stable APK versionName")
         if evidence.get("stableVersion") != version:
             problems.append("stableVersion does not match public preview APK")
