@@ -261,7 +261,7 @@ private fun HomeScreen(
             verticalAlignment=Alignment.CenterVertically,
         ) {
             Button(
-                onClick=onImport,
+                onClick={awaitingTextResult=false;textExpanded=false;onImport()},
                 enabled=!busy,
                 modifier=Modifier.weight(1f).heightIn(min=52.dp),
                 shape=RoundedCornerShape(14.dp),
