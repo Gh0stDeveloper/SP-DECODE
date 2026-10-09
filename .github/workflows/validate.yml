@@ -91,7 +91,7 @@ jobs:
 
 
   android-parity:
-    name: Android 0.3 full-results UI + 60 synthetic vectors (API 35)
+    name: Android 0.3.1 encrypted history + 60 synthetic vectors (API 35)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -161,7 +161,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v0.3.0-alpha-home-screenshot
+          name: SP-DECODE-Android-v0.3.1-alpha-home-screenshot
           path: android/app/build/outputs/spdecode-ui/home.png
           if-no-files-found: error
           retention-days: 30
@@ -181,7 +181,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v0.3.0-alpha-debug-APK
+          name: SP-DECODE-Android-v0.3.1-alpha-debug-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30
