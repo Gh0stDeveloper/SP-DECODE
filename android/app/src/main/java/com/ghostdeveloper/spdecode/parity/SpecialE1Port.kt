@@ -42,11 +42,12 @@ internal object SpecialE1Port {
     private fun sentinel(data:ByteArray):String? {
         require(data.size>=8)
         val decoded=data.clone()
-        for(i in decoded.indices)decoded[i]=(decoded[i].toInt() xor sentinelKey[i%32].toInt()).toByte()
+        // Source reverses each 16-byte leading half-block BEFORE XORing.
         for(i in decoded.indices step 32)if(i+16<decoded.size){
             var left=i;var right=i+15
             while(left<right){val t=decoded[left];decoded[left]=decoded[right];decoded[right]=t;left++;right--}
         }
+        for(i in decoded.indices)decoded[i]=(decoded[i].toInt() xor sentinelKey[i%32].toInt()).toByte()
         require(String(decoded.copyOfRange(0,4),Charsets.US_ASCII)=="STCF" &&
             decoded[4].toInt()==1)
         val obj=JsonParser.parseString(p.utf8(decoded.copyOfRange(5,decoded.size))).asJsonObject
