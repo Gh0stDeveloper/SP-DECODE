@@ -65,10 +65,11 @@ object UltraSandokPort {
                 val profile = manifest.profiles[selected] ?: manifest.profiles["default"] ?: continue
                 var key: ByteArray? = null
                 try {
-                    key = derive(profile.password, salt, profile.memoryKiB)
+                    val derived = derive(profile.password, salt, profile.memoryKiB)
+                    key = derived
                     var decrypted: ByteArray? = null
                     for (aad in arrayOf(salt, null)) {
-                        decrypted = decryptGcm(key, nonce, sealed, aad)
+                        decrypted = decryptGcm(derived, nonce, sealed, aad)
                         if (decrypted != null) break
                     }
                     val plain = decrypted ?: continue
@@ -114,8 +115,9 @@ object UltraSandokPort {
         val sealed = bytes.copyOfRange(28, bytes.size)
         var key: ByteArray? = null
         return try {
-            key = derive(profile.password2, salt, profile.memoryKiB)
-            val plain = decryptGcm(key, nonce, sealed, null) ?: return null
+            val derived = derive(profile.password2, salt, profile.memoryKiB)
+            key = derived
+            val plain = decryptGcm(derived, nonce, sealed, null) ?: return null
             utf8(plain)
         } catch (_: RuntimeException) { null }
           catch (_: java.nio.charset.CharacterCodingException) { null }
