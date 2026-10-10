@@ -1,5 +1,7 @@
 <div align="center">
 
+> **Android migration Phase B:** the development branch now includes **142 native decoding routes** (61 original + 81 generic AES-GCM/DES-ECB), with 97 other catalogued formats still pending. This work is isolated from production `main`. See [Phase B documentation](docs/android/PHASE_B_GENERIC_81.md).
+
 # SP-DECODE
 
 **Modular Telegram configuration decoder powered by Python, Node.js and PHP.**
