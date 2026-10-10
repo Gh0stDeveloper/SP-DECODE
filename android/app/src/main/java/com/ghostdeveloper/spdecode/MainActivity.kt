@@ -308,7 +308,8 @@ class MainActivity : ComponentActivity() {
                     return@launch
                 }
                 progressStage=2
-                val safeName=candidate.protocol.filter { it.isLetterOrDigit()||it=='-' }
+                val safeName=candidate.protocol.removePrefix("g:")
+                    .replace(':','-').filter { it.isLetterOrDigit()||it=='-' }
                 val record=DecodeView("text-"+safeName+"."+candidate.suffix,
                     candidate.suffix,decoded,
                     userText.toByteArray(Charsets.UTF_8).size)
