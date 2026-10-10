@@ -52,7 +52,7 @@ The project separates configuration, authorization, decoder registration, runtim
 
 ### Core features
 
-- **118 registered bot file extensions/suffixes**: 61 existing formats, 41 new Ultra/Sandok aliases and 16 RENZ/7NET aliases; `.ost` supports original OUSS and Ultra payloads. Android inventory is unchanged at 61.
+- **145 registered bot file extensions/suffixes**: 61 original, 41 Ultra/Sandok, 16 RENZ/7NET and 27 newly registered aliases across 13 standalone Python engines (including XOR). Android inventory is unchanged at 61.
 - Python, Node.js and PHP decoder runtimes.
 - Centralized decoder registry through `decoders.json`.
 - Telegram file processing with automatic format detection.
@@ -91,7 +91,7 @@ The project separates configuration, authorization, decoder registration, runtim
 
 ## Supported file formats
 
-The following original extensions are registered in `decoders.json`. Additionally, 41 Ultra/Sandok aliases and 16 RENZ/7NET aliases are registered by the bot directly from the independent Python engines, without affecting Android. Detection supports both regular and compound suffixes, including `.sksrv.png`.
+The following original extensions are registered in `decoders.json`. Additionally, 41 Ultra/Sandok aliases, 16 RENZ/7NET aliases and 27 modular 2026 config aliases are registered by the bot directly from the independent Python engines, without affecting Android. Detection supports both regular and compound suffixes, including `.sksrv.png`.
 
 | Application / format | Supported extension(s) | Runtime |
 |---|---|---|
@@ -146,6 +146,7 @@ The following original extensions are registered in `decoders.json`. Additionall
 | OUSS Tunnel / Ultra fallback | `.ost` | Python |
 | Ultra / Sandok VPN family | 41 additional suffixes (`.ultra`, `.ulti`, `.bee`, `.aura`, `.tx`, `.wolf`, `.flynet`, etc.) | Python — `decoders/Python/ultra.py` |
 | RENZ / 7NET family | `.7net`, `.tcx`, `.xhypher`, `.osp`, `.bshield`, `.actunnelvpn`, `.actun`, `.safetunnel`, `.mhrtunnel`, `.letsvpngo`, `.aloplusvpn`, `.cranetunnel`, `.vipsnipherpro`, `.deshtunnelvpn`, `.hamotunnelplus`, `.gcpvpn` | Python — `decoders/Python/renz.py` |
+| Config modules batch: Sentinel, ITV, EUT, V2Box, SlipNet, JuanScript, WyrLite/WyrVPN, IntVPN, FTHP, AR Pro/MSY, EC, XOR | 27 suffixes; see [complete catalog](docs/BOT_CONFIG_BATCHES.md) | Python — 13 independent engines |
 | SBR Injector | `.sbr` | Python |
 | SocksIP Plus | `.sksplus` | PHP |
 | JEZ Tunnel | `.jez` | PHP |
@@ -155,7 +156,7 @@ The following original extensions are registered in `decoders.json`. Additionall
 | HTTP Injector | `.ehi` | Python |
 | SSC Custom | `.ssc` | Python |
 
-> The Telegram bot now supports **118 registered suffixes**: 61 in `decoders.json`, 41 newly registered Ultra/Sandok suffixes and 16 RENZ/7NET suffixes. **The 42 Ultra variants share `ultra.py`, while the 16 RENZ file variants and 23 supported RENZ text schemes share `renz.py`.** Android remains at its existing 61-format inventory. The new bot decoders have synthetic regression tests; third-party real export compatibility is not yet certified.
+> The Telegram bot now supports **145 registered suffixes**: 61 in `decoders.json`, 41 newly registered Ultra/Sandok suffixes, 16 RENZ/7NET suffixes, and 27 new modular family suffixes. **The 42 Ultra variants share `ultra.py`, while the 16 RENZ file variants and 23 supported RENZ text schemes share `renz.py`.** Android remains at its existing 61-format inventory. The new bot decoders have synthetic regression tests; third-party real export compatibility is not yet certified.
 
 ---
 
