@@ -64,7 +64,7 @@ class PhaseCUltraInstrumentedTest {
     @Test fun C1TenSuffixes() = verifyLot(0)
     @Test fun C2TenSuffixes() = verifyLot(1)
     @Test fun C3TenSuffixes() = verifyLot(2)
-    @Test fun C4TenSuffixes() = verifyLot(3)
+    @Test fun C4ElevenSuffixes() = verifyLot(3)
 
     @Test fun phaseCInventoryAndLegacyOstIsolation() {
         assertEquals(83,evidence.getInt("caseCount"))
