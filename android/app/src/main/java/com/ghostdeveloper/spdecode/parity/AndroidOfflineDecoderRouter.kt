@@ -11,7 +11,7 @@ import android.content.Context
  */
 object AndroidOfflineDecoderRouter {
     fun decode(context: Context, filename: String, input: ByteArray): String? {
-        if (input.isEmpty() || input.size > (if (filename.endsWith(".lnk", ignoreCase=true)) LinkLayerPort.MAX_INPUT else LegacyPortPrimitives.MAX_INPUT)) return null
+        if (input.isEmpty() || input.size > (if (filename.endsWith(".lnk", ignoreCase=true)) LinkLayerPort.MAX_INPUT else if (filename.endsWith(".npvs", ignoreCase=true)) NpvsPort.MAX_INPUT else LegacyPortPrimitives.MAX_INPUT)) return null
         val format = AndroidDecoderCatalog.detect(filename, AndroidDecoderCatalog.read(context))
             ?: return null
         if (format.portStatus == "not_implemented") return null
@@ -72,7 +72,7 @@ object AndroidOfflineDecoderRouter {
             "ehi" -> EhiPort.decode(input)
             "npv4" -> Npv4Port.decode(context,input)
             "npvt" -> NpvtPort.decode(context,input)
-            "npvs" -> NpvsPythonPort.decode(context,input)
+            "npvs" -> NpvsPort.decode(context,input)
             "sip" -> SipPort.decode(input)
             "lnk" -> LinkLayerPort.decode(input)
             "ssc" -> SscPort.decode(input)
