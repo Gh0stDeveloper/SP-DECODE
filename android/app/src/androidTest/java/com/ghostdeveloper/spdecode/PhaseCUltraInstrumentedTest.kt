@@ -33,8 +33,8 @@ class PhaseCUltraInstrumentedTest {
 
     private fun verifyLot(part: Int) {
         assertEquals(41,suffixes.size)
-        val lot = if (part < 4) suffixes.subList(part * 10,(part+1)*10).toSet()
-                  else suffixes.subList(40,41).toSet()
+        val lot = suffixes.subList(part * 10,
+            if (part == 3) 41 else (part + 1) * 10).toSet()
         val records = evidence.getJSONArray("vectors")
         val visited = mutableMapOf<String,MutableSet<String>>()
         for (i in 0 until records.length()) {
@@ -65,7 +65,6 @@ class PhaseCUltraInstrumentedTest {
     @Test fun C2TenSuffixes() = verifyLot(1)
     @Test fun C3TenSuffixes() = verifyLot(2)
     @Test fun C4TenSuffixes() = verifyLot(3)
-    @Test fun C5FinalSuffix() = verifyLot(4)
 
     @Test fun phaseCInventoryAndLegacyOstIsolation() {
         assertEquals(83,evidence.getInt("caseCount"))
