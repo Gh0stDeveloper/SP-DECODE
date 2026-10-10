@@ -2,57 +2,63 @@
 
 # SP-DECODE
 
-**Modular Telegram configuration decoder powered by Python, Node.js and PHP.**
+**Offline Android decoder · Modular Telegram decoding bot**
 
-A structured, extensible decoder platform for processing supported configuration files and text protocols through a centralized Telegram bot.
+Configuration decoding for supported VPN, tunneling and proxy applications — natively on Android or through a self-hosted Telegram bot.
 
-<p>
-  <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.11+" />
-  <img src="https://img.shields.io/badge/Node.js-20%2B-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js 20+" />
-  <img src="https://img.shields.io/badge/PHP-8.1%2B-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.1+" />
-  <img src="https://img.shields.io/badge/Telegram-Bot-26A5E4?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram Bot" />
-</p>
+[![Android stable](https://img.shields.io/badge/Android_stable-v1.0.4-2ea44f?style=flat-square&logo=android)](https://github.com/Gh0stDeveloper/SP-DECODE/releases/tag/v1.0.4)
+[![Signed preview](https://img.shields.io/badge/Signed_preview-v1.0.5--rc.1-f59e0b?style=flat-square)](https://github.com/Gh0stDeveloper/SP-DECODE/releases/tag/v1.0.5-rc.1)
+[![CI](https://github.com/Gh0stDeveloper/SP-DECODE/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/Gh0stDeveloper/SP-DECODE/actions/workflows/validate.yml)
 
-<p>
-  <a href="https://github.com/Gh0stDeveloper"><img src="https://img.shields.io/badge/GitHub-Gh0stDeveloper-181717?style=flat-square&logo=github" alt="GitHub" /></a>
-  <a href="https://t.me/GhostDeve"><img src="https://img.shields.io/badge/Telegram-Channel-26A5E4?style=flat-square&logo=telegram&logoColor=white" alt="Telegram channel" /></a>
-  <a href="https://t.me/CodeBreakersHub"><img src="https://img.shields.io/badge/Telegram-Community-26A5E4?style=flat-square&logo=telegram&logoColor=white" alt="Telegram community" /></a>
-</p>
+[Android APK](https://github.com/Gh0stDeveloper/SP-DECODE/releases) · [Android docs](docs/android/README.md) · [Telegram bot](#telegram-bot) · [Español](README.es.md) · [Contribute](CONTRIBUTING.md) · [Telegram](https://t.me/GhostDeve)
 
 </div>
 
 > [!WARNING]
-> **Maintenance notice:** not every legacy decoder has been fully revalidated against the latest versions of the applications it targets. Some formats may fail or behave differently depending on the exporting app version. If you find a broken decoder, please report it in the [Telegram community](https://t.me/CodeBreakersHub), the [Telegram channel](https://t.me/GhostDeve), or directly to [@Gh0stDeveloper](https://t.me/Gh0stDeveloper).
+> **Exporter compatibility varies.** The project has **60 registered file suffixes**, but a registered suffix or passing synthetic fixture does **not** mean all real exporting-app versions are supported. If you find a decoder mismatch, consult [real-file parity triage](docs/android/REAL_DECODER_PARITY_TRIAGE.md) and [reporting guidance](CONTRIBUTING.md). **Never publish live credentials, unredacted configurations or private endpoints in GitHub issues.**
+
+## Two products, one decoder project
+
+| | SP-DECODE Android | SP-DECODE Telegram bot |
+|---|---|---|
+| Interface | Native Kotlin / Jetpack Compose | Telegram messages and commands |
+| Processing | Offline on the device | Self-hosted server or Termux, communicating through Telegram |
+| Account / token | Not required | Telegram bot token required |
+| File support | Android-native routes for 60 registered suffixes; compatibility depends on exporter | 60 suffixes routed to original Python, Node.js or PHP scripts |
+| Text decoding | Compatible link and text handlers | Text protocols, including supported multipart sessions |
+| Distribution | Production-signed APK | Source and automated installers |
+
+## Android app
+
+**SP-DECODE Android is implemented and published**, not merely a design concept or alpha shell. It imports local configurations, decodes compatible files and text links, displays structured results with nested fields, supports batch workflows and offers local copying/exporting and history.
+
+- Android **7.0+** (minSdk 24), target API 35.
+- Offline operation: no Telegram, login, VPS or connection needed.
+- Interface locales: **Spanish, English, Brazilian Portuguese and Arabic (RTL)**. Original decoder output is not translated.
+- Release signing: permanent project keystore, with APK signatures **V1/V2/V3** verified by the production workflow.
+- Signed assets are published with **SHA256SUMS.txt** and **SIGNATURE_VERIFICATION.txt**.
+
+### Official downloads and release policy
+
+| Channel | Version | Official download | Verification status |
+|---|---|---|---|
+| Stable | **v1.0.4** | [Release v1.0.4](https://github.com/Gh0stDeveloper/SP-DECODE/releases/tag/v1.0.4) | Published with product-owner approval; not independently certified for every exporter |
+| Signed testing preview | **v1.0.5-rc.1** | [Prerelease v1.0.5-rc.1](https://github.com/Gh0stDeveloper/SP-DECODE/releases/tag/v1.0.5-rc.1) | Production-key signed, **v1.0.5 stable NO-GO** pending more real-file tests |
+
+> [!IMPORTANT]
+> The v1.0.5 preview corrects Dark Tunnel `.dark` and text-path parity, NetMod `nm-ssh://` and ARMOD `ar-ssh://` handling, and repeated imports. Its PR reported **130 Android API 35 tests passing**, but reported failures with other real exporter variants still require parity checks against the original engines. Tests do not certify all 60 formats for every real-world export.
+
+[Android documentation](docs/android/README.md) · [Release runbook](docs/android/RELEASE_RUNBOOK.md) · [Real decoder parity](docs/android/REAL_DECODER_PARITY_TRIAGE.md) · [Design system](docs/android/DESIGN_SYSTEM.md) · [Localization](docs/android/LOCALIZATION.md) · [Security and QA](docs/android/SECURITY_AND_QA.md)
 
 ---
 
-## SP-DECODE Android — Offline application (functional alpha)
+## Telegram bot
 
-> [!NOTE]
-> **Android 1.0.3-rc.1 candidate** adds offline LinkLayer VPN `.lnk` VER6 support (60 Go gob fields), alongside the existing 59 formats, and an on-device localized one-time **What's New** notice after updating. Real Python export tested by Codex; Android parity must pass CI and a real device before claiming external exporter certification. Production signing uses the permanent GitHub Secrets keystore and public prereleases; stable release QA remains **NO-GO**. The Android app requires no Telegram, login, backend or Internet access. Download the APK artifact from the latest successful Android validation workflow.
-
-- [Official Android documentation and design references](docs/android/README.md)
-- [Visual identity, UI tokens and SVG mockups](docs/android/DESIGN_SYSTEM.md)
-- [Offline UI localization (Spanish, English, Brazilian Portuguese, Arabic RTL) — decoder output never translated](docs/android/LOCALIZATION.md)
-- [Architecture](docs/android/ARCHITECTURE.md) · [Decoder compatibility matrix](docs/android/DECODER_MATRIX.md)
-- [Phased roadmap](docs/android/ROADMAP.md) · [Cross-chat handoff](docs/android/HANDOFF.md)
-- [Decoder A.2 source audit (48 scripts)](docs/android/DECODER_AUDIT.md) · [Golden fixture policy](docs/android/A2_FIXTURE_POLICY.md)
-- [A.2.3 synthetic Linux golden corpus — sixty exact cases, all fifty-nine registered suffixes](docs/android/A23_GOLDEN_CORPUS.md)
-- [A.2.4 Android parity and decoder security: experimental Kotlin host, CI emulator and risk matrix](docs/android/A24_PARITY_SECURITY.md)
-
-The Android implementation follows the user's approved AMOLED reference: shield header, centered import panel, **all ordered decoded fields including nested JSON**, copy/export as JSON, human-readable structured output or exact original text, selectable UI languages (es/en/pt-BR/ar), credits and collaboration links, and bottom navigation.
-
----
-
-## Overview
-
-SP-DECODE is a modular Telegram bot designed to process and decode configuration formats used by multiple tunneling, proxy and VPN-related applications.
-
-The project separates configuration, authorization, decoder registration, runtime execution and Telegram handlers into independent modules. File decoders are registered through `decoders.json` and may run through **Python**, **Node.js** or **PHP**, allowing new formats to be added without turning the main bot entry point into a monolithic script.
+The original Telegram component remains available as an independent, self-hosted system. It uses `decoders.json` to route file formats to the Python, Node.js and PHP reference engines, and it has separate handlers for text schemes (some text decoders intentionally differ from their file-format counterpart).
 
 ### Core features
 
-- **60 registered file extensions/suffixes**, including LinkLayer VPN `.lnk` VER6 (Python and experimental offline Android port).
+- **60 registered file extensions/suffixes**, including LinkLayer VPN `.lnk` VER6; bot and Android runtime parity are evaluated separately.
 - Python, Node.js and PHP decoder runtimes.
 - Centralized decoder registry through `decoders.json`.
 - Telegram file processing with automatic format detection.
@@ -176,7 +182,7 @@ Multipart text sessions are currently implemented for **SSC Custom** and **Dark 
 
 ---
 
-## Project architecture
+## Telegram bot architecture
 
 ```text
 SP-DECODE/
@@ -246,7 +252,7 @@ Recommended runtime versions:
 
 SP-DECODE includes dedicated installers for **Termux** and **Linux VPS** environments. They install the required runtimes, Python dependencies, Node.js packages, create the local configuration, ask for the Telegram bot token, configure administrators/groups and start the bot automatically.
 
-> **Why Node.js is installed:** JavaScript decoders require an actual Node.js runtime. The repository intentionally does not ship `node_modules`; the installer detects/installs Node.js when needed and runs `npm ci`.
+> **Why Node.js is installed:** JavaScript decoders require Node.js. The installer detects it and installs locked dependencies via `npm ci`.
 
 ### Termux
 
@@ -485,6 +491,18 @@ The current decoder supports the Java-serialization variant protected with Base6
 Some analyzed samples open the outer encrypted layer successfully but then begin with `VER7` instead of a Java serialization header. The analyzed SocksIP 15.14.4 application (`com.newtoolsworks.sockstunnel`, internal version 124) does not contain the corresponding `VER7` implementation, so the current decoder reports this case explicitly instead of returning misleading output.
 
 A compatible SocksIP build that can import those samples, or a fresh `.sip` export generated directly by the analyzed application, is required to reproduce that variant accurately.
+
+---
+
+## Governance, security and documentation
+
+- [Contributing and reporting decoder issues](CONTRIBUTING.md)
+- [Security and private vulnerability reporting](SECURITY.md)
+- [Release documentation](docs/android/RELEASE_RUNBOOK.md)
+- [Android status and technical references](docs/android/README.md)
+- [Changelog](CHANGELOG.md)
+
+**License status:** No project-wide LICENSE file is currently published. Public visibility alone does not grant permission to reuse or redistribute this source code. Third-party dependencies have their own license terms.
 
 ---
 

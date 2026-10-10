@@ -1,5 +1,33 @@
 # Historial de cambios
 
+> Referencia de entregas públicas Android. Las entradas antiguas del bot se conservan al final. Una APK firmada en prerelease no equivale a superar el gate para versión estable.
+
+## Android v1.0.5-rc.1 — 2026-10-09 (vista previa firmada)
+
+- Corregida la paridad de los archivos Dark Tunnel `.dark`, sus variantes de texto y la reimportación repetida respecto del motor Python de referencia.
+- Ajustado el descifrado de texto `nm-ssh://` para usar su lógica específica y permitir resultados válidos que no sean JSON.
+- Mejorado el procesamiento de `ar-ssh://`, incluida la interpretación de campos y la normalización del payload.
+- Sustituida la etiqueta «Créditos» por el enlace directo del perfil de Ghost Developer en la exportación ordenada, conservando el resto de las atribuciones.
+- La revisión del PR #40 documentó **130 pruebas instrumentadas API 35 aprobadas**.
+- **Estado:** APK de producción firmada con la keystore permanente V1/V2/V3, publicada en [v1.0.5-rc.1](https://github.com/Gh0stDeveloper/SP-DECODE/releases/tag/v1.0.5-rc.1). **NO-GO estable**: faltan muestras reales de variantes reportadas como fallidas. Ver [triaje de compatibilidad](docs/android/REAL_DECODER_PARITY_TRIAGE.md).
+
+## Android v1.0.4 — 2026-10-09 (estable publicada)
+
+- Corregida la presentación de atribución en resultados/exportaciones ordenadas: SP-DECODE, Ghost Developer, grupo y canal oficiales; se conserva el JSON sin campos de publicidad.
+- Se conserva el conjunto de motores anterior, incluida compatibilidad desarrollada para LinkLayer `.lnk` VER6 y otros formatos.
+- Publicada la [APK estable v1.0.4](https://github.com/Gh0stDeveloper/SP-DECODE/releases/tag/v1.0.4) tras aceptación explícita del propietario y firma de producción. Esa aceptación no certifica de manera independiente todas las versiones exportadoras.
+
+## Android v1.0.0-rc.1 a v1.0.3-rc.1 — historial de candidatos
+
+- Primeras compilaciones Android nativas y offline con Kotlin/Compose, importación de archivos, resultados y localización.
+- Incrementos de compatibilidad de decodificadores y motor de texto, incluidos formatos HTTP Custom, SocksIP y LinkLayer.
+- Publicación de APK firmadas, pruebas de paridad de referencia, checks de firma V1/V2/V3 y automatización de CI.
+- Consultar [GitHub Releases](https://github.com/Gh0stDeveloper/SP-DECODE/releases) y [release runbook](docs/android/RELEASE_RUNBOOK.md) para la evidencia y las limitaciones de cada versión.
+
+---
+
+## Historial anterior del bot de Telegram
+
 ## SocksIP 15.14.4 y separación de HTTP Injector Lite 2026-07-23
 
 - Verificado el ZIP completo y analizado SocksIP 15.14.4, incluidos sus tres DEX y la biblioteca nativa.
