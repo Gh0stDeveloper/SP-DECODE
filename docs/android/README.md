@@ -1,5 +1,7 @@
 # SP-DECODE Android — documentación oficial
 
+> **Migración Android — Fase B:** 81 motores genéricos agrupados en dos implementaciones Kotlin y ocho lotes; 142 rutas Android existentes y 97 todavía pendientes. [Documentación completa](PHASE_B_GENERIC_81.md).
+
 > **Actualización de migración (Fase A):** catálogo de 239 extensiones
 > derivado del bot, 61 rutas Kotlin existentes y 178 pendientes deshabilitadas.
 > [Contrato, pruebas y hoja de ruta de la Fase A](PHASE_A_239_REGISTRY.md).
