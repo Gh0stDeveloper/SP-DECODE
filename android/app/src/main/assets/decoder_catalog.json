@@ -63,7 +63,8 @@
     "sip",
     "ssc",
     "hc",
-    "lnk"
+    "lnk",
+    "npvs"
   ],
   "entries": [
     {
@@ -665,6 +666,18 @@
       "androidPortStatus": "prototype_two_synthetic_cases",
       "androidVerified": false,
       "exporterVersionsVerified": []
+    },
+    {
+      "suffix": "npvs",
+      "name": "NPV Tunnel NPVS v5",
+      "script": "decoders/Python/npvs.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "experimental_exact_python_engine",
+      "androidVerified": false,
+      "exporterVersionsVerified": [
+        "124.0.37"
+      ]
     }
   ]
 }
