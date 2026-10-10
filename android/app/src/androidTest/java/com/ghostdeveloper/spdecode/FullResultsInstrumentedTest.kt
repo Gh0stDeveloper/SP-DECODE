@@ -46,6 +46,30 @@ class FullResultsInstrumentedTest {
         assertEquals(original,doc.original)
         assertTrue(doc.structured.contains("field45: FINAL_FIELD_NOT_CUT"))
     }
+    @Test fun orderedCopyExportCreditsIdentifySpDecodeAndDeveloperWithoutChangingJson() {
+        val raw="{\n  \"Username\": \"sample\",\n  \"Password\": \"dummy\",\n  \"Enabled\": true\n}"
+        val document=ResultPresentation.parse(raw,"lnk")
+        val ordered=ResultPresentation.formatted(document,ResultExport.ORDERED)
+        assertTrue(ordered.contains("Decodificado por: SP-DECODE"))
+        assertTrue(ordered.contains("Desarrollado por: Ghost Developer"))
+        assertTrue(ordered.contains("Grupo: https://t.me/CodeBreakersHub"))
+        assertTrue(ordered.contains("Canal: https://t.me/GhostDeve"))
+        assertTrue(ordered.indexOf("Desarrollado por: Ghost Developer") <
+            ordered.indexOf("│[۞] Username: sample"))
+        assertTrue(ordered.indexOf("│[۞] Password: dummy") <
+            ordered.indexOf("Grupo: https://t.me/CodeBreakersHub"))
+        assertTrue(ordered.contains("│[۞] Enabled: true"))
+        assertEquals(1,ordered.split("Desarrollado por: Ghost Developer").size-1)
+        val json=ResultPresentation.formatted(document,ResultExport.JSON)
+        val decoded=JsonParser.parseString(json).asJsonObject
+        assertEquals("sample",decoded.get("Username").asString)
+        assertEquals("dummy",decoded.get("Password").asString)
+        assertTrue(decoded.get("Enabled").asBoolean)
+        assertFalse(json.contains("Ghost Developer"))
+        assertFalse(json.contains("CodeBreakersHub"))
+        assertEquals(raw,ResultPresentation.formatted(document,ResultExport.ORIGINAL))
+    }
+
     @Test fun httpCustomNestedJsonMustBeExpandedRatherThanOneHugeRow(){
         val original="┌─\n│[۞] Protections: {}\n│[۞] Config: "+
             "{\"proxy\":\"vpn.example.org\",\"isEncrypted\":false,"+
