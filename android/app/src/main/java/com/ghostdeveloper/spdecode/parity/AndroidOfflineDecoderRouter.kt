@@ -23,6 +23,7 @@ object AndroidOfflineDecoderRouter {
             format.migrationPhase == "B" -> GenericVpnPort.MAX_INPUT_BYTES
             format.migrationPhase == "D" -> RenzPort.MAX_INPUT_BYTES
             format.migrationPhase == "E" -> SpecialCrypto.MAX
+            format.migrationPhase == "F" -> IndependentCrypto.MAX
             format.migrationPhase == "C" || format.suffix == "ost" ->
                 UltraSandokPort.MAX_INPUT_BYTES
             else -> LegacyPortPrimitives.MAX_INPUT
@@ -51,6 +52,17 @@ object AndroidOfflineDecoderRouter {
                 "decoders/Python/slipnet.py","decoders/Python/juanscript.py" ->
                     SpecialE1Port.decode(format.suffix,input)
                 else -> SpecialE2Port.decode(format.suffix,input)
+            }
+        }
+        if (format.migrationPhase == "F") {
+            return when (format.script) {
+                "decoders/Python/izph.py" -> { IzphNativePort.decode(input) }
+                "decoders/Python/flex.py", "decoders/Python/ltm.py",
+                "decoders/Python/vn7.py" -> { IndependentF1Port.decode(context,format.suffix,input) }
+                "decoders/Python/crev.py", "decoders/Python/zoba.py",
+                "decoders/Python/n4.py", "decoders/Python/dev.py",
+                "decoders/Python/ktr.py" -> { IndependentF2Port.decode(format.suffix,input) }
+                else -> null
             }
         }
         return when (format.suffix) {

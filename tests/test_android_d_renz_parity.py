@@ -36,15 +36,15 @@ class AndroidRenzDParityTests(unittest.TestCase):
         self.assertNotIn("vlx",{a["suffix"] for a in self.manifest["aliases"]})
         self.assertNotIn("izph",{a["suffix"] for a in self.manifest["aliases"]})
 
-    def test_199_native_routes_and_40_unimplemented(self):
+    def test_239_native_routes_with_13_independent_extensions(self):
         catalog=self.catalog
         self.assertEqual(catalog["botRegisteredSuffixes"],239)
         self.assertEqual(catalog["androidExistingSuffixes"],61)
         self.assertEqual(catalog["androidGenericNativeSuffixes"],81)
         self.assertEqual(catalog["androidUltraNativeSuffixes"],41)
         self.assertEqual(catalog["androidRenzNativeSuffixes"],16)
-        self.assertEqual(catalog["androidNativePortSuffixes"],226)
-        self.assertEqual(catalog["androidPendingNativeSuffixes"],13)
+        self.assertEqual(catalog["androidNativePortSuffixes"],239)
+        self.assertEqual(catalog["androidPendingNativeSuffixes"],0)
         self.assertEqual(catalog["androidCertifiedSuffixes"],0)
         rows={x["suffix"]:x for x in catalog["entries"]}
         for alias in self.manifest["aliases"]:

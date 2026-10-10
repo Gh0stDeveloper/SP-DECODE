@@ -74,16 +74,16 @@ class PhaseESpecialInstrumentedTest {
         assertEquals(31,evidence.getInt("caseCount"))
         assertEquals(13,evidence.getJSONArray("modules").length())
         assertEquals(239,inventory.size)
-        assertEquals(226,inventory.count{it.hasNativeDecoder})
-        assertEquals(13,inventory.count{it.isPending})
+        assertEquals(239,inventory.count{it.hasNativeDecoder})
+        assertEquals(0,inventory.count{it.isPending})
         assertEquals(27,inventory.count{it.migrationPhase=="E"&&it.hasNativeDecoder})
-        assertEquals(13,inventory.count{it.migrationPhase=="F"&&it.isPending})
+        assertEquals(13,inventory.count{it.migrationPhase=="F"&&it.hasNativeDecoder})
         for(name in listOf("vlx","ost","7net","npvs")){
             val f=AndroidDecoderCatalog.detect("file.$name",inventory)
             assertNotNull(f);assertTrue(f!!.hasNativeDecoder)
             assertTrue(f.migrationPhase!="E")
         }
-        assertFalse(AndroidDecoderCatalog.detect("file.izph",inventory)!!.hasNativeDecoder)
+        assertTrue(AndroidDecoderCatalog.detect("file.izph",inventory)!!.hasNativeDecoder)
     }
     @Test fun failClosedForUnknownAndWrongFamilies(){
         for(suffix in listOf("st","slipnet","mobi","fthp","int","ec","apnalite","wyr")){

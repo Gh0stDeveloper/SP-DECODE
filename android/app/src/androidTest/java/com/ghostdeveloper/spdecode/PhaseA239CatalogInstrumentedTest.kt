@@ -8,7 +8,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Phase E: 61 legacy + 81 generic + 41 Ultra + 16 RENZ + 27 special; 13 pending. */
+/** Phase F: all 239 native routes registered; 13 independent, 0 pending. */
 @RunWith(AndroidJUnit4::class)
 class PhaseA239CatalogInstrumentedTest {
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
@@ -18,9 +18,9 @@ class PhaseA239CatalogInstrumentedTest {
         val formats = catalog
         assertEquals(AndroidDecoderCatalog.TOTAL_SUFFIXES, formats.size)
         assertEquals(239, formats.map { it.suffix }.toSet().size)
-        assertEquals(226, formats.count { it.hasNativeDecoder })
+        assertEquals(239, formats.count { it.hasNativeDecoder })
         assertEquals(81, formats.count { it.migrationPhase == "B" && it.hasNativeDecoder })
-        assertEquals(13, formats.count { it.isPending })
+        assertEquals(0, formats.count { it.isPending })
         assertEquals(0, formats.count { it.androidVerified })
         val planned = formats.filter { it.isPending }
         assertEquals(0, planned.count { it.migrationPhase == "B" })
@@ -30,7 +30,8 @@ class PhaseA239CatalogInstrumentedTest {
         assertEquals(0, planned.count { it.migrationPhase == "D" })
         assertEquals(27, formats.count { it.hasNativeDecoder && it.migrationPhase == "E" })
         assertEquals(0, planned.count { it.migrationPhase == "E" })
-        assertEquals(13, planned.count { it.migrationPhase == "F" })
+        assertEquals(13, formats.count { it.migrationPhase == "F" && it.hasNativeDecoder })
+        assertEquals(0, planned.count { it.migrationPhase == "F" })
         assertTrue(planned.all { it.portStatus == AndroidDecoderCatalog.PENDING_STATUS })
         assertTrue(planned.all { it.sourceCatalog == "spdecode.registry" })
         assertTrue(formats.filter { it.hasNativeDecoder && it.migrationPhase == "legacy" }.all {
@@ -49,7 +50,7 @@ class PhaseA239CatalogInstrumentedTest {
         for (filename in detected) {
             val format = AndroidDecoderCatalog.detect(filename, catalog)
             assertNotNull("Source format must be registered: $filename", format)
-            assertTrue("New format must remain pending: $filename", format!!.isPending)
+            assertTrue("Phase F suffix must be native: $filename", format!!.hasNativeDecoder)
             assertNull(AndroidOfflineDecoderRouter.decode(
                 context, filename, byteArrayOf(1,2,3,4,5,6,7,8)))
         }
