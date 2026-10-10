@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Community / Comunidad
+    url: https://t.me/CodeBreakersHub
+    about: General questions and installation assistance. Never share private credentials or configs.
+  - name: Contact the maintainer / Contactar al desarrollador
+    url: https://t.me/Gh0stDeveloper
+    about: Coordinate sensitive samples privately before sending them.
