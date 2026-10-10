@@ -201,15 +201,34 @@ object TextProtocolDecoder {
 
     private fun howdy(body:String):JsonObject? {
         val obj=json(utf8(b64(body)))?.takeIf{it.isJsonObject}?.asJsonObject?:return null
-        val server=cbcZeros(obj.get("server")?.asString?:return null,
-            "poiuytrewqas+=~|","r4tgv3b2zcmdW6ZZ")
-        val sni=cbcZeros(obj.get("sni")?.asString?:return null,
-            "poiuytrewqas+=~|","r4tgv3b2zcmdW6ZZ")
-        val out=JsonObject()
-        for(key in listOf("username","password","port","type"))
-            if(obj.has(key))out.add(key,obj.get(key))
-        out.addProperty("server",server)
-        out.addProperty("sni",sni)
+        // The original standalone Howdy text handler preserves ALL fields.
+        // Unlike the 66.py screen formatting, optional attributes are not lost.
+        val out=obj.deepCopy()
+        for(key in listOf("server","sni")) {
+            val field=out.get(key)
+            if(field?.isJsonPrimitive==true && field.asJsonPrimitive.isString &&
+                field.asString.isNotEmpty()){
+                val original=field.asString
+                val decoded=try {
+                    val bytes=b64(original)
+                    if(bytes.isEmpty()||bytes.size%16!=0)original
+                    else {
+                        val raw=decrypt(bytes,
+                            "poiuytrewqas+=~|".toByteArray(Charsets.UTF_8),
+                            "AES/CBC/NoPadding",
+                            "r4tgv3b2zcmdW6ZZ".toByteArray(Charsets.UTF_8))
+                        // Python tries PKCS7, falling back to trailing zeroes.
+                        val pad=raw.last().toInt() and 255
+                        val clear=if(pad in 1..16 &&
+                            raw.takeLast(pad).all{(it.toInt() and 255)==pad})
+                            raw.copyOf(raw.size-pad)
+                            else raw.dropLastWhile{it==0.toByte()}.toByteArray()
+                        utf8(clear)
+                    }
+                }catch(_:Exception){original}
+                out.addProperty(key,decoded)
+            }
+        }
         return out
     }
 
