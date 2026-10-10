@@ -129,7 +129,7 @@ object ResultPresentation {
         }
         return null
     }
-    private val decimalNumber=Regex("""-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?""")
+    private val decimalNumber=Regex("""-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?""")
     private fun parseInlineJson(value:String):JsonElement {
         val trimmed=value.trim()
         // Source scripts format JSON primitives without quotes in bot text;
