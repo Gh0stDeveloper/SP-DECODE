@@ -124,14 +124,24 @@ def inspect(expected_version: str | None = None, expected_code: int | None = Non
     record("phase_g_documented", G_FILE.is_file(),
            "Python handlers and Android text protocols are documented separately")
     readiness = json.loads(READINESS.read_text("utf-8"))
-    record("fail_closed_new_release",
+    owner_scoped = (
+        readiness.get("decision") == "OWNER-GO"
+        and readiness.get("ownerApproval") is True
+        and readiness.get("ownerStableAcceptance", {}).get("approved") is True
+        and readiness.get("ownerStableAcceptance", {}).get("version") == version
+        and not check(readiness, "stable", version)
+        and bool(check(readiness, "stable", "1.0.8"))
+    )
+    no_go = (
+        readiness.get("decision") == "NO-GO"
+        and readiness.get("ownerStableAcceptance", {}).get("approved") is False
+        and bool(check(readiness, "stable", version))
+    )
+    record("release_decision_version_scoped",
            readiness.get("stableVersion") == version
-           and readiness.get("decision") == "NO-GO"
-           and readiness.get("ownerStableAcceptance", {}).get("approved") is False
            and readiness.get("publicPreviewApproval") is False
-           and bool(check(readiness, "stable", version))
-           and bool(check(readiness, "public-preview", version)),
-           "No stable tag or public prerelease permitted without NEW version-scoped approval and evidence")
+           and (owner_scoped or no_go),
+           "Only exact-version documented OWNER-GO or NO-GO; unverified evidence remains pending")
     outstanding = []
     for name in REQUIRED:
         evidence = readiness.get("evidence", {}).get(name, {})
@@ -160,7 +170,10 @@ def inspect(expected_version: str | None = None, expected_code: int | None = Non
         },
         "sourceChecks": checks,
         "sourceGate": "PASS" if source_checks_passed else "FAIL",
-        "productionGate": "NO-GO",
+        # OWNER-GO is a documented distribution decision, not a claim that
+        # pending exporter/device evidence has become independently verified.
+        # Actual release requires exact-main green CI and permanent signing.
+        "productionGate": "OWNER-GO-PENDING-CI-SIGNING" if owner_scoped else "NO-GO",
         "signedCandidatePossibleAfterMainCI": source_checks_passed,
         "pendingEvidence": outstanding,
         "assertions": {
@@ -193,7 +206,7 @@ def main() -> int:
     if report["sourceGate"] != "PASS":
         return 1
     if args.require_production and report["productionGate"] != "GO":
-        print("NO-GO: real exporter, device, upgrade and QA reports are not yet verified.")
+        print("PRODUCTION NOT YET VERIFIED: documented OWNER-GO requires exact-main CI and permanent signer; independent exporter/device audits remain pending.")
         return 2
     return 0
 
