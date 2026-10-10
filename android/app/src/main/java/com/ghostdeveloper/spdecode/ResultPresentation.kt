@@ -36,16 +36,22 @@ object ResultPresentation {
         val obj=JsonObject()
         val rows=mutableListOf<ResultField>()
         var currentKey:String?=null
-        var pendingBlankLines=0
-        for(raw in text.lineSequence()){
-            val match=sourceLine.matchEntire(raw)
-            if(match!=null){
+        var pendingSeparator=""
+        // Unlike lineSequence(), this preserves CRLF, LF and CR in HTTP
+        // payloads. The original source text remains immutable.
+        val physicalLines=Regex("""([^\r\n]*)(\r\n|\n|\r|$)""").findAll(text)
+        for(match in physicalLines){
+            val raw=match.groupValues[1]
+            val lineEnding=match.groupValues[2]
+            val field=sourceLine.matchEntire(raw)
+            if(field!=null){
                 currentKey=null
-                pendingBlankLines=0
-                val key=match.groupValues[1].trim()
-                val value=match.groupValues[2].trim()
-                if(key.isEmpty()||decoration.containsMatchIn(key))continue
-                // Repeated keys are preserved as independent values in JSON.
+                pendingSeparator=""
+                val key=field.groupValues[1].trim()
+                val value=field.groupValues[2].trim()
+                if(key.isEmpty() || decoration.containsMatchIn(key) ||
+                    key.contains("𝗚𝗥𝗢𝗨𝗣") || key.contains("𝗖𝗛𝗔𝗡𝗡𝗘𝗟") ||
+                    key.contains("𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥"))continue
                 var unique=key
                 var count=2
                 while(obj.has(unique)){
@@ -54,29 +60,27 @@ object ResultPresentation {
                 }
                 obj.add(unique,parseInlineJson(value))
                 currentKey=unique
+                pendingSeparator=lineEnding
                 continue
             }
-            // The old parser silently discarded every physical continuation
-            // line. HTTP Injector configMessage, HTTP payloads and embedded
-            // JSON may include real LF characters, including empty lines.
-            // Collect them under the original key until a new field/footer.
             val key=currentKey?:continue
             if(decorativeLine.matches(raw.trim())||
                 decoratedHeading.containsMatchIn(raw.trim())){
                 currentKey=null
-                pendingBlankLines=0
+                pendingSeparator=""
                 continue
             }
             if(raw.isBlank()){
-                pendingBlankLines++
+                // Only commit blank lines if real content follows, avoiding
+                // the decorative spacer after the final field.
+                pendingSeparator+=raw+lineEnding
                 continue
             }
             val before=obj.get(key)
             val previous=if(before!=null && before.isJsonPrimitive &&
                 before.asJsonPrimitive.isString)before.asString else before.toString()
-            val combined=previous+"\n".repeat(pendingBlankLines+1)+raw
-            obj.add(key,parseInlineJson(combined))
-            pendingBlankLines=0
+            obj.add(key,parseInlineJson(previous+pendingSeparator+raw))
+            pendingSeparator=lineEnding
         }
         // JSON conversion is lossless even if the human-readable field list
         // is capped for rendering very large nested documents.
