@@ -1,5 +1,6 @@
 """Positive vectors for the RENZ/7NET legacy type0/type1/type2 routes."""
 import base64
+import hashlib
 import json
 import struct
 import unittest
@@ -8,7 +9,7 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 from decoders.Python import renz
 
-from tests.test_renz_family import threefish_encrypt256_block
+from tests.test_renz_family import threefish_encrypt256_block, xxtea_encrypt, profile_fixture
 
 
 def legacy_encrypt(data, key):
@@ -60,6 +61,22 @@ class RenzLegacyTypedTests(unittest.TestCase):
         ct2 = base64.b64encode(legacy_encrypt(stage2, key2[:16]))
         self.assertEqual(renz.renz_decrypt_type2(ct2), clear)
         self.assertEqual(json.loads(renz.decode_file(ct2, ".7net"))["config"], doc)
+
+
+    def test_nested_username_pbkdf2_xxtea_aes_cbc(self):
+        source = renz.RENZ_KEYS["7net"]
+        key = hashlib.pbkdf2_hmac(
+            "sha256", source["KEY_SEED"], source["FIXED_SALT"], 100000, 32)
+        expected = "username_ghost"
+        plaintext = bytes(range(16)) + expected.encode("utf-8")
+        encrypted = AES.new(key, AES.MODE_CBC, source["IV"]).encrypt(pad(plaintext, 16))
+        encoded = base64.b64encode(xxtea_encrypt(encrypted, key)).decode("ascii")
+        self.assertEqual(renz.renz_decrypt_sensitive(encoded, "7net"), expected)
+        outer = profile_fixture("7net", {"Username": encoded, "Port": 22})
+        response = renz.decode_file(outer, ".7net")
+        self.assertIsNotNone(response)
+        self.assertEqual(json.loads(response)["config"]["Username"], expected)
+
 
 
 if __name__ == "__main__":
