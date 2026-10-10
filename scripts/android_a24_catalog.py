@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Deterministic Android catalog: 61 legacy + 81 generic + 41 Ultra native.
+"""Deterministic Android catalog: 61 legacy + 81 generic + 41 Ultra + 16 RENZ native.
 
-Phase C activates exactly 41 source-matched Ultra/Sandok suffixes.
-The original .ost route remains legacy, and D-F's 56 suffixes are disabled.
+Phases B-D activate 138 source-matched new suffixes.
+The original .ost route remains legacy; E-F's 40 suffixes are disabled.
 The public catalog contains no crypto keys. Generation is reproducible.
 """
 from __future__ import annotations
@@ -93,6 +93,7 @@ def generate() -> dict:
     count_by_phase = {phase: 0 for phase in EXPECTED_NEW_BY_PHASE}
     enabled_generic = 0
     enabled_ultra = 0
+    enabled_renz = 0
     for suffix, spec in DECODER_REGISTRY.items():
         old = legacy.get(suffix)
         if old is not None:
@@ -117,10 +118,13 @@ def generate() -> dict:
             count_by_phase[phase] += 1
             is_generic = phase == "B"
             is_ultra = phase == "C"
+            is_renz = phase == "D"
             if is_generic:
                 enabled_generic += 1
             if is_ultra:
                 enabled_ultra += 1
+            if is_renz:
+                enabled_renz += 1
             if is_generic:
                 native_status = (
                     "experimental_generic_des_ecb_synthetic"
@@ -129,6 +133,8 @@ def generate() -> dict:
                 )
             elif is_ultra:
                 native_status = "experimental_ultra_sandok_argon2id_synthetic"
+            elif is_renz:
+                native_status = "experimental_renz_aes_xxtea_threefish_synthetic"
             else:
                 native_status = "registered_not_implemented"
             row = {
@@ -138,7 +144,7 @@ def generate() -> dict:
                 "originalRuntime": spec.runtime,
                 # B has source-derived reference vectors separate from A23;
                 # C-F still have no native synthetic parity baseline.
-                "linuxGoldenSynthetic": is_generic or is_ultra,
+                "linuxGoldenSynthetic": is_generic or is_ultra or is_renz,
                 "androidPortStatus": native_status,
                 "androidVerified": False,
                 "exporterVersionsVerified": [],
@@ -146,9 +152,9 @@ def generate() -> dict:
                 "sourceCatalog": "spdecode.registry",
             }
         rows.append(row)
-    if count_by_phase != EXPECTED_NEW_BY_PHASE or enabled_generic != 81 or enabled_ultra != 41:
+    if count_by_phase != EXPECTED_NEW_BY_PHASE or enabled_generic != 81 or enabled_ultra != 41 or enabled_renz != 16:
         raise ValueError(
-            f"Migration/native families drifted: {count_by_phase}, {enabled_generic}, {enabled_ultra}"
+            f"Migration/native families drifted: {count_by_phase}, {enabled_generic}, {enabled_ultra}, {enabled_renz}"
         )
     if len({row["suffix"] for row in rows}) != 239:
         raise ValueError("Duplicate suffix in generated catalog")
@@ -161,8 +167,9 @@ def generate() -> dict:
         "androidExistingSuffixes": 61,
         "androidGenericNativeSuffixes": enabled_generic,
         "androidUltraNativeSuffixes": enabled_ultra,
-        "androidNativePortSuffixes": 61 + enabled_generic + enabled_ultra,
-        "androidPendingNativeSuffixes": 178 - enabled_generic - enabled_ultra,
+        "androidRenzNativeSuffixes": enabled_renz,
+        "androidNativePortSuffixes": 61 + enabled_generic + enabled_ultra + enabled_renz,
+        "androidPendingNativeSuffixes": 178 - enabled_generic - enabled_ultra - enabled_renz,
         "migrationCounts": count_by_phase,
         "syntheticLinuxCoveredSuffixes": sum(bool(row["linuxGoldenSynthetic"]) for row in rows),
         "androidCertifiedSuffixes": 0,
@@ -181,7 +188,7 @@ def main() -> None:
         CATALOG.write_text(expected, encoding="utf-8")
     elif not CATALOG.is_file() or CATALOG.read_text("utf-8") != expected:
         raise SystemExit("Android catalog is stale: python scripts/android_a24_catalog.py --write")
-    print("[C] 239 formats: 61 legacy + 81 generic + 41 Ultra native + 56 pending; 0 certified")
+    print("[D] 239 formats: 61 legacy + 81 generic + 41 Ultra + 16 RENZ native + 40 pending; 0 certified")
 
 
 if __name__ == "__main__":
