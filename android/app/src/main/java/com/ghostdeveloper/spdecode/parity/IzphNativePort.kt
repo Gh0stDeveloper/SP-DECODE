@@ -85,7 +85,7 @@ internal object IzphNativePort {
             }
             1 -> {
                 val raw=decodeBase64Relaxed(crypto.utf8(candidate))?:error("type1 inner Base64")
-                val three=RenzPort.threefish(raw,hkdf32) {idx,_ ->
+                val three=RenzPort.threefish(raw,hkdf32,inversePermutationAfterUnmix=true) {idx,_ ->
                     longArrayOf(idx.toLong(),idx.toLong()*64L)
                 }
                 sc.cbc(hkdf16,iv,three.dropLastWhile{it==0.toByte()}.toByteArray())
