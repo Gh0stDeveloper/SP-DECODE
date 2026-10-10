@@ -117,7 +117,7 @@ class AndroidA24CatalogTests(unittest.TestCase):
             cwd=ROOT, capture_output=True, text=True, timeout=30,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("239 registered", result.stdout)
+        self.assertIn("239 formats: 61 legacy + 81", result.stdout)
 
 
 if __name__ == "__main__":
