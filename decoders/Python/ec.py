@@ -35,7 +35,6 @@ def _decrypt_xxtea(payload: bytes, key: bytes = KEY) -> bytes | None:
             v[p] = (v[p] - mx) & MASK
             y = v[p]
         z = v[n]
-        y = v[0]
         mx = (((z >> 5) ^ (y << 2)) + ((y >> 3) ^ (z << 4))) ^ (
             (total ^ y) + (k[e] ^ z))
         v[0] = (v[0] - mx) & MASK
