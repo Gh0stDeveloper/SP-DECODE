@@ -1,3 +1,11 @@
+# SP-DECODE Android — baseline histórico y migración de 239 formatos
+
+> Actualización de Fase A: el proyecto cuenta con aplicación Compose funcional y
+> un catálogo v3 de **239 formatos registrados**, de los cuales **61** tienen
+> rutas Android anteriores y **178** permanecen **sin implementar**. Esta
+> migración no habilita los 178 motores ni constituye certificación total.
+> Ver [Fase A y criterios de CI](../docs/android/PHASE_A_239_REGISTRY.md).
+
 # A.2.4 — Android instrumented parity baseline
 
 This directory is an **experimental Android test host**, not SP-DECODE's

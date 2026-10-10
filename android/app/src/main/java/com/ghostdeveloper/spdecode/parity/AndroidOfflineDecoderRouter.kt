@@ -14,7 +14,10 @@ object AndroidOfflineDecoderRouter {
         if (input.isEmpty() || input.size > (if (filename.endsWith(".lnk", ignoreCase=true)) LinkLayerPort.MAX_INPUT else if (filename.endsWith(".npvs", ignoreCase=true)) NpvsPort.MAX_INPUT else LegacyPortPrimitives.MAX_INPUT)) return null
         val format = AndroidDecoderCatalog.detect(filename, AndroidDecoderCatalog.read(context))
             ?: return null
-        if (format.portStatus == "not_implemented") return null
+        // Phase A: 178 bot-only suffixes are catalogued but have no native port.
+        // Keep a hard gate before the old 61-case dispatcher to prevent
+        // accidental treatment as a supported decoder or unrelated fallback.
+        if (!format.hasNativeDecoder) return null
         return when (format.suffix) {
             "v2" -> V2RayReferencePort.decode(input)
             "tls" -> TlsReferencePort.decode(input)

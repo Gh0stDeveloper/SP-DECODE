@@ -27,7 +27,7 @@
     <string name="session_only">Guardado local · Historial cifrado</string>
     <string name="search_formats">Buscar aplicación o extensión</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">60 formatos experimentales sin conexión. LinkLayer VER6 disponible; la compatibilidad depende de la versión.</string>
+    <string name="catalog_note">239 formatos registrados: 61 decodificadores existentes y 178 pendientes de integración nativa. No todos los formatos de la lista están disponibles todavía.</string>
     <string name="settings_title">Ajustes</string>
     <string name="privacy_title">Privacidad</string>
     <string name="privacy_text">Los archivos originales no se copian. Los resultados decodificados se guardan cifrados en este dispositivo hasta que los elimines.</string>
@@ -135,4 +135,7 @@
     <string name="whats_new_fields">Se mejoró la decodificación de textos NetMod SSH y ARMod SSH.</string>
     <string name="whats_new_offline">Las copias ordenadas ahora incluyen el enlace de Telegram de Ghost Developer.</string>
     <string name="whats_new_continue">Entendido</string>
+    <string name="native_decoder_pending">El decodificador nativo de este formato todavía no está integrado.</string>
+    <string name="native_decoder_pending_short">Pendiente</string>
+    <string name="native_decoder_mixed_short">Mixto</string>
 </resources>

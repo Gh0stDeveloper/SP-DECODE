@@ -1,6 +1,17 @@
 {
-  "schemaVersion": 2,
-  "inventorySource": "decoders.json",
+  "schemaVersion": 3,
+  "inventorySource": "spdecode.registry.DECODER_REGISTRY",
+  "legacyInventorySource": "decoders.json",
+  "botRegisteredSuffixes": 239,
+  "androidExistingSuffixes": 61,
+  "androidPendingNativeSuffixes": 178,
+  "migrationCounts": {
+    "B": 81,
+    "C": 41,
+    "D": 16,
+    "E": 27,
+    "F": 13
+  },
   "syntheticLinuxCoveredSuffixes": 59,
   "androidCertifiedSuffixes": 0,
   "androidPrototypeSuffixes": [
@@ -68,6 +79,162 @@
   ],
   "entries": [
     {
+      "suffix": "hamotunnelplus",
+      "name": "RENZ / HAMOTUNNELPLUS",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "deshtunnelvpn",
+      "name": "RENZ / DESHTUNNELVPN",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "vipsnipherpro",
+      "name": "RENZ / VIPSNIPHERPRO",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "actunnelvpn",
+      "name": "RENZ / ACTUNNELVPN",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "cranetunnel",
+      "name": "RENZ / CRANETUNNEL",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ultratunnel",
+      "name": "ULTRA TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "aloplusvpn",
+      "name": "RENZ / ALOPLUSVPN",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "juanscript",
+      "name": "JuanScript",
+      "script": "decoders/Python/juanscript.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "mtv2raypro",
+      "name": "MT V2RAY PRO",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "safetunnel",
+      "name": "RENZ / SAFETUNNEL",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "wolftunnel",
+      "name": "WOLF TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "wyrvpnlite",
+      "name": "WyrLite",
+      "script": "decoders/Python/wyrlite.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "flynetvpn",
+      "name": "FLY NET VPN",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
       "suffix": "fnnetwork",
       "name": "FN Network",
       "script": "decoders/Python/fnnetwork.py",
@@ -75,7 +242,57 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "ignix_vpn",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "letsvpngo",
+      "name": "RENZ / LETSVPNGO",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "mhrtunnel",
+      "name": "RENZ / MHRTUNNEL",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "nurtunnel",
+      "name": "NUR TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "sksrv.png",
@@ -85,7 +302,117 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "sshbrasil",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "tiktunnel",
+      "name": "TIK TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "apnalite",
+      "name": "XOR VPN family",
+      "script": "decoders/Python/xor_family.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "apnatnl",
+      "name": "XOR VPN family",
+      "script": "decoders/Python/xor_family.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "bshield",
+      "name": "RENZ / BSHIELD",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "flexnet",
+      "name": "FlexNet",
+      "script": "decoders/Python/flex.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "mdproxy",
+      "name": "MD PROXY VPN",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "mtv2ray",
+      "name": "MT V2RAY",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "omanova",
+      "name": "XOR VPN family",
+      "script": "decoders/Python/xor_family.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "sksplus",
@@ -95,7 +422,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "slipnet",
+      "name": "SlipNet",
+      "script": "decoders/Python/slipnet.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "vpnlite",
@@ -105,7 +446,45 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "wyrlite",
+      "name": "WyrLite",
+      "script": "decoders/Python/wyrlite.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "xhypher",
+      "name": "RENZ / XHYPHER",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "4ulite",
+      "name": "XOR VPN family",
+      "script": "decoders/Python/xor_family.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "cloudy",
@@ -115,7 +494,213 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "flynet",
+      "name": "FLY NET VPN",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "garuda",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "gcpvpn",
+      "name": "RENZ / GCPVPN",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "purple",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "skvoid",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "actun",
+      "name": "RENZ / ACTUNNELVPN",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "bdnet",
+      "name": "XOR VPN family",
+      "script": "decoders/Python/xor_family.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "cyber",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "dkarl",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "glory",
+      "name": "GLORY TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "great",
+      "name": "GREAT TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "hsome",
+      "name": "XOR VPN family",
+      "script": "decoders/Python/xor_family.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "lucky",
+      "name": "LUCKY PROXY",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "marvs",
+      "name": "MARVS TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "mdvpn",
+      "name": "MD VPN",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "mehaf",
+      "name": "MEHAF TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "pausa",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "sksrv",
@@ -125,7 +710,33 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "ultra",
+      "name": "ULTRA TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "v2box",
+      "name": "V2Box Export",
+      "script": "decoders/Python/v2box_export.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "xscks",
@@ -135,7 +746,105 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "1300",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "7net",
+      "name": "RENZ / 7NET",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "aipr",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "aura",
+      "name": "AURA TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "cerv",
+      "name": "CREV",
+      "script": "decoders/Python/crev.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "clay",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "cnet",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "crev",
+      "name": "CREV",
+      "script": "decoders/Python/crev.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "dark",
@@ -145,7 +854,33 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "deep",
+      "name": "DEEP TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "edan",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "ehil",
@@ -155,7 +890,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "epro",
@@ -165,7 +902,69 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "etun",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "flex",
+      "name": "FlexNet",
+      "script": "decoders/Python/flex.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "fnet",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "fthp",
+      "name": "FTHP",
+      "script": "decoders/Python/fthp.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "gibs",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "gold",
@@ -175,7 +974,33 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "izph",
+      "name": "IZPH VPN Pro",
+      "script": "decoders/Python/izph.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "juan",
+      "name": "JuanScript",
+      "script": "decoders/Python/juanscript.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "maya",
@@ -185,7 +1010,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "mina",
@@ -195,7 +1022,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "mobi",
+      "name": "JuanScript",
+      "script": "decoders/Python/juanscript.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "npv2",
@@ -205,7 +1046,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "npv4",
@@ -215,7 +1058,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "npvs",
@@ -227,7 +1072,9 @@
       "androidVerified": false,
       "exporterVersionsVerified": [
         "124.0.37"
-      ]
+      ],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "npvt",
@@ -237,7 +1084,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "rezl",
@@ -247,7 +1096,177 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "sksx",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "tcv2",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "temt",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "tito",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ulti",
+      "name": "ULTI TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ursa",
+      "name": "XOR VPN family",
+      "script": "decoders/Python/xor_family.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "wolf",
+      "name": "WOLF TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "wrld",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "wyrl",
+      "name": "WyrLite",
+      "script": "decoders/Python/wyrlite.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "xsks",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "zoba",
+      "name": "Zoba VPN",
+      "script": "decoders/Python/zoba.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ace",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "acm",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "act",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "agn",
@@ -257,7 +1276,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "aip",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "aro",
@@ -267,7 +1300,129 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "bbb",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "bcl",
+      "name": "BCL TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "bdi",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "bee",
+      "name": "BEE TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "btv",
+      "name": "BTV TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "cbp",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ccc",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "cer",
+      "name": "CREV",
+      "script": "decoders/Python/crev.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "cks",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "cln",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "cly",
@@ -277,7 +1432,93 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "cyh",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "dak",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ddd",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "dev",
+      "name": "DEV VPN",
+      "script": "decoders/Python/dev.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "dvd",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "dzd",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "eee",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "ehi",
@@ -287,7 +1528,141 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "ena",
+      "name": "ENA TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "eta",
+      "name": "ETA TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "eug",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "eut",
+      "name": "EUT Tunnel",
+      "script": "decoders/Python/eut.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ezi",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "fix",
+      "name": "FIX TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "fks",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "fnf",
+      "name": "XOR VPN family",
+      "script": "decoders/Python/xor_family.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ftp",
+      "name": "FTHP",
+      "script": "decoders/Python/fthp.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ftr",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "grd",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "hat",
@@ -297,7 +1672,45 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "hbd",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "hdb",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "hqp",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "hrt",
@@ -307,7 +1720,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "hta",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "htb",
@@ -317,7 +1744,57 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "htp",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "hub",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "hxt",
+      "name": "XOR VPN family",
+      "script": "decoders/Python/xor_family.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "int",
+      "name": "IntVPN",
+      "script": "decoders/Python/intvpn.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "ipt",
@@ -327,7 +1804,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "itv",
+      "name": "ITV Tunnel",
+      "script": "decoders/Python/itv.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "jez",
@@ -337,7 +1828,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "jph",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "jvc",
@@ -347,7 +1852,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "jvi",
@@ -357,7 +1864,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "ktr",
+      "name": "KTR",
+      "script": "decoders/Python/ktr.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "lnk",
@@ -367,7 +1888,45 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_linklayer_ver6_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "ltm",
+      "name": "LTM Tunnel",
+      "script": "decoders/Python/ltm.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "max",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "mdp",
+      "name": "MD PROXY VPN",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "mij",
@@ -377,7 +1936,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "mmt",
+      "name": "MMT TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "mrc",
@@ -387,7 +1960,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "msy",
+      "name": "AR Pro / MSY",
+      "script": "decoders/Python/ar_pro.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "mtl",
@@ -397,7 +1984,105 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "nac",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "nd4",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "net",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "nhi",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ntr",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "nur",
+      "name": "NUR TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "nxp",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "osp",
+      "name": "RENZ / 7NET",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "ost",
@@ -407,7 +2092,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "osv",
+      "name": "OSV TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "pcx",
@@ -417,7 +2116,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "phc",
@@ -427,7 +2128,57 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "pin",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "pir",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "pkm",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "pxp",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "rez",
@@ -437,7 +2188,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "roy",
@@ -447,7 +2200,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "sbr",
@@ -457,7 +2212,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "sds",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "sip",
@@ -467,7 +2236,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "sks",
@@ -477,7 +2248,33 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "sky",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "spd",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "ssc",
@@ -487,7 +2284,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "ssh",
@@ -497,7 +2296,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "ssi",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "stk",
@@ -507,7 +2320,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "sut",
@@ -517,7 +2332,57 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "t10",
+      "name": "T10 TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "t20",
+      "name": "T20 TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "tcx",
+      "name": "RENZ / TCXTUNNEL",
+      "script": "decoders/Python/renz.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "D",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "tik",
+      "name": "TIK TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "tls",
@@ -527,7 +2392,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "prototype_tls_aesgcm_synthetic_case",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "tmt",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "tnl",
@@ -537,7 +2416,57 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "tpp",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "tsd",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "tsm",
+      "name": "TSM TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "tut",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "tvt",
@@ -547,7 +2476,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "utn",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "uwu",
@@ -557,7 +2500,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "v2i",
@@ -567,7 +2512,93 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "vel",
+      "name": "VEL TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "vlx",
+      "name": "VLX TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "vmx",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "vn7",
+      "name": "VN7",
+      "script": "decoders/Python/vn7.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "vpc",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "wcm",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "wyr",
+      "name": "WyrVPN",
+      "script": "decoders/Python/wyrvpn.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "xtp",
@@ -577,7 +2608,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final11_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "xui",
@@ -587,7 +2620,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch10_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "ziv",
@@ -597,7 +2632,33 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "ai",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ar",
+      "name": "AR Pro / MSY",
+      "script": "decoders/Python/ar_pro.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "at",
@@ -607,7 +2668,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "ec",
+      "name": "EC Tunnel",
+      "script": "decoders/Python/ec.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "fɴ",
@@ -617,7 +2692,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch15_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "gv",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "hc",
@@ -627,7 +2716,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final7_synthetic_subset",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "hq",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "ht",
@@ -637,7 +2740,93 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_final_extra4_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "it",
+      "name": "Generic DES-ECB (AES-GCM fallback)",
+      "script": "decoders/Python/generic_des.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "kt",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "lt",
+      "name": "LTM Tunnel",
+      "script": "decoders/Python/ltm.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "mc",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "md",
+      "name": "MD TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "mm",
+      "name": "MM TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "n4",
+      "name": "N4 VPN Pro",
+      "script": "decoders/Python/n4.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "F",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "nm",
@@ -647,7 +2836,9 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
     },
     {
       "suffix": "nt",
@@ -657,7 +2848,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "nx",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "pb",
@@ -667,7 +2872,57 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "experimental_batch20_synthetic",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "ry",
+      "name": "RY TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "st",
+      "name": "Sentinel Tunnel",
+      "script": "decoders/Python/sentinel.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "E",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "tx",
+      "name": "TX TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
+    },
+    {
+      "suffix": "ut",
+      "name": "ULTRA TUNNEL",
+      "script": "decoders/Python/ultra.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "C",
+      "sourceCatalog": "spdecode.registry"
     },
     {
       "suffix": "v2",
@@ -677,7 +2932,21 @@
       "linuxGoldenSynthetic": true,
       "androidPortStatus": "prototype_two_synthetic_cases",
       "androidVerified": false,
-      "exporterVersionsVerified": []
+      "exporterVersionsVerified": [],
+      "migrationPhase": "legacy",
+      "sourceCatalog": "decoders.json"
+    },
+    {
+      "suffix": "wt",
+      "name": "Generic AES-GCM / PBKDF2",
+      "script": "decoders/Python/generic_aes.py",
+      "originalRuntime": "python",
+      "linuxGoldenSynthetic": false,
+      "androidPortStatus": "registered_not_implemented",
+      "androidVerified": false,
+      "exporterVersionsVerified": [],
+      "migrationPhase": "B",
+      "sourceCatalog": "spdecode.registry"
     }
   ]
 }

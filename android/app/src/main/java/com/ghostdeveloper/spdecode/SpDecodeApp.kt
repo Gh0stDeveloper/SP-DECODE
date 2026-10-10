@@ -630,9 +630,14 @@ private fun FormatsScreen() {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(7.dp)) {
                         Text(appName, color = White, fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold)
-                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        // 239 formats include large multi-alias families.
+                        // FlowRow prevents chips from overflowing small phones.
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             extensions.sortedBy { it.suffix }.forEach { ext ->
-                                Text("." + ext.suffix, color = White, fontSize = 12.sp,
+                                Text("." + ext.suffix,
+                                    color = if (ext.isPending) Secondary else White,
+                                    fontSize = 12.sp,
                                     modifier = Modifier.background(Raised,
                                         RoundedCornerShape(7.dp))
                                         .padding(horizontal = 9.dp, vertical = 5.dp))
@@ -640,7 +645,17 @@ private fun FormatsScreen() {
                         }
                     }
                     Spacer(Modifier.width(5.dp))
-                    Text(stringResource(R.string.experimental), color = Amber, fontSize = 11.sp)
+                    Text(
+                        stringResource(
+                            if (extensions.all { it.isPending })
+                                R.string.native_decoder_pending_short
+                            else if (extensions.all { it.hasNativeDecoder })
+                                R.string.experimental
+                            else R.string.native_decoder_mixed_short
+                        ),
+                        color = if (extensions.all { it.isPending }) Secondary else Amber,
+                        fontSize = 11.sp
+                    )
                 }
                 HorizontalDivider(color = Outline)
             }

@@ -52,7 +52,7 @@ The project separates configuration, authorization, decoder registration, runtim
 
 ### Core features
 
-- **239 registered bot file extensions/suffixes**: 61 original, 41 Ultra/Sandok, 16 RENZ/7NET, 27 modular aliases, 13 independent-engine aliases and 81 generic AES-GCM/PBKDF2 + DES-ECB aliases. The Android inventory remains at 61.
+- **239 registered bot file extensions/suffixes**: 61 original, 41 Ultra/Sandok, 16 RENZ/7NET, 27 modular aliases, 13 independent-engine aliases and 81 generic AES-GCM/PBKDF2 + DES-ECB aliases. Android now inventories 239 formats in the Phase A migration catalog, while only the original 61 have native decoder routes; the other 178 remain disabled.
 - Python, Node.js and PHP decoder runtimes.
 - Centralized decoder registry through `decoders.json`.
 - Telegram file processing with automatic format detection.
@@ -158,7 +158,7 @@ The following original extensions are registered in `decoders.json`. Additionall
 | HTTP Injector | `.ehi` | Python |
 | SSC Custom | `.ssc` | Python |
 
-> The Telegram bot now supports **239 registered suffixes**: 61 in `decoders.json`, 41 Ultra/Sandok suffixes, 16 RENZ/7NET suffixes, 27 modular aliases, 13 independent-engine aliases and 81 generic AES/DES aliases. The generic families use two Python engines and preserve all existing application-specific decoders. **The 42 Ultra variants share `ultra.py`, while the 16 RENZ file variants and 23 supported RENZ text schemes share `renz.py`.** Android remains at its existing 61-format inventory. The new bot decoders have synthetic regression tests; third-party real export compatibility is not yet certified.
+> The Telegram bot now supports **239 registered suffixes**: 61 in `decoders.json`, 41 Ultra/Sandok suffixes, 16 RENZ/7NET suffixes, 27 modular aliases, 13 independent-engine aliases and 81 generic AES/DES aliases. The generic families use two Python engines and preserve all existing application-specific decoders. **The 42 Ultra variants share `ultra.py`, while the 16 RENZ file variants and 23 supported RENZ text schemes share `renz.py`.** Android Phase A inventories 239 formats, preserving 61 existing native routes and marking 178 as pending native integration. The new bot decoders have synthetic regression tests; third-party real export compatibility is not yet certified.
 
 ---
 

@@ -369,6 +369,11 @@ class MainActivity : ComponentActivity() {
                     val supported=AndroidDecoderCatalog.detect(
                         name,AndroidDecoderCatalog.read(this@MainActivity))
                         ?:throw DecodeFailure(R.string.unsupported)
+                    // Phase A identifies pending formats but never reads or
+                    // sends their bytes to a native decoder that does not exist.
+                    if (!supported.hasNativeDecoder) {
+                        throw DecodeFailure(R.string.native_decoder_pending)
+                    }
                     val input=withContext(Dispatchers.IO){readBounded(uri,
                         if(supported.suffix=="lnk")LinkLayerPort.MAX_INPUT else if(supported.suffix=="npvs") NpvsPort.MAX_INPUT else MAX_BYTES)}
                     progressStage=1

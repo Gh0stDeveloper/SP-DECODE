@@ -27,7 +27,7 @@
     <string name="session_only">محفوظ محليًا · سجل مشفر</string>
     <string name="search_formats">البحث عن تطبيق أو امتداد</string>
     <string name="experimental">تجريبي</string>
-    <string name="catalog_note">60 صيغة تجريبية تعمل دون إنترنت. يتوفر LinkLayer VER6؛ وقد يختلف التوافق حسب الإصدار.</string>
+    <string name="catalog_note">تم إدراج 239 صيغة: 61 أداة فك تشفير حالية تعمل بلا إنترنت و178 صيغة تنتظر الدمج المحلي. ليست جميع الصيغ متاحة بعد.</string>
     <string name="settings_title">الإعدادات</string>
     <string name="privacy_title">الخصوصية</string>
     <string name="privacy_text">لا يتم نسخ الملفات الأصلية. تحفظ نتائج فك الترميز مشفرة على هذا الجهاز حتى تحذفها.</string>
@@ -135,4 +135,7 @@
     <string name="whats_new_fields">تحسين فك ترميز نصوص NetMod SSH وARMod SSH.</string>
     <string name="whats_new_offline">تتضمن النسخ المرتبة الآن رابط تلغرام الخاص بـ Ghost Developer.</string>
     <string name="whats_new_continue">فهمت</string>
+    <string name="native_decoder_pending">لم تتم إضافة أداة فك التشفير المحلية لهذه الصيغة بعد.</string>
+    <string name="native_decoder_pending_short">قيد الانتظار</string>
+    <string name="native_decoder_mixed_short">مختلط</string>
 </resources>

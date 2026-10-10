@@ -1,5 +1,12 @@
 # SP-DECODE Android — documentación oficial
 
+> **Actualización de migración (Fase A):** catálogo de 239 extensiones
+> derivado del bot, 61 rutas Kotlin existentes y 178 pendientes deshabilitadas.
+> [Contrato, pruebas y hoja de ruta de la Fase A](PHASE_A_239_REGISTRY.md).
+> Los apartados históricos que siguen describen decisiones previas y no
+> representan por sí solos el estado de la APK actual.
+
+
 > **Estado:** arquitectura y producto definidos; la aplicación Android NO está implementada ni publicada.
 > **Edición:** 1.1 (multidioma), 2026-10-08 · **Repositorio:** Gh0stDeveloper/SP-DECODE · **Branch inicial:** docs/android-offline-architecture
 > **Dueño de producto:** Gh0stDeveloper · **Objetivo:** APK nativa, independiente, totalmente local.
