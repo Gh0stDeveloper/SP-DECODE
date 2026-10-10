@@ -28,9 +28,18 @@ internal class StrictMessagePack(raw:ByteArray) {
         require(n in 0..65536)
         val result=linkedMapOf<String,Any?>()
         repeat(n){
-            val k=read(depth+1)
-            require(k is String)
-            result[k]=read(depth+1)
+            val key=read(depth+1)
+            // Python DARKTUNNEL.py uses msgpack.unpackb(strict_map_key=false).
+            // Scalar integer/bool/nil keys are valid there and JSON encodes
+            // them as property-name strings. Reject binary/compound map keys,
+            // which the Python JSON output cannot represent either.
+            val name=when(key){
+                is String->key
+                is Number,is Boolean->key.toString()
+                null->"null"
+                else->throw IllegalArgumentException("Unsupported MessagePack map key")
+            }
+            result[name]=read(depth+1)
         }
         return result
     }
