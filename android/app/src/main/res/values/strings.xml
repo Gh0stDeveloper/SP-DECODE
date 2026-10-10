@@ -130,9 +130,9 @@
     <string name="text_decode_invalid">Unrecognized text protocol, invalid input or size limit exceeded.</string>
     <string name="text_decode_unsupported">Could not decode this text. It may be incomplete, corrupted or a different cipher version.</string>
     <string name="whats_new_title">What\'s new in SP-DECODE</string>
-    <string name="whats_new_description">Version 1.0.4 · Clearer result credits</string>
-    <string name="whats_new_linklayer">Decoded results now identify SP-DECODE as the decoding application.</string>
-    <string name="whats_new_fields">Ordered copies and exports now credit Ghost Developer.</string>
-    <string name="whats_new_offline">Official group and channel links appear at the bottom. Original and JSON exports remain unchanged.</string>
+    <string name="whats_new_description">Version 1.0.5 · Improved decoder compatibility</string>
+    <string name="whats_new_linklayer">Dark Tunnel: more reliable file imports and pasted links.</string>
+    <string name="whats_new_fields">NetMod SSH and ARMod SSH text decoding improvements.</string>
+    <string name="whats_new_offline">Ordered copies now link directly to Ghost Developer on Telegram.</string>
     <string name="whats_new_continue">Got it</string>
 </resources>
