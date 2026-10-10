@@ -243,3 +243,10 @@ h1,h2,h3,p{margin-top:0}
 .phone-json-heading{display:flex;align-items:center;gap:8px;font-size:12px}
 .phone-json pre{font-size:10px;line-height:1.7;white-space:pre-wrap;color:#e6e6e6;margin-top:19px;text-align:left;direction:ltr}
 .phone-bottom{margin-top:16px}
+
+/* Accessibility: high contrast descriptive text */
+:root{--secondary-text:#f0f0f0;--muted-text:#e2e2e2}
+.hero-description,.hero-caution,.section-heading p,.feature-card p,.step p,.release-card p,.release-disclaimer,.trust-card p,.minor-panel p,.closing>p,.footer-description,.footer-bottom,.inner-lead,.note-card p,.legal-section p,.legal-action p,.policy-updated,.phone-caption,.phone-import p,.phone-logo small,.phone-file small,.metrics span,.nav-link,.bottom-dock a,.footer-links,.phone-section span{color:#f0f0f0}
+.phone-json pre,.phone-result pre{color:#fff}
+.feature-count,.legal-number{color:#f2f2f2}
+.nav-link:not(.active),.bottom-dock a:not([aria-current="page"]){color:#e7e7e7}
