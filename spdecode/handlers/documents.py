@@ -65,6 +65,15 @@ def process_received_file(message):
         downloaded_file = bot.download_file(file_info.file_path)
         received_file_path.write_bytes(downloaded_file)
 
+        if file_extension == "v2box":
+            from decoders.Python.v2box_export import decode_file
+            from spdecode.handlers.config_batch_texts import prompt_v2box_password
+
+            preview = decode_file(downloaded_file)
+            if isinstance(preview, dict) and preview.get("__need_password__"):
+                prompt_v2box_password(message, downloaded_file)
+                return
+
         spec = get_decoder(file_extension)
         result = execute_decoder(
             spec,
