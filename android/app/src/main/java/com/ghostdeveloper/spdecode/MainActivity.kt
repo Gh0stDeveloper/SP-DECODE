@@ -369,7 +369,7 @@ class MainActivity : ComponentActivity() {
                         name,AndroidDecoderCatalog.read(this@MainActivity))
                         ?:throw DecodeFailure(R.string.unsupported)
                     val input=withContext(Dispatchers.IO){readBounded(uri,
-                        if(supported.suffix=="lnk")LinkLayerPort.MAX_INPUT else MAX_BYTES)}
+                        if(supported.suffix=="lnk")LinkLayerPort.MAX_INPUT else if(supported.suffix=="npvs") (4 * 1024 * 1024) else MAX_BYTES)}
                     progressStage=1
                     val text=withContext(Dispatchers.Default){
                         AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
