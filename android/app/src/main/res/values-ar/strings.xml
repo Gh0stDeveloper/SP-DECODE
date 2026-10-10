@@ -27,7 +27,7 @@
     <string name="session_only">محفوظ محليًا · سجل مشفر</string>
     <string name="search_formats">البحث عن تطبيق أو امتداد</string>
     <string name="experimental">تجريبي</string>
-    <string name="catalog_note">تم إدراج 239 صيغة: 142 مسار فك تشفير محلي (61 سابقة و81 عامة AES/DES) و97 قيد الدمج. قد يختلف التوافق مع الملفات المصدّرة الفعلية.</string>
+    <string name="catalog_note">تم إدراج 239 صيغة: 183 مسارًا محليًا (61 سابقة و81 عامة AES/DES و41 Ultra/Sandok Argon2id) و56 صيغة معلقة. لم يتم بعد اعتماد التوافق مع الإصدارات الحديثة.</string>
     <string name="settings_title">الإعدادات</string>
     <string name="privacy_title">الخصوصية</string>
     <string name="privacy_text">لا يتم نسخ الملفات الأصلية. تحفظ نتائج فك الترميز مشفرة على هذا الجهاز حتى تحذفها.</string>
