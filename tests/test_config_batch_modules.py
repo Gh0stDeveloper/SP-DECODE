@@ -9,9 +9,9 @@ from spdecode.registry import DECODER_REGISTRY, get_supported_extension, validat
 
 class BatchModuleTests(unittest.TestCase):
     def test_all_twelve_independent_modules_and_eighteen_suffixes(self):
-        self.assertEqual(len(FILE_DECODER_FAMILIES), 12)
-        self.assertEqual(len(file_decoder_specs()), 18)
-        self.assertEqual(len(DECODER_REGISTRY), 136)
+        self.assertEqual(len(FILE_DECODER_FAMILIES), 13)
+        self.assertEqual(len(file_decoder_specs()), 27)
+        self.assertEqual(len(DECODER_REGISTRY), 145)
         self.assertEqual(validate_decoder_files(), [])
         for suffix, (name, script) in file_decoder_specs().items():
             with self.subTest(suffix=suffix):
