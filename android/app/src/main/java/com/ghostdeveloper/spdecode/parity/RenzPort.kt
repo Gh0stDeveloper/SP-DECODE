@@ -291,6 +291,7 @@ object RenzPort {
     /** Threefish-256 with 18 round groups (72 rounds), little-endian blocks. */
     internal fun threefish(
         data: ByteArray, key: ByteArray,
+        inversePermutationAfterUnmix: Boolean = false,
         tweaks: (Int,LongArray) -> LongArray
     ): ByteArray {
         require(key.size >= 32 && data.size <= MAX_INPUT_BYTES &&
@@ -307,11 +308,18 @@ object RenzPort {
                 val keys = sub[group+1]
                 for (j in 0..3) state[j] -= keys[j]
                 for (step in 3 downTo 0) {
-                    val permuted = LongArray(4) { state[PERM[it]] }
-                    permuted.copyInto(state)
+                    // RENZ applies inverse permutation BEFORE unmix; IZPH's
+                    // source version applies it AFTER unmix. Both permutations
+                    // happen to be self-inverse, but the order is not optional.
+                    if (!inversePermutationAfterUnmix) {
+                        LongArray(4) { state[PERM[it]] }.copyInto(state)
+                    }
                     val rotation = ROT[(group*4 + step)%8]
                     unmix(state,0,rotation[0])
                     unmix(state,2,rotation[1])
+                    if (inversePermutationAfterUnmix) {
+                        LongArray(4) { state[PERM[it]] }.copyInto(state)
+                    }
                 }
             }
             for (j in 0..3) state[j] -= sub[0][j]
