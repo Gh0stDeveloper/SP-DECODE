@@ -78,7 +78,19 @@ def decode_extra_text(message):
         result = decoder(raw)
         if isinstance(result, dict) and result.get("__need_password__"):
             from spdecode.handlers.config_batch_texts import prompt_v2box_password
-            prompt_v2box_password(message, raw.encode("utf-8"))
+            import json
+
+            token = raw[len("v2box://"):].strip()
+            envelope = (
+                json.loads(token) if token.startswith("{")
+                else json.loads(text_structured_protocols._b64(token).decode("utf-8"))
+            )
+            # The private-chat password session receives normalized JSON,
+            # never a Base64URL string unsupported by the file decoder.
+            normalized = json.dumps(
+                envelope, ensure_ascii=False, separators=(",", ":")
+            ).encode("utf-8")
+            prompt_v2box_password(message, normalized)
             return
         if isinstance(result, str) and result.strip():
             _reply_result(message, label, result)
