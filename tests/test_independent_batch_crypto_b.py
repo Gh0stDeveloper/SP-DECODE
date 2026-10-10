@@ -128,6 +128,20 @@ class IndependentSecondFiveTests(unittest.TestCase):
         self.assertIsNotNone(output)
         self.assertEqual(json.loads(output), original)
 
+
+    def test_dev_nested_field_aes256_cbc(self):
+        """Verify the complete DEV SkyCrypt → AES field decryption pipeline."""
+        password = dev.DEV_AES_KEY
+        pass_hex = password.encode("utf-8").hex().upper()
+        inner_key = hashlib.sha256(pass_hex.encode("utf-8")).digest()
+        inner = AES.new(inner_key, AES.MODE_CBC, bytes(16)).encrypt(
+            pad(b"nested.dev.example", 16))
+        doc = {"Server": b64(inner).decode("ascii"), "Port": 443}
+        ciphertext = b64(skycrypt_encrypt(json.dumps(doc).encode("utf-8")))
+        result = dev.run(ciphertext)
+        self.assertIsNotNone(result)
+        self.assertEqual(json.loads(result)["Server"], "nested.dev.example")
+
     def test_vn7_two_key_materials_aes_gcm_authentication(self):
         original = {"Server": "vn7.example", "Port": 443, "TLS": True}
         salt = bytes(range(16))
