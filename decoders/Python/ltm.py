@@ -21,6 +21,7 @@ from Crypto.Util.Padding import unpad
 logger = logging.getLogger(__name__)
 MAX_INPUT_BYTES = 2 * 1024 * 1024
 
+G_RAW_HEX: str = (
     "333a33333232c933cc393d3b3e38383fcbcfc8cbc9cf333f3e3ccb3a32cb3ccf"
     "3dcb3239c9cfc83c3c3a393f3e3332cf333fce3839cc3d323ec8c8ce32c83333"
     "898ee1ea8b"
