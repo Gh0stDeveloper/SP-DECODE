@@ -130,9 +130,9 @@
     <string name="text_decode_invalid">بروتوكول غير معروف أو نص غير صالح أو تجاوز حد الحجم.</string>
     <string name="text_decode_unsupported">تعذر فك ترميز النص. ربما يكون غير مكتمل أو تالفًا أو يستخدم تشفيرًا مختلفًا.</string>
     <string name="whats_new_title">الجديد في SP-DECODE</string>
-    <string name="whats_new_description">الإصدار 1.0.4 · تحسين الاعتمادات في النتائج</string>
-    <string name="whats_new_linklayer">تُظهر النتائج الآن أن فك الترميز تم بواسطة SP-DECODE.</string>
-    <string name="whats_new_fields">تتضمن النسخ والتصدير المرتبان نسب التطوير إلى Ghost Developer.</string>
-    <string name="whats_new_offline">تظهر روابط المجموعة والقناة الرسميتين في الأسفل. يبقى JSON والنص الأصلي دون تغيير.</string>
+    <string name="whats_new_description">الإصدار 1.0.5 · تحسين توافق فك التشفير</string>
+    <string name="whats_new_linklayer">Dark Tunnel: تحسين استيراد الملفات والروابط النصية.</string>
+    <string name="whats_new_fields">تحسين فك ترميز نصوص NetMod SSH وARMod SSH.</string>
+    <string name="whats_new_offline">تتضمن النسخ المرتبة الآن رابط تلغرام الخاص بـ Ghost Developer.</string>
     <string name="whats_new_continue">فهمت</string>
 </resources>

@@ -115,7 +115,7 @@ object TextProtocolDecoder {
                     JsonParser.parseString(ResultJsonDisplay.render(raw,input.suffix))
                 }
                 "vmess"->json(utf8(b64(input.content)))
-                "netmod"->ecbJson(input.content,"_netsyna_netmod_")
+                "netmod"->netmod(input.content)
                 "armod"->armod(input.content)
                 "xraypb"->json(cbcZeros(input.content,
                     "4p+ocx+hGTnbDdHOmzQCjVb9KTTSh+A3","android123456789"))
@@ -156,8 +156,19 @@ object TextProtocolDecoder {
         else c.init(Cipher.DECRYPT_MODE,SecretKeySpec(key,"AES"),IvParameterSpec(iv))
         return c.doFinal(ciphertext)
     }
-    private fun ecbJson(value:String,key:String)=json(utf8(decrypt(
-        b64(value),key.toByteArray(Charsets.UTF_8),"AES/ECB/PKCS5Padding")))
+    /** The Telegram NetMod text handler decrypts with this text-specific
+     * AES key, NOT the three candidate keys of the .nm file decoder.
+     * The bot also accepts valid non-JSON plaintext after successful unpad;
+     * such input must not be incorrectly marked as a failed decryption.
+     */
+    private fun netmod(value:String):JsonElement? {
+        val clear=utf8(decrypt(b64(value),"_netsyna_netmod_".toByteArray(Charsets.UTF_8),
+            "AES/ECB/PKCS5Padding"))
+        if(clear.isBlank())return null
+        return json(clear) ?: JsonObject().apply {
+            addProperty("decodedText",clear)
+        }
+    }
     private fun cbcZeros(value:String,key:String,iv:String):String {
         val plain=decrypt(b64(value),key.toByteArray(Charsets.UTF_8),
             "AES/CBC/NoPadding",iv.toByteArray(Charsets.UTF_8))
@@ -197,12 +208,22 @@ object TextProtocolDecoder {
             "AES/ECB/PKCS5Padding"))
         val out=JsonObject()
         for(part in raw.split('&')) {
-            val key=part.substringBefore('=').lowercase(Locale.ROOT)
+            // Python's parse_qs ignores segments without an equals sign and
+            // drops blank values; it decodes '+' and %-escapes once.
+            if('=' !in part)continue
+            val key=URLDecoder.decode(part.substringBefore('='),"UTF-8")
+                .lowercase(Locale.ROOT)
             if(key.isBlank())continue
-            val value=URLDecoder.decode(part.substringAfter('=',""),"UTF-8")
-            val nested=if(key=="profile")json(value) else null
-            if(nested!=null)out.add(key,nested) else out.addProperty(key,value)
+            val value=URLDecoder.decode(part.substringAfter('='),"UTF-8")
+            if(value.isEmpty())continue
+            val displayed=if(key=="payload")URLDecoder.decode(value,"UTF-8")
+                else value // The bot explicitly unquotes payload a second time.
+            val nested=if(key=="profile")json(displayed) else null
+            if(nested!=null)out.add(key,nested) else out.addProperty(key,displayed)
         }
+        // Python also reports an SSH account embedded in the decrypted body.
+        val ssh=Regex("""\S+:\S+@\S+:\d+""").find(raw)?.value
+        if(ssh!=null && !out.has("ssh"))out.addProperty("ssh",ssh)
         return out.takeIf{it.size()>0}
     }
 
