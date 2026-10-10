@@ -43,8 +43,8 @@ class AndroidRenzDParityTests(unittest.TestCase):
         self.assertEqual(catalog["androidGenericNativeSuffixes"],81)
         self.assertEqual(catalog["androidUltraNativeSuffixes"],41)
         self.assertEqual(catalog["androidRenzNativeSuffixes"],16)
-        self.assertEqual(catalog["androidNativePortSuffixes"],199)
-        self.assertEqual(catalog["androidPendingNativeSuffixes"],40)
+        self.assertEqual(catalog["androidNativePortSuffixes"],226)
+        self.assertEqual(catalog["androidPendingNativeSuffixes"],13)
         self.assertEqual(catalog["androidCertifiedSuffixes"],0)
         rows={x["suffix"]:x for x in catalog["entries"]}
         for alias in self.manifest["aliases"]:

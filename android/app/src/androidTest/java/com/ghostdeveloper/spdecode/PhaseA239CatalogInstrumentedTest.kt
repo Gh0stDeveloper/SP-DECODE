@@ -8,7 +8,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Phase D: 61 legacy + 81 generic + 41 Ultra + 16 RENZ; 40 pending. */
+/** Phase E: 61 legacy + 81 generic + 41 Ultra + 16 RENZ + 27 special; 13 pending. */
 @RunWith(AndroidJUnit4::class)
 class PhaseA239CatalogInstrumentedTest {
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
@@ -18,9 +18,9 @@ class PhaseA239CatalogInstrumentedTest {
         val formats = catalog
         assertEquals(AndroidDecoderCatalog.TOTAL_SUFFIXES, formats.size)
         assertEquals(239, formats.map { it.suffix }.toSet().size)
-        assertEquals(199, formats.count { it.hasNativeDecoder })
+        assertEquals(226, formats.count { it.hasNativeDecoder })
         assertEquals(81, formats.count { it.migrationPhase == "B" && it.hasNativeDecoder })
-        assertEquals(40, formats.count { it.isPending })
+        assertEquals(13, formats.count { it.isPending })
         assertEquals(0, formats.count { it.androidVerified })
         val planned = formats.filter { it.isPending }
         assertEquals(0, planned.count { it.migrationPhase == "B" })
@@ -28,7 +28,8 @@ class PhaseA239CatalogInstrumentedTest {
         assertEquals(0, planned.count { it.migrationPhase == "C" })
         assertEquals(16, formats.count { it.migrationPhase == "D" && it.hasNativeDecoder })
         assertEquals(0, planned.count { it.migrationPhase == "D" })
-        assertEquals(27, planned.count { it.migrationPhase == "E" })
+        assertEquals(27, formats.count { it.hasNativeDecoder && it.migrationPhase == "E" })
+        assertEquals(0, planned.count { it.migrationPhase == "E" })
         assertEquals(13, planned.count { it.migrationPhase == "F" })
         assertTrue(planned.all { it.portStatus == AndroidDecoderCatalog.PENDING_STATUS })
         assertTrue(planned.all { it.sourceCatalog == "spdecode.registry" })
@@ -42,8 +43,7 @@ class PhaseA239CatalogInstrumentedTest {
 
     @Test fun migrationSuffixesHaveNoAccidentalDecodeFallback() {
         val inputs = listOf(
-            "archive.itv", "archive.IZPH", "archive.flexnet", "archive.4ULITE",
-            "archive.wyrlite", "archive.apnalite", "archive.𝐭𝐞𝐬𝐭"
+            "archive.IZPH", "archive.flexnet", "archive.𝐭𝐞𝐬𝐭"
         )
         val detected = inputs.dropLast(1)
         for (filename in detected) {
@@ -62,6 +62,8 @@ class PhaseA239CatalogInstrumentedTest {
         assertEquals("legacy", AndroidDecoderCatalog.detect("old.ost", catalog)?.migrationPhase)
         assertEquals("D", AndroidDecoderCatalog.detect("archive.7NET", catalog)?.migrationPhase)
         assertTrue(AndroidDecoderCatalog.detect("archive.7NET", catalog)!!.hasNativeDecoder)
+        assertTrue(AndroidDecoderCatalog.detect("archive.ITV", catalog)!!.hasNativeDecoder)
+        assertTrue(AndroidDecoderCatalog.detect("archive.4ULITE", catalog)!!.hasNativeDecoder)
         assertNull(AndroidOfflineDecoderRouter.decode(context, "invalid.ultra",
             byteArrayOf(1,2,3,4,5,6,7,8)))
         assertNull(AndroidDecoderCatalog.detect(inputs.last(), catalog))

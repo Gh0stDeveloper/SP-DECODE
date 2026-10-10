@@ -54,6 +54,9 @@ jobs:
           PYTHONPATH=. python scripts/android_c_ultra_profiles.py --check
           PYTHONPATH=. python scripts/android_d_renz_profiles.py --check
 
+      - name: Verify Phase E source parity generator
+        run: PYTHONPATH=. python -m unittest tests.test_android_e_special_parity -v
+
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
 
@@ -139,6 +142,9 @@ jobs:
 
       - name: Generate independent RENZ/7NET AES-CBC/XXTEA/Threefish parity vectors
         run: PYTHONPATH=. python scripts/android_d_renz_profiles.py --fixtures android/app/src/androidTest/assets/parity/renz-d-fixtures.json
+
+      - name: Generate independent Phase E special-engine Python parity vectors
+        run: PYTHONPATH=. python scripts/android_e_special_fixtures.py --fixtures android/app/src/androidTest/assets/parity/e-special-fixtures.json
 
       - name: Prepare SHA-256-pinned synthetic parity assets
         run: PYTHONPATH=. python scripts/android_a24_prepare.py --output-dir android/app/src/androidTest/assets/parity
