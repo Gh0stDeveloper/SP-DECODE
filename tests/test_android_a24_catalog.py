@@ -1,39 +1,112 @@
-"""Ensure Android registry cannot silently advertise unsupported decoders."""
+"""Phase A: deterministic 239-entry inventory without claiming Android support."""
 from __future__ import annotations
+
 import json
+import subprocess
+import sys
 import unittest
-from scripts.android_a24_catalog import ROOT,CATALOG,generate
+from pathlib import Path
+
+from scripts.android_a24_catalog import (
+    CATALOG, EXPECTED_NEW_BY_PHASE, PROTO, ROOT, generate, phase_for,
+)
+from spdecode.registry import DECODER_REGISTRY
+
+ORIGINAL = json.loads((ROOT / "decoders.json").read_text("utf-8"))["decoders"]
 
 
 class AndroidA24CatalogTests(unittest.TestCase):
-    def test_exact_61_entries_and_support_truthfulness(self):
-        source=generate()
-        committed=json.loads(CATALOG.read_text("utf-8"))
-        self.assertEqual(source,committed)
-        self.assertEqual(len(source["entries"]),61)
-        self.assertEqual(source["schemaVersion"],2)
-        canonical=json.loads((ROOT/"decoders.json").read_text("utf-8"))["decoders"]
-        for row in source["entries"]:
-            self.assertEqual(row["name"],canonical[row["suffix"]]["name"])
-        self.assertEqual({r["suffix"] for r in source["entries"] if r["name"]=="HTTP Tweak"},{"ht","htb"})
-        self.assertEqual({r["suffix"] for r in source["entries"] if r["name"]=="NPV Tunnel v4"},{"npv4","npvt"})
-        self.assertEqual({r["suffix"] for r in source["entries"] if r["name"]=="SKS Server"},{"sksrv","sksrv.png"})
-        self.assertEqual(source["androidCertifiedSuffixes"],0)
-        self.assertEqual(next(r for r in source["entries"] if r["suffix"]=="npvs")["androidPortStatus"],"experimental_native_npvs_v5")
-        self.assertEqual(len(source["androidPrototypeSuffixes"]),61)
-        self.assertEqual(len(set(source["androidPrototypeSuffixes"])),61)
-        self.assertTrue(all(not r["androidVerified"] for r in source["entries"]))
-        self.assertEqual(sum(r["androidPortStatus"]!="not_implemented" for r in source["entries"]),61)
-        self.assertEqual(sum(r["androidPortStatus"]=="not_implemented" for r in source["entries"]),0)
-        self.assertEqual(next(r for r in source["entries"] if r["suffix"]=="tls")["androidPortStatus"],"prototype_tls_aesgcm_synthetic_case")
-        self.assertEqual(next(r for r in source["entries"] if r["suffix"]=="lnk")["androidPortStatus"],"experimental_linklayer_ver6_synthetic")
+    @classmethod
+    def setUpClass(cls):
+        cls.doc = generate()
+        cls.rows = {row["suffix"]: row for row in cls.doc["entries"]}
 
-    def test_compound_suffix_and_unicode_names_are_preserved(self):
-        bysuffix={x["suffix"]:x for x in generate()["entries"]}
-        self.assertIn("sksrv.png",bysuffix)
-        self.assertIn("fɴ",bysuffix)
-        self.assertEqual(next(x for x in generate()["entries"] if x["suffix"]=="sksrv.png")["androidPortStatus"],"experimental_batch15_synthetic")
+    def test_exact_239_canonical_entries_without_renumbering_originals(self):
+        committed = json.loads(CATALOG.read_text("utf-8"))
+        self.assertEqual(self.doc, committed)
+        self.assertEqual(self.doc["schemaVersion"], 3)
+        self.assertEqual(self.doc["botRegisteredSuffixes"], 239)
+        self.assertEqual(self.doc["androidExistingSuffixes"], 61)
+        self.assertEqual(self.doc["androidPendingNativeSuffixes"], 178)
+        self.assertEqual(len(self.doc["entries"]), 239)
+        self.assertEqual(set(self.rows), set(DECODER_REGISTRY))
+        self.assertEqual(len(self.rows), 239)
+        self.assertEqual(len(ORIGINAL), 61)
+        self.assertEqual(set(PROTO), set(ORIGINAL))
+        self.assertEqual(len(PROTO), 61)
+        self.assertEqual(len(self.doc["androidPrototypeSuffixes"]), 61)
+        self.assertEqual(self.doc["androidCertifiedSuffixes"], 0)
+        self.assertFalse(any(row["androidVerified"] for row in self.rows.values()))
+
+    def test_61_original_implementations_are_unchanged(self):
+        old = {suffix: self.rows[suffix] for suffix in ORIGINAL}
+        self.assertEqual(len(old), 61)
+        self.assertEqual(sum(row["migrationPhase"] == "legacy" for row in old.values()), 61)
+        for suffix, original in ORIGINAL.items():
+            row = old[suffix]
+            self.assertEqual((row["name"], row["script"], row["originalRuntime"]),
+                             (original["name"], original["script"], original["runtime"]))
+            self.assertEqual(row["sourceCatalog"], "decoders.json")
+            self.assertNotEqual(row["androidPortStatus"], "registered_not_implemented")
+            self.assertTrue(row["androidPortStatus"])
+        self.assertEqual(old["npvs"]["androidPortStatus"], "experimental_native_npvs_v5")
+        self.assertEqual(old["tls"]["androidPortStatus"], "prototype_tls_aesgcm_synthetic_case")
+        self.assertEqual(old["lnk"]["androidPortStatus"], "experimental_linklayer_ver6_synthetic")
+        self.assertEqual(old["ost"]["script"], "decoders/Python/ost.py")
+
+    def test_all_178_unported_suffixes_are_explicitly_disabled(self):
+        pending = {suffix: row for suffix, row in self.rows.items() if suffix not in ORIGINAL}
+        self.assertEqual(len(pending), 178)
+        self.assertEqual(sum(row["migrationPhase"] != "legacy" for row in self.rows.values()), 178)
+        for suffix, row in pending.items():
+            spec = DECODER_REGISTRY[suffix]
+            with self.subTest(suffix=suffix):
+                self.assertEqual(row["sourceCatalog"], "spdecode.registry")
+                self.assertEqual(row["androidPortStatus"], "registered_not_implemented")
+                self.assertFalse(row["androidVerified"])
+                self.assertFalse(row["linuxGoldenSynthetic"])
+                self.assertEqual(row["migrationPhase"], phase_for(spec.script))
+                self.assertEqual((row["name"], row["script"], row["originalRuntime"]),
+                                 (spec.name, spec.script, spec.runtime))
+                self.assertTrue((ROOT / row["script"]).is_file(), suffix)
+        for suffix in ("ace","clay","ultra","7net","itv","izph","flexnet","st","apnalite"):
+            self.assertIn(suffix, pending)
+
+    def test_phase_distribution_and_compound_suffix_order(self):
+        self.assertEqual(self.doc["migrationCounts"], EXPECTED_NEW_BY_PHASE)
+        self.assertEqual({phase: sum(r["migrationPhase"] == phase for r in self.rows.values())
+                          for phase in EXPECTED_NEW_BY_PHASE}, EXPECTED_NEW_BY_PHASE)
+        ordered = [row["suffix"] for row in self.doc["entries"]]
+        self.assertEqual(ordered, sorted(ordered, key=lambda suffix: (-len(suffix), suffix)))
+        self.assertEqual(self.rows["sksrv.png"]["migrationPhase"], "legacy")
+        self.assertIn("fɴ", self.rows)
+        self.assertEqual(
+            {r["suffix"] for r in self.rows.values() if r["name"] == "HTTP Tweak"},
+            {"ht", "htb"},
+        )
+        self.assertEqual(
+            {r["suffix"] for r in self.rows.values() if r["name"] == "NPV Tunnel v4"},
+            {"npv4", "npvt"},
+        )
+
+    def test_catalog_has_no_embedded_keys_or_credentials(self):
+        for row in self.rows.values():
+            self.assertEqual(
+                set(row),
+                {"suffix","name","script","originalRuntime","linuxGoldenSynthetic",
+                 "androidPortStatus","androidVerified","exporterVersionsVerified",
+                 "migrationPhase","sourceCatalog"},
+            )
+            self.assertFalse(set(row) & {"key","password","privateKey","secret","cryptoKey"})
+
+    def test_script_detects_byte_level_stale_asset(self):
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/android_a24_catalog.py")],
+            cwd=ROOT, capture_output=True, text=True, timeout=30,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("239 registered", result.stdout)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     unittest.main()
