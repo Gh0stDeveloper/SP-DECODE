@@ -95,6 +95,30 @@ def flex_fixture(version:int,lock:int=0,flag:bool=False):
     return header
 
 
+def izph_encrypt256_block(key:bytes,tweak:tuple[int,int],plain:bytes)->bytes:
+    """Exact inverse of izph.py's unusual unmix-then-permute round order."""
+    mask=(1<<64)-1
+    words=list(struct.unpack("<4Q",plain))
+    k=list(struct.unpack("<4Q",key))
+    sub=izph.izph_threefish256_subkeys(k,tweak)
+    for j in range(4):words[j]=(words[j]+sub[0][j])&mask
+    for group in range(18):
+        for step in range(4):
+            words=[words[i] for i in izph.IZPH_THREEFISH256_PERMUTE]
+            r0,r1=izph.IZPH_THREEFISH256_ROTATIONS[(group*4+step)%8]
+            def mix(a,b,r):
+                x=(a+b)&mask
+                y=(((b<<r)|(b>>(64-r)))&mask)^x
+                return x,y
+            words[0],words[1]=mix(words[0],words[1],r0)
+            words[2],words[3]=mix(words[2],words[3],r1)
+        for j in range(4):words[j]=(words[j]+sub[group+1][j])&mask
+    result=struct.pack("<4Q",*words)
+    assert izph.izph_threefish256_decrypt_block(
+        list(struct.unpack("<4Q",result)),k,tweak)==list(struct.unpack("<4Q",plain))
+    return result
+
+
 def izph_fixture(kind:int,content=None):
     clear=js(content or TEXT)
     if kind==0:
@@ -107,7 +131,7 @@ def izph_fixture(kind:int,content=None):
         encrypted=cbc(key16,izph.IZPH_FIXED_IV,clear)
         encrypted+=bytes(-len(encrypted)%32)
         stage=b"".join(
-            threefish_encrypt256_block(key32,(i//32,(i//32)*64),encrypted[i:i+32])
+            izph_encrypt256_block(key32,(i//32,(i//32)*64),encrypted[i:i+32])
             for i in range(0,len(encrypted),32))
         return b64(b64(stage))
     if kind==2:
