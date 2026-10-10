@@ -158,7 +158,6 @@ def flex_sanitize_xml_refs(text):
 
 def flex_clean_output(raw_text: str) -> dict:
     raw_text = flex_sanitize_xml_refs(raw_text)
-    raw_text = re.sub(r'<entry key="file\.msg">.*?</entry>', '<entry key="file.msg"/>', raw_text, flags=re.S)
     root = ET.fromstring(raw_text)
     props = {e.get("key"): (e.text or "") for e in root.findall("entry")}
     # Include all decrypted properties without discarding fields from newer exports.
