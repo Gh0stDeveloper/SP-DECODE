@@ -65,26 +65,26 @@ class ParityInstrumentedTest {
     }
 
     @Test
-    fun registryHas239SuffixesWith178PendingNativePorts() {
+    fun registryHas239SuffixesWith81NewNativeGenericPorts() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val formats = com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog.read(context)
         val resolver = com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
         assertEquals(239, formats.size)
-        assertEquals(61, formats.count { it.hasNativeDecoder })
-        assertEquals(178, formats.count { it.isPending })
+        assertEquals(142, formats.count { it.hasNativeDecoder })
+        assertEquals(97, formats.count { it.isPending })
         assertEquals("sksrv.png", resolver.detect("MYCONFIG.SKSRV.PNG", formats)?.suffix)
         assertEquals("fɴ", resolver.detect("MYCONFIG.Fɴ", formats)?.suffix)
         assertEquals("v2", resolver.detect("test.v2", formats)?.suffix)
         assertEquals("prototype_two_synthetic_cases", resolver.detect("test.v2", formats)?.portStatus)
         assertEquals(0, formats.count { it.androidVerified })
         assertEquals("prototype_tls_aesgcm_synthetic_case", resolver.detect("test.TLS", formats)?.portStatus)
-        assertEquals(178, formats.count { it.portStatus == "registered_not_implemented" })
+        assertEquals(97, formats.count { it.portStatus == "registered_not_implemented" })
         assertEquals("B", resolver.detect("test.ace", formats)?.migrationPhase)
         assertEquals("C", resolver.detect("test.ultra", formats)?.migrationPhase)
         assertEquals("D", resolver.detect("test.7NET", formats)?.migrationPhase)
         assertEquals("E", resolver.detect("test.ITV", formats)?.migrationPhase)
         assertEquals("F", resolver.detect("test.Izph", formats)?.migrationPhase)
-        assertFalse(resolver.detect("test.ace", formats)?.hasNativeDecoder ?: true)
+        assertTrue(resolver.detect("test.ace", formats)?.hasNativeDecoder ?: false)
         assertFalse(resolver.detect("test.izph", formats)?.hasNativeDecoder ?: true)
         assertEquals(7, formats.count { it.portStatus == "experimental_final7_synthetic_subset" })
         assertEquals(4, formats.count { it.portStatus == "experimental_final_extra4_synthetic" })
