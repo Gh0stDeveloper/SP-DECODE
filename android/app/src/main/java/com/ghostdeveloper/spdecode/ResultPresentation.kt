@@ -138,9 +138,9 @@ object ResultPresentation {
     fun structure(suffix:String,fields:List<ResultField>):String=buildString {
         append("┌────────────────────────────\n")
         append("│ SP-DECODE (.").append(suffix).append(")\n")
-        append("│ Créditos\n")
         append("│ Decodificado por: SP-DECODE\n")
         append("│ Desarrollado por: Ghost Developer\n")
+        append("│ Telegram: https://t.me/Gh0stDeveloper\n")
         append("├────────────────────────────\n")
         for(field in fields){
             append("│[۞] ").append(field.path).append(": ")
