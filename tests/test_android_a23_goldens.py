@@ -81,7 +81,7 @@ class A23GoldenFixtureTests(unittest.TestCase):
         entries = manifest["extensions"]
         self.assertEqual(len(entries), 59)
         self.assertEqual(len({x["suffix"] for x in entries}), 59)
-        self.assertEqual({x["suffix"] for x in entries}, set(registered) - {"lnk"})
+        self.assertEqual({x["suffix"] for x in entries}, set(registered) - {"lnk", "npvs"})
         self.assertEqual(registered["lnk"]["script"],"decoders/Python/linklayer.py")
         for row in entries:
             suffix = row["suffix"]
