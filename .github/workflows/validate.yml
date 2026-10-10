@@ -47,8 +47,10 @@ jobs:
       - name: Validate project
         run: python validate_project.py
 
-      - name: Verify Android catalog against canonical 60-suffix registry
-        run: PYTHONPATH=. python scripts/android_a24_catalog.py
+      - name: Verify 239-format Android catalog and 81 source-exact generic profiles
+        run: |
+          PYTHONPATH=. python scripts/android_a24_catalog.py
+          PYTHONPATH=. python scripts/android_b_generic_profiles.py --check
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
@@ -123,6 +125,11 @@ jobs:
       - name: Python fixture dependencies
         run: python -m pip install -r requirements.txt
 
+      - name: Generate reference AES-GCM and DES-ECB corpus for all 81 Phase B suffixes
+        run: |
+          PYTHONPATH=. python scripts/android_b_generic_profiles.py --check
+          PYTHONPATH=. python scripts/android_b_generic_profiles.py --fixtures android/app/src/androidTest/assets/parity/generic-b-fixtures.json
+
       - name: Prepare SHA-256-pinned synthetic parity assets
         run: PYTHONPATH=. python scripts/android_a24_prepare.py --output-dir android/app/src/androidTest/assets/parity
 
@@ -144,8 +151,10 @@ jobs:
       - name: Compile audited NPV white-box to offline data-only Android asset
         run: PYTHONPATH=. python scripts/android_a24_whitebox_export.py --output android/app/src/main/assets/npv_whitebox.bin
 
-      - name: Verify Android support catalog has no false verified claims
-        run: PYTHONPATH=. python scripts/android_a24_catalog.py
+      - name: Verify 239-format Android support catalog and Phase B profiles
+        run: |
+          PYTHONPATH=. python scripts/android_a24_catalog.py
+          PYTHONPATH=. python scripts/android_b_generic_profiles.py --check
 
       - name: Build SP-DECODE full-result language/settings alpha APK and tests
         working-directory: android
