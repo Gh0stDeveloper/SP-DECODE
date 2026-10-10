@@ -11,7 +11,7 @@ import android.content.Context
  */
 object AndroidOfflineDecoderRouter {
     fun decode(context: Context, filename: String, input: ByteArray): String? {
-        if (input.isEmpty() || input.size > (if (filename.endsWith(".lnk", ignoreCase=true)) LinkLayerPort.MAX_INPUT else if (filename.endsWith(".npvs", ignoreCase=true)) NpvsPort.MAX_INPUT else LegacyPortPrimitives.MAX_INPUT)) return null
+        if (input.isEmpty() || input.size > (if (filename.endsWith(".lnk", ignoreCase=true)) LinkLayerPort.MAX_INPUT else if (filename.endsWith(".npvs", ignoreCase=true)) NpvsPort.MAX_INPUT else if (filename.endsWith(".ost", ignoreCase=true)) UltraSandokPort.MAX_INPUT_BYTES else LegacyPortPrimitives.MAX_INPUT)) return null
         val format = AndroidDecoderCatalog.detect(filename, AndroidDecoderCatalog.read(context))
             ?: return null
         // Phase A: 178 bot-only suffixes are catalogued but have no native port.
@@ -41,7 +41,7 @@ object AndroidOfflineDecoderRouter {
             "xui" -> XuiPort.decode(input)
             "at" -> AtPort.decode(input)
             "nm" -> NmPort.decode(input)
-            "ost" -> OstPort.decode(input)
+            "ost" -> OstPort.decode(input) ?: UltraSandokPort.decode(context, "ost", input)
             "sbr" -> SbrPort.decode(input)
             "pcx" -> PcxPort.decode(input)
             "nt" -> NtPort.decode(input)
