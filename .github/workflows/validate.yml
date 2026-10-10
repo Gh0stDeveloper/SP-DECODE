@@ -135,6 +135,9 @@ jobs:
       - name: Export LinkLayer VER6 synthetic Python parity samples
         run: PYTHONPATH=. python scripts/android_linklayer_fixture_export.py --output-dir android/app/src/androidTest/assets/parity
 
+      - name: Export additional Dark Tunnel Python MessagePack parity cases
+        run: PYTHONPATH=. python scripts/android_dark_variant_fixture.py --output-dir android/app/src/androidTest/assets/parity
+
       - name: Compile audited NPV white-box to offline data-only Android asset
         run: PYTHONPATH=. python scripts/android_a24_whitebox_export.py --output android/app/src/main/assets/npv_whitebox.bin
 
