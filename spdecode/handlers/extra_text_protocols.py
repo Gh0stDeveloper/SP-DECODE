@@ -80,13 +80,12 @@ def decode_extra_text(message):
             from spdecode.handlers.config_batch_texts import prompt_v2box_password
             import json
 
-            token = raw[len("v2box://"):].strip()
-            envelope = (
-                json.loads(token) if token.startswith("{")
-                else json.loads(text_structured_protocols._b64(token).decode("utf-8"))
-            )
-            # The private-chat password session receives normalized JSON,
-            # never a Base64URL string unsupported by the file decoder.
+            envelope = text_structured_protocols.normalize_v2box_envelope(raw)
+            if envelope is None:
+                bot.reply_to(message, "La exportación V2Box está dañada.")
+                return
+            # Reuse the same normalized fields for the password prompt;
+            # the original file decoder expects RFC4648 Base64.
             normalized = json.dumps(
                 envelope, ensure_ascii=False, separators=(",", ":")
             ).encode("utf-8")
