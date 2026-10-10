@@ -15,6 +15,10 @@ Investigación y documentación: 10 de octubre de 2026 UTC.
   [`a4ca82c2a3b81fd9baa8ef8b802958c6d76755b4`](https://github.com/Gh0stDeveloper/SP-DECODE/commit/a4ca82c2a3b81fd9baa8ef8b802958c6d76755b4),
   rama `analysis/npvs-v5`. Solo requiere PyCryptodome; lleva las tablas de la
   aplicación comprimidas y no usa APK ni emulador durante la ejecución.
+- La corrección del último paso `npvs1:` está en
+  [`fix/npvs1-values`](https://github.com/Gh0stDeveloper/SP-DECODE/tree/fix/npvs1-values).
+  Usar el script actualizado de esa rama; el commit de arriba identifica la
+  primera entrega, que aún conservaba tres marcadores en la muestra original.
 - El núcleo Go explica el contenedor y sus AEAD. La pieza que faltaba estaba
   en **`libnpvtunnel.so` + `assets/rt.dat`**: un evaluador white-box del que se
   obtiene el material para abrir la clave del documento.
@@ -24,6 +28,10 @@ Investigación y documentación: 10 de octubre de 2026 UTC.
 - La muestra terminó con todas las verificaciones válidas: ECDSA, DEK,
   metadatos, contexto, inventario y 107 registros. Se reconstruyeron una
   configuración y 106 valores escalares más su estructura.
+- **Corrección posterior del resultado:** los escalares pueden conservar la
+  representación `npvs1:` + Base64 de `SecretString`. El descifrado criptográfico
+  debe ir seguido de ese paso de lectura de texto. La muestra original tenía
+  tres marcadores; el script corregido devuelve sus valores en claro.
 - Antes de investigar una versión nueva, probar el script actual con un
   exportado nuevo. No usar el decodificador antiguo `NPVTUNNEL.py` para forzar
   este formato, ni sobrescribir sus métodos existentes.
@@ -361,6 +369,38 @@ booleanos, números y `null`. El decoder exige que las referencias sean válidas
 que se usen todos los registros y que el documento tenga `configs` como arreglo.
 No interpreta el registro de estructura como un campo ordinario del servidor.
 
+### Último paso: revelar los valores `npvs1:`
+
+Un resultado con, por ejemplo, `"sshConfigType":"npvs1:U1NILVRMUw=="` aún
+conserva la representación serializada de un texto secreto. El valor esperado
+es `"SSH-TLS"`. No requiere otra clave: retirar exactamente los seis caracteres
+del prefijo y decodificar Base64 estándar con padding, seguido de UTF-8.
+
+Este paso faltaba en la primera entrega. La muestra original también contenía
+tres textos así, aunque sus firmas y tags eran válidos. No debe considerarse
+una salida totalmente revelada solo porque las autenticaciones hayan pasado.
+
+Se volvió a analizar la APK y se encontraron estas evidencias:
+
+- DEX `Lah/k3;->b(Lbl/c;)`: comprueba el prefijo `npvs1:`, toma `substring(6)`
+  y llama al lector Base64; `->d` realiza la escritura inversa. `Lrh/k;->U`
+  también escribe el prefijo y los caracteres Base64, incluido `=`.
+- Go `npv-tunnel-core/core/secret.(*SecretString).MarshalJSON`, VA `0x13a7c80`:
+  llama a `encoding/base64.EncodeToString` y concatena el marcador.
+- Go `npv-tunnel-core/core/secret.WithJSONPlaintext`, VA `0x13a7e80`:
+  verifica el prefijo de seis bytes y llama a `encoding/base64.Decode`.
+  `SecretString.UnmarshalJSON` (`0x13a7e10`) pasa por esa función.
+
+El script aplica `decode_secret_strings(document)` después de reconstruir y
+autenticar todo el almacén. Recorre los valores de objetos/listas, conserva
+las claves y los tipos no textuales y deja intacto cualquier texto sin prefijo.
+No modifica `metadata` ni los bytes utilizados para firma, contexto o HMAC.
+Tolera CR/LF del Base64, como Go, y rechaza marcadores inválidos o texto no UTF-8
+con un error que no incluye el contenido. Se revela una sola capa: el texto
+revelado puede empezar legítimamente por el mismo prefijo y no se vuelve a
+interpretar. No decodificar automáticamente todas las cadenas que parezcan
+Base64 ni limitar la corrección a una lista fija de nombres de campos SSH.
+
 ## Evidencia de que funcionó con el archivo real
 
 - Firma ECDSA válida sobre el rango binario exacto.
@@ -373,8 +413,13 @@ No interpreta el registro de estructura como un campo ordinario del servidor.
   `separators=(",", ":")`, sin formato visual), 2375 bytes; SHA-256:
   `eaa7e033fa9c5677d605628a4bbc32961c1b61c44e0e329393fe8776eaa47bfb`.
   Es el hash de `document`, no el del JSON de salida que también incluye metadata.
-- CLI ejecutada con la muestra real y salida JSON completa. Diez pruebas pasan
-  con la muestra original, incluidos todos sus prefijos truncados y cambios en
+- Ese hash de 2375 bytes corresponde a la representación autenticada anterior
+  a revelar `npvs1:`. El resultado final corregido mide 2346 bytes y su SHA-256
+  es `efd51583558b21c2683a242fa0583f45afc0c2044108d50b549247755883bbde`.
+  Se conservan los dos hashes en las pruebas; quedan cero marcadores pendientes
+  en la muestra original y sigue habiendo 106 valores.
+- CLI ejecutada con la muestra real y salida JSON completa. Las trece pruebas
+  actuales pasan con la muestra original, incluidos todos sus prefijos truncados y cambios en
   firma, DEK, metadatos, contexto y HMAC.
 - Para comprobar las AEAD de campos independientemente del HMAC, las pruebas
   alteran cada una de las 107 etiquetas y recalculan el HMAC del inventario con

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+import binascii
 import hashlib
 import hmac
 import json
@@ -187,6 +188,26 @@ def _document(body: bytes, dek: bytes, context: bytes):
     return document
 
 
+def decode_secret_strings(value):
+    """Reveal one npvs1/Base64 layer in JSON values, preserving keys and types.
+
+    Matches SecretString.WithJSONPlaintext in the APK. Apply only after the
+    authenticated document has been reconstructed, never to policy metadata.
+    """
+    if isinstance(value, dict):
+        return {key: decode_secret_strings(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [decode_secret_strings(item) for item in value]
+    if isinstance(value, str) and value.startswith("npvs1:"):
+        try:
+            # Go's standard Base64 decoder permits CR/LF, not arbitrary text.
+            encoded = value[6:].replace("\r", "").replace("\n", "")
+            return base64.b64decode(encoded, validate=True).decode("utf-8")
+        except (ValueError, binascii.Error, UnicodeError) as exc:
+            raise DecodeError("Invalid npvs1 Base64/UTF-8 field") from exc
+    return value
+
+
 def decode_npvs(data: bytes) -> dict:
     """Authenticate and decode a v5 app-key envelope; retain its policy metadata."""
     if not isinstance(data, bytes) or not 89 <= len(data) <= _MAX_FILE:
@@ -248,7 +269,7 @@ def decode_npvs(data: bytes) -> dict:
     }
     context = hashlib.sha256(b"NPVS-v5/source-fields-v1/" + _canonical(source_header) + nonce).digest()
     document = _document(data[end + 16:-64], dek, context)
-    return {"metadata": metadata, "document": document}
+    return {"metadata": metadata, "document": decode_secret_strings(document)}
 
 
 def run(file_bytes: bytes) -> str:

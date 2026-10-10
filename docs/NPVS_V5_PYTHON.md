@@ -1,5 +1,8 @@
 # NPV Tunnel: descifrado Python de NPVS v5
 
+La corrección de los valores `npvs1:` está en la rama
+[`fix/npvs1-values`](https://github.com/Gh0stDeveloper/SP-DECODE/tree/fix/npvs1-values).
+
 `decoders/Python/npvs.py` descifra el archivo real suministrado de NPV Tunnel
 124.0.37 (`com.napsternetlabs.napsternetv`, versionCode 577). Es independiente de
 Android y de la APK durante su ejecución. Solo requiere Python 3 y PyCryptodome.
@@ -11,6 +14,14 @@ python decoders/Python/npvs.py archivo.npvs -o resultado.json
 
 El resultado conserva `metadata` (incluida la política del archivo) y `document`,
 cuyo arreglo `configs` contiene las configuraciones completas con sus tipos JSON.
+Después de autenticar el documento se revela una capa `npvs1:` + Base64 estándar
+en sus valores de texto, como lo hace `SecretString` en la APK. Esto incluye
+SSH, contraseñas, SNI y valores anidados en objetos/listas. Se conservan claves,
+números, booleanos, valores nulos y las cadenas sin marcador. Los metadatos no
+se transforman, pues intervienen en la autenticación. Un marcador inválido falla
+con `DecodeError`; no se devuelve una salida parcial. La función
+`decode_secret_strings(document)` permite aplicar el mismo paso a un documento
+JSON ya recuperado. Se aplica una sola capa; no se adivina Base64 sin marcador.
 Sin `-o`, se escribe el JSON en stdout. Un archivo inválido produce un mensaje en
 stderr y código de salida 1. La función `run(file_bytes)` devuelve el mismo JSON
 como texto; `decode_npvs(file_bytes)` devuelve un diccionario y lanza `DecodeError`
@@ -61,6 +72,10 @@ una clave extraída del archivo de configuración ni requieren la APK al ejecuta
 6. Descifra los escalares JSON y el registro 65535 de estructura. Sustituye las
    referencias de la estructura por sus valores y exige que se usen todos los
    registros. No se adivinan campos ni se devuelve descifrado parcial.
+7. Revela los valores `npvs1:` del documento autenticado. Se confirmó en DEX
+   `Lah/k3;->b` y en Go `secret.WithJSONPlaintext` (`0x13a7e80`), que llama al
+   decodificador Base64. `SecretString.MarshalJSON` (`0x13a7c80`) realiza la
+   operación inversa. Es una representación de texto, no otro cifrado AEAD.
 
 ## Pruebas reales
 
@@ -69,8 +84,13 @@ una clave extraída del archivo de configuración ni requieren la APK al ejecuta
   `2e321bb8c506dbac8a1b2848ff8a05fb4f811df34536853b2a965d6dfd197867`.
 - Resultado: una configuración; 106 valores escalares y un registro de estructura.
 - Firma ECDSA, DEK, metadatos, contexto, HMAC y las 107 etiquetas de registro válidos.
-- SHA-256 del documento JSON UTF-8, claves ordenadas y separadores compactos:
+- SHA-256 del documento autenticado antes de revelar sus tres valores `npvs1:`:
   `eaa7e033fa9c5677d605628a4bbc32961c1b61c44e0e329393fe8776eaa47bfb`.
+- SHA-256 del resultado final con esos tres valores en claro, JSON UTF-8,
+  claves ordenadas y separadores compactos (2346 bytes):
+  `efd51583558b21c2683a242fa0583f45afc0c2044108d50b549247755883bbde`.
+- Trece pruebas NPVS pasan con la muestra real; verifican también ambos hashes,
+  cero marcadores restantes y los valores de texto anidados.
 - Evaluador white-box comparado con la rutina ARM64 en ocho bloques independientes.
 
 Las pruebas publicadas incluyen tres vectores nativos. La muestra real se mantiene
