@@ -200,16 +200,16 @@ class EHIDecryptor:
     @staticmethod
     def _decode_inner_fields(parsed_json: Dict[str, Any], salt_key: str) -> Dict[str, Any]:
         cleaned_json = {}
-        vital_keys = {"overwriteServerData"}
         
         for k, v in parsed_json.items():
             if isinstance(v, str) and v.strip():
                 decrypted_val = EHIDecryptor._decode_config_message(v) if k == "configMessage" else EHIDecryptor._decrypt_xor_layer(v, salt_key)
                     
-                if decrypted_val is not None:
-                    cleaned_json[k] = decrypted_val
-                elif k in vital_keys:
-                    cleaned_json[k] = v
+                # Some HTTP Injector exporters keep individual fields as
+                # plaintext or use a newer, unrecognized field encoding.
+                # Retain those exact strings; silently discarding a key
+                # produces incomplete JSON in Android and in the bot.
+                cleaned_json[k] = v if decrypted_val is None else decrypted_val
             else:
                 cleaned_json[k] = v
         return cleaned_json
