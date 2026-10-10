@@ -34,8 +34,8 @@ Si el JSON descifrado contiene campos `BugDNS`, `CustomProxy`, `Payload`, `SNI`,
 
 ## Sublotes de pruebas
 
-- **C.1–C.4:** 10 sufijos por tanda, dos variantes autenticadas (AAD y sin AAD) cada uno.
-- **C.5:** último sufijo (total 41).
+- **C.1–C.3:** 10 sufijos por tanda, dos variantes autenticadas (AAD y sin AAD) cada uno.
+- **C.4:** últimos 11 sufijos, completando las 41 nuevas rutas nativas.
 - **83 vectores positivos para los 41 nuevos sufijos:** 41 exteriores con AAD, 41 sin AAD y uno de perfil alternativo. Se agregan **2 vectores para la colisión `.ost`**, sin sumar una nueva extensión, y se comprueba el golden DES previo.
 - Los 11 nombres de campo cifrado se prueban de manera positiva en perfiles con memorias de 4096, 8192 y 16384 KiB, sin repetir derivaciones innecesarias para los 41 alias.
 - Pruebas negativas: etiquetas GCM alteradas, contenido truncado, entrada vacía, formatos erróneos y aislamiento entre familias.
