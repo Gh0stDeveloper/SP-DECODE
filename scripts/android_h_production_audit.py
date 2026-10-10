@@ -104,7 +104,9 @@ def inspect(expected_version: str | None = None, expected_code: int | None = Non
                "--v3-signing-enabled true", "--min-sdk-version 23",
                "zipalign", "-P 16", "sha256sum --check SHA256SUMS.txt",
                "SIGNATURE_VERIFICATION.txt",
-           )), "Production workflow explicitly verifies signatures, alignment and hashes")
+               "Same permanent SHA-256 signer certificate: yes",
+               "v1.0.5-rc.1",
+           )), "Production workflow explicitly verifies signatures, alignment, hashes and prior public signer")
     record("release_publication_gate",
            all(token in flow for token in (
                "--mode stable", "--mode public-preview",
