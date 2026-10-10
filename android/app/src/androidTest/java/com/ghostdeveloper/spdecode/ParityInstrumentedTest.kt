@@ -65,11 +65,11 @@ class ParityInstrumentedTest {
     }
 
     @Test
-    fun registryHas60SuffixesButNeverClaimsAllWorkingAndroidDecoders() {
+    fun registryHas61SuffixesButNeverClaimsAllWorkingAndroidDecoders() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val formats = com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog.read(context)
         val resolver = com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
-        assertEquals(60, formats.size)
+        assertEquals(61, formats.size)
         assertEquals("sksrv.png", resolver.detect("MYCONFIG.SKSRV.PNG", formats)?.suffix)
         assertEquals("fɴ", resolver.detect("MYCONFIG.Fɴ", formats)?.suffix)
         assertEquals("v2", resolver.detect("test.v2", formats)?.suffix)
