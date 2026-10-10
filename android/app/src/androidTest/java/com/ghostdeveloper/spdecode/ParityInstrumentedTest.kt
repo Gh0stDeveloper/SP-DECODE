@@ -65,20 +65,20 @@ class ParityInstrumentedTest {
     }
 
     @Test
-    fun registryHas239SuffixesWith81NewNativeGenericPorts() {
+    fun registryHas239SuffixesWith199NativePorts() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val formats = com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog.read(context)
         val resolver = com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
         assertEquals(239, formats.size)
-        assertEquals(183, formats.count { it.hasNativeDecoder })
-        assertEquals(56, formats.count { it.isPending })
+        assertEquals(199, formats.count { it.hasNativeDecoder })
+        assertEquals(40, formats.count { it.isPending })
         assertEquals("sksrv.png", resolver.detect("MYCONFIG.SKSRV.PNG", formats)?.suffix)
         assertEquals("fɴ", resolver.detect("MYCONFIG.Fɴ", formats)?.suffix)
         assertEquals("v2", resolver.detect("test.v2", formats)?.suffix)
         assertEquals("prototype_two_synthetic_cases", resolver.detect("test.v2", formats)?.portStatus)
         assertEquals(0, formats.count { it.androidVerified })
         assertEquals("prototype_tls_aesgcm_synthetic_case", resolver.detect("test.TLS", formats)?.portStatus)
-        assertEquals(56, formats.count { it.portStatus == "registered_not_implemented" })
+        assertEquals(40, formats.count { it.portStatus == "registered_not_implemented" })
         assertEquals("B", resolver.detect("test.ace", formats)?.migrationPhase)
         assertEquals("C", resolver.detect("test.ultra", formats)?.migrationPhase)
         assertEquals("D", resolver.detect("test.7NET", formats)?.migrationPhase)

@@ -8,7 +8,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Phase B: 61 legacy + 81 generic are routed; 97 other suffixes still fail closed. */
+/** Phase D: 61 legacy + 81 generic + 41 Ultra + 16 RENZ; 40 pending. */
 @RunWith(AndroidJUnit4::class)
 class PhaseA239CatalogInstrumentedTest {
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
@@ -18,15 +18,16 @@ class PhaseA239CatalogInstrumentedTest {
         val formats = catalog
         assertEquals(AndroidDecoderCatalog.TOTAL_SUFFIXES, formats.size)
         assertEquals(239, formats.map { it.suffix }.toSet().size)
-        assertEquals(183, formats.count { it.hasNativeDecoder })
+        assertEquals(199, formats.count { it.hasNativeDecoder })
         assertEquals(81, formats.count { it.migrationPhase == "B" && it.hasNativeDecoder })
-        assertEquals(56, formats.count { it.isPending })
+        assertEquals(40, formats.count { it.isPending })
         assertEquals(0, formats.count { it.androidVerified })
         val planned = formats.filter { it.isPending }
         assertEquals(0, planned.count { it.migrationPhase == "B" })
         assertEquals(41, formats.count { it.migrationPhase == "C" && it.hasNativeDecoder })
         assertEquals(0, planned.count { it.migrationPhase == "C" })
-        assertEquals(16, planned.count { it.migrationPhase == "D" })
+        assertEquals(16, formats.count { it.migrationPhase == "D" && it.hasNativeDecoder })
+        assertEquals(0, planned.count { it.migrationPhase == "D" })
         assertEquals(27, planned.count { it.migrationPhase == "E" })
         assertEquals(13, planned.count { it.migrationPhase == "F" })
         assertTrue(planned.all { it.portStatus == AndroidDecoderCatalog.PENDING_STATUS })
@@ -41,7 +42,6 @@ class PhaseA239CatalogInstrumentedTest {
 
     @Test fun migrationSuffixesHaveNoAccidentalDecodeFallback() {
         val inputs = listOf(
-            "archive.7NET",
             "archive.itv", "archive.IZPH", "archive.flexnet", "archive.4ULITE",
             "archive.wyrlite", "archive.apnalite", "archive.𝐭𝐞𝐬𝐭"
         )
@@ -53,13 +53,15 @@ class PhaseA239CatalogInstrumentedTest {
             assertNull(AndroidOfflineDecoderRouter.decode(
                 context, filename, byteArrayOf(1,2,3,4,5,6,7,8)))
         }
-        // Phase C now has a real Ultra port; it must no longer be classified
+        // Phase C and D now have native ports; it must no longer be classified
         // as an unimplemented format. The historical .ost route is unchanged.
         val ultra = AndroidDecoderCatalog.detect("archive.ULTRA", catalog)
         assertNotNull(ultra)
         assertEquals("C", ultra!!.migrationPhase)
         assertTrue(ultra.hasNativeDecoder)
         assertEquals("legacy", AndroidDecoderCatalog.detect("old.ost", catalog)?.migrationPhase)
+        assertEquals("D", AndroidDecoderCatalog.detect("archive.7NET", catalog)?.migrationPhase)
+        assertTrue(AndroidDecoderCatalog.detect("archive.7NET", catalog)!!.hasNativeDecoder)
         assertNull(AndroidOfflineDecoderRouter.decode(context, "invalid.ultra",
             byteArrayOf(1,2,3,4,5,6,7,8)))
         assertNull(AndroidDecoderCatalog.detect(inputs.last(), catalog))

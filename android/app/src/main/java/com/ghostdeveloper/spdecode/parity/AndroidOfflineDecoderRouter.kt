@@ -21,6 +21,7 @@ object AndroidOfflineDecoderRouter {
             format.suffix == "lnk" -> LinkLayerPort.MAX_INPUT
             format.suffix == "npvs" -> NpvsPort.MAX_INPUT
             format.migrationPhase == "B" -> GenericVpnPort.MAX_INPUT_BYTES
+            format.migrationPhase == "D" -> RenzPort.MAX_INPUT_BYTES
             format.migrationPhase == "C" || format.suffix == "ost" ->
                 UltraSandokPort.MAX_INPUT_BYTES
             else -> LegacyPortPrimitives.MAX_INPUT
@@ -37,6 +38,9 @@ object AndroidOfflineDecoderRouter {
         }
         if (format.migrationPhase == "C") {
             return UltraSandokPort.decode(context, format.suffix, input)
+        }
+        if (format.migrationPhase == "D") {
+            return RenzPort.decode(context, format.suffix, input)
         }
         return when (format.suffix) {
             "v2" -> V2RayReferencePort.decode(input)
