@@ -5,7 +5,7 @@ from pathlib import Path
 from scripts.android_g_text_fixtures import build
 from decoders.Python import (renz,xor_family,text_legacy_protocols,
     text_structured_protocols,npvt_links,falcon_links)
-from spdecode.handlers import config_batch_texts
+
 
 class AndroidPhaseGTextParityTests(unittest.TestCase):
     @classmethod
@@ -30,10 +30,12 @@ class AndroidPhaseGTextParityTests(unittest.TestCase):
                 self.assertIsInstance(case["expected"],(dict,list))
                 self.assertFalse(case["input"].startswith("https://"))
     def test_all_bot_batch_protocols_are_uniquely_accounted_for(self):
-        self.assertIn("falcontunnel://import/",config_batch_texts.TEXT_HANDLERS)
-        self.assertIn("izphvpnpro://",config_batch_texts.TEXT_HANDLERS)
-        self.assertIn("npvs1:",config_batch_texts.TEXT_HANDLERS)
-        self.assertIn("slipnet://",config_batch_texts.TEXT_HANDLERS)
+        from pathlib import Path
+        handler=(Path(__file__).resolve().parents[1]/"spdecode/handlers/config_batch_texts.py").read_text("utf-8")
+        self.assertIn("falcontunnel://import/",handler)
+        self.assertIn("izphvpnpro://",handler)
+        self.assertIn("npvs1:",handler)
+        self.assertIn("slipnet://",handler)
         self.assertIn("slipnet://",text_structured_protocols.PREFIXES)
         self.assertIn("mark://",text_legacy_protocols.ALL_PREFIXES)
         self.assertTrue(set(renz.RENZ_TEXT_PROTOCOLS).isdisjoint(set(xor_family.SCHEMES)))
