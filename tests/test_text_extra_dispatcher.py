@@ -112,6 +112,34 @@ class ExtraTextDispatcherTests(unittest.TestCase):
         self.assertIn("fixture-only",bot.replies[0][1])
         self.assertEqual(bot.replies[0][2].get("parse_mode"),"HTML")
 
+    def test_v2box_password_prompt_normalizes_base64url(self):
+        import base64
+        handler, bot = load_handler_with_fake_bot()
+        envelope = {
+            "magic": "v2box_export",
+            "nonce": "MDEyMzQ1Njc4OTAx",
+            "tag": "MTIzNDU2Nzg5MDEyMzQ1Ng==",
+            "ciphertext": "Y2lwaGVydGV4dA==",
+            "isPasswordProtected": True,
+        }
+        token = base64.urlsafe_b64encode(json.dumps(envelope).encode()).decode().rstrip("=")
+        msg = types.SimpleNamespace(
+            text="v2box://" + token,
+            chat=types.SimpleNamespace(id=999,type="private"),
+            from_user=types.SimpleNamespace(id=999))
+        settings = types.SimpleNamespace(
+            admins={999},allowed_groups=set(),allow_all_groups=False)
+        runtime = types.SimpleNamespace(bot=bot,settings=settings)
+        calls = []
+        stub = types.ModuleType("spdecode.handlers.config_batch_texts")
+        stub.prompt_v2box_password = lambda m, data: calls.append(data)
+        with patch.dict(sys.modules,{
+            "spdecode.runtime":runtime,
+            "spdecode.handlers.config_batch_texts":stub}):
+            handler.decode_extra_text(msg)
+        self.assertEqual(len(calls),1)
+        self.assertEqual(json.loads(calls[0]),envelope)
+
     def test_oversized_text_rejected_before_decode(self):
         handler,_bot=load_handler_with_fake_bot()
         self.assertIsNone(handler._match(types.SimpleNamespace(
