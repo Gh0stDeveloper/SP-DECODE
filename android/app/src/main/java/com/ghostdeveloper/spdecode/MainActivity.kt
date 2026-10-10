@@ -26,6 +26,7 @@ import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
 import com.ghostdeveloper.spdecode.parity.AndroidOfflineDecoderRouter
 import com.ghostdeveloper.spdecode.parity.GenericVpnPort
 import com.ghostdeveloper.spdecode.parity.UltraSandokPort
+import com.ghostdeveloper.spdecode.parity.RenzPort
 import com.ghostdeveloper.spdecode.parity.LinkLayerPort
 import com.ghostdeveloper.spdecode.parity.NpvsPort
 import kotlinx.coroutines.CancellationException
@@ -381,6 +382,7 @@ class MainActivity : ComponentActivity() {
                             supported.suffix=="lnk" -> LinkLayerPort.MAX_INPUT
                             supported.suffix=="npvs" -> NpvsPort.MAX_INPUT
                             supported.migrationPhase=="B" -> GenericVpnPort.MAX_INPUT_BYTES
+                            supported.migrationPhase=="D" -> RenzPort.MAX_INPUT_BYTES
                             supported.migrationPhase=="C" || supported.suffix=="ost" -> UltraSandokPort.MAX_INPUT_BYTES
                             else -> MAX_BYTES
                         })}
