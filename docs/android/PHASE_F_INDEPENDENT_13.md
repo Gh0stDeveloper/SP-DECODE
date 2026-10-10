@@ -11,6 +11,7 @@
 | `.flex`, `.flexnet` | `decoders/Python/flex.py` | Encabezado FLXCFG, versiones 1–4, locks, 30 perfiles de materiales históricos, PBKDF2-HMAC-SHA512, AES-256-GCM (AAD) y descompresión zlib/gzip; XML properties con todos sus campos |
 | `.izph` | `decoders/Python/izph.py` | 4 tipos de algoritmo (AES-CBC+XXTEA, Threefish-256+HKDF, PBKDF2+XXTEA+AES-CBC, HKDF+AES-CBC); descifrado anidado de Servers, Networks, ProxySettings, V2Ray y SlowDNS |
 | `.lt`, `.ltm` | `decoders/Python/ltm.py` | PBKDF2-HMAC-SHA256 y AES-GCM autenticado; extracción XML Properties, incluida etiqueta comment |
+| `.vn7` | `decoders/Python/vn7.py` | PBKDF2-HMAC-SHA256 y AES-GCM; dos claves históricas comprobadas |
 
 La F.1 usa `IndependentF1Port.kt` e `IzphNativePort.kt`. Las constantes de Flex se exportaron sin adivinar valores: `android/app/src/main/assets/flex_f_profiles.json` mantiene las **30 variantes originales** de `FLEX_MATERIALS` con la selección version/lock del Python. Los primitivos XXTEA, HKDF y Threefish-256 de IZPH reutilizan el motor ya probado de RENZ, pero se aplican las constantes, el protocolo y el orden de procesamiento propios de IZPH.
 
@@ -23,9 +24,8 @@ La F.1 usa `IndependentF1Port.kt` e `IzphNativePort.kt`. Las constantes de Flex 
 | `.zoba` | `zoba.py` | XXTEA y delta propio, Base64 o bytes originales; decodificación JSON/texto |
 | `.dev` | `dev.py` | SkyCrypt XXTEA, transformación de caracteres y AES-CBC en campos |
 | `.n4` | `n4.py` | AES-256-ECB exterior, AES-CBC y tablas de caracteres Unicode específicas para cada campo, con decodificación Morse |
-| `.vn7` | `vn7.py` | PBKDF2-HMAC-SHA256 y AES-GCM con ambas contraseñas originales |
 
-`IndependentF2Port.kt` implementa CREV, KTR, Zoba, DEV y N4. VN7 se aloja junto con F.1 por compartir extracción AES-GCM, aunque pertenece al lote de 7 extensiones indicado aquí. Ambas tablas de lotes suman las 13 extensiones sin duplicados.
+`IndependentF2Port.kt` implementa CREV, KTR, Zoba, DEV y N4. VN7 comparte la subfase F.1 por su ruta AES-GCM. Las dos subfases reúnen las 13 extensiones sin duplicados.
 
 ## Inventario de 239 formatos
 
