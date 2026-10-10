@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("org.jetbrains.kotlin.kapt")
-    id("com.chaquo.python") version "17.0.0"
 }
 
 android {
@@ -12,18 +11,11 @@ android {
     defaultConfig {
         applicationId = "com.ghostdeveloper.spdecode"
         minSdk = 24
-        ndk { abiFilters += listOf("arm64-v8a", "x86_64") }
         targetSdk = 35
         versionCode = 16
         versionName = "1.0.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("en", "es", "pt-rBR", "ar")
-    }
-    chaquopy {
-        defaultConfig {
-            version = "3.11"
-            pip { install("pycryptodome==3.23.0") }
-        }
     }
     buildFeatures { compose = true }
     packaging {
