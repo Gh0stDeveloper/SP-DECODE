@@ -69,6 +69,21 @@ class AndroidUltraCParityTests(unittest.TestCase):
         self.assertEqual(refs["aadVectors"], 41)
         self.assertEqual(refs["noAadVectors"], 41)
         self.assertEqual(refs["fallbackVectors"], 1)
+        # .ost remains one of the 61 legacy registrations, with two
+        # additional authenticated Ultra/Sandok fallback envelopes.
+        self.assertEqual(refs["legacyOstCaseCount"], 2)
+        self.assertEqual(len(refs["legacyOstVectors"]), 2)
+        self.assertEqual({x["mode"] for x in refs["legacyOstVectors"]},
+                         {"aad", "no_aad"})
+        import base64
+        for sample in refs["legacyOstVectors"]:
+            encoded = base64.b64decode(sample["encodedInput"])
+            self.assertEqual(
+                json.loads(ultra.run(encoded, ".ost")),
+                json.loads(sample["expected"]),
+            )
+            self.assertEqual(json.loads(sample["expected"])["extension"], ".ost")
+
         self.assertEqual(
             {x["suffix"] for x in refs["vectors"]},
             {x["suffix"] for x in self.manifest["aliases"]}
