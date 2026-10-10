@@ -25,8 +25,8 @@ class AndroidPhaseETests(unittest.TestCase):
         special={x["suffix"] for x in self.catalog["entries"] if x["migrationPhase"]=="E"}
         self.assertEqual(len(special),27)
         self.assertEqual(self.catalog["androidSpecialNativeSuffixes"],27)
-        self.assertEqual(self.catalog["androidNativePortSuffixes"],226)
-        self.assertEqual(self.catalog["androidPendingNativeSuffixes"],13)
+        self.assertEqual(self.catalog["androidNativePortSuffixes"],239)
+        self.assertEqual(self.catalog["androidPendingNativeSuffixes"],0)
         self.assertEqual(set(self.fixture["modules"]),set(SCRIPTS))
         self.assertEqual(self.fixture["suffixCount"],27)
         self.assertEqual(self.fixture["caseCount"],31)
