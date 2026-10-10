@@ -384,6 +384,7 @@ class MainActivity : ComponentActivity() {
                             supported.migrationPhase=="B" -> GenericVpnPort.MAX_INPUT_BYTES
                             supported.migrationPhase=="D" -> RenzPort.MAX_INPUT_BYTES
                             supported.migrationPhase=="E" -> 2*1024*1024
+                            supported.migrationPhase=="F" -> 2*1024*1024
                             supported.migrationPhase=="C" || supported.suffix=="ost" -> UltraSandokPort.MAX_INPUT_BYTES
                             else -> MAX_BYTES
                         })}
