@@ -1,5 +1,7 @@
 # SP-DECODE Android — baseline histórico y migración de 239 formatos
 
+> **Phase B update (migration branch):** the app recognizes 239 formats; **142** have native Android routes (61 historical + 81 generic AES/DES), **97** remain disabled. See [Phase B validation](../docs/android/PHASE_B_GENERIC_81.md).
+
 > Actualización de Fase A: el proyecto cuenta con aplicación Compose funcional y
 > un catálogo v3 de **239 formatos registrados**, de los cuales **61** tienen
 > rutas Android anteriores y **178** permanecen **sin implementar**. Esta

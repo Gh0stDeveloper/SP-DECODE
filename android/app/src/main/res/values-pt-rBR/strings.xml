@@ -27,7 +27,7 @@
     <string name="session_only">Salvo no dispositivo · Histórico criptografado</string>
     <string name="search_formats">Buscar aplicativo ou extensão</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">239 formatos cadastrados: 61 decodificadores existentes e 178 aguardando integração nativa. Nem todos os formatos da lista estão disponíveis.</string>
+    <string name="catalog_note">239 formatos cadastrados: 142 rotas nativas (61 anteriores e 81 genéricas AES/DES) e 97 aguardando integração. A compatibilidade com exportações reais pode variar.</string>
     <string name="settings_title">Configurações</string>
     <string name="privacy_title">Privacidade</string>
     <string name="privacy_text">Os arquivos originais não são copiados. Resultados decodificados ficam criptografados neste dispositivo até serem excluídos.</string>

@@ -27,7 +27,9 @@ class AndroidA24CatalogTests(unittest.TestCase):
         self.assertEqual(self.doc["schemaVersion"], 3)
         self.assertEqual(self.doc["botRegisteredSuffixes"], 239)
         self.assertEqual(self.doc["androidExistingSuffixes"], 61)
-        self.assertEqual(self.doc["androidPendingNativeSuffixes"], 178)
+        self.assertEqual(self.doc["androidGenericNativeSuffixes"], 81)
+        self.assertEqual(self.doc["androidNativePortSuffixes"], 142)
+        self.assertEqual(self.doc["androidPendingNativeSuffixes"], 97)
         self.assertEqual(len(self.doc["entries"]), 239)
         self.assertEqual(set(self.rows), set(DECODER_REGISTRY))
         self.assertEqual(len(self.rows), 239)
@@ -54,17 +56,26 @@ class AndroidA24CatalogTests(unittest.TestCase):
         self.assertEqual(old["lnk"]["androidPortStatus"], "experimental_linklayer_ver6_synthetic")
         self.assertEqual(old["ost"]["script"], "decoders/Python/ost.py")
 
-    def test_all_178_unported_suffixes_are_explicitly_disabled(self):
+    def test_81_generic_routes_and_remaining_97_pending_are_faithful(self):
         pending = {suffix: row for suffix, row in self.rows.items() if suffix not in ORIGINAL}
         self.assertEqual(len(pending), 178)
+        self.assertEqual(sum(row["androidPortStatus"] == "registered_not_implemented" for row in pending.values()), 97)
+        self.assertEqual(sum(row["migrationPhase"] == "B" for row in pending.values()), 81)
         self.assertEqual(sum(row["migrationPhase"] != "legacy" for row in self.rows.values()), 178)
         for suffix, row in pending.items():
             spec = DECODER_REGISTRY[suffix]
             with self.subTest(suffix=suffix):
                 self.assertEqual(row["sourceCatalog"], "spdecode.registry")
-                self.assertEqual(row["androidPortStatus"], "registered_not_implemented")
+                if row["migrationPhase"] == "B":
+                    self.assertIn(row["androidPortStatus"], {
+                        "experimental_generic_aes_gcm_synthetic",
+                        "experimental_generic_des_ecb_synthetic",
+                    })
+                    self.assertTrue(row["linuxGoldenSynthetic"])
+                else:
+                    self.assertEqual(row["androidPortStatus"], "registered_not_implemented")
+                    self.assertFalse(row["linuxGoldenSynthetic"])
                 self.assertFalse(row["androidVerified"])
-                self.assertFalse(row["linuxGoldenSynthetic"])
                 self.assertEqual(row["migrationPhase"], phase_for(spec.script))
                 self.assertEqual((row["name"], row["script"], row["originalRuntime"]),
                                  (spec.name, spec.script, spec.runtime))
@@ -80,6 +91,7 @@ class AndroidA24CatalogTests(unittest.TestCase):
         self.assertEqual(ordered, sorted(ordered, key=lambda suffix: (-len(suffix), suffix)))
         self.assertEqual(self.rows["sksrv.png"]["migrationPhase"], "legacy")
         self.assertIn("fɴ", self.rows)
+        self.assertEqual(self.rows["ost"]["migrationPhase"], "legacy")
         self.assertEqual(
             {r["suffix"] for r in self.rows.values() if r["name"] == "HTTP Tweak"},
             {"ht", "htb"},
@@ -105,7 +117,7 @@ class AndroidA24CatalogTests(unittest.TestCase):
             cwd=ROOT, capture_output=True, text=True, timeout=30,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("239 registered", result.stdout)
+        self.assertIn("239 formats: 61 legacy + 81", result.stdout)
 
 
 if __name__ == "__main__":

@@ -7,9 +7,9 @@ import java.util.Locale
 /**
  * Complete read-only bot inventory for Android migration, not a certification list.
  *
- * Phase A preserves the 61 original native routes and registers the other
- * 178 suffixes as explicitly NOT IMPLEMENTED. No file is dispatched to an
- * Android crypto engine merely because its suffix is present here.
+ * Phase B preserves 61 legacy native routes, enables 81 generic AES/DES
+ * ports, and leaves the other 97 suffixes explicitly not implemented. Native
+ * availability is distinct from vendor/exporter compatibility certification.
  *
  * The JSON is reproducibly built by scripts/android_a24_catalog.py from
  * spdecode.registry.DECODER_REGISTRY, never from a hand-maintained alias table.
@@ -17,7 +17,11 @@ import java.util.Locale
 object AndroidDecoderCatalog {
     const val TOTAL_SUFFIXES = 239
     const val LEGACY_NATIVE_SUFFIXES = 61
-    const val PENDING_NATIVE_SUFFIXES = TOTAL_SUFFIXES - LEGACY_NATIVE_SUFFIXES
+    const val GENERIC_NATIVE_SUFFIXES = 81
+    const val NATIVE_SUFFIXES = LEGACY_NATIVE_SUFFIXES + GENERIC_NATIVE_SUFFIXES
+    const val PENDING_NATIVE_SUFFIXES = TOTAL_SUFFIXES - NATIVE_SUFFIXES
+    const val GENERIC_AES_STATUS = "experimental_generic_aes_gcm_synthetic"
+    const val GENERIC_DES_STATUS = "experimental_generic_des_ecb_synthetic"
     const val PENDING_STATUS = "registered_not_implemented"
 
     data class Format(
@@ -31,8 +35,10 @@ object AndroidDecoderCatalog {
         val sourceCatalog: String,
     ) {
         val hasNativeDecoder: Boolean
-            get() = migrationPhase == "legacy" &&
-                portStatus != PENDING_STATUS && portStatus != "not_implemented"
+            get() = (migrationPhase == "legacy" &&
+                portStatus != PENDING_STATUS && portStatus != "not_implemented") ||
+                (migrationPhase == "B" &&
+                    (portStatus == GENERIC_AES_STATUS || portStatus == GENERIC_DES_STATUS))
         val isPending: Boolean get() = !hasNativeDecoder
     }
 
@@ -43,6 +49,8 @@ object AndroidDecoderCatalog {
         require(doc.getInt("schemaVersion") == 3)
         require(doc.getInt("botRegisteredSuffixes") == TOTAL_SUFFIXES)
         require(doc.getInt("androidExistingSuffixes") == LEGACY_NATIVE_SUFFIXES)
+        require(doc.getInt("androidGenericNativeSuffixes") == GENERIC_NATIVE_SUFFIXES)
+        require(doc.getInt("androidNativePortSuffixes") == NATIVE_SUFFIXES)
         require(doc.getInt("androidPendingNativeSuffixes") == PENDING_NATIVE_SUFFIXES)
         require(doc.getInt("androidCertifiedSuffixes") == 0)
         val entries = doc.getJSONArray("entries")
@@ -63,10 +71,13 @@ object AndroidDecoderCatalog {
         require(formats.map { it.suffix }.toSet().size == TOTAL_SUFFIXES)
         require(formats.all { it.suffix.isNotEmpty() && it.suffix == it.suffix.lowercase(Locale.ROOT) })
         require(formats.none { it.androidVerified })
-        require(formats.count { it.hasNativeDecoder } == LEGACY_NATIVE_SUFFIXES)
+        require(formats.count { it.hasNativeDecoder } == NATIVE_SUFFIXES)
+        require(formats.count { it.migrationPhase == "legacy" && it.hasNativeDecoder } == LEGACY_NATIVE_SUFFIXES)
+        require(formats.count { it.migrationPhase == "B" && it.hasNativeDecoder } == GENERIC_NATIVE_SUFFIXES)
         require(formats.count { it.isPending } == PENDING_NATIVE_SUFFIXES)
         require(formats.filter { it.hasNativeDecoder }.all {
-            it.sourceCatalog == "decoders.json"
+            (it.migrationPhase == "legacy" && it.sourceCatalog == "decoders.json") ||
+            (it.migrationPhase == "B" && it.sourceCatalog == "spdecode.registry")
         })
         require(formats.filter { it.isPending }.all {
             it.portStatus == PENDING_STATUS && it.sourceCatalog == "spdecode.registry"
