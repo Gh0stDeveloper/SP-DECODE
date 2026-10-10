@@ -85,6 +85,34 @@ class PhaseCUltraInstrumentedTest {
         assertTrue(ost.hasNativeDecoder)
     }
 
+    @Test fun ostCollisionPreservesDesAndAuthenticatedUltraVariants() {
+        assertEquals(2, evidence.getInt("legacyOstCaseCount"))
+        // The first .ost route must keep the exact legacy golden byte-for-byte.
+        val old = inst.context.assets.open("parity/batch4-ost.ost").use { it.readBytes() }
+        val expectedDes = inst.context.assets.open("parity/batch4-ost.txt").use { it.readBytes() }
+        assertArrayEquals(expectedDes, AndroidOfflineDecoderRouter.decode(
+            context, "legacy.ost", old)?.toByteArray(Charsets.UTF_8))
+
+        val samples = evidence.getJSONArray("legacyOstVectors")
+        assertEquals(2, samples.length())
+        for (i in 0 until samples.length()) {
+            val item = samples.getJSONObject(i)
+            val data = Base64.decode(item.getString("encodedInput"), Base64.NO_WRAP)
+            val result = AndroidOfflineDecoderRouter.decode(context, "ultra.ost", data)
+            assertNotNull("Authenticated .ost Ultra fallback: " + item.getString("mode"), result)
+            assertEquals(JsonParser.parseString(item.getString("expected")),
+                JsonParser.parseString(result!!))
+        }
+
+        // AES-GCM must reject a modified tag even after the failed DES route.
+        val data = Base64.decode(samples.getJSONObject(0).getString("encodedInput"),
+            Base64.NO_WRAP)
+        val encrypted = Base64.decode(String(data, Charsets.UTF_8), Base64.NO_WRAP)
+        encrypted[encrypted.lastIndex] = (encrypted.last().toInt() xor 1).toByte()
+        assertNull(AndroidOfflineDecoderRouter.decode(context, "corrupt.ost",
+            Base64.encodeToString(encrypted, Base64.NO_WRAP).toByteArray(Charsets.UTF_8)))
+    }
+
     @Test fun corruptedGcmTagAndMalformedInputCannotProduceValidConfig() {
         val cases = evidence.getJSONArray("vectors")
         var failed = 0
