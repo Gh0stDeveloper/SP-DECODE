@@ -18,6 +18,11 @@ object AndroidOfflineDecoderRouter {
         // Keep a hard gate before the old 61-case dispatcher to prevent
         // accidental treatment as a supported decoder or unrelated fallback.
         if (!format.hasNativeDecoder) return null
+        // The 81 generic suffixes are explicitly selected by catalog phase,
+        // never inserted into the old 61-case switch or treated as fallback.
+        if (format.migrationPhase == "B") {
+            return GenericVpnPort.decode(context, format.suffix, input)
+        }
         return when (format.suffix) {
             "v2" -> V2RayReferencePort.decode(input)
             "tls" -> TlsReferencePort.decode(input)
