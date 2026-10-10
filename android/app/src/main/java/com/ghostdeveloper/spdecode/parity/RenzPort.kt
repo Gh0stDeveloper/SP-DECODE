@@ -247,7 +247,7 @@ object RenzPort {
         return fromWords(v).copyOf(length.toInt())
     }
 
-    private fun legacyXxtea(data: ByteArray, key: ByteArray): ByteArray {
+    internal fun legacyXxtea(data: ByteArray, key: ByteArray): ByteArray {
         require(data.size >= 8 && data.size <= MAX_INPUT_BYTES && data.size % 4 == 0)
         val v = leWords(data)
         val n = v.size
@@ -270,7 +270,7 @@ object RenzPort {
         return fromWords(v).copyOf(length.toInt())
     }
 
-    private fun hkdf(ikm: ByteArray, salt: ByteArray, length: Int): ByteArray {
+    internal fun hkdf(ikm: ByteArray, salt: ByteArray, length: Int): ByteArray {
         require(length in 1..64)
         val mac = Mac.getInstance("HmacSHA256")
         mac.init(SecretKeySpec(salt,"HmacSHA256"))
@@ -289,7 +289,7 @@ object RenzPort {
     }
 
     /** Threefish-256 with 18 round groups (72 rounds), little-endian blocks. */
-    private fun threefish(
+    internal fun threefish(
         data: ByteArray, key: ByteArray,
         tweaks: (Int,LongArray) -> LongArray
     ): ByteArray {
