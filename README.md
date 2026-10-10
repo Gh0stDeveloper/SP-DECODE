@@ -48,11 +48,11 @@ The Android implementation follows the user's approved AMOLED reference: shield 
 
 SP-DECODE is a modular Telegram bot designed to process and decode configuration formats used by multiple tunneling, proxy and VPN-related applications.
 
-The project separates configuration, authorization, decoder registration, runtime execution and Telegram handlers into independent modules. Most file decoders are registered through `decoders.json`; the additional Ultra/Sandok family is registered through its own isolated `decoders/Python/ultra.py` metadata and may run through **Python**, **Node.js** or **PHP**, allowing new formats to be added without turning the main bot entry point into a monolithic script.
+The project separates configuration, authorization, decoder registration, runtime execution and Telegram handlers into independent modules. Most file decoders are registered through `decoders.json`; the bot-only Ultra/Sandok and RENZ/7NET families are registered through their standalone `decoders/Python/ultra.py` and `decoders/Python/renz.py` metadata; the bot may run decoders through **Python**, **Node.js** or **PHP**, allowing new formats to be added without turning the main bot entry point into a monolithic script.
 
 ### Core features
 
-- **102 registered bot file extensions/suffixes**: 61 existing formats plus 41 new Ultra/Sandok aliases; `.ost` supports both original OUSS and Ultra payloads. The separate Android inventory remains at 61 formats.
+- **118 registered bot file extensions/suffixes**: 61 existing formats, 41 new Ultra/Sandok aliases and 16 RENZ/7NET aliases; `.ost` supports original OUSS and Ultra payloads. Android inventory is unchanged at 61.
 - Python, Node.js and PHP decoder runtimes.
 - Centralized decoder registry through `decoders.json`.
 - Telegram file processing with automatic format detection.
@@ -91,7 +91,7 @@ The project separates configuration, authorization, decoder registration, runtim
 
 ## Supported file formats
 
-The following original extensions are registered in `decoders.json`. An additional 41 Ultra/Sandok extensions are registered by the bot directly from `decoders/Python/ultra.py`, without affecting Android. Detection supports both regular and compound suffixes, including `.sksrv.png`.
+The following original extensions are registered in `decoders.json`. Additionally, 41 Ultra/Sandok aliases and 16 RENZ/7NET aliases are registered by the bot directly from the independent Python engines, without affecting Android. Detection supports both regular and compound suffixes, including `.sksrv.png`.
 
 | Application / format | Supported extension(s) | Runtime |
 |---|---|---|
@@ -145,6 +145,7 @@ The following original extensions are registered in `decoders.json`. An addition
 | Dark Tunnel | `.dark` | Python |
 | OUSS Tunnel / Ultra fallback | `.ost` | Python |
 | Ultra / Sandok VPN family | 41 additional suffixes (`.ultra`, `.ulti`, `.bee`, `.aura`, `.tx`, `.wolf`, `.flynet`, etc.) | Python — `decoders/Python/ultra.py` |
+| RENZ / 7NET family | `.7net`, `.tcx`, `.xhypher`, `.osp`, `.bshield`, `.actunnelvpn`, `.actun`, `.safetunnel`, `.mhrtunnel`, `.letsvpngo`, `.aloplusvpn`, `.cranetunnel`, `.vipsnipherpro`, `.deshtunnelvpn`, `.hamotunnelplus`, `.gcpvpn` | Python — `decoders/Python/renz.py` |
 | SBR Injector | `.sbr` | Python |
 | SocksIP Plus | `.sksplus` | PHP |
 | JEZ Tunnel | `.jez` | PHP |
@@ -154,7 +155,7 @@ The following original extensions are registered in `decoders.json`. An addition
 | HTTP Injector | `.ehi` | Python |
 | SSC Custom | `.ssc` | Python |
 
-> The Telegram bot now supports **102 registered suffixes**: 61 in `decoders.json` plus 41 new Ultra/Sandok suffixes defined in `ultra.py`. **All 42 Ultra/Sandok suffixes share one Python engine**; `.ost` preserves its legacy OUSS decoder with an Ultra fallback. Android remains at its existing 61-format inventory. These new formats are synthetically tested; third-party real export compatibility is not yet certified.
+> The Telegram bot now supports **118 registered suffixes**: 61 in `decoders.json`, 41 newly registered Ultra/Sandok suffixes and 16 RENZ/7NET suffixes. **The 42 Ultra variants share `ultra.py`, while the 16 RENZ file variants and 23 supported RENZ text schemes share `renz.py`.** Android remains at its existing 61-format inventory. The new bot decoders have synthetic regression tests; third-party real export compatibility is not yet certified.
 
 ---
 

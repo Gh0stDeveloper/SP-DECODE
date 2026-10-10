@@ -810,3 +810,39 @@ def decode_v2box(message):
 #######################################################
 # Función para procesar archivos
 #######################################################
+
+
+# ---------------------------------------------------------------------------
+# RENZ / 7NET text protocols (shared Python engine with file extensions)
+# ---------------------------------------------------------------------------
+from decoders.Python.renz import (
+    RENZ_TEXT_PROTOCOLS,
+    MAX_INPUT_BYTES as RENZ_MAX_INPUT_BYTES,
+    decode_text as decode_renz_payload,
+)
+
+_RENZ_PREFIXES = tuple(sorted(RENZ_TEXT_PROTOCOLS, key=len, reverse=True))
+
+
+def _is_renz_text_message(message) -> bool:
+    raw = _message_text(message).strip()
+    return bool(raw) and len(raw) <= RENZ_MAX_INPUT_BYTES and raw.lower().startswith(_RENZ_PREFIXES)
+
+
+@bot.message_handler(func=_is_renz_text_message)
+@require_authorized("Los textos RENZ / 7NET")
+def decode_renz_text(message):
+    payload = _message_text(message).strip()
+    try:
+        result = decode_renz_payload(payload)
+    except Exception:
+        logger.exception("Error interno al descifrar RENZ/7NET por texto")
+        bot.reply_to(message, "Error al procesar RENZ / 7NET.")
+        return
+    if result is not None:
+        _send_decoder_text_result(message, "RENZ / 7NET", result)
+    else:
+        bot.reply_to(
+            message,
+            "No se pudo descifrar RENZ / 7NET: protocolo o configuracion no compatible.",
+        )
