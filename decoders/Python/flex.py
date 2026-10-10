@@ -230,7 +230,7 @@ def decrypt_flex_file(file_data: bytes) -> dict:
         raw_xml = flex_decrypt_bytes(file_data)
         return flex_clean_output(raw_xml)
     except Exception as e:
-        logger.error(f"FlexNet decryption error: {e}")
+        logger.debug("FlexNet rejected invalid data: %s", e)
         return None
 def run(file_bytes: bytes) -> str | None:
     if not isinstance(file_bytes, bytes) or not file_bytes or len(file_bytes) > MAX_INPUT_BYTES:
