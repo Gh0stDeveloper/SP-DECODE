@@ -1,5 +1,7 @@
 <div align="center">
 
+> **Android migration Phase C:** 41 additional Ultra/Sandok Argon2id + AES-GCM native routes are implemented on the development branch. The catalog now lists 183 native routes and 56 pending; legacy `.ost` is unchanged. [Phase C technical documentation](docs/android/PHASE_C_ULTRA_SANDOK_41.md).
+
 > **Android migration Phase B:** the development branch now includes **142 native decoding routes** (61 original + 81 generic AES-GCM/DES-ECB), with 97 other catalogued formats still pending. This work is isolated from production `main`. See [Phase B documentation](docs/android/PHASE_B_GENERIC_81.md).
 
 # SP-DECODE
