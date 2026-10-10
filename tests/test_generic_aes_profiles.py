@@ -55,9 +55,13 @@ class GenericAESGoldenTests(unittest.TestCase):
                 self.assertIsNotNone(output)
                 self.assertEqual(json.loads(output), config)
                 # A bad authentication tag must never generate plaintext.
-                corrupt = bytearray(payload)
-                corrupt[-2] = ord("A") if corrupt[-2] != ord("A") else ord("B")
-                self.assertIsNone(aes_run(bytes(corrupt), ext))
+                parts = payload.split(b".")
+                sealed = bytearray(base64.b64decode(parts[2]))
+                sealed[-1] ^= 1  # Change an actual authenticated tag byte.
+                altered = b".".join((
+                    parts[0], parts[1], base64.b64encode(sealed),
+                ))
+                self.assertIsNone(aes_run(altered, ext))
 
     def test_multiple_historical_keys_preserve_order_and_fallback(self):
         for ext in (".ziv", ".tnl", ".pb", ".cks"):
