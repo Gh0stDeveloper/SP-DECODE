@@ -109,6 +109,29 @@ def decode_vmess(text: str) -> str | None:
         return None
 
 
+def normalize_v2box_envelope(text: str) -> dict | None:
+    """Normalize Base64URL both outside and inside a V2Box JSON envelope."""
+    if not isinstance(text,str) or not text.lower().startswith("v2box://"):
+        return None
+    try:
+        payload=text[len("v2box://"):].strip()
+        decoded=(
+            json.loads(payload) if payload.startswith("{")
+            else json.loads(_b64(payload).decode("utf-8"))
+        )
+        if not isinstance(decoded,dict) or decoded.get("magic")!="v2box_export":
+            return None
+        normalized=dict(decoded)
+        for field in ("nonce","tag","ciphertext"):
+            token=normalized.get(field)
+            if not isinstance(token,str) or not token:
+                return None
+            normalized[field]=base64.b64encode(_b64(token)).decode("ascii")
+        return normalized
+    except (ValueError,TypeError,UnicodeError,binascii.Error):
+        return None
+
+
 def decode_v2box(text: str) -> str | dict | None:
     from decoders.Python.v2box_export import decrypt_v2box_data
     if not isinstance(text,str) or not text.lower().startswith("v2box://"):
@@ -136,20 +159,15 @@ def decode_v2box(text: str) -> str | dict | None:
             })
         except (ValueError, UnicodeError, binascii.Error):
             return None
-    # v2box:// may alternatively carry authenticated AES-GCM export JSON.
-    # Parse Base64URL or raw JSON BEFORE calling the existing file engine:
-    # the file decoder's historical Base64 parser only accepts '+' and '/',
-    # and direct prefix stripping must not erase spaces inside JSON strings.
+    # V2Box export envelopes can use Base64URL for outer JSON AND for
+    # each GCM component. The historical file engine expects RFC4648.
     try:
-        payload = text[len("v2box://"):].strip()
-        decoded_envelope = (
-            json.loads(payload) if payload.startswith("{")
-            else json.loads(_b64(payload).decode("utf-8"))
-        )
-        if not isinstance(decoded_envelope, dict) or decoded_envelope.get("magic") != "v2box_export":
+        normalized = normalize_v2box_envelope(text)
+        if normalized is None:
             return None
-        normalized = json.dumps(decoded_envelope, ensure_ascii=False, separators=(",", ":"))
-        decoded = decrypt_v2box_data(normalized)
+        decoded = decrypt_v2box_data(json.dumps(
+            normalized, ensure_ascii=False, separators=(",", ":")
+        ))
     except (ValueError, UnicodeError, TypeError, binascii.Error):
         return None
     if isinstance(decoded,dict) and decoded.get("__need_password__"):
