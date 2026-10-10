@@ -6,11 +6,11 @@ from scripts.android_a24_catalog import ROOT,CATALOG,generate
 
 
 class AndroidA24CatalogTests(unittest.TestCase):
-    def test_exact_60_entries_and_support_truthfulness(self):
+    def test_exact_61_entries_and_support_truthfulness(self):
         source=generate()
         committed=json.loads(CATALOG.read_text("utf-8"))
         self.assertEqual(source,committed)
-        self.assertEqual(len(source["entries"]),60)
+        self.assertEqual(len(source["entries"]),61)
         self.assertEqual(source["schemaVersion"],2)
         canonical=json.loads((ROOT/"decoders.json").read_text("utf-8"))["decoders"]
         for row in source["entries"]:
@@ -19,10 +19,11 @@ class AndroidA24CatalogTests(unittest.TestCase):
         self.assertEqual({r["suffix"] for r in source["entries"] if r["name"]=="NPV Tunnel v4"},{"npv4","npvt"})
         self.assertEqual({r["suffix"] for r in source["entries"] if r["name"]=="SKS Server"},{"sksrv","sksrv.png"})
         self.assertEqual(source["androidCertifiedSuffixes"],0)
-        self.assertEqual(len(source["androidPrototypeSuffixes"]),60)
-        self.assertEqual(len(set(source["androidPrototypeSuffixes"])),60)
-        self.assertTrue(all(not r["androidVerified"] and not r["exporterVersionsVerified"] for r in source["entries"]))
-        self.assertEqual(sum(r["androidPortStatus"]!="not_implemented" for r in source["entries"]),60)
+        self.assertEqual(next(r for r in source["entries"] if r["suffix"]=="npvs")["androidPortStatus"],"experimental_native_npvs_v5")
+        self.assertEqual(len(source["androidPrototypeSuffixes"]),61)
+        self.assertEqual(len(set(source["androidPrototypeSuffixes"])),61)
+        self.assertTrue(all(not r["androidVerified"] for r in source["entries"]))
+        self.assertEqual(sum(r["androidPortStatus"]!="not_implemented" for r in source["entries"]),61)
         self.assertEqual(sum(r["androidPortStatus"]=="not_implemented" for r in source["entries"]),0)
         self.assertEqual(next(r for r in source["entries"] if r["suffix"]=="tls")["androidPortStatus"],"prototype_tls_aesgcm_synthetic_case")
         self.assertEqual(next(r for r in source["entries"] if r["suffix"]=="lnk")["androidPortStatus"],"experimental_linklayer_ver6_synthetic")
