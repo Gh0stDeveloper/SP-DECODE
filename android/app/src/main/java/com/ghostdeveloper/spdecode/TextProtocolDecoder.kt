@@ -43,6 +43,22 @@ object TextProtocolDecoder {
         "zivpn"->"ZIVPN"
         "v2box"->"V2Box"
         "decssh"->"SSH"
+        "renz"->"RENZ / 7NET"
+        "xor"->"XOR VPN"
+        "flex"->"FlexNet"
+        "npvs"->"NPV Tunnel"
+        "izph"->"IZPH VPN Pro"
+        "falcon"->"Falcon Tunnel"
+        "npvt-ssh","dns","npvs1"->"NPVT / DNS"
+        "slipnet","slipnet-plain"->"SlipNet"
+        "wyrlite","wyrvpnlite","wyrl"->"WyrLite"
+        "wyrvpn"->"WyrVPN"
+        "intvpn"->"IntVPN"
+        "juanscript","mobi"->"JuanScript"
+        "eut-settings"->"EUT"
+        "kivuvpn"->"Kivu VPN"
+        "httptweak"->"HTTP Tweak"
+        "creeb"->"Creeb Bundle"
         else->null
     }
 
