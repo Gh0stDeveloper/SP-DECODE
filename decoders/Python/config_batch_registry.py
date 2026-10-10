@@ -20,6 +20,9 @@ FILE_DECODER_FAMILIES: dict[str, tuple[str, str, tuple[str, ...]]] = {
     "fthp": ("FTHP", "decoders/Python/fthp.py", (".fthp", ".ftp")),
     "ar_pro": ("AR Pro / MSY", "decoders/Python/ar_pro.py", (".ar", ".msy")),
     "ec": ("EC Tunnel", "decoders/Python/ec.py", (".ec",)),
+    "xor": ("XOR VPN family", "decoders/Python/xor_family.py",
+             (".apnalite", ".apnatnl", ".bdnet", ".hxt", ".fnf",
+              ".4ulite", ".omanova", ".ursa", ".hsome")),
 }
 
 def file_decoder_specs() -> dict[str, tuple[str, str]]:
