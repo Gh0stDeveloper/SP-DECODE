@@ -27,7 +27,7 @@
     <string name="session_only">Saved locally · Encrypted history</string>
     <string name="search_formats">Search app or extension</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">239 formats catalogued: 142 native decoding routes (61 previous and 81 generic AES/DES) and 97 pending integration. Compatibility with real exporters varies.</string>
+    <string name="catalog_note">239 formats catalogued: 183 native routes (61 historical, 81 generic AES/DES and 41 Ultra/Sandok Argon2id) and 56 pending. Compatibility with current exporters is not yet certified.</string>
     <string name="settings_title">Settings</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_text">Original imported files are not copied. Decoded results are encrypted and stored only on this device until you delete them.</string>
