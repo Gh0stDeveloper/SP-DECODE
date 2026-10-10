@@ -23,13 +23,12 @@ class PhaseA239CatalogInstrumentedTest {
         assertEquals(97, formats.count { it.isPending })
         assertEquals(0, formats.count { it.androidVerified })
         val planned = formats.filter { it.isPending }
-        assertEquals(81, planned.count { it.migrationPhase == "B" })
+        assertEquals(0, planned.count { it.migrationPhase == "B" })
         assertEquals(41, planned.count { it.migrationPhase == "C" })
         assertEquals(16, planned.count { it.migrationPhase == "D" })
         assertEquals(27, planned.count { it.migrationPhase == "E" })
         assertEquals(13, planned.count { it.migrationPhase == "F" })
         assertTrue(planned.all { it.portStatus == AndroidDecoderCatalog.PENDING_STATUS })
-        assertEquals(0, planned.count { it.migrationPhase == "B" })
         assertTrue(planned.all { it.sourceCatalog == "spdecode.registry" })
         assertTrue(formats.filter { it.hasNativeDecoder && it.migrationPhase == "legacy" }.all {
             it.sourceCatalog == "decoders.json"
