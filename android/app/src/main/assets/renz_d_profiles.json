@@ -37,7 +37,7 @@
       "key": "cranetunnel",
       "seed": "4c7d71662f6a3f3632435e40516d5a593b565f385d21",
       "iv": "82aa46e488644f9f3af6b61b69d214cd",
-      "salt": "1A2B3C4D5E6F7A8B9CADBECFD0E1F203"
+      "salt": "1a2b3c4d5e6f7a8b9cadbecfd0e1f203"
     },
     {
       "key": "deshtunnelvpn",
