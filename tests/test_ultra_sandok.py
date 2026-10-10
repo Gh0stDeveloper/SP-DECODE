@@ -58,6 +58,21 @@ class UltraSandokBotTests(unittest.TestCase):
                 self.assertEqual(DECODER_REGISTRY[ext].runtime, "python")
         self.assertEqual(validate_decoder_files(), [])
 
+    def test_all_42_suffixes_decrypt_their_assigned_profile(self):
+        """A positive synthetic fixture for every registered Ultra/Sandok extension."""
+        samples = {}
+        for suffix in sorted(ultra.ULTRA_EXTS):
+            profile = ultra.EXT_TO_KEY[suffix]
+            if profile not in samples:
+                samples[profile] = config_fixture(profile, aad=True)
+            with self.subTest(suffix=suffix, profile=profile):
+                decoded = ultra.run(samples[profile], suffix)
+                self.assertIsNotNone(decoded, suffix)
+                obj = json.loads(decoded)
+                self.assertEqual(obj["extension"], suffix)
+                self.assertEqual(obj["config"]["_vpn_key"], profile)
+                self.assertEqual(obj["config"]["Server"], "example.invalid")
+
     def test_ultra_authenticated_outer_and_inner_fields(self):
         data = config_fixture("ultratunnel", aad=True, inner=True)
         response = ultra.run(b"ultra://" + data, ".ultra")
