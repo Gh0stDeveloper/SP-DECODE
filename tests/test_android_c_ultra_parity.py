@@ -45,8 +45,8 @@ class AndroidUltraCParityTests(unittest.TestCase):
         self.assertEqual(self.catalog["androidExistingSuffixes"], 61)
         self.assertEqual(self.catalog["androidGenericNativeSuffixes"], 81)
         self.assertEqual(self.catalog["androidUltraNativeSuffixes"], 41)
-        self.assertEqual(self.catalog["androidNativePortSuffixes"], 199)
-        self.assertEqual(self.catalog["androidPendingNativeSuffixes"], 40)
+        self.assertEqual(self.catalog["androidNativePortSuffixes"], 226)
+        self.assertEqual(self.catalog["androidPendingNativeSuffixes"], 13)
         self.assertEqual(self.catalog["androidCertifiedSuffixes"], 0)
         self.assertEqual(self.catalog["syntheticLinuxCoveredSuffixes"], 198)
         for alias in self.manifest["aliases"]:
@@ -60,7 +60,7 @@ class AndroidUltraCParityTests(unittest.TestCase):
         self.assertEqual(rows["ost"]["script"], "decoders/Python/ost.py")
         self.assertEqual(rows["ost"]["androidPortStatus"], "experimental_batch20_synthetic")
         self.assertEqual(sum(x["androidPortStatus"] == "registered_not_implemented"
-                             for x in rows.values()), 40)
+                             for x in rows.values()), 13)
 
     def test_83_source_python_reference_vectors_and_inner_fields(self):
         refs = make_fixtures()
