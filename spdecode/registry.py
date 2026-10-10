@@ -90,6 +90,23 @@ def load_decoder_registry(path: Path = DECODERS_PATH) -> dict[str, DecoderSpec]:
                 runtime="python",
             )
 
+
+    # Additional bot-only RENZ/7NET family from the authorized 66.py source.
+    # Keep decoders.json (the Android parity inventory) unchanged.
+    if path.resolve() == DECODERS_PATH.resolve():
+        from decoders.Python.renz import RENZ_FILE_EXTENSIONS, RENZ_FILE_NAMES
+
+        for dotted_extension in sorted(RENZ_FILE_EXTENSIONS):
+            extension = _normalize_extension(dotted_extension)
+            if extension in registry:
+                raise ValueError(f"RENZ registry conflicts with .{extension}")
+            registry[extension] = DecoderSpec(
+                extension=extension,
+                name=RENZ_FILE_NAMES[dotted_extension],
+                script="decoders/Python/renz.py",
+                runtime="python",
+            )
+
     return registry
 
 
