@@ -45,7 +45,7 @@ object AndroidOfflineDecoderRouter {
         }
         if (format.migrationPhase == "E") {
             return when (format.script) {
-                "decoders/Python/xor_family.py" -> SpecialE3Port.decode(format.suffix,input)
+                "decoders/Python/xor_family.py" -> { SpecialE3Port.decode(format.suffix,input) }
                 "decoders/Python/sentinel.py","decoders/Python/itv.py",
                 "decoders/Python/eut.py","decoders/Python/v2box_export.py",
                 "decoders/Python/slipnet.py","decoders/Python/juanscript.py" ->
