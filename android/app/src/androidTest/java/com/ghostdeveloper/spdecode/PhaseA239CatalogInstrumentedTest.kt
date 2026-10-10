@@ -18,13 +18,14 @@ class PhaseA239CatalogInstrumentedTest {
         val formats = catalog
         assertEquals(AndroidDecoderCatalog.TOTAL_SUFFIXES, formats.size)
         assertEquals(239, formats.map { it.suffix }.toSet().size)
-        assertEquals(142, formats.count { it.hasNativeDecoder })
+        assertEquals(183, formats.count { it.hasNativeDecoder })
         assertEquals(81, formats.count { it.migrationPhase == "B" && it.hasNativeDecoder })
-        assertEquals(97, formats.count { it.isPending })
+        assertEquals(56, formats.count { it.isPending })
         assertEquals(0, formats.count { it.androidVerified })
         val planned = formats.filter { it.isPending }
         assertEquals(0, planned.count { it.migrationPhase == "B" })
-        assertEquals(41, planned.count { it.migrationPhase == "C" })
+        assertEquals(41, formats.count { it.migrationPhase == "C" && it.hasNativeDecoder })
+        assertEquals(0, planned.count { it.migrationPhase == "C" })
         assertEquals(16, planned.count { it.migrationPhase == "D" })
         assertEquals(27, planned.count { it.migrationPhase == "E" })
         assertEquals(13, planned.count { it.migrationPhase == "F" })
