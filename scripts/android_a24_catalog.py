@@ -28,7 +28,7 @@ def generate()->dict:
             "script":entry["script"],
             "originalRuntime":entry["runtime"],
             "linuxGoldenSynthetic":suffix!="npvs",
-            "androidPortStatus":("prototype_two_synthetic_cases" if suffix=="v2" else "prototype_tls_aesgcm_synthetic_case" if suffix=="tls" else "experimental_batch10_synthetic" if suffix in A24_BATCH10 else "experimental_batch20_synthetic" if suffix in A24_BATCH20 else "experimental_batch15_synthetic" if suffix in A24_BATCH15 else "experimental_final11_synthetic" if suffix in A24_FINAL11 else "experimental_final_extra4_synthetic" if suffix in A24_EXTRA4 else "experimental_final7_synthetic_subset" if suffix in A24_FINAL7 else "experimental_exact_python_engine" if suffix=="npvs" else "experimental_linklayer_ver6_synthetic" if suffix=="lnk" else "not_implemented"),
+            "androidPortStatus":("prototype_two_synthetic_cases" if suffix=="v2" else "prototype_tls_aesgcm_synthetic_case" if suffix=="tls" else "experimental_batch10_synthetic" if suffix in A24_BATCH10 else "experimental_batch20_synthetic" if suffix in A24_BATCH20 else "experimental_batch15_synthetic" if suffix in A24_BATCH15 else "experimental_final11_synthetic" if suffix in A24_FINAL11 else "experimental_final_extra4_synthetic" if suffix in A24_EXTRA4 else "experimental_final7_synthetic_subset" if suffix in A24_FINAL7 else "experimental_native_npvs_v5" if suffix=="npvs" else "experimental_linklayer_ver6_synthetic" if suffix=="lnk" else "not_implemented"),
             "androidVerified":False,
             "exporterVersionsVerified":["124.0.37"] if suffix=="npvs" else [],
         })
