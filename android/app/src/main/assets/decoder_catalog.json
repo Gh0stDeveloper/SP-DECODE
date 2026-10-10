@@ -223,7 +223,7 @@
       "script": "decoders/Python/npvs.py",
       "originalRuntime": "python",
       "linuxGoldenSynthetic": false,
-      "androidPortStatus": "experimental_exact_python_engine",
+      "androidPortStatus": "experimental_native_npvs_v5",
       "androidVerified": false,
       "exporterVersionsVerified": [
         "124.0.37"
