@@ -124,7 +124,7 @@ def izph_fixture(kind:int,content=None):
 def n4_encode(value:str,table:str)->str:
     key=hashlib.sha256(n4.n4_hex_upper("modmkk").encode()).digest()
     base=b64(cbc(key,n4.N4_IV,value.encode("utf-8")))
-    assert len(table)==16
+    assert len(table)>=16  # Source TABLE2 intentionally has an unused 17th symbol
     return "".join(table[x>>4]+table[x&15] for x in base)
 def n4_fixture():
     doc={"N4User":n4_encode("ssh-user",n4.TABLE2),
