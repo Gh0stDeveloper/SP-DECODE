@@ -27,12 +27,12 @@
     <string name="session_only">Salvo no dispositivo · Histórico criptografado</string>
     <string name="search_formats">Buscar aplicativo ou extensão</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">60 formatos experimentais offline. LinkLayer VER6 disponível; a compatibilidade depende da versão.</string>
+    <string name="catalog_note">239 formatos de arquivo têm rotas nativas de decodificação (61 anteriores e 178 novas). A compatibilidade real depende da versão exportadora e ainda não foi totalmente certificada.</string>
     <string name="settings_title">Configurações</string>
     <string name="privacy_title">Privacidade</string>
     <string name="privacy_text">Os arquivos originais não são copiados. Resultados decodificados ficam criptografados neste dispositivo até serem excluídos.</string>
     <string name="about_title">Sobre o SP-DECODE</string>
-    <string name="about_text">Versão alfa Android offline. Variantes e compatibilidade externa ainda em testes.</string>
+    <string name="about_text">Aplicativo Android offline. A compatibilidade real dos 239 motores e protocolos de texto ainda está em validação.</string>
     <string name="language_title">Idiomas</string>
     <string name="language_text">Escolha o idioma do aplicativo. A alteração reinicia esta tela.</string>
     <string name="show">Mostrar</string>
@@ -130,9 +130,12 @@
     <string name="text_decode_invalid">Protocolo desconhecido, texto inválido ou limite de tamanho excedido.</string>
     <string name="text_decode_unsupported">Não foi possível decodificar o texto. Pode estar incompleto, danificado ou usar outra versão de criptografia.</string>
     <string name="whats_new_title">Novidades do SP-DECODE</string>
-    <string name="whats_new_description">Versão 1.0.5 · Melhor compatibilidade de decodificação</string>
-    <string name="whats_new_linklayer">Dark Tunnel: melhorias para arquivos e links colados.</string>
-    <string name="whats_new_fields">Melhorias na decodificação de texto NetMod SSH e ARMod SSH.</string>
-    <string name="whats_new_offline">As cópias ordenadas agora incluem o Telegram de Ghost Developer.</string>
+    <string name="whats_new_description">Versão 1.0.6 · Mais decodificadores e protocolos de texto</string>
+    <string name="whats_new_linklayer">239 rotas nativas de arquivo: motores genéricos, Ultra/Sandok, RENZ, especializados e independentes.</string>
+    <string name="whats_new_fields">Novos protocolos de texto offline: RENZ, XOR, FlexNet, IZPH, NPVS, Creeb e outros links compatíveis.</string>
+    <string name="whats_new_offline">Paridade sintética validada; ainda faltam testes por versão real dos exportadores.</string>
     <string name="whats_new_continue">Entendi</string>
+    <string name="native_decoder_pending">O decodificador nativo deste formato ainda não foi integrado.</string>
+    <string name="native_decoder_pending_short">Pendente</string>
+    <string name="native_decoder_mixed_short">Misto</string>
 </resources>

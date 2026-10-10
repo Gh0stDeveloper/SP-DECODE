@@ -58,9 +58,11 @@ class AndroidProductionWorkflowTest(unittest.TestCase):
         self.assertIn("production-signed.apk", w)
 
     def test_stable_identity_and_publication_are_separate(self):
-        self.assertRegex(self.gradle, r'versionName\s*=\s*"1\.0\.5"')
-        self.assertRegex(self.gradle, r'versionCode\s*=\s*16\b')
+        self.assertRegex(self.gradle, r'versionName\s*=\s*"1\.0\.6"')
+        self.assertRegex(self.gradle, r'versionCode\s*=\s*17\b')
         w = self.workflow
+        self.assertIn("Previous public signer: v1.0.5-rc.1", w)
+        self.assertIn("Same permanent SHA-256 signer certificate: yes", w)
         self.assertIn("publication-gate:", w)
         self.assertIn("python scripts/android_release_gate.py --mode stable", w)
         self.assertIn("needs['publication-gate'].outputs.approved == 'true'", w)

@@ -27,8 +27,9 @@ object TextProtocolDecoder {
     private const val MAX_CLEAR=1024*1024
     private val pretty=GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
     private val links=Regex("""(?i)(?<![a-z0-9._-])([a-z0-9._-]+)://([^\s\x60]+)""")
-    private val nm=setOf("dns","ssr","vmess","vless","trojan","ssh","xray-json")
-    private val ar=setOf("dns","vless","vmess","trojan","ssr","socks","trojan-go","ssh")
+    private val nm=setOf("dns","ssr","vmess","vless","trojan","ssh","xray-json",
+        "socks","ss","wireguard","trojan-go")
+    private val ar=setOf("dns","vless","vmess","trojan","ssr","socks","trojan-go","ssh","ss")
     private val pb=setOf("ssh","vless","vmess","trojan","socks","ss")
     data class Input(val protocol:String,val app:String,val suffix:String,
         val content:String)
@@ -42,6 +43,22 @@ object TextProtocolDecoder {
         "zivpn"->"ZIVPN"
         "v2box"->"V2Box"
         "decssh"->"SSH"
+        "renz"->"RENZ / 7NET"
+        "xor"->"XOR VPN"
+        "flex"->"FlexNet"
+        "npvs"->"NPV Tunnel"
+        "izph"->"IZPH VPN Pro"
+        "falcon"->"Falcon Tunnel"
+        "npvt-ssh","dns","npvs1"->"NPVT / DNS"
+        "slipnet","slipnet-plain"->"SlipNet"
+        "wyrlite","wyrvpnlite","wyrl"->"WyrLite"
+        "wyrvpn"->"WyrVPN"
+        "intvpn"->"IntVPN"
+        "juanscript","mobi"->"JuanScript"
+        "eut-settings"->"EUT"
+        "kivuvpn"->"Kivu VPN"
+        "httptweak"->"HTTP Tweak"
+        "creeb"->"Creeb Bundle"
         else->null
     }
 
@@ -73,6 +90,7 @@ object TextProtocolDecoder {
         if(raw.length>MAX_CHARS)return null
         val clean=raw.trim().replace("\ufeff","").replace("\u200b","")
         if(clean.startsWith("/decssh ",true))return Input("decssh","SSH","decssh",clean)
+        TextPhaseGPort.identify(clean)?.let { return it }
         fullPastedPayload(clean)?.let { return it }
         for(match in links.findAll(clean)){
             val scheme=match.groupValues[1].lowercase(Locale.ROOT)
@@ -85,14 +103,15 @@ object TextProtocolDecoder {
                     return Input("dark","Dark Tunnel","dark","$scheme://$body")
                 scheme=="vmess"->return Input("vmess","VMess","vmess",body)
                 scheme=="zivpn"->return Input("zivpn","ZIVPN","zivpn",body)
-                scheme=="howdy"||scheme=="n7pr"->return Input("howdy","Howdy","howdy",body)
+                scheme=="howdy"||scheme=="n7pr"||scheme=="mark"->return Input("howdy","Howdy","howdy",body)
                 scheme=="v2box"->return Input("v2box","V2Box","v2box","v2box://$body")
                 scheme.startsWith("nm-")&&scheme.removePrefix("nm-") in nm->
                     return Input("netmod","NetMod","netmod",body)
                 scheme.startsWith("ar-")&&scheme.removePrefix("ar-") in ar->
                     return Input("armod","ARMod","armod",body)
                 scheme.startsWith("pb-")&&scheme.removePrefix("pb-") in pb->
-                    return Input("xraypb","XrayPB","xraypb",body)
+                    return Input(if(scheme=="pb-vmess")"xraypb-vmess" else "xraypb",
+                        "XrayPB","xraypb",body)
             }
         }
         // The Telegram bot also accepts bare NetMod AES-ECB ciphertext in
@@ -107,7 +126,16 @@ object TextProtocolDecoder {
     fun decode(context:Context,input:Input):String? {
         if(input.content.length>MAX_CHARS)return null
         return try {
-            val value:JsonElement=when(input.protocol){
+            val value:JsonElement=when {
+                input.protocol.startsWith("g:") -> TextPhaseGPort.decode(context,input)
+                else -> decodeLegacy(context,input)
+            } ?: return null
+            pretty.toJson(value).takeIf{it.toByteArray(Charsets.UTF_8).size<=MAX_CLEAR}
+        }catch(_:Exception){null}
+    }
+
+    private fun decodeLegacy(context:Context,input:Input):JsonElement? {
+        return when(input.protocol){
                 "tls","dark","ssc"->{
                     val raw=AndroidOfflineDecoderRouter.decode(context,
                         "text."+input.suffix,input.content.toByteArray(Charsets.UTF_8))
@@ -117,16 +145,19 @@ object TextProtocolDecoder {
                 "vmess"->json(utf8(b64(input.content)))
                 "netmod"->netmod(input.content)
                 "armod"->armod(input.content)
-                "xraypb"->json(cbcZeros(input.content,
-                    "4p+ocx+hGTnbDdHOmzQCjVb9KTTSh+A3","android123456789"))
+                "xraypb","xraypb-vmess"->{
+                    val first=cbcZeros(input.content,
+                        "4p+ocx+hGTnbDdHOmzQCjVb9KTTSh+A3","android123456789")
+                    val second=if(input.protocol=="xraypb-vmess")utf8(b64(first))
+                        else first
+                    json(second) ?: JsonObject().apply{addProperty("decodedText",second)}
+                }
                 "howdy"->howdy(input.content)
                 "zivpn"->zivpn(input.content)
                 "v2box"->v2box(input.content)
                 "decssh"->ssh(input.content)
                 else->null
-            }?:return null
-            pretty.toJson(value).takeIf{it.toByteArray(Charsets.UTF_8).size<=MAX_CLEAR}
-        }catch(_:Exception){null}
+            }
     }
 
     private fun utf8(bytes:ByteArray)=StandardCharsets.UTF_8.newDecoder()
@@ -162,12 +193,21 @@ object TextProtocolDecoder {
      * such input must not be incorrectly marked as a failed decryption.
      */
     private fun netmod(value:String):JsonElement? {
-        val clear=utf8(decrypt(b64(value),"_netsyna_netmod_".toByteArray(Charsets.UTF_8),
-            "AES/ECB/PKCS5Padding"))
-        if(clear.isBlank())return null
-        return json(clear) ?: JsonObject().apply {
-            addProperty("decodedText",clear)
+        val encoded=b64(value)
+        for(sourceKey in listOf("<n3t5yn4^n3tm0d>","_netsyna_netmod_","nicetrybuddygoon")){
+            val clear=try{
+                utf8(decrypt(encoded,sourceKey.toByteArray(Charsets.UTF_8),
+                    "AES/ECB/PKCS5Padding"))
+            }catch(_:Exception){continue}
+            if(clear.isBlank())continue
+            // Original standalone text decoder rejects arbitrary-looking
+            // unpadded UTF-8, but accepts structured config or account data.
+            if(clear.trimStart().startsWith("{")||clear.trimStart().startsWith("[")||
+                "://" in clear||"=" in clear||"@" in clear) {
+                return json(clear) ?: JsonObject().apply{addProperty("decodedText",clear)}
+            }
         }
+        return null
     }
     private fun cbcZeros(value:String,key:String,iv:String):String {
         val plain=decrypt(b64(value),key.toByteArray(Charsets.UTF_8),
@@ -177,15 +217,34 @@ object TextProtocolDecoder {
 
     private fun howdy(body:String):JsonObject? {
         val obj=json(utf8(b64(body)))?.takeIf{it.isJsonObject}?.asJsonObject?:return null
-        val server=cbcZeros(obj.get("server")?.asString?:return null,
-            "poiuytrewqas+=~|","r4tgv3b2zcmdW6ZZ")
-        val sni=cbcZeros(obj.get("sni")?.asString?:return null,
-            "poiuytrewqas+=~|","r4tgv3b2zcmdW6ZZ")
-        val out=JsonObject()
-        for(key in listOf("username","password","port","type"))
-            if(obj.has(key))out.add(key,obj.get(key))
-        out.addProperty("server",server)
-        out.addProperty("sni",sni)
+        // The original standalone Howdy text handler preserves ALL fields.
+        // Unlike the 66.py screen formatting, optional attributes are not lost.
+        val out=obj.deepCopy()
+        for(key in listOf("server","sni")) {
+            val field=out.get(key)
+            if(field?.isJsonPrimitive==true && field.asJsonPrimitive.isString &&
+                field.asString.isNotEmpty()){
+                val original=field.asString
+                val decoded=try {
+                    val bytes=b64(original)
+                    if(bytes.isEmpty()||bytes.size%16!=0)original
+                    else {
+                        val raw=decrypt(bytes,
+                            "poiuytrewqas+=~|".toByteArray(Charsets.UTF_8),
+                            "AES/CBC/NoPadding",
+                            "r4tgv3b2zcmdW6ZZ".toByteArray(Charsets.UTF_8))
+                        // Python tries PKCS7, falling back to trailing zeroes.
+                        val pad=raw.last().toInt() and 255
+                        val clear=if(pad in 1..16 &&
+                            raw.takeLast(pad).all{(it.toInt() and 255)==pad})
+                            raw.copyOf(raw.size-pad)
+                            else raw.dropLastWhile{it==0.toByte()}.toByteArray()
+                        utf8(clear)
+                    }
+                }catch(_:Exception){original}
+                out.addProperty(key,decoded)
+            }
+        }
         return out
     }
 

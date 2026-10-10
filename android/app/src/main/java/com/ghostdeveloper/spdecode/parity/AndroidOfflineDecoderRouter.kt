@@ -11,10 +11,60 @@ import android.content.Context
  */
 object AndroidOfflineDecoderRouter {
     fun decode(context: Context, filename: String, input: ByteArray): String? {
-        if (input.isEmpty() || input.size > (if (filename.endsWith(".lnk", ignoreCase=true)) LinkLayerPort.MAX_INPUT else if (filename.endsWith(".npvs", ignoreCase=true)) NpvsPort.MAX_INPUT else LegacyPortPrimitives.MAX_INPUT)) return null
+        if (input.isEmpty()) return null
         val format = AndroidDecoderCatalog.detect(filename, AndroidDecoderCatalog.read(context))
             ?: return null
-        if (format.portStatus == "not_implemented") return null
+        // Enforce exactly the same limit at the UI and native entrypoint.
+        // The historical ports stay at 1 MiB; only B/C and the collided .ost
+        // use the 2 MiB limit already implemented by their specific engines.
+        val maxInput = when {
+            format.suffix == "lnk" -> LinkLayerPort.MAX_INPUT
+            format.suffix == "npvs" -> NpvsPort.MAX_INPUT
+            format.migrationPhase == "B" -> GenericVpnPort.MAX_INPUT_BYTES
+            format.migrationPhase == "D" -> RenzPort.MAX_INPUT_BYTES
+            format.migrationPhase == "E" -> SpecialCrypto.MAX
+            format.migrationPhase == "F" -> IndependentCrypto.MAX
+            format.migrationPhase == "C" || format.suffix == "ost" ->
+                UltraSandokPort.MAX_INPUT_BYTES
+            else -> LegacyPortPrimitives.MAX_INPUT
+        }
+        if (input.size > maxInput) return null
+        // Phase A: 178 bot-only suffixes are catalogued but have no native port.
+        // Keep a hard gate before the old 61-case dispatcher to prevent
+        // accidental treatment as a supported decoder or unrelated fallback.
+        if (!format.hasNativeDecoder) return null
+        // The 81 generic suffixes are explicitly selected by catalog phase,
+        // never inserted into the old 61-case switch or treated as fallback.
+        if (format.migrationPhase == "B") {
+            return GenericVpnPort.decode(context, format.suffix, input)
+        }
+        if (format.migrationPhase == "C") {
+            return UltraSandokPort.decode(context, format.suffix, input)
+        }
+        if (format.migrationPhase == "D") {
+            return RenzPort.decode(context, format.suffix, input)
+        }
+        if (format.migrationPhase == "E") {
+            return when (format.script) {
+                "decoders/Python/xor_family.py" -> { SpecialE3Port.decode(format.suffix,input) }
+                "decoders/Python/sentinel.py","decoders/Python/itv.py",
+                "decoders/Python/eut.py","decoders/Python/v2box_export.py",
+                "decoders/Python/slipnet.py","decoders/Python/juanscript.py" ->
+                    SpecialE1Port.decode(format.suffix,input)
+                else -> SpecialE2Port.decode(format.suffix,input)
+            }
+        }
+        if (format.migrationPhase == "F") {
+            return when (format.script) {
+                "decoders/Python/izph.py" -> { IzphNativePort.decode(input) }
+                "decoders/Python/flex.py", "decoders/Python/ltm.py",
+                "decoders/Python/vn7.py" -> { IndependentF1Port.decode(context,format.suffix,input) }
+                "decoders/Python/crev.py", "decoders/Python/zoba.py",
+                "decoders/Python/n4.py", "decoders/Python/dev.py",
+                "decoders/Python/ktr.py" -> { IndependentF2Port.decode(format.suffix,input) }
+                else -> null
+            }
+        }
         return when (format.suffix) {
             "v2" -> V2RayReferencePort.decode(input)
             "tls" -> TlsReferencePort.decode(input)
@@ -30,7 +80,7 @@ object AndroidOfflineDecoderRouter {
             "xui" -> XuiPort.decode(input)
             "at" -> AtPort.decode(input)
             "nm" -> NmPort.decode(input)
-            "ost" -> OstPort.decode(input)
+            "ost" -> OstPort.decode(input) ?: UltraSandokPort.decode(context, "ost", input)
             "sbr" -> SbrPort.decode(input)
             "pcx" -> PcxPort.decode(input)
             "nt" -> NtPort.decode(input)

@@ -1,8 +1,8 @@
 # SP-DECODE Android — documentación oficial
 
-> **Estado:** arquitectura y producto definidos; la aplicación Android NO está implementada ni publicada.
-> **Edición:** 1.1 (multidioma), 2026-10-08 · **Repositorio:** Gh0stDeveloper/SP-DECODE · **Branch inicial:** docs/android-offline-architecture
-> **Dueño de producto:** Gh0stDeveloper · **Objetivo:** APK nativa, independiente, totalmente local.
+> **Estado actual — Fase H (2026-10-10):** 239/239 rutas nativas para archivos y protocolos de texto integrados en Android. Versión candidata 1.0.6 (code 17). Las pruebas sintéticas no certifican todas las exportaciones reales. La publicación pública permanece **NO-GO** a falta de QA real. [Informe de auditoría y requisitos](PHASE_H_PRODUCTION_AUDIT.md).
+
+> Las descripciones de fases A–G más abajo son referencias históricas del diseño original. Las versiones estables anteriores se encuentran en [GitHub Releases](https://github.com/Gh0stDeveloper/SP-DECODE/releases).
 
 ![Referencia oficial de la pantalla principal](design/home-dark.svg)
 ![Referencia oficial de la pantalla de resultados](design/result-dark.svg)

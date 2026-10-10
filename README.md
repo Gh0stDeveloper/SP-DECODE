@@ -1,5 +1,7 @@
 <div align="center">
 
+> **Android migration Phases A–G:** all **239 file suffixes** have Kotlin offline decoder routes (61 legacy + 178 new) and text protocol handlers have native coverage. Original exporter-version compatibility remains **experimental and not independently certified**. Phase H targets **1.0.6 (versionCode 17)** for signed QA; **public stable and preview publication are NO-GO pending real-exporter/device evidence**. [Phase H audit](docs/android/PHASE_H_PRODUCTION_AUDIT.md) · [Phases B–G](docs/android/PHASE_G_TEXT_PROTOCOLS.md).
+
 # SP-DECODE
 
 **Modular Telegram configuration decoder powered by Python, Node.js and PHP.**
@@ -52,7 +54,7 @@ The project separates configuration, authorization, decoder registration, runtim
 
 ### Core features
 
-- **239 registered bot file extensions/suffixes**: 61 original, 41 Ultra/Sandok, 16 RENZ/7NET, 27 modular aliases, 13 independent-engine aliases and 81 generic AES-GCM/PBKDF2 + DES-ECB aliases. The Android inventory remains at 61.
+- **239 registered bot file extensions/suffixes**: 61 original, 41 Ultra/Sandok, 16 RENZ/7NET, 27 modular aliases, 13 independent-engine aliases and 81 generic AES-GCM/PBKDF2 + DES-ECB aliases. Android Phases A–G implement native routes for all 239 registered suffixes; current vendor-exporter version coverage remains experimental pending Phase H real-world QA.
 - Python, Node.js and PHP decoder runtimes.
 - Centralized decoder registry through `decoders.json`.
 - Telegram file processing with automatic format detection.
@@ -158,7 +160,7 @@ The following original extensions are registered in `decoders.json`. Additionall
 | HTTP Injector | `.ehi` | Python |
 | SSC Custom | `.ssc` | Python |
 
-> The Telegram bot now supports **239 registered suffixes**: 61 in `decoders.json`, 41 Ultra/Sandok suffixes, 16 RENZ/7NET suffixes, 27 modular aliases, 13 independent-engine aliases and 81 generic AES/DES aliases. The generic families use two Python engines and preserve all existing application-specific decoders. **The 42 Ultra variants share `ultra.py`, while the 16 RENZ file variants and 23 supported RENZ text schemes share `renz.py`.** Android remains at its existing 61-format inventory. The new bot decoders have synthetic regression tests; third-party real export compatibility is not yet certified.
+> The Telegram bot now supports **239 registered suffixes**: 61 in `decoders.json`, 41 Ultra/Sandok suffixes, 16 RENZ/7NET suffixes, 27 modular aliases, 13 independent-engine aliases and 81 generic AES/DES aliases. The generic families use two Python engines and preserve all existing application-specific decoders. **The 42 Ultra variants share `ultra.py`, while the 16 RENZ file variants and 23 supported RENZ text schemes share `renz.py`.** Android Phases A–F now provide native source-matched routes for 239 formats; real exporter compatibility is not certified by synthetic fixtures. The new bot decoders have synthetic regression tests; third-party real export compatibility is not yet certified.
 
 ---
 

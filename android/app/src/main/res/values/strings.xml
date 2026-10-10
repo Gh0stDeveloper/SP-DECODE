@@ -27,12 +27,12 @@
     <string name="session_only">Saved locally · Encrypted history</string>
     <string name="search_formats">Search app or extension</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">60 offline experimental formats. LinkLayer VER6 is available; exporter compatibility varies by format.</string>
+    <string name="catalog_note">239 file formats have native decoder routes (61 legacy and 178 new). Real-world compatibility depends on the exporter version and is not fully certified.</string>
     <string name="settings_title">Settings</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_text">Original imported files are not copied. Decoded results are encrypted and stored only on this device until you delete them.</string>
     <string name="about_title">About SP-DECODE</string>
-    <string name="about_text">Offline Android alpha. Decoder variants and external compatibility are still being tested.</string>
+    <string name="about_text">Offline Android app. All 239 native file routes and text protocols are undergoing real-exporter compatibility testing.</string>
     <string name="language_title">Languages</string>
     <string name="language_text">Choose the app language. Changing it restarts this screen.</string>
     <string name="show">Show</string>
@@ -130,9 +130,12 @@
     <string name="text_decode_invalid">Unrecognized text protocol, invalid input or size limit exceeded.</string>
     <string name="text_decode_unsupported">Could not decode this text. It may be incomplete, corrupted or a different cipher version.</string>
     <string name="whats_new_title">What\'s new in SP-DECODE</string>
-    <string name="whats_new_description">Version 1.0.5 · Improved decoder compatibility</string>
-    <string name="whats_new_linklayer">Dark Tunnel: more reliable file imports and pasted links.</string>
-    <string name="whats_new_fields">NetMod SSH and ARMod SSH text decoding improvements.</string>
-    <string name="whats_new_offline">Ordered copies now link directly to Ghost Developer on Telegram.</string>
+    <string name="whats_new_description">Version 1.0.6 · More file decoders and text protocols</string>
+    <string name="whats_new_linklayer">239 native file routes across generic, Ultra/Sandok, RENZ, special and independent engines.</string>
+    <string name="whats_new_fields">Expanded offline text decoding: RENZ, XOR, FlexNet, IZPH, NPVS, Creeb and other supported links.</string>
+    <string name="whats_new_offline">Synthetic parity was validated; current real-exporter versions still need individual checks.</string>
     <string name="whats_new_continue">Got it</string>
+    <string name="native_decoder_pending">Native decoder not yet integrated for this format.</string>
+    <string name="native_decoder_pending_short">Pending</string>
+    <string name="native_decoder_mixed_short">Mixed</string>
 </resources>

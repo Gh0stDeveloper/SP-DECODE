@@ -24,6 +24,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
 import com.ghostdeveloper.spdecode.parity.AndroidOfflineDecoderRouter
+import com.ghostdeveloper.spdecode.parity.GenericVpnPort
+import com.ghostdeveloper.spdecode.parity.UltraSandokPort
+import com.ghostdeveloper.spdecode.parity.RenzPort
 import com.ghostdeveloper.spdecode.parity.LinkLayerPort
 import com.ghostdeveloper.spdecode.parity.NpvsPort
 import kotlinx.coroutines.CancellationException
@@ -305,7 +308,8 @@ class MainActivity : ComponentActivity() {
                     return@launch
                 }
                 progressStage=2
-                val safeName=candidate.protocol.filter { it.isLetterOrDigit()||it=='-' }
+                val safeName=candidate.protocol.removePrefix("g:")
+                    .replace(':','-').filter { it.isLetterOrDigit()||it=='-' }
                 val record=DecodeView("text-"+safeName+"."+candidate.suffix,
                     candidate.suffix,decoded,
                     userText.toByteArray(Charsets.UTF_8).size)
@@ -369,8 +373,22 @@ class MainActivity : ComponentActivity() {
                     val supported=AndroidDecoderCatalog.detect(
                         name,AndroidDecoderCatalog.read(this@MainActivity))
                         ?:throw DecodeFailure(R.string.unsupported)
+                    // Phase A identifies pending formats but never reads or
+                    // sends their bytes to a native decoder that does not exist.
+                    if (!supported.hasNativeDecoder) {
+                        throw DecodeFailure(R.string.native_decoder_pending)
+                    }
                     val input=withContext(Dispatchers.IO){readBounded(uri,
-                        if(supported.suffix=="lnk")LinkLayerPort.MAX_INPUT else if(supported.suffix=="npvs") NpvsPort.MAX_INPUT else MAX_BYTES)}
+                        when {
+                            supported.suffix=="lnk" -> LinkLayerPort.MAX_INPUT
+                            supported.suffix=="npvs" -> NpvsPort.MAX_INPUT
+                            supported.migrationPhase=="B" -> GenericVpnPort.MAX_INPUT_BYTES
+                            supported.migrationPhase=="D" -> RenzPort.MAX_INPUT_BYTES
+                            supported.migrationPhase=="E" -> 2*1024*1024
+                            supported.migrationPhase=="F" -> 2*1024*1024
+                            supported.migrationPhase=="C" || supported.suffix=="ost" -> UltraSandokPort.MAX_INPUT_BYTES
+                            else -> MAX_BYTES
+                        })}
                     progressStage=1
                     val text=withContext(Dispatchers.Default){
                         AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
