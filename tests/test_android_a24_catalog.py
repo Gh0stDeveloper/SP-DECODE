@@ -30,8 +30,9 @@ class AndroidA24CatalogTests(unittest.TestCase):
         self.assertEqual(self.doc["androidGenericNativeSuffixes"], 81)
         self.assertEqual(self.doc["androidUltraNativeSuffixes"], 41)
         self.assertEqual(self.doc["androidRenzNativeSuffixes"], 16)
-        self.assertEqual(self.doc["androidNativePortSuffixes"], 199)
-        self.assertEqual(self.doc["androidPendingNativeSuffixes"], 40)
+        self.assertEqual(self.doc["androidSpecialNativeSuffixes"], 27)
+        self.assertEqual(self.doc["androidNativePortSuffixes"], 226)
+        self.assertEqual(self.doc["androidPendingNativeSuffixes"], 13)
         self.assertEqual(len(self.doc["entries"]), 239)
         self.assertEqual(set(self.rows), set(DECODER_REGISTRY))
         self.assertEqual(len(self.rows), 239)
@@ -58,10 +59,10 @@ class AndroidA24CatalogTests(unittest.TestCase):
         self.assertEqual(old["lnk"]["androidPortStatus"], "experimental_linklayer_ver6_synthetic")
         self.assertEqual(old["ost"]["script"], "decoders/Python/ost.py")
 
-    def test_138_new_native_routes_and_remaining_40_pending_are_faithful(self):
+    def test_165_new_native_routes_and_remaining_13_pending_are_faithful(self):
         pending = {suffix: row for suffix, row in self.rows.items() if suffix not in ORIGINAL}
         self.assertEqual(len(pending), 178)
-        self.assertEqual(sum(row["androidPortStatus"] == "registered_not_implemented" for row in pending.values()), 40)
+        self.assertEqual(sum(row["androidPortStatus"] == "registered_not_implemented" for row in pending.values()), 13)
         self.assertEqual(sum(row["migrationPhase"] == "B" for row in pending.values()), 81)
         self.assertEqual(sum(row["migrationPhase"] != "legacy" for row in self.rows.values()), 178)
         for suffix, row in pending.items():
@@ -79,6 +80,9 @@ class AndroidA24CatalogTests(unittest.TestCase):
                     self.assertTrue(row["linuxGoldenSynthetic"])
                 elif row["migrationPhase"] == "D":
                     self.assertEqual(row["androidPortStatus"], "experimental_renz_aes_xxtea_threefish_synthetic")
+                    self.assertTrue(row["linuxGoldenSynthetic"])
+                elif row["migrationPhase"] == "E":
+                    self.assertEqual(row["androidPortStatus"], "experimental_special_13_engines_synthetic")
                     self.assertTrue(row["linuxGoldenSynthetic"])
                 else:
                     self.assertEqual(row["androidPortStatus"], "registered_not_implemented")
