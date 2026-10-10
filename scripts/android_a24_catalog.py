@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Deterministic Android catalog: 61 legacy + 81 generic native + 97 pending.
+"""Deterministic Android catalog: 61 legacy + 81 generic + 41 Ultra native.
 
-Phase B activates ONLY the 81 source-matched generic AES/DES suffixes.
-The 61 legacy routes remain unchanged, phases C-F stay disabled and the
-public metadata catalog contains NO crypto keys. Generation is reproducible.
+Phase C activates exactly 41 source-matched Ultra/Sandok suffixes.
+The original .ost route remains legacy, and D-F's 56 suffixes are disabled.
+The public catalog contains no crypto keys. Generation is reproducible.
 """
 from __future__ import annotations
 
@@ -92,6 +92,7 @@ def generate() -> dict:
     rows = []
     count_by_phase = {phase: 0 for phase in EXPECTED_NEW_BY_PHASE}
     enabled_generic = 0
+    enabled_ultra = 0
     for suffix, spec in DECODER_REGISTRY.items():
         old = legacy.get(suffix)
         if old is not None:
@@ -115,13 +116,21 @@ def generate() -> dict:
             phase = phase_for(spec.script)
             count_by_phase[phase] += 1
             is_generic = phase == "B"
+            is_ultra = phase == "C"
             if is_generic:
                 enabled_generic += 1
-            native_status = (
-                "experimental_generic_des_ecb_synthetic"
-                if spec.script.endswith("generic_des.py")
-                else "experimental_generic_aes_gcm_synthetic"
-            ) if is_generic else "registered_not_implemented"
+            if is_ultra:
+                enabled_ultra += 1
+            if is_generic:
+                native_status = (
+                    "experimental_generic_des_ecb_synthetic"
+                    if spec.script.endswith("generic_des.py")
+                    else "experimental_generic_aes_gcm_synthetic"
+                )
+            elif is_ultra:
+                native_status = "experimental_ultra_sandok_argon2id_synthetic"
+            else:
+                native_status = "registered_not_implemented"
             row = {
                 "suffix": suffix,
                 "name": spec.name,
@@ -129,7 +138,7 @@ def generate() -> dict:
                 "originalRuntime": spec.runtime,
                 # B has source-derived reference vectors separate from A23;
                 # C-F still have no native synthetic parity baseline.
-                "linuxGoldenSynthetic": is_generic,
+                "linuxGoldenSynthetic": is_generic or is_ultra,
                 "androidPortStatus": native_status,
                 "androidVerified": False,
                 "exporterVersionsVerified": [],
@@ -137,8 +146,10 @@ def generate() -> dict:
                 "sourceCatalog": "spdecode.registry",
             }
         rows.append(row)
-    if count_by_phase != EXPECTED_NEW_BY_PHASE or enabled_generic != 81:
-        raise ValueError(f"Migration/native families drifted: {count_by_phase}, {enabled_generic}")
+    if count_by_phase != EXPECTED_NEW_BY_PHASE or enabled_generic != 81 or enabled_ultra != 41:
+        raise ValueError(
+            f"Migration/native families drifted: {count_by_phase}, {enabled_generic}, {enabled_ultra}"
+        )
     if len({row["suffix"] for row in rows}) != 239:
         raise ValueError("Duplicate suffix in generated catalog")
     rows.sort(key=lambda item: (-len(item["suffix"]), item["suffix"]))
@@ -149,8 +160,9 @@ def generate() -> dict:
         "botRegisteredSuffixes": 239,
         "androidExistingSuffixes": 61,
         "androidGenericNativeSuffixes": enabled_generic,
-        "androidNativePortSuffixes": 61 + enabled_generic,
-        "androidPendingNativeSuffixes": 178 - enabled_generic,
+        "androidUltraNativeSuffixes": enabled_ultra,
+        "androidNativePortSuffixes": 61 + enabled_generic + enabled_ultra,
+        "androidPendingNativeSuffixes": 178 - enabled_generic - enabled_ultra,
         "migrationCounts": count_by_phase,
         "syntheticLinuxCoveredSuffixes": sum(bool(row["linuxGoldenSynthetic"]) for row in rows),
         "androidCertifiedSuffixes": 0,
@@ -169,7 +181,7 @@ def main() -> None:
         CATALOG.write_text(expected, encoding="utf-8")
     elif not CATALOG.is_file() or CATALOG.read_text("utf-8") != expected:
         raise SystemExit("Android catalog is stale: python scripts/android_a24_catalog.py --write")
-    print("[B] 239 formats: 61 legacy + 81 source-matched generic native + 97 pending; 0 certified")
+    print("[C] 239 formats: 61 legacy + 81 generic + 41 Ultra native + 56 pending; 0 certified")
 
 
 if __name__ == "__main__":
