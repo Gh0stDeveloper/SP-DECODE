@@ -27,12 +27,13 @@ def _decrypt_xxtea(payload: bytes, key: bytes = KEY) -> bytes | None:
     total = (q * DELTA) & MASK
     while total:
         e = (total >> 2) & 3
+        y = v[0]
         for p in range(n, 0, -1):
             z = v[p - 1]
-            y = v[p]
             mx = (((z >> 5) ^ (y << 2)) + ((y >> 3) ^ (z << 4))) ^ (
                 (total ^ y) + (k[(p & 3) ^ e] ^ z))
             v[p] = (v[p] - mx) & MASK
+            y = v[p]
         z = v[n]
         y = v[0]
         mx = (((z >> 5) ^ (y << 2)) + ((y >> 3) ^ (z << 4))) ^ (
