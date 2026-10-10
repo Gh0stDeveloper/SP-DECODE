@@ -20,6 +20,10 @@ from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Util.Padding import unpad
 logger = logging.getLogger(__name__)
 
+DEFAULT_PASSWORD = "rdxiNA3WXwfRAjdm@092898yue"
+
+def verify_checksum(payload_b64: str, checksum: str) -> bool:
+    h = hashlib.sha256(payload_b64.encode()).hexdigest()
     return h[:16].lower() == checksum.lower()
 
 def derive_key(password: str, salt: bytes) -> bytes:
