@@ -39,6 +39,7 @@ def _decrypt_xxtea(payload: bytes, key: bytes = KEY) -> bytes | None:
         mx = (((z >> 5) ^ (y << 2)) + ((y >> 3) ^ (z << 4))) ^ (
             (total ^ y) + (k[e] ^ z))
         v[0] = (v[0] - mx) & MASK
+        y = v[0]
         total = (total - DELTA) & MASK
     body = struct.pack("<%dI" % len(v), *v)
     actual = struct.unpack("<I", body[-4:])[0]
