@@ -125,7 +125,9 @@ def make_fixtures() -> dict:
                    "Enabled": False, "Port": 443,
                    "Notes": "Prueba 日本語", "Empty": "",
                    "List": ["a", {"key": 0}], "metadata": {"retain": True}}
-            if mode == "aad":
+            if mode == "aad" and alias["suffix"] in {"ultra", "mmt", "t20", "flynet"}:
+                # Exercise all 11 fields for 4096/8192/16384 KiB profiles.
+                # Avoid 41 x 11 redundant Argon2 derivations in mobile CI.
                 # Verify every inner-field name using authenticated ciphertext,
                 # including the case where the nested tag has been corrupted.
                 for j, field in enumerate(INNER_FIELDS):
@@ -145,7 +147,7 @@ def make_fixtures() -> dict:
             parsed = json.loads(expected)
             if parsed["config"]["_vpn_key"] != alias["profile"]:
                 raise ValueError("Python profile selection drift: " + seed)
-            if mode == "aad":
+            if mode == "aad" and alias["suffix"] in {"ultra", "mmt", "t20", "flynet"}:
                 for field in INNER_FIELDS:
                     if field != "Server" and parsed["config"][field] != "value-" + field:
                         raise ValueError("Nested field mismatch in " + seed + "/" + field)
