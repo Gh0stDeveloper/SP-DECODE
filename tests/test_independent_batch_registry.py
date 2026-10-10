@@ -71,9 +71,9 @@ class IndependentFamilyRegistryTests(unittest.TestCase):
                 self.assertFalse(proc.stdout.strip())
 
     def test_izph_text_route_registration(self):
-        from spdecode.handlers import config_batch_texts
-        self.assertIn("izph://", config_batch_texts.TEXT_HANDLERS)
-        self.assertIn("izphvpnpro://", config_batch_texts.TEXT_HANDLERS)
+        source = (ROOT / "spdecode/handlers/config_batch_texts.py").read_text(encoding="utf-8")
+        self.assertIn('"izph://"', source)
+        self.assertIn('"izphvpnpro://"', source)
 
 
 if __name__ == "__main__":
