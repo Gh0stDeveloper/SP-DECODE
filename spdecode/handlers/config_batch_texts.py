@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 
 from decoders.Python import (
-    eut, falcon_links, happ_links, intvpn, juanscript, npvt_links,
+    eut, falcon_links, happ_links, intvpn, izph, juanscript, npvt_links,
     slipnet, wyrvpn, wyrlite, xor_family,
 )
 from decoders.Python.HTTPTWEAK import run as decode_http_tweak
@@ -37,6 +37,8 @@ TEXT_HANDLERS = {
     "mobi://": ("JuanScript", lambda s: juanscript.run(s.encode("utf-8"))),
     "eut-settings://": ("EUT Settings", lambda s: eut.run(s.encode("utf-8"))),
     "httptweak://": ("HTTP Tweak", lambda s: decode_http_tweak(s.encode("utf-8"))),
+    "izph://": ("IZPH VPN Pro", lambda s: izph.run(s.encode("utf-8"))),
+    "izphvpnpro://": ("IZPH VPN Pro", lambda s: izph.run(s.encode("utf-8"))),
 }
 _PREFIXES = tuple(sorted(TEXT_HANDLERS, key=len, reverse=True))
 

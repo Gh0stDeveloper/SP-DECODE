@@ -120,6 +120,22 @@ def load_decoder_registry(path: Path = DECODERS_PATH) -> dict[str, DecoderSpec]:
                 extension=extension, name=name, script=script, runtime="python"
             )
 
+
+    # Nine additional independent bot-only file engines from 66.py.
+    # This deliberately does not alter the Android decoders.json catalog.
+    if path.resolve() == DECODERS_PATH.resolve():
+        from decoders.Python.config_independent_registry import (
+            independent_file_decoder_specs,
+        )
+
+        for dotted_extension, (name, script) in independent_file_decoder_specs().items():
+            extension = _normalize_extension(dotted_extension)
+            if extension in registry:
+                raise ValueError(f"Independent decoder conflict with .{extension}")
+            registry[extension] = DecoderSpec(
+                extension=extension, name=name, script=script, runtime="python"
+            )
+
     return registry
 
 
