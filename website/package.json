@@ -9,9 +9,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "next": "16.0.3",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "next": "16.4.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "lucide-react": "0.468.0"
   },
   "devDependencies": {
@@ -22,5 +22,7 @@
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2"
   },
-  "engines": {"node": ">=20.9.0"}
+  "engines": {
+    "node": "22.x"
+  }
 }
