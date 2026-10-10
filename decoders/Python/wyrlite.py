@@ -147,7 +147,7 @@ def decrypt_wyrlite_file(file_data: bytes) -> dict | list | None:
         return wyrl_recursive_decrypt(json_data)
 
     except Exception as e:
-        print(f"[WYRLITE] decryption error: {e}")
+        logger.debug("WyrLite rejected invalid configuration: %s", e)
         return None
 def run(data:bytes)->str|None:
     if not data or len(data)>2*1024*1024:
