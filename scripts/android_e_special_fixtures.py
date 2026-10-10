@@ -26,7 +26,7 @@ from decoders.Python import (
 from spdecode.registry import DECODER_REGISTRY
 from tests.test_config_batch_crypto_b import ec_encrypt
 
-MODULES={name:module for name,module in (
+MODULES={name+".py":module for name,module in (
     ("sentinel",sentinel),("itv",itv),("eut",eut),("v2box_export",v2box_export),
     ("slipnet",slipnet),("juanscript",juanscript),("wyrlite",wyrlite),
     ("wyrvpn",wyrvpn),("intvpn",intvpn),("fthp",fthp),("ar_pro",ar_pro),
