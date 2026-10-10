@@ -72,6 +72,7 @@ object AndroidOfflineDecoderRouter {
             "ehi" -> EhiPort.decode(input)
             "npv4" -> Npv4Port.decode(context,input)
             "npvt" -> NpvtPort.decode(context,input)
+            "npvs" -> NpvsPythonPort.decode(context,input)
             "sip" -> SipPort.decode(input)
             "lnk" -> LinkLayerPort.decode(input)
             "ssc" -> SscPort.decode(input)
