@@ -11,9 +11,21 @@ import android.content.Context
  */
 object AndroidOfflineDecoderRouter {
     fun decode(context: Context, filename: String, input: ByteArray): String? {
-        if (input.isEmpty() || input.size > (if (filename.endsWith(".lnk", ignoreCase=true)) LinkLayerPort.MAX_INPUT else if (filename.endsWith(".npvs", ignoreCase=true)) NpvsPort.MAX_INPUT else LegacyPortPrimitives.MAX_INPUT)) return null
+        if (input.isEmpty()) return null
         val format = AndroidDecoderCatalog.detect(filename, AndroidDecoderCatalog.read(context))
             ?: return null
+        // Enforce exactly the same limit at the UI and native entrypoint.
+        // The historical ports stay at 1 MiB; only B/C and the collided .ost
+        // use the 2 MiB limit already implemented by their specific engines.
+        val maxInput = when {
+            format.suffix == "lnk" -> LinkLayerPort.MAX_INPUT
+            format.suffix == "npvs" -> NpvsPort.MAX_INPUT
+            format.migrationPhase == "B" -> GenericVpnPort.MAX_INPUT_BYTES
+            format.migrationPhase == "C" || format.suffix == "ost" ->
+                UltraSandokPort.MAX_INPUT_BYTES
+            else -> LegacyPortPrimitives.MAX_INPUT
+        }
+        if (input.size > maxInput) return null
         // Phase A: 178 bot-only suffixes are catalogued but have no native port.
         // Keep a hard gate before the old 61-case dispatcher to prevent
         // accidental treatment as a supported decoder or unrelated fallback.
@@ -41,7 +53,7 @@ object AndroidOfflineDecoderRouter {
             "xui" -> XuiPort.decode(input)
             "at" -> AtPort.decode(input)
             "nm" -> NmPort.decode(input)
-            "ost" -> OstPort.decode(input)
+            "ost" -> OstPort.decode(input) ?: UltraSandokPort.decode(context, "ost", input)
             "sbr" -> SbrPort.decode(input)
             "pcx" -> PcxPort.decode(input)
             "nt" -> NtPort.decode(input)

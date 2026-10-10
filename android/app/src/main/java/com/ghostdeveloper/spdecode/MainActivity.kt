@@ -24,6 +24,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
 import com.ghostdeveloper.spdecode.parity.AndroidOfflineDecoderRouter
+import com.ghostdeveloper.spdecode.parity.GenericVpnPort
+import com.ghostdeveloper.spdecode.parity.UltraSandokPort
 import com.ghostdeveloper.spdecode.parity.LinkLayerPort
 import com.ghostdeveloper.spdecode.parity.NpvsPort
 import kotlinx.coroutines.CancellationException
@@ -375,7 +377,13 @@ class MainActivity : ComponentActivity() {
                         throw DecodeFailure(R.string.native_decoder_pending)
                     }
                     val input=withContext(Dispatchers.IO){readBounded(uri,
-                        if(supported.suffix=="lnk")LinkLayerPort.MAX_INPUT else if(supported.suffix=="npvs") NpvsPort.MAX_INPUT else MAX_BYTES)}
+                        when {
+                            supported.suffix=="lnk" -> LinkLayerPort.MAX_INPUT
+                            supported.suffix=="npvs" -> NpvsPort.MAX_INPUT
+                            supported.migrationPhase=="B" -> GenericVpnPort.MAX_INPUT_BYTES
+                            supported.migrationPhase=="C" || supported.suffix=="ost" -> UltraSandokPort.MAX_INPUT_BYTES
+                            else -> MAX_BYTES
+                        })}
                     progressStage=1
                     val text=withContext(Dispatchers.Default){
                         AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)

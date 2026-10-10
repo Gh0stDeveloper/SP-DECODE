@@ -19,7 +19,7 @@ import javax.crypto.spec.SecretKeySpec
  * Native Argon2id v19 + AES-256-GCM Ultra/Sandok decoder.
  *
  * Source: decoders/Python/ultra.py. The 41 bot-only suffixes map to 19
- * historical source profiles. .ost is deliberately NOT routed here.
+ * historical source profiles. .ost enters ONLY after legacy OUSS fails.
  * AAD(salt) and no-AAD are both attempted, always with authenticated tags.
  * The 11 known inner fields use the per-profile second password.
  *
@@ -27,7 +27,7 @@ import javax.crypto.spec.SecretKeySpec
  * order in the historical source, or secret-bearing logs.
  */
 object UltraSandokPort {
-    private const val MAX_INPUT = 2 * 1024 * 1024
+    const val MAX_INPUT_BYTES = 2 * 1024 * 1024
     private const val NONCE_LENGTH = 12
     private const val SALT_LENGTH = 16
     private const val TAG_LENGTH = 16
@@ -36,13 +36,17 @@ object UltraSandokPort {
     private val ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
 
     fun decode(context: Context, suffix: String, data: ByteArray): String? {
-        if (data.isEmpty() || data.size > MAX_INPUT) return null
+        if (data.isEmpty() || data.size > MAX_INPUT_BYTES) return null
         val manifest = try { UltraProfileStore.read(context) }
         catch (_: RuntimeException) { return null }
         val suffixName = suffix.lowercase(Locale.ROOT).removePrefix(".")
-        val alias = manifest.aliases[suffixName] ?: return null
-        // The historic .ost decoder is not replaced by Ultra.
-        if (suffixName == "ost") return null
+        // .ost is a collision between legacy OUSS DES and Ultra/Sandok.
+        // The router tries OstPort first; this is the authenticated fallback.
+        // Keep the 41 new aliases unchanged and use Python's original .ost
+        // name and default Argon2id key profile only for this special route.
+        val alias = if (suffixName == "ost") {
+            UltraProfileStore.Alias("ost", "OST TUNNEL", "default")
+        } else manifest.aliases[suffixName] ?: return null
         var content = String(data, Charsets.UTF_8).trim()
         if ("://" in content) content = content.substringAfter("://")
         content = content.filterNot { it.isWhitespace() }

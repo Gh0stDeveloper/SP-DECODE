@@ -2,9 +2,8 @@
 """Canonical Ultra/Sandok Android profiles and independent Python parity corpus.
 
 Reads *only* the owner's existing decoders/Python/ultra.py and bot routing.
-The 41 new suffixes are ported natively. The collided .ost legacy route is
-deliberately excluded: it remains OstPort (future conditional support requires
-a separately audited migration).
+The 41 new suffixes are ported natively. The collided .ost stays in the legacy registry and uses DES first;
+Android now also supports the verified Argon2id/AES-GCM fallback.
 """
 from __future__ import annotations
 
@@ -173,10 +172,35 @@ def make_fixtures() -> dict:
                   "encodedInput": base64.b64encode(link).decode(),
                   "expected": expected})
 
+    # A separate, explicit collision corpus: .ost is registered as legacy,
+    # but its Python entrypoint also tries Ultra/Sandok after DES fails.
+    # Do not count these as new suffixes or silently overwrite OstPort.
+    ost_vectors = []
+    spec = ultra.ULTRA_CONFIGS[ultra.EXT_TO_KEY[".ost"]]
+    for mode in ("aad", "no_aad"):
+        seed = "ost-collision-" + mode
+        plain = json.dumps({
+            "Server": "ost-ultra.example.invalid", "Enabled": False,
+            "Port": 443, "Note": "Ultra variant 日本語",
+            "Nested": {"preserve": [True, 0, ""]},
+        }, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        encrypted = encrypt(plain, spec["password"], spec["mem"], seed,
+                            aad=mode == "aad")
+        token = base64.b64encode(encrypted)
+        expected = ultra.run(token, ".ost")
+        if expected is None or json.loads(expected)["config"]["_vpn_key"] != "default":
+            raise ValueError("Python .ost Ultra collision source changed")
+        ost_vectors.append({
+            "mode": mode,
+            "encodedInput": base64.b64encode(token).decode("ascii"),
+            "expected": expected,
+        })
+
     if len(cases) != 83:
         raise ValueError("Incomplete Ultra positive corpus")
     return {"schemaVersion": 1, "suffixCount": 41, "caseCount": 83,
             "aadVectors": 41, "noAadVectors": 41, "fallbackVectors": 1,
+            "legacyOstCaseCount": 2, "legacyOstVectors": ost_vectors,
             "vectors": cases}
 
 
