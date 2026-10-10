@@ -55,12 +55,14 @@ internal object IzphNativePort {
         }
         return null
     }
-    private fun decodeBase64Relaxed(text:String):ByteArray? = try {
-        val clean=text.filter{it in
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="}
-        if(clean.isEmpty())return null
-        Base64.decode(clean.padEnd((clean.length+3)/4*4,'='),Base64.DEFAULT)
-    }catch(_:Exception){null}
+    private fun decodeBase64Relaxed(text:String):ByteArray? {
+        return try {
+            val clean=text.filter{it in
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="}
+            if(clean.isEmpty()) null
+            else Base64.decode(clean.padEnd((clean.length+3)/4*4,'='),Base64.DEFAULT)
+        } catch(_:Exception) { null }
+    }
 
     private fun decryptText(text:String,kind:Int):String?{
         val b64=decodeBase64Relaxed(text)
