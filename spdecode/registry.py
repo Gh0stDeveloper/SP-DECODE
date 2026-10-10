@@ -68,6 +68,28 @@ def load_decoder_registry(path: Path = DECODERS_PATH) -> dict[str, DecoderSpec]:
             runtime=runtime,
         )
 
+
+    # Bot-only Python family. Android inventory deliberately stays pinned to
+    # decoders.json until Android native parity is implemented separately.
+    if path.resolve() == DECODERS_PATH.resolve():
+        from decoders.Python.ultra import ULTRA_EXTS, ULTRA_NAMES
+
+        for dotted_extension in sorted(ULTRA_EXTS):
+            extension = _normalize_extension(dotted_extension)
+            if extension in registry:
+                # .ost already routes to the original OUSS Tunnel decoder.
+                # That decoder tries the Ultra family as an authenticated
+                # fallback if its legacy DES format is not recognized.
+                if extension != "ost":
+                    raise ValueError(f"Ultra registry conflicts with .{extension}")
+                continue
+            registry[extension] = DecoderSpec(
+                extension=extension,
+                name=ULTRA_NAMES[dotted_extension],
+                script="decoders/Python/ultra.py",
+                runtime="python",
+            )
+
     return registry
 
 
