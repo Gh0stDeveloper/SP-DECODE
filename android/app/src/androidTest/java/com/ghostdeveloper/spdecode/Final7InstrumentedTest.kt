@@ -25,6 +25,21 @@ class Final7InstrumentedTest {
             app,"case.DARK",input)?.toByteArray(Charsets.UTF_8))
     }
 
+    @Test fun darkPythonExtraVariantsAndRepeatedImport() {
+        for(name in listOf("dark-second-profile","dark-scalar-map-key")) {
+            val data=source("$name.dark")
+            val golden=source("$name.txt")
+            // Compare actual original DARKTUNNEL.py stdout, not a Kotlin snapshot.
+            assertArrayEquals("Python parity for $name",
+                golden,DarkPort.decode(data)?.toByteArray(Charsets.UTF_8))
+            assertArrayEquals("Reimport must be deterministic for $name",
+                golden,DarkPort.decode(data)?.toByteArray(Charsets.UTF_8))
+            assertArrayEquals("Router must use the same Dark Tunnel engine",
+                golden,AndroidOfflineDecoderRouter.decode(app,"case.dark",data)
+                    ?.toByteArray(Charsets.UTF_8))
+        }
+    }
+
     @Test fun ehiExactGoldenAndRouting() {
         val input=source("batch7-ehi.ehi")
         val expected=source("batch7-ehi.txt")
