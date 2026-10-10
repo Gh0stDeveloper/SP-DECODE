@@ -36,8 +36,8 @@ class AndroidBGenericParityTests(unittest.TestCase):
                          {row["suffix"] for row in self.profiles["profiles"]})
         self.assertEqual(self.catalog["androidExistingSuffixes"], 61)
         self.assertEqual(self.catalog["androidGenericNativeSuffixes"], 81)
-        self.assertEqual(self.catalog["androidNativePortSuffixes"], 226)
-        self.assertEqual(self.catalog["androidPendingNativeSuffixes"], 13)
+        self.assertEqual(self.catalog["androidNativePortSuffixes"], 239)
+        self.assertEqual(self.catalog["androidPendingNativeSuffixes"], 0)
         self.assertEqual(self.catalog["androidCertifiedSuffixes"], 0)
 
     def test_81_synthetic_ports_are_explicitly_selected_without_overrides(self):
