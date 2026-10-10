@@ -20,6 +20,12 @@ from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Util.Padding import unpad
 logger = logging.getLogger(__name__)
 
+MAGIC_HEADER = b"STCF"
+SUPPORTED_VERSION = 1
+KEY_A = bytes([83, 69, 78, 84, 73, 78, 69, 76, 95, 84, 85, 78, 78, 69, 76, 95, 67, 79, 78, 70, 73, 71, 95, 75, 69, 89, 95, 86, 49, 95, 50, 48])
+SENSITIVE_FIELDS = ("passwordHash", "salt")
+SENSITIVE_CONFIG_FIELDS = ("keySalt", "hmac", "iv", "data")
+
 class DecryptionError(Exception):
     pass
 
