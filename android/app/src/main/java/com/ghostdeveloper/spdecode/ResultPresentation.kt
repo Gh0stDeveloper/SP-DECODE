@@ -74,7 +74,7 @@ object ResultPresentation {
             val before=obj.get(key)
             val previous=if(before!=null && before.isJsonPrimitive &&
                 before.asJsonPrimitive.isString)before.asString else before.toString()
-            val combined=previous+"\\n".repeat(pendingBlankLines+1)+raw
+            val combined=previous+"\n".repeat(pendingBlankLines+1)+raw
             obj.add(key,parseInlineJson(combined))
             pendingBlankLines=0
         }
