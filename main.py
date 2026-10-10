@@ -6,6 +6,7 @@ import time
 # El orden de importación conserva la prioridad de los handlers específicos.
 from spdecode.handlers import commands as _commands  # noqa: F401
 from spdecode.handlers import text_protocols as _text_protocols  # noqa: F401
+from spdecode.handlers import config_batch_texts as _config_batch_texts  # noqa: F401
 from spdecode.handlers import documents as _documents  # noqa: F401
 from spdecode.handlers import fallback as _fallback  # noqa: F401
 from spdecode.registry import DECODER_REGISTRY, validate_decoder_files

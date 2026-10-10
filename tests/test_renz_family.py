@@ -110,7 +110,7 @@ def special_fixture(profile: str, clear: str) -> str:
 class RenzFamilyTests(unittest.TestCase):
     def test_registered_16_new_bot_formats(self):
         self.assertEqual(len(renz.RENZ_FILE_EXTENSIONS), 16)
-        self.assertEqual(len(DECODER_REGISTRY), 118)
+        self.assertEqual(len(DECODER_REGISTRY), 145)
         for suffix, profile in renz.RENZ_FILE_EXTENSIONS.items():
             with self.subTest(suffix=suffix):
                 self.assertIn(profile, renz.RENZ_KEYS)

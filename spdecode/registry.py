@@ -107,6 +107,19 @@ def load_decoder_registry(path: Path = DECODERS_PATH) -> dict[str, DecoderSpec]:
                 runtime="python",
             )
 
+
+    # Standalone 2026 bot-only family modules (no Android catalog edits).
+    if path.resolve() == DECODERS_PATH.resolve():
+        from decoders.Python.config_batch_registry import file_decoder_specs
+
+        for dotted_extension, (name, script) in file_decoder_specs().items():
+            extension = _normalize_extension(dotted_extension)
+            if extension in registry:
+                raise ValueError(f"Bot decoder conflict with .{extension}")
+            registry[extension] = DecoderSpec(
+                extension=extension, name=name, script=script, runtime="python"
+            )
+
     return registry
 
 
