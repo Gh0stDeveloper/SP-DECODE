@@ -40,6 +40,11 @@
             "runtime": "python",
             "name": "NetMod"
         },
+        "npvs": {
+            "script": "decoders/Python/npvs.py",
+            "runtime": "python",
+            "name": "NPV Tunnel NPVS v5"
+        },
         "npv4": {
             "script": "decoders/Python/NPVTUNNEL.py",
             "runtime": "python",

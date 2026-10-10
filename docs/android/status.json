@@ -21,11 +21,11 @@
     "docs/android/design/result-dark.svg"
   ],
   "formats": {
-    "registeredSuffixes": 60,
-    "pythonSuffixes": 49,
+    "registeredSuffixes": 61,
+    "pythonSuffixes": 50,
     "nodeSuffixes": 8,
     "phpSuffixes": 3,
-    "distinctScripts": 49,
+    "distinctScripts": 50,
     "androidVerifiedSuffixes": 0
   },
   "phases": {

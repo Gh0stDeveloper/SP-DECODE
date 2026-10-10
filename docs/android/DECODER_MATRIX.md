@@ -2,9 +2,9 @@
 
 **Fecha de baseline:** 2026-10-08. **SHA:** 37965a3a349f38dc05560449bfe56dcd44b348ac.
 
-> **No anunciar compatibilidad Android solo por el registro.** Los 60 sufijos de esta tabla tienen estado **NO VERIFICADO en Android**. Algunas aplicaciones emisoras cambiaron algoritmos o versiones. Un estado verified exige al menos fixture positivo autorizado, fixture negativo, paridad de salida contra el bot, prueba arm64 y enlace a evidencia CI/QA.
+> **No anunciar compatibilidad Android solo por el registro.** Los 61 sufijos de esta tabla tienen estado **NO VERIFICADO en Android**. Algunas aplicaciones emisoras cambiaron algoritmos o versiones. Un estado verified exige al menos fixture positivo autorizado, fixture negativo, paridad de salida contra el bot, prueba arm64 y enlace a evidencia CI/QA.
 
-## Todos los sufijos (60)
+## Todos los sufijos (61)
 
 | Sufijo | Aplicación | Runtime original | Script original | Linux golden sintético | Android | Fase |
 |---|---|---|---|---|---|---|
@@ -20,6 +20,7 @@
 | .ht | HTTP Tweak | python | decoders/Python/HTTPTWEAK.py | 1 caso | No verificado | D |
 | .htb | HTTP Tweak | python | decoders/Python/HTTPTWEAK.py | 1 caso | No verificado | D |
 | .npvt | NPV Tunnel v4 | python | decoders/Python/NPVTUNNEL.py | 1 caso | No verificado | D |
+| .npvs | NPV Tunnel NPVS v5 | python | decoders/Python/npvs.py | Sin golden A23; pruebas v5 nuevas | No verificado | D |
 | .tnl | Tunnel | python | decoders/Python/tnl.py | 1 caso | No verificado | D |
 | .tls | TLS Tunnel | python | decoders/Python/TLS.py | 1 caso | No verificado | D |
 | .v2 | e-V2Ray | python | decoders/Python/EV2RAY.py | 2 casos | No verificado | D |

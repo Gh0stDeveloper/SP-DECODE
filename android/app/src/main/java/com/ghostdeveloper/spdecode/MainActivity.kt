@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
 import com.ghostdeveloper.spdecode.parity.AndroidOfflineDecoderRouter
 import com.ghostdeveloper.spdecode.parity.LinkLayerPort
+import com.ghostdeveloper.spdecode.parity.NpvsPort
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -369,7 +370,7 @@ class MainActivity : ComponentActivity() {
                         name,AndroidDecoderCatalog.read(this@MainActivity))
                         ?:throw DecodeFailure(R.string.unsupported)
                     val input=withContext(Dispatchers.IO){readBounded(uri,
-                        if(supported.suffix=="lnk")LinkLayerPort.MAX_INPUT else MAX_BYTES)}
+                        if(supported.suffix=="lnk")LinkLayerPort.MAX_INPUT else if(supported.suffix=="npvs") NpvsPort.MAX_INPUT else MAX_BYTES)}
                     progressStage=1
                     val text=withContext(Dispatchers.Default){
                         AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
