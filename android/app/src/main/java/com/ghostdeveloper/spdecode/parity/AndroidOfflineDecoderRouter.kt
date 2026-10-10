@@ -56,12 +56,12 @@ object AndroidOfflineDecoderRouter {
         }
         if (format.migrationPhase == "F") {
             return when (format.script) {
-                "decoders/Python/izph.py" -> IzphNativePort.decode(input)
+                "decoders/Python/izph.py" -> { IzphNativePort.decode(input) }
                 "decoders/Python/flex.py", "decoders/Python/ltm.py",
-                "decoders/Python/vn7.py" -> IndependentF1Port.decode(context,format.suffix,input)
+                "decoders/Python/vn7.py" -> { IndependentF1Port.decode(context,format.suffix,input) }
                 "decoders/Python/crev.py", "decoders/Python/zoba.py",
                 "decoders/Python/n4.py", "decoders/Python/dev.py",
-                "decoders/Python/ktr.py" -> IndependentF2Port.decode(format.suffix,input)
+                "decoders/Python/ktr.py" -> { IndependentF2Port.decode(format.suffix,input) }
                 else -> null
             }
         }
