@@ -51,7 +51,7 @@ internal object NpvsFields {
                     }
                 }
                 else->{
-                    require(node is Number && node.toDouble()%1.0==0.0)
+                    require(node is Int || node is Long)
                     val id=(node as Number).toInt()
                     require(id in 1..65534 && records.containsKey(id))
                     val scalar=records.getValue(id)
