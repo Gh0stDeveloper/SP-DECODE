@@ -136,6 +136,19 @@ def load_decoder_registry(path: Path = DECODERS_PATH) -> dict[str, DecoderSpec]:
                 extension=extension, name=name, script=script, runtime="python"
             )
 
+    # Bot-only generic source profiles: extension-specific keys, shared engines.
+    # Preexisting format-specific decoders always win over legacy key tables.
+    if path.resolve() == DECODERS_PATH.resolve():
+        from decoders.Python.generic_profiles import generic_specs
+
+        for dotted_extension, (name, script) in generic_specs(registry).items():
+            extension = _normalize_extension(dotted_extension)
+            if extension in registry:
+                raise ValueError(f"Generic engine collision with .{extension}")
+            registry[extension] = DecoderSpec(
+                extension=extension, name=name, script=script, runtime="python"
+            )
+
     return registry
 
 
