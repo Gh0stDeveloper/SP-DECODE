@@ -97,8 +97,30 @@ internal object TextPhaseGPort {
         // route encrypted export envelopes through their separate G path.
         if(prefix.key=="v2box://" && "locked=" in value.lowercase(Locale.ROOT))return null
         val route=prefix.value
-        return TextProtocolDecoder.Input("g:$route",route.substringBefore(':'),
-            "text",value)
+        val family=route.substringBefore(':').replace("-enc","")
+        val appName=when(family){
+            "renz"->"RENZ / 7NET"
+            "xor"->"XOR VPN"
+            "falcon"->"Falcon Tunnel"
+            "npvt-ssh","dns","npvs1"->"NPVT / DNS"
+            "slipnet","slipnet-plain"->"SlipNet"
+            "eut-settings"->"EUT Settings"
+            "wyrlite","wyrvpnlite","wyrl"->"WyrLite"
+            "wyrvpn"->"WyrVPN"
+            "intvpn"->"IntVPN"
+            "flex"->"FlexNet"
+            "npvs"->"NPV Tunnel"
+            "v2box-export"->"V2Box"
+            "kivuvpn"->"Kivu VPN"
+            "izph"->"IZPH VPN Pro"
+            "creeb"->"Creeb Bundle"
+            "juanscript","mobi"->"JuanScript"
+            "httptweak"->"HTTP Tweak"
+            "happ"->"HAPP"
+            else->family.uppercase(Locale.ROOT)
+        }
+        val suffix=family.filter{it.isLetterOrDigit()||it=='-'}
+        return TextProtocolDecoder.Input("g:$route",appName,suffix,value)
     }
 
     private fun json(value:String):JsonElement?=try{JsonParser.parseString(value)}catch(_:Exception){null}
