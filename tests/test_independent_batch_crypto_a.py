@@ -76,6 +76,52 @@ def n4_fixture(profile: dict) -> bytes:
     return b64(encrypted)
 
 
+def izph_xxtea_encrypt(data: bytes, key: bytes) -> bytes:
+    """Inverse of the proprietary IZPH XXTEA; distinct from standard DELTA."""
+    v = crev.crev_to_int_array(data, True)
+    k = crev.crev_to_int_array(crev.crev_fix_key(key), False)
+    n = len(v) - 1
+    total = 0
+    mask = 0xFFFFFFFF
+    for _ in range(6 + 52 // (n + 1)):
+        total = (total + izph.IZPH_DELTA) & mask
+        e = (total >> 2) & 3
+        z = v[n]
+        for p in range(n):
+            y = v[p + 1]
+            v[p] = (v[p] + crev.crev_mx(total, y, z, p, e, k)) & mask
+            z = v[p]
+        v[n] = (v[n] + crev.crev_mx(total, v[0], z, n, e, k)) & mask
+    return crev.crev_to_byte_array(v, False)
+
+
+def izph_threefish_encrypt(data: bytes, key: bytes) -> bytes:
+    """Independent test-only inverse of IZPH pure-Python Threefish-256."""
+    mask = 0xFFFFFFFFFFFFFFFF
+    rotations = izph.IZPH_THREEFISH256_ROTATIONS
+    key_words = list(struct.unpack("<4Q", key))
+    output = bytearray()
+    assert len(data) % 32 == 0
+    for index in range(0, len(data), 32):
+        words = list(struct.unpack("<4Q", data[index:index + 32]))
+        block = index // 32
+        subkeys = izph.izph_threefish256_subkeys(key_words, (block, block * 64))
+        words = [(words[i] + subkeys[0][i]) & mask for i in range(4)]
+        for group in range(18):
+            for step in range(4):
+                r0, r1 = rotations[(group * 4 + step) % 8]
+                words = [words[i] for i in izph.IZPH_THREEFISH256_PERMUTE]
+                for i, rot in ((0, r0), (2, r1)):
+                    y0 = (words[i] + words[i + 1]) & mask
+                    y1 = (((words[i + 1] << rot) |
+                           (words[i + 1] >> (64 - rot))) & mask) ^ y0
+                    words[i:i + 2] = (y0, y1)
+            words = [(words[i] + subkeys[group + 1][i]) & mask
+                     for i in range(4)]
+        output.extend(struct.pack("<4Q", *words))
+    return bytes(output)
+
+
 class IndependentFirstFourTests(unittest.TestCase):
     def test_izph_type3_aes256_hkdf_and_text_schemes(self):
         document = {"ServerIPHost": "izph.example", "Port": 443}
@@ -93,11 +139,36 @@ class IndependentFirstFourTests(unittest.TestCase):
                 self.assertEqual(json.loads(decoded)["Port"], 443)
         self.assertIsNone(izph.run(b"izph://invalid-not-a-file"))
 
+
+    def test_izph_type0_custom_xxtea_aes_cbc(self):
+        obj = {"Server": "izph-type0.example", "Enabled": False}
+        source = json.dumps(obj).encode("utf-8")
+        added = bytes((value + 2) & 255 for value in source)
+        xxtea = izph_xxtea_encrypt(added, izph.IZPH_SHA256_KEY_16)
+        cipher = AES.new(izph.IZPH_SHA256_KEY_16,
+                         AES.MODE_CBC, izph.IZPH_FIXED_IV)
+        token = b64(cipher.encrypt(pad(xxtea, 16)))
+        result = izph.run(token)
+        self.assertIsNotNone(result)
+        self.assertEqual(json.loads(result), obj)
+
+    def test_izph_type1_threefish_without_pyskein(self):
+        obj = {"Server": "izph-type1.example", "Modes": ["SSH", "V2Ray"]}
+        plain = json.dumps(obj).encode("utf-8")
+        aes = AES.new(izph.izph_get_hkdf_key_16(),
+                      AES.MODE_CBC, izph.IZPH_FIXED_IV)
+        stage = aes.encrypt(pad(plain, 16))
+        stage += bytes(-len(stage) % 32)
+        encrypted = izph_threefish_encrypt(stage, izph.izph_get_hkdf_key())
+        result = izph.run(b64(encrypted))
+        self.assertIsNotNone(result)
+        self.assertEqual(json.loads(result), obj)
+
     def test_flex_versions_1_and_3_and_complete_properties(self):
         profile = {"sshServer": "flex.example", "sshPort": "22",
                    "sshUser": "ghost", "customSni": "sni.example",
                    "file.msg": "Keep this user message"}
-        for version, lock in ((1, 0), (3, 28)):
+        for version, lock in ((1, 0), (2, 0), (3, 28), (4, 28)):
             with self.subTest(version=version, lock=lock):
                 encrypted = flex_fixture(version, lock, profile)
                 decoded = flex.run(encrypted)
