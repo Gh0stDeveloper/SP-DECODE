@@ -36,7 +36,7 @@ Si el JSON descifrado contiene campos `BugDNS`, `CustomProxy`, `Payload`, `SNI`,
 
 - **C.1–C.4:** 10 sufijos por tanda, dos variantes autenticadas (AAD y sin AAD) cada uno.
 - **C.5:** último sufijo (total 41).
-- **83 vectores positivos:** 41 exteriores con AAD, 41 sin AAD y uno adicional que comprueba la selección de perfil alternativa.
+- **83 vectores positivos para los 41 nuevos sufijos:** 41 exteriores con AAD, 41 sin AAD y uno de perfil alternativo. Se agregan **2 vectores para la colisión `.ost`**, sin sumar una nueva extensión, y se comprueba el golden DES previo.
 - Los 11 nombres de campo cifrado se prueban de manera positiva en perfiles con memorias de 4096, 8192 y 16384 KiB, sin repetir derivaciones innecesarias para los 41 alias.
 - Pruebas negativas: etiquetas GCM alteradas, contenido truncado, entrada vacía, formatos erróneos y aislamiento entre familias.
 - La salida JSON se compara completa con la referencia Python incluyendo valores vacíos, booleanos, arrays y Unicode.
@@ -60,7 +60,7 @@ gradle --no-daemon :app:connectedDebugAndroidTest
 - Argon2id consume como máximo 16 MiB por derivación, con concurrencia secuencial por archivo.
 - No se introducen descargas automáticas de las URLs históricas de Ultra ni se incorpora Python/Node al APK.
 - El catálogo de formatos **no contiene claves**; el asset específico de perfiles sí contiene las constantes históricas necesarias, y por tanto es reversible y no debe tratarse como almacén secreto.
-- `.ost` conserva el motor nativo DES que ya utiliza la aplicación. Esta fase no sustituye su selector legacy ni declara habilitado en Android el fallback Ultra de `.ost` del bot.
+- `.ost` conserva primero el motor DES de OUSS, **con fallback Ultra/Sandok AES-GCM autenticado únicamente si DES no reconoce un XML válido**, igual que `decoders/Python/ost.py`. No aumenta el conteo de 41 extensiones nuevas: `.ost` sigue registrada como legacy. Los dos envoltorios Ultra (.ost con y sin AAD) se prueban contra vectores Python, junto al golden DES original y una etiqueta GCM alterada.
 - Las otras 56 extensiones continúan bloqueadas. No se publica una APK estable ni se fusiona con `main` antes de superar las fases restantes.
 
 **Criterio de cierre:** generador exacto, batería Python en verde, Gradle en verde y pruebas instrumentadas API35 en verde. Solo entonces fusionar el PR a `feat/android-decoder-parity-239`.
