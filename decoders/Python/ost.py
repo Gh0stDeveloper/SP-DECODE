@@ -35,19 +35,32 @@ def apply_filter(contents, file_extension):
     return filtered_contents
 
 def decrypt_file(input_file, passwords):
-    with open(input_file, 'rb') as f:
-        encrypted_bytes = f.read()
+    """Preserve legacy OUSS .ost; accept authenticated Ultra/Sandok .ost too."""
+    with open(input_file, "rb") as file:
+        encrypted_bytes = file.read()
 
-    file_extension = os.path.splitext(input_file)[1]
-
-    if file_extension in passwords:
-        key_bytes = passwords[file_extension]
+    file_extension = os.path.splitext(input_file)[1].lower()
+    key_bytes = passwords.get(file_extension)
+    if key_bytes and encrypted_bytes and len(encrypted_bytes) % 8 == 0:
         try:
             decrypted_text = decrypt_des(encrypted_bytes, key_bytes, file_extension)
-            filtered_text = apply_filter(decrypted_text, file_extension)
-            print(filtered_text)
-        except Exception as e:
-            print(f"Error decrypting: {e}")
+            if "<entry" in decrypted_text and "</entry>" in decrypted_text:
+                print(apply_filter(decrypted_text, file_extension))
+                return True
+        except (ValueError, UnicodeError):
+            pass
+
+    if file_extension == ".ost":
+        # An unrelated exporter uses the same suffix. Route only on a
+        # successful Ultra/Sandok AEAD and JSON parse; never on ciphertext shape.
+        from ultra import run as decode_ultra
+        result = decode_ultra(encrypted_bytes, ".ost")
+        if result is not None:
+            print(result)
+            return True
+
+    print("Unsupported or damaged .ost configuration", file=sys.stderr)
+    return False
 
 def main():
     if len(sys.argv) != 2:
@@ -55,7 +68,8 @@ def main():
         sys.exit(1)
 
     input_file = sys.argv[1]
-    decrypt_file(input_file, PASSWORDS)
+    if not decrypt_file(input_file, PASSWORDS):
+        raise SystemExit(1)
 
 if __name__ == "__main__":
     main()

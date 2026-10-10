@@ -48,11 +48,11 @@ The Android implementation follows the user's approved AMOLED reference: shield 
 
 SP-DECODE is a modular Telegram bot designed to process and decode configuration formats used by multiple tunneling, proxy and VPN-related applications.
 
-The project separates configuration, authorization, decoder registration, runtime execution and Telegram handlers into independent modules. File decoders are registered through `decoders.json` and may run through **Python**, **Node.js** or **PHP**, allowing new formats to be added without turning the main bot entry point into a monolithic script.
+The project separates configuration, authorization, decoder registration, runtime execution and Telegram handlers into independent modules. Most file decoders are registered through `decoders.json`; the additional Ultra/Sandok family is registered through its own isolated `decoders/Python/ultra.py` metadata and may run through **Python**, **Node.js** or **PHP**, allowing new formats to be added without turning the main bot entry point into a monolithic script.
 
 ### Core features
 
-- **60 registered file extensions/suffixes**, including LinkLayer VPN `.lnk` VER6 (Python and experimental offline Android port).
+- **102 registered bot file extensions/suffixes**: 61 existing formats plus 41 new Ultra/Sandok aliases; `.ost` supports both original OUSS and Ultra payloads. The separate Android inventory remains at 61 formats.
 - Python, Node.js and PHP decoder runtimes.
 - Centralized decoder registry through `decoders.json`.
 - Telegram file processing with automatic format detection.
@@ -91,7 +91,7 @@ The project separates configuration, authorization, decoder registration, runtim
 
 ## Supported file formats
 
-The following extensions are currently registered in `decoders.json`. Detection supports both regular and compound suffixes, including `.sksrv.png`.
+The following original extensions are registered in `decoders.json`. An additional 41 Ultra/Sandok extensions are registered by the bot directly from `decoders/Python/ultra.py`, without affecting Android. Detection supports both regular and compound suffixes, including `.sksrv.png`.
 
 | Application / format | Supported extension(s) | Runtime |
 |---|---|---|
@@ -143,7 +143,8 @@ The following extensions are currently registered in `decoders.json`. Detection 
 | UWU Tunnel | `.uwu` | Python |
 | NPV Tunnel v2 | `.npv2` | Node.js |
 | Dark Tunnel | `.dark` | Python |
-| OUSS Tunnel | `.ost` | Python |
+| OUSS Tunnel / Ultra fallback | `.ost` | Python |
+| Ultra / Sandok VPN family | 41 additional suffixes (`.ultra`, `.ulti`, `.bee`, `.aura`, `.tx`, `.wolf`, `.flynet`, etc.) | Python — `decoders/Python/ultra.py` |
 | SBR Injector | `.sbr` | Python |
 | SocksIP Plus | `.sksplus` | PHP |
 | JEZ Tunnel | `.jez` | PHP |
@@ -153,7 +154,7 @@ The following extensions are currently registered in `decoders.json`. Detection 
 | HTTP Injector | `.ehi` | Python |
 | SSC Custom | `.ssc` | Python |
 
-> The registry currently contains **60 distinct supported suffixes**. Some applications intentionally map more than one extension to the same decoder.
+> The Telegram bot now supports **102 registered suffixes**: 61 in `decoders.json` plus 41 new Ultra/Sandok suffixes defined in `ultra.py`. **All 42 Ultra/Sandok suffixes share one Python engine**; `.ost` preserves its legacy OUSS decoder with an Ultra fallback. Android remains at its existing 61-format inventory. These new formats are synthetically tested; third-party real export compatibility is not yet certified.
 
 ---
 
