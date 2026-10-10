@@ -1,13 +1,14 @@
 import Link from "next/link";
-import { Download, Globe2, Github, House, LayoutGrid, Mail, ShieldCheck } from "lucide-react";
+import { Download, Github, House, LayoutGrid, Mail, ShieldCheck } from "lucide-react";
+import { LocaleSwitcher } from "./LocaleSwitcher";
 import { copy } from "@/lib/content";
-import { languageNames, links, locales, localeDirection, localePath, type Locale } from "@/lib/i18n";
+import { links, localeDirection, localePath, type Locale } from "@/lib/i18n";
 
 export function Logo({compact = false}: {compact?: boolean}) {
   return <span className="brand"><span className="brand-mark" aria-hidden="true"><ShieldCheck size={23} strokeWidth={1.9}/></span><span className="brand-words"><strong>SP-DECODE</strong>{!compact && <small>GHOST DEVELOPER</small>}</span></span>;
 }
 
-const languageCodes: Record<Locale,string>={es:"ES",en:"EN","pt-BR":"PT",ar:"AR"};
+
 
 export function SiteShell({locale, segment="", children}: {locale:Locale;segment?:string;children:React.ReactNode}) {
   const t=copy[locale];const root=localePath(locale);
@@ -25,11 +26,7 @@ export function SiteShell({locale, segment="", children}: {locale:Locale;segment
           {nav.map((item)=> <Link key={item.label} href={item.href} className="nav-link">{item.label}</Link>)}
         </nav>
         <div className="header-actions">
-          <details className="language-picker"><summary aria-label="Choose language"><Globe2 size={17}/><span>{languageCodes[locale]}</span></summary>
-            <div className="lang-options">
-              {locales.map((next)=><Link key={next} href={localePath(next,segment)} hrefLang={next} className={next===locale?"is-active":""} dir={localeDirection(next)}>{languageNames[next]}</Link>)}
-            </div>
-          </details>
+          <LocaleSwitcher locale={locale}/>
           <a className="header-github" href={links.github} target="_blank" rel="noopener noreferrer" aria-label="SP-DECODE source code on GitHub"><Github size={19}/></a>
         </div>
       </div>

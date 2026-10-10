@@ -12,7 +12,7 @@ export function isLocale(value: string): value is Locale {
   return locales.some((locale) => locale === value);
 }
 export function localePath(locale: Locale, segment = ""): string {
-  return `/${locale}${segment ? `/${segment.replace(/^\\/+/, "")}` : ""}`;
+  return `/${locale}${segment ? `/${segment.replace(/^[/]+/, "")}` : ""}`;
 }
 export function localeDirection(locale: Locale): "ltr" | "rtl" {
   return locale === "ar" ? "rtl" : "ltr";
