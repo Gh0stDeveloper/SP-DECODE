@@ -24,7 +24,7 @@ class AndroidUltraCParityTests(unittest.TestCase):
         self.assertEqual(set(x["suffix"] for x in self.manifest["aliases"]),
                          {s.lstrip(".") for s in ultra.ULTRA_EXTS if s != ".ost"})
         self.assertEqual({x["profile"] for x in self.manifest["aliases"]},
-                         set(ultra.EXT_TO_KEY.values()) - {"default"} | {"default"} & set(ultra.EXT_TO_KEY.values()))
+                         {ultra.EXT_TO_KEY[s] for s in ultra.ULTRA_EXTS if s != ".ost"})
         self.assertEqual(self.manifest["argonIterations"], 3)
         self.assertEqual(self.manifest["argonLanes"], 1)
         self.assertEqual(self.manifest["argonKeyBytes"], 32)
