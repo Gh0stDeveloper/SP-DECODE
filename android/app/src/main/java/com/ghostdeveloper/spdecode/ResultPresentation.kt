@@ -16,10 +16,13 @@ data class ResultDocument(
 enum class ResultExport { JSON, ORDERED, ORIGINAL }
 
 object ResultPresentation {
-    private val pretty=GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
+    private val pretty=GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create()
     private val credentials=Regex("(?i)(?:password|passwd|passphrase|mypass|credential|privatekey|private_key|apisecret|accesstoken|refreshtoken|authtoken|apitoken|secretkey|sshpass)")
     private val decoration=Regex("(?i)(DEVELOPER|GROUP|CHANNEL|COPYRIGHT|CREDITS|SP\\s*-\\s*DECODE|Aplicaci[oó]n)")
     private val sourceLine=Regex("""^\s*│\[[^]]+]\s*([^:\r\n]+):\s*(.*)$""")
+    private val decorativeLine=Regex("""^[\s│┌┐└┘├┤─═╔╗╚╝╠╣]+$""")
+    private val decoratedHeading=Regex(
+        """(?i)^\s*│?\s*(?:SP\s*[-–]\s*DECODE|[┌└├╔╚].*|(?:Developer|Group|Channel|Créditos|Credits|Copyright)\s*:)""")
     private const val MAX_DEPTH=16
     private const val MAX_FIELDS=1500
 
@@ -35,24 +38,58 @@ object ResultPresentation {
         }
         val obj=JsonObject()
         val rows=mutableListOf<ResultField>()
-        for(raw in text.lineSequence()){
-            val match=sourceLine.matchEntire(raw)?:continue
-            val key=match.groupValues[1].trim()
-            val value=match.groupValues[2].trim()
-            if(key.isEmpty()||decoration.containsMatchIn(key))continue
-            // Repeated legacy keys are not discarded: source scripts can emit
-            // multiple entries with the same label. Distinguish them in JSON
-            // while preserving their appearance order in the human view.
-            var unique=key
-            var count=2
-            while(obj.has(unique)){
-                unique=key+" ("+count+")"
-                count++
+        var currentKey:String?=null
+        var pendingSeparator=""
+        // Unlike lineSequence(), this preserves CRLF, LF and CR in HTTP
+        // payloads. The original source text remains immutable.
+        val physicalLines=Regex("""([^\r\n]*)(\r\n|\n|\r|$)""").findAll(text)
+        for(match in physicalLines){
+            val raw=match.groupValues[1]
+            val lineEnding=match.groupValues[2]
+            val field=sourceLine.matchEntire(raw)
+            if(field!=null){
+                currentKey=null
+                pendingSeparator=""
+                val key=field.groupValues[1].trim()
+                val value=field.groupValues[2].trim()
+                if(key.isEmpty() || decoration.containsMatchIn(key) ||
+                    key.contains("𝗚𝗥𝗢𝗨𝗣") || key.contains("𝗖𝗛𝗔𝗡𝗡𝗘𝗟") ||
+                    key.contains("𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥"))continue
+                var unique=key
+                var count=2
+                while(obj.has(unique)){
+                    unique=key+" ("+count+")"
+                    count++
+                }
+                obj.add(unique,parseInlineJson(value))
+                currentKey=unique
+                pendingSeparator=lineEnding
+                continue
             }
-            val element=parseInlineJson(value)
-            obj.add(unique,element)
-            flatten(element,unique,rows,0)
+            val key=currentKey?:continue
+            if(decorativeLine.matches(raw.trim())||
+                decoratedHeading.containsMatchIn(raw.trim())){
+                currentKey=null
+                pendingSeparator=""
+                continue
+            }
+            if(raw.isBlank()){
+                // Only commit blank lines if real content follows, avoiding
+                // the decorative spacer after the final field.
+                pendingSeparator+=raw+lineEnding
+                continue
+            }
+            val before=obj.get(key)
+            val previous=if(before!=null && before.isJsonPrimitive &&
+                before.asJsonPrimitive.isString)before.asString else before.toString()
+            obj.add(key,parseInlineJson(previous+pendingSeparator+raw))
+            pendingSeparator=lineEnding
+        }
+        // JSON conversion is lossless even if the human-readable field list
+        // is capped for rendering very large nested documents.
+        for((key,value) in obj.entrySet()){
             if(rows.size>=MAX_FIELDS)break
+            flatten(value,key,rows,0)
         }
         if(rows.isNotEmpty())
             return ResultDocument(rows,pretty.toJson(obj),
@@ -95,9 +132,15 @@ object ResultPresentation {
         }
         return null
     }
+    private val decimalNumber=Regex("""-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?""")
     private fun parseInlineJson(value:String):JsonElement {
         val trimmed=value.trim()
-        if(trimmed.startsWith("{")||trimmed.startsWith("[")){
+        // Source scripts format JSON primitives without quotes in bot text;
+        // preserve booleans, null and numeric port/expiry values as JSON types.
+        // Other strings (including HTTP payload lines) remain exact.
+        if(trimmed=="true"||trimmed=="false"||trimmed=="null"||
+            decimalNumber.matches(trimmed)||
+            trimmed.startsWith("{")||trimmed.startsWith("[")){
             try{return JsonParser.parseString(trimmed)}catch(_:Exception){}
         }
         return JsonPrimitive(value)

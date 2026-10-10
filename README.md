@@ -2,6 +2,8 @@
 
 > **Android migration Phases A–G:** all **239 file suffixes** have Kotlin offline decoder routes (61 legacy + 178 new) and text protocol handlers have native coverage. Original exporter-version compatibility remains **experimental and not independently certified**. Phase H targets **1.0.6 (versionCode 17)** for signed QA; **public stable and preview publication are NO-GO pending real-exporter/device evidence**. [Phase H audit](docs/android/PHASE_H_PRODUCTION_AUDIT.md) · [Phases B–G](docs/android/PHASE_G_TEXT_PROTOCOLS.md).
 
+> **Android v1.0.7 production patch (owner-approved, CI/signature gated):** HTTP Injector (`.ehi`) now preserves non-encrypted/unknown fields and multiline HTTP payloads in the full JSON view. 239 native file routes and offline text protocols remain. The owner reports manually validating the other formats; current-vendor exhaustive certification remains incomplete. Stable release approval applies **only to 1.0.7 after exact-main Python/Android success and permanent keystore signing**. [Evidence and limits](docs/android/EHI_COMPLETE_JSON_1_0_7.md).
+
 # SP-DECODE
 
 **Modular Telegram configuration decoder powered by Python, Node.js and PHP.**

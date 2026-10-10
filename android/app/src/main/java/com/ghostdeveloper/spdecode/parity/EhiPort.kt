@@ -241,8 +241,12 @@ object EhiPort {
             val v=parsed.get(key)
             if(v is String&&v.isNotBlank()){
                 val decoded=if(key=="configMessage")configMessage(v) else field(v,salt)
-                if(decoded!=null)filtered.put(key,decoded)
-                else if(key=="overwriteServerData")filtered.put(key,v)
+                // EHI exporters do not encrypt every textual field. Older ports
+                // silently dropped strings when the field-local XOR decoder
+                // rejected plaintext or a newer representation. Preserve the
+                // original value rather than emitting incomplete JSON; no
+                // unrelated cipher, fabricated plaintext or key guessing.
+                filtered.put(key,decoded ?: v)
             }else filtered.put(key,v)
         }
         FinalJsonSurface.render(".ehi",FinalJsonSurface.body(filtered),

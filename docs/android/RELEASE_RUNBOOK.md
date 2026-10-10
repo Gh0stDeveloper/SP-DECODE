@@ -1,5 +1,13 @@
 # SP-DECODE Android — versiones estables y parches de compatibilidad
 
+## Parche 1.0.7 — HTTP Injector JSON completo y distribución estable condicional
+
+El propietario informó que los formatos probados funcionan salvo determinadas configuraciones `.ehi` cuyos resultados aparecen incompletos. Se corrige la pérdida de campos no descifrables (sin modificar el valor original) y la lectura de payloads con varias líneas CRLF/LF; se agregan vectores reproducibles creados por el decodificador Python y pruebas API35. `versionCode=18`, `versionName=1.0.7`. El usuario autorizó la distribución pública de producción **únicamente si el parche supera todas las pruebas y la firma permanente**. El gate se registra como `OWNER-GO`, sin convertir evidencia no reproducible en `verified` ni afirmar que se haya vuelto a probar el archivo real que falló. El Release estable debe utilizar el mismo certificado que la versión pública anterior y el SHA exacto de `main`. Consultar [el informe y límites de aceptación](EHI_COMPLETE_JSON_1_0_7.md).
+
+---
+
+
+
 ## Parche de comprobación v1.0.5 (versionCode 16)
 
 El lanzamiento estable **v1.0.4** no se modifica ni se sobrescribe.

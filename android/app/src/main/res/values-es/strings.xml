@@ -130,10 +130,10 @@
     <string name="text_decode_invalid">Protocolo no reconocido, texto inválido o límite de tamaño excedido.</string>
     <string name="text_decode_unsupported">No fue posible decodificar este texto. Puede estar incompleto, dañado o usar otra variante de cifrado.</string>
     <string name="whats_new_title">Novedades de SP-DECODE</string>
-    <string name="whats_new_description">Versión 1.0.6 · Más decodificadores y protocolos de texto</string>
-    <string name="whats_new_linklayer">239 rutas nativas de archivos: motores genéricos, Ultra/Sandok, RENZ, especializados e independientes.</string>
-    <string name="whats_new_fields">Nuevos textos sin conexión: RENZ, XOR, FlexNet, IZPH, NPVS, Creeb y otros enlaces compatibles.</string>
-    <string name="whats_new_offline">Paridad sintética verificada; aún faltan pruebas por versión real de algunas aplicaciones.</string>
+    <string name="whats_new_description">Versión 1.0.7 · JSON completo de HTTP Injector</string>
+    <string name="whats_new_linklayer">HTTP Injector (.ehi): ahora se conservan todos los campos, incluso cuando uno está en texto plano o tiene otra codificación.</string>
+    <string name="whats_new_fields">Payloads HTTP: el resultado JSON conserva líneas, espacios en blanco y los últimos campos sin recortarlos.</string>
+    <string name="whats_new_offline">Los 239 motores de archivos y los protocolos de texto siguen funcionando sin conexión. El historial continúa cifrado.</string>
     <string name="whats_new_continue">Entendido</string>
     <string name="native_decoder_pending">El decodificador nativo de este formato todavía no está integrado.</string>
     <string name="native_decoder_pending_short">Pendiente</string>
