@@ -35,24 +35,54 @@ object ResultPresentation {
         }
         val obj=JsonObject()
         val rows=mutableListOf<ResultField>()
+        var currentKey:String?=null
+        var pendingBlankLines=0
         for(raw in text.lineSequence()){
-            val match=sourceLine.matchEntire(raw)?:continue
-            val key=match.groupValues[1].trim()
-            val value=match.groupValues[2].trim()
-            if(key.isEmpty()||decoration.containsMatchIn(key))continue
-            // Repeated legacy keys are not discarded: source scripts can emit
-            // multiple entries with the same label. Distinguish them in JSON
-            // while preserving their appearance order in the human view.
-            var unique=key
-            var count=2
-            while(obj.has(unique)){
-                unique=key+" ("+count+")"
-                count++
+            val match=sourceLine.matchEntire(raw)
+            if(match!=null){
+                currentKey=null
+                pendingBlankLines=0
+                val key=match.groupValues[1].trim()
+                val value=match.groupValues[2].trim()
+                if(key.isEmpty()||decoration.containsMatchIn(key))continue
+                // Repeated keys are preserved as independent values in JSON.
+                var unique=key
+                var count=2
+                while(obj.has(unique)){
+                    unique=key+" ("+count+")"
+                    count++
+                }
+                obj.add(unique,parseInlineJson(value))
+                currentKey=unique
+                continue
             }
-            val element=parseInlineJson(value)
-            obj.add(unique,element)
-            flatten(element,unique,rows,0)
+            // The old parser silently discarded every physical continuation
+            // line. HTTP Injector configMessage, HTTP payloads and embedded
+            // JSON may include real LF characters, including empty lines.
+            // Collect them under the original key until a new field/footer.
+            val key=currentKey?:continue
+            if(decorativeLine.matches(raw.trim())||
+                decoratedHeading.containsMatchIn(raw.trim())){
+                currentKey=null
+                pendingBlankLines=0
+                continue
+            }
+            if(raw.isBlank()){
+                pendingBlankLines++
+                continue
+            }
+            val before=obj.get(key)
+            val previous=if(before!=null && before.isJsonPrimitive &&
+                before.asJsonPrimitive.isString)before.asString else before.toString()
+            val combined=previous+"\\n".repeat(pendingBlankLines+1)+raw
+            obj.add(key,parseInlineJson(combined))
+            pendingBlankLines=0
+        }
+        // JSON conversion is lossless even if the human-readable field list
+        // is capped for rendering very large nested documents.
+        for((key,value) in obj.entrySet()){
             if(rows.size>=MAX_FIELDS)break
+            flatten(value,key,rows,0)
         }
         if(rows.isNotEmpty())
             return ResultDocument(rows,pretty.toJson(obj),
