@@ -27,7 +27,7 @@
     <string name="session_only">Guardado local · Historial cifrado</string>
     <string name="search_formats">Buscar aplicación o extensión</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">239 formatos registrados: 142 rutas nativas (61 anteriores y 81 genéricas AES/DES) y 97 pendientes de integración. La compatibilidad con exportaciones reales puede variar.</string>
+    <string name="catalog_note">239 formatos registrados: 183 rutas nativas (61 anteriores, 81 genéricas AES/DES y 41 Ultra/Sandok Argon2id) y 56 pendientes. La compatibilidad con exportaciones actuales todavía no está certificada.</string>
     <string name="settings_title">Ajustes</string>
     <string name="privacy_title">Privacidad</string>
     <string name="privacy_text">Los archivos originales no se copian. Los resultados decodificados se guardan cifrados en este dispositivo hasta que los elimines.</string>

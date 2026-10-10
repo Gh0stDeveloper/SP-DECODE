@@ -18,13 +18,14 @@ class PhaseA239CatalogInstrumentedTest {
         val formats = catalog
         assertEquals(AndroidDecoderCatalog.TOTAL_SUFFIXES, formats.size)
         assertEquals(239, formats.map { it.suffix }.toSet().size)
-        assertEquals(142, formats.count { it.hasNativeDecoder })
+        assertEquals(183, formats.count { it.hasNativeDecoder })
         assertEquals(81, formats.count { it.migrationPhase == "B" && it.hasNativeDecoder })
-        assertEquals(97, formats.count { it.isPending })
+        assertEquals(56, formats.count { it.isPending })
         assertEquals(0, formats.count { it.androidVerified })
         val planned = formats.filter { it.isPending }
         assertEquals(0, planned.count { it.migrationPhase == "B" })
-        assertEquals(41, planned.count { it.migrationPhase == "C" })
+        assertEquals(41, formats.count { it.migrationPhase == "C" && it.hasNativeDecoder })
+        assertEquals(0, planned.count { it.migrationPhase == "C" })
         assertEquals(16, planned.count { it.migrationPhase == "D" })
         assertEquals(27, planned.count { it.migrationPhase == "E" })
         assertEquals(13, planned.count { it.migrationPhase == "F" })
@@ -40,7 +41,7 @@ class PhaseA239CatalogInstrumentedTest {
 
     @Test fun migrationSuffixesHaveNoAccidentalDecodeFallback() {
         val inputs = listOf(
-            "archive.ULTRA", "archive.7NET",
+            "archive.7NET",
             "archive.itv", "archive.IZPH", "archive.flexnet", "archive.4ULITE",
             "archive.wyrlite", "archive.apnalite", "archive.𝐭𝐞𝐬𝐭"
         )
@@ -52,6 +53,15 @@ class PhaseA239CatalogInstrumentedTest {
             assertNull(AndroidOfflineDecoderRouter.decode(
                 context, filename, byteArrayOf(1,2,3,4,5,6,7,8)))
         }
+        // Phase C now has a real Ultra port; it must no longer be classified
+        // as an unimplemented format. The historical .ost route is unchanged.
+        val ultra = AndroidDecoderCatalog.detect("archive.ULTRA", catalog)
+        assertNotNull(ultra)
+        assertEquals("C", ultra!!.migrationPhase)
+        assertTrue(ultra.hasNativeDecoder)
+        assertEquals("legacy", AndroidDecoderCatalog.detect("old.ost", catalog)?.migrationPhase)
+        assertNull(AndroidOfflineDecoderRouter.decode(context, "invalid.ultra",
+            byteArrayOf(1,2,3,4,5,6,7,8)))
         assertNull(AndroidDecoderCatalog.detect(inputs.last(), catalog))
         assertNull(AndroidOfflineDecoderRouter.decode(
             context, "unknown.invalid", byteArrayOf(1,2,3)))

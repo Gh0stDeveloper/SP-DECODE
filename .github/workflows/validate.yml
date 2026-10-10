@@ -51,6 +51,7 @@ jobs:
         run: |
           PYTHONPATH=. python scripts/android_a24_catalog.py
           PYTHONPATH=. python scripts/android_b_generic_profiles.py --check
+          PYTHONPATH=. python scripts/android_c_ultra_profiles.py --check
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
@@ -128,7 +129,11 @@ jobs:
       - name: Generate reference AES-GCM and DES-ECB corpus for all 81 Phase B suffixes
         run: |
           PYTHONPATH=. python scripts/android_b_generic_profiles.py --check
+          PYTHONPATH=. python scripts/android_c_ultra_profiles.py --check
           PYTHONPATH=. python scripts/android_b_generic_profiles.py --fixtures android/app/src/androidTest/assets/parity/generic-b-fixtures.json
+
+      - name: Generate independent Ultra/Sandok Argon2id/AES-GCM parity vectors
+        run: PYTHONPATH=. python scripts/android_c_ultra_profiles.py --fixtures android/app/src/androidTest/assets/parity/ultra-c-fixtures.json
 
       - name: Prepare SHA-256-pinned synthetic parity assets
         run: PYTHONPATH=. python scripts/android_a24_prepare.py --output-dir android/app/src/androidTest/assets/parity
@@ -155,6 +160,7 @@ jobs:
         run: |
           PYTHONPATH=. python scripts/android_a24_catalog.py
           PYTHONPATH=. python scripts/android_b_generic_profiles.py --check
+          PYTHONPATH=. python scripts/android_c_ultra_profiles.py --check
 
       - name: Build SP-DECODE full-result language/settings alpha APK and tests
         working-directory: android

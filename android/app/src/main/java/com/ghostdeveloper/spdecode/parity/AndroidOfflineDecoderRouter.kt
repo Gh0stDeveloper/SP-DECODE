@@ -23,6 +23,9 @@ object AndroidOfflineDecoderRouter {
         if (format.migrationPhase == "B") {
             return GenericVpnPort.decode(context, format.suffix, input)
         }
+        if (format.migrationPhase == "C") {
+            return UltraSandokPort.decode(context, format.suffix, input)
+        }
         return when (format.suffix) {
             "v2" -> V2RayReferencePort.decode(input)
             "tls" -> TlsReferencePort.decode(input)

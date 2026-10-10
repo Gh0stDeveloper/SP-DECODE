@@ -27,7 +27,7 @@
     <string name="session_only">Salvo no dispositivo · Histórico criptografado</string>
     <string name="search_formats">Buscar aplicativo ou extensão</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">239 formatos cadastrados: 142 rotas nativas (61 anteriores e 81 genéricas AES/DES) e 97 aguardando integração. A compatibilidade com exportações reais pode variar.</string>
+    <string name="catalog_note">239 formatos cadastrados: 183 rotas nativas (61 anteriores, 81 genéricas AES/DES e 41 Ultra/Sandok Argon2id) e 56 pendentes. A compatibilidade com exportações atuais ainda não está certificada.</string>
     <string name="settings_title">Configurações</string>
     <string name="privacy_title">Privacidade</string>
     <string name="privacy_text">Os arquivos originais não são copiados. Resultados decodificados ficam criptografados neste dispositivo até serem excluídos.</string>

@@ -1,5 +1,7 @@
 # SP-DECODE Android — documentación oficial
 
+> **Fase C Ultra/Sandok:** 41 extensiones nativas Argon2id + AES-GCM, 19 perfiles de origen, 183 rutas Android y 56 pendientes. [.ost conserva el motor heredado; documentación](PHASE_C_ULTRA_SANDOK_41.md).
+
 > **Migración Android — Fase B:** 81 motores genéricos agrupados en dos implementaciones Kotlin y ocho lotes; 142 rutas Android existentes y 97 todavía pendientes. [Documentación completa](PHASE_B_GENERIC_81.md).
 
 > **Actualización de migración (Fase A):** catálogo de 239 extensiones

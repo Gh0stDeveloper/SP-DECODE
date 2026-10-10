@@ -61,7 +61,7 @@ class PersistentHistoryInstrumentedTest {
         assertEquals(setOf("npv4", "npvt"), suffixes("NPV Tunnel v4"))
         assertEquals(setOf("sksrv", "sksrv.png"), suffixes("SKS Server"))
         assertEquals(239, catalog.size)
-        assertEquals(142, catalog.count { it.hasNativeDecoder })
-        assertEquals(97, catalog.count { it.isPending })
+        assertEquals(183, catalog.count { it.hasNativeDecoder })
+        assertEquals(56, catalog.count { it.isPending })
     }
 }

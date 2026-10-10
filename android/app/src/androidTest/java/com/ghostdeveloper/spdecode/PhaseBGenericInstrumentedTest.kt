@@ -72,7 +72,7 @@ class PhaseBGenericInstrumentedTest {
         assertEquals(239, formats.size)
         assertEquals(61, formats.count { it.migrationPhase == "legacy" && it.hasNativeDecoder })
         assertEquals(81, formats.count { it.migrationPhase == "B" && it.hasNativeDecoder })
-        assertEquals(97, formats.count { it.isPending })
+        assertEquals(56, formats.count { it.isPending })
     }
 
     @Test fun everyGcmTagMutationFailsClosed() {
