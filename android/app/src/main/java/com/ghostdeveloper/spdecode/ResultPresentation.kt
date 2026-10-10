@@ -20,6 +20,9 @@ object ResultPresentation {
     private val credentials=Regex("(?i)(?:password|passwd|passphrase|mypass|credential|privatekey|private_key|apisecret|accesstoken|refreshtoken|authtoken|apitoken|secretkey|sshpass)")
     private val decoration=Regex("(?i)(DEVELOPER|GROUP|CHANNEL|COPYRIGHT|CREDITS|SP\\s*-\\s*DECODE|Aplicaci[oó]n)")
     private val sourceLine=Regex("""^\s*│\[[^]]+]\s*([^:\r\n]+):\s*(.*)$""")
+    private val decorativeLine=Regex("""^[\s│┌┐└┘├┤─═╔╗╚╝╠╣]+$""")
+    private val decoratedHeading=Regex(
+        """(?i)^\s*│?\s*(?:SP\s*[-–]\s*DECODE|[┌└├╔╚].*|(?:Developer|Group|Channel|Créditos|Credits|Copyright)\s*:)""")
     private const val MAX_DEPTH=16
     private const val MAX_FIELDS=1500
 
