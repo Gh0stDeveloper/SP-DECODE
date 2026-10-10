@@ -1,4 +1,27 @@
-# SP-DECODE Android 1.0.4 — firma permanente automática
+# SP-DECODE Android — versiones estables y parches de compatibilidad
+
+## Parche de comprobación v1.0.5 (versionCode 16)
+
+El lanzamiento estable **v1.0.4** no se modifica ni se sobrescribe.
+El parche v1.0.5 corrige diferencias verificables entre el motor Android
+y las implementaciones originales para enlaces `nm-ssh://`, `ar-ssh://` y
+Dark Tunnel (incluidos archivos `.dark` y texto), y actualiza el encabezado
+ordenado a `Telegram: https://t.me/Gh0stDeveloper` en vez de «Créditos».
+
+El estado v1.0.5 es **NO-GO estable** mientras falten las muestras reales de
+exportadores reportadas por el propietario. La distribución autorizada es
+una **pre-release firmada con la keystore permanente** (sin APK debug ni claves
+temporales) después de Linux + Android API35 en `SUCCESS`. El permiso del
+propietario para la versión estable 1.0.4 no se extrapola automáticamente
+al parche 1.0.5. Para el alcance comprobado y próximas muestras ver
+`docs/android/REAL_DECODER_PARITY_TRIAGE.md`.
+
+La app conserva la alerta de novedades una vez por versión, con traducciones
+ES/EN/PT-BR/AR. El historial, los demás motores y el JSON se preservan.
+
+---
+
+## SP-DECODE Android 1.0.4 — historial de firma estable
 
 **Actualizado:** 2026-10-09
 
