@@ -404,7 +404,9 @@ object RenzPort {
                 if (result.isEmpty()) return@repeat
                 val count = result.last().toInt() and 255
                 if (count > 31) return@repeat
-                result = result.copyOf(maxOf(0,result.size-count))
+                // Python b[:-0] is empty: preserve its historical behavior.
+                result = if (count == 0) byteArrayOf()
+                    else result.copyOf(maxOf(0,result.size-count))
             }
         }
         return utf8(result)
@@ -429,8 +431,9 @@ object RenzPort {
                                     "username" in key.lowercase(Locale.ROOT) ||
                                         "password" in key.lowercase(Locale.ROOT) -> sensitive(raw,p)
                                     else -> {
-                                        try { utf8(main(raw,p)) }
-                                        catch (_: Exception) { special(raw,p) }
+                                        val first = try { utf8(main(raw,p)) }
+                                            catch (_: Exception) { null }
+                                        if (first.isNullOrEmpty()) special(raw,p) else first
                                     }
                                 }
                             } catch (_: Exception) { null }
