@@ -1,58 +1,165 @@
 #!/usr/bin/env python3
-"""Regenerate/verify the read-only Android inventory without overstating support."""
+"""Deterministic Android catalog: 61 existing native routes + bot's 178 pending.
+
+Phase A DOES NOT enable new crypto engines. The bot registry provides source
+metadata only, never keys, and existing Android adapters retain their status.
+The committed JSON asset must byte-match generate() or CI fails.
+"""
 from __future__ import annotations
+
 import argparse
 import json
+import sys
 from pathlib import Path
 
-ROOT=Path(__file__).resolve().parents[1]
-A24_BATCH10=("phc","mina","vpnlite","cloudy","mij","fnnetwork","uwu","sksrv","maya","xui")
-A24_BATCH20=("at","nm","ost","sbr","pcx","nt","pb","aro","ipt","gold")
-A24_BATCH15=("agn","cly","fɴ","jvc","jvi","v2i","sksrv.png","xscks","mrc","mtl","jez","hrt","ziv","epro","npv2")
-A24_FINAL11=("rez","rezl","tvt","stk","xtp","roy","sksplus","sks","sut","tnl","ssh")
-A24_EXTRA4=("ht","htb","hat","ehil")
-A24_FINAL7=("dark","ehi","npv4","npvt","sip","ssc","hc")
-A24_NPVS=("npvs",)
-PROTO=("v2","tls")+A24_BATCH10+A24_BATCH20+A24_BATCH15+A24_FINAL11+A24_EXTRA4+A24_FINAL7+("lnk",)+A24_NPVS
-CATALOG=ROOT/"android/app/src/main/assets/decoder_catalog.json"
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+A24_BATCH10 = ("phc","mina","vpnlite","cloudy","mij","fnnetwork","uwu","sksrv","maya","xui")
+A24_BATCH20 = ("at","nm","ost","sbr","pcx","nt","pb","aro","ipt","gold")
+A24_BATCH15 = ("agn","cly","fɴ","jvc","jvi","v2i","sksrv.png","xscks","mrc","mtl","jez","hrt","ziv","epro","npv2")
+A24_FINAL11 = ("rez","rezl","tvt","stk","xtp","roy","sksplus","sks","sut","tnl","ssh")
+A24_EXTRA4 = ("ht","htb","hat","ehil")
+A24_FINAL7 = ("dark","ehi","npv4","npvt","sip","ssc","hc")
+A24_NPVS = ("npvs",)
+PROTO = ("v2","tls") + A24_BATCH10 + A24_BATCH20 + A24_BATCH15 + A24_FINAL11 + A24_EXTRA4 + A24_FINAL7 + ("lnk",) + A24_NPVS
+CATALOG = ROOT / "android/app/src/main/assets/decoder_catalog.json"
+
+# Group only by the bot's selected script, not by extension guesses. Existing
+# .ost remains the original OUSS port; its special Ultra fallback is not moved.
+MIGRATION_PHASES = {
+    "decoders/Python/generic_aes.py": "B",
+    "decoders/Python/generic_des.py": "B",
+    "decoders/Python/ultra.py": "C",
+    "decoders/Python/renz.py": "D",
+}
+PHASE_E_SCRIPTS = frozenset({
+    "sentinel.py", "itv.py", "eut.py", "v2box_export.py", "slipnet.py",
+    "juanscript.py", "wyrlite.py", "wyrvpn.py", "intvpn.py", "fthp.py",
+    "ar_pro.py", "ec.py", "xor_family.py",
+})
+PHASE_F_SCRIPTS = frozenset({
+    "izph.py", "flex.py", "n4.py", "crev.py", "ktr.py", "zoba.py",
+    "ltm.py", "dev.py", "vn7.py",
+})
+EXPECTED_NEW_BY_PHASE = {"B": 81, "C": 41, "D": 16, "E": 27, "F": 13}
 
 
-def generate()->dict:
-    registry=json.loads((ROOT/"decoders.json").read_text("utf-8"))["decoders"]
-    assert len(registry)==61
-    rows=[]
-    for suffix,entry in registry.items():
-        rows.append({
-            "suffix":suffix,
-            "name":entry["name"],
-            "script":entry["script"],
-            "originalRuntime":entry["runtime"],
-            "linuxGoldenSynthetic":suffix!="npvs",
-            "androidPortStatus":("prototype_two_synthetic_cases" if suffix=="v2" else "prototype_tls_aesgcm_synthetic_case" if suffix=="tls" else "experimental_batch10_synthetic" if suffix in A24_BATCH10 else "experimental_batch20_synthetic" if suffix in A24_BATCH20 else "experimental_batch15_synthetic" if suffix in A24_BATCH15 else "experimental_final11_synthetic" if suffix in A24_FINAL11 else "experimental_final_extra4_synthetic" if suffix in A24_EXTRA4 else "experimental_final7_synthetic_subset" if suffix in A24_FINAL7 else "experimental_native_npvs_v5" if suffix=="npvs" else "experimental_linklayer_ver6_synthetic" if suffix=="lnk" else "not_implemented"),
-            "androidVerified":False,
-            "exporterVersionsVerified":["124.0.37"] if suffix=="npvs" else [],
-        })
-    rows.sort(key=lambda x:(-len(x["suffix"]),x["suffix"]))
+def phase_for(script: str) -> str:
+    if script in MIGRATION_PHASES:
+        return MIGRATION_PHASES[script]
+    if script.startswith("decoders/Python/"):
+        name = script.removeprefix("decoders/Python/")
+        if name in PHASE_E_SCRIPTS:
+            return "E"
+        if name in PHASE_F_SCRIPTS:
+            return "F"
+    raise ValueError(f"Unassigned bot-only Android migration route: {script}")
+
+
+def legacy_status(suffix: str) -> str:
+    if suffix == "v2":
+        return "prototype_two_synthetic_cases"
+    if suffix == "tls":
+        return "prototype_tls_aesgcm_synthetic_case"
+    for status, group in (
+        ("experimental_batch10_synthetic", A24_BATCH10),
+        ("experimental_batch20_synthetic", A24_BATCH20),
+        ("experimental_batch15_synthetic", A24_BATCH15),
+        ("experimental_final11_synthetic", A24_FINAL11),
+        ("experimental_final_extra4_synthetic", A24_EXTRA4),
+        ("experimental_final7_synthetic_subset", A24_FINAL7),
+        ("experimental_native_npvs_v5", A24_NPVS),
+    ):
+        if suffix in group:
+            return status
+    if suffix == "lnk":
+        return "experimental_linklayer_ver6_synthetic"
+    raise ValueError(f"Existing Android port lost its status: {suffix}")
+
+
+def generate() -> dict:
+    from spdecode.registry import DECODER_REGISTRY
+
+    legacy = json.loads((ROOT / "decoders.json").read_text("utf-8"))["decoders"]
+    if len(legacy) != 61 or len(DECODER_REGISTRY) != 239:
+        raise ValueError("Expected 61 original formats and 239 bot formats")
+    if set(legacy) - set(DECODER_REGISTRY):
+        raise ValueError("Android original formats are missing from bot registry")
+    if len(PROTO) != 61 or set(PROTO) != set(legacy):
+        raise ValueError("Original 61 native Android routes changed")
+    rows = []
+    count_by_phase = {phase: 0 for phase in EXPECTED_NEW_BY_PHASE}
+    for suffix, spec in DECODER_REGISTRY.items():
+        old = legacy.get(suffix)
+        if old is not None:
+            if (spec.name, spec.script, spec.runtime) != (
+                old["name"], old["script"], old["runtime"]
+            ):
+                raise ValueError(f"Original Android decoder was remapped: .{suffix}")
+            row = {
+                "suffix": suffix,
+                "name": spec.name,
+                "script": spec.script,
+                "originalRuntime": spec.runtime,
+                "linuxGoldenSynthetic": suffix != "npvs",
+                "androidPortStatus": legacy_status(suffix),
+                "androidVerified": False,
+                "exporterVersionsVerified": ["124.0.37"] if suffix == "npvs" else [],
+                "migrationPhase": "legacy",
+                "sourceCatalog": "decoders.json",
+            }
+        else:
+            phase = phase_for(spec.script)
+            count_by_phase[phase] += 1
+            row = {
+                "suffix": suffix,
+                "name": spec.name,
+                "script": spec.script,
+                "originalRuntime": spec.runtime,
+                # The old frozen A23 corpus does NOT include the bot-only
+                # families even if separate Python synthetic tests exist.
+                "linuxGoldenSynthetic": False,
+                "androidPortStatus": "registered_not_implemented",
+                "androidVerified": False,
+                "exporterVersionsVerified": [],
+                "migrationPhase": phase,
+                "sourceCatalog": "spdecode.registry",
+            }
+        rows.append(row)
+    if count_by_phase != EXPECTED_NEW_BY_PHASE:
+        raise ValueError(f"Migration families drifted: {count_by_phase}")
+    if len({row["suffix"] for row in rows}) != 239:
+        raise ValueError("Duplicate suffix in generated catalog")
+    rows.sort(key=lambda item: (-len(item["suffix"]), item["suffix"]))
     return {
-        "schemaVersion":2,"inventorySource":"decoders.json",
-        "syntheticLinuxCoveredSuffixes":59,"androidCertifiedSuffixes":0,
-        "androidPrototypeSuffixes":list(PROTO),"entries":rows,
+        "schemaVersion": 3,
+        "inventorySource": "spdecode.registry.DECODER_REGISTRY",
+        "legacyInventorySource": "decoders.json",
+        "botRegisteredSuffixes": 239,
+        "androidExistingSuffixes": 61,
+        "androidPendingNativeSuffixes": 178,
+        "migrationCounts": count_by_phase,
+        "syntheticLinuxCoveredSuffixes": 59,
+        "androidCertifiedSuffixes": 0,
+        "androidPrototypeSuffixes": list(PROTO),
+        "entries": rows,
     }
 
 
-def main():
-    ap=argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--write",action="store_true")
-    args=ap.parse_args()
-    expected=generate()
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--write", action="store_true")
+    args = parser.parse_args()
+    expected = json.dumps(generate(), ensure_ascii=False, indent=2) + "\n"
     if args.write:
-        CATALOG.parent.mkdir(parents=True,exist_ok=True)
-        CATALOG.write_text(json.dumps(expected,ensure_ascii=False,indent=2)+"\n","utf-8")
-    else:
-        if not CATALOG.exists() or json.loads(CATALOG.read_text("utf-8"))!=expected:
-            raise SystemExit("Android catalog is stale: python scripts/android_a24_catalog.py --write")
-    print("[A.2.4] Android registry verified: 61 registered, 61 experimental, 0 certified")
+        CATALOG.parent.mkdir(parents=True, exist_ok=True)
+        CATALOG.write_text(expected, encoding="utf-8")
+    elif not CATALOG.is_file() or CATALOG.read_text("utf-8") != expected:
+        raise SystemExit("Android catalog is stale: python scripts/android_a24_catalog.py --write")
+    print("[A] Android source inventory: 239 registered = 61 existing + 178 pending native; 0 certified")
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
