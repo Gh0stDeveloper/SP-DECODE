@@ -1,19 +1,8 @@
 # SP-DECODE Android — documentación oficial
 
-> **Fase C Ultra/Sandok:** 41 extensiones nativas Argon2id + AES-GCM, 19 perfiles de origen, 183 rutas Android y 56 pendientes. [.ost conserva el motor heredado; documentación](PHASE_C_ULTRA_SANDOK_41.md).
+> **Estado actual — Fase H (2026-10-10):** 239/239 rutas nativas para archivos y protocolos de texto integrados en Android. Versión candidata 1.0.6 (code 17). Las pruebas sintéticas no certifican todas las exportaciones reales. La publicación pública permanece **NO-GO** a falta de QA real. [Informe de auditoría y requisitos](PHASE_H_PRODUCTION_AUDIT.md).
 
-> **Migración Android — Fase B:** 81 motores genéricos agrupados en dos implementaciones Kotlin y ocho lotes; 142 rutas Android existentes y 97 todavía pendientes. [Documentación completa](PHASE_B_GENERIC_81.md).
-
-> **Actualización de migración (Fase A):** catálogo de 239 extensiones
-> derivado del bot, 61 rutas Kotlin existentes y 178 pendientes deshabilitadas.
-> [Contrato, pruebas y hoja de ruta de la Fase A](PHASE_A_239_REGISTRY.md).
-> Los apartados históricos que siguen describen decisiones previas y no
-> representan por sí solos el estado de la APK actual.
-
-
-> **Estado:** arquitectura y producto definidos; la aplicación Android NO está implementada ni publicada.
-> **Edición:** 1.1 (multidioma), 2026-10-08 · **Repositorio:** Gh0stDeveloper/SP-DECODE · **Branch inicial:** docs/android-offline-architecture
-> **Dueño de producto:** Gh0stDeveloper · **Objetivo:** APK nativa, independiente, totalmente local.
+> Las descripciones de fases A–G más abajo son referencias históricas del diseño original. Las versiones estables anteriores se encuentran en [GitHub Releases](https://github.com/Gh0stDeveloper/SP-DECODE/releases).
 
 ![Referencia oficial de la pantalla principal](design/home-dark.svg)
 ![Referencia oficial de la pantalla de resultados](design/result-dark.svg)
