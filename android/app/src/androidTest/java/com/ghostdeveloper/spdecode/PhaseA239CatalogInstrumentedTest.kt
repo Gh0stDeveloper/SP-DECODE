@@ -8,7 +8,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/** Phase A catalog acceptance: registration is NOT decryption availability. */
+/** Phase B: 61 legacy + 81 generic are routed; 97 other suffixes still fail closed. */
 @RunWith(AndroidJUnit4::class)
 class PhaseA239CatalogInstrumentedTest {
     private val context get() = InstrumentationRegistry.getInstrumentation().targetContext
@@ -18,8 +18,9 @@ class PhaseA239CatalogInstrumentedTest {
         val formats = catalog
         assertEquals(AndroidDecoderCatalog.TOTAL_SUFFIXES, formats.size)
         assertEquals(239, formats.map { it.suffix }.toSet().size)
-        assertEquals(61, formats.count { it.hasNativeDecoder })
-        assertEquals(178, formats.count { it.isPending })
+        assertEquals(142, formats.count { it.hasNativeDecoder })
+        assertEquals(81, formats.count { it.migrationPhase == "B" && it.hasNativeDecoder })
+        assertEquals(97, formats.count { it.isPending })
         assertEquals(0, formats.count { it.androidVerified })
         val planned = formats.filter { it.isPending }
         assertEquals(81, planned.count { it.migrationPhase == "B" })
@@ -28,15 +29,19 @@ class PhaseA239CatalogInstrumentedTest {
         assertEquals(27, planned.count { it.migrationPhase == "E" })
         assertEquals(13, planned.count { it.migrationPhase == "F" })
         assertTrue(planned.all { it.portStatus == AndroidDecoderCatalog.PENDING_STATUS })
+        assertEquals(0, planned.count { it.migrationPhase == "B" })
         assertTrue(planned.all { it.sourceCatalog == "spdecode.registry" })
-        assertTrue(formats.filter { it.hasNativeDecoder }.all {
+        assertTrue(formats.filter { it.hasNativeDecoder && it.migrationPhase == "legacy" }.all {
             it.sourceCatalog == "decoders.json"
+        })
+        assertTrue(formats.filter { it.migrationPhase == "B" }.all {
+            it.hasNativeDecoder && it.sourceCatalog == "spdecode.registry"
         })
     }
 
     @Test fun migrationSuffixesHaveNoAccidentalDecodeFallback() {
         val inputs = listOf(
-            "archive.ace", "archive.clay", "archive.ULTRA", "archive.7NET",
+            "archive.ULTRA", "archive.7NET",
             "archive.itv", "archive.IZPH", "archive.flexnet", "archive.4ULITE",
             "archive.wyrlite", "archive.apnalite", "archive.𝐭𝐞𝐬𝐭"
         )
