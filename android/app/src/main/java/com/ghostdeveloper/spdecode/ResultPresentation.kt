@@ -129,9 +129,15 @@ object ResultPresentation {
         }
         return null
     }
+    private val decimalNumber=Regex("""-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?(?:[eE][+-]?[0-9]+)?""")
     private fun parseInlineJson(value:String):JsonElement {
         val trimmed=value.trim()
-        if(trimmed.startsWith("{")||trimmed.startsWith("[")){
+        // Source scripts format JSON primitives without quotes in bot text;
+        // preserve booleans, null and numeric port/expiry values as JSON types.
+        // Other strings (including HTTP payload lines) remain exact.
+        if(trimmed=="true"||trimmed=="false"||trimmed=="null"||
+            decimalNumber.matches(trimmed)||
+            trimmed.startsWith("{")||trimmed.startsWith("[")){
             try{return JsonParser.parseString(trimmed)}catch(_:Exception){}
         }
         return JsonPrimitive(value)
