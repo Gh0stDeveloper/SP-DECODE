@@ -164,20 +164,35 @@ The following original extensions are registered in `decoders.json`. Additionall
 
 ## Supported text protocols
 
-SP-DECODE can also process supported configuration strings directly from Telegram messages.
+SP-DECODE decodes supported VPN configuration text links locally in Telegram
+with centralized authorization. The additional source-based phase provides
+**38 explicit protocol prefixes plus Creeb JSON bundles**, in addition to
+the previously supported file-family text protocols.
 
 | Family | Supported schemes / prefixes |
 |---|---|
-| SSC Custom | `ssc://...` with automatic multipart reconstruction |
-| TLS Tunnel | `tls://...` |
-| Dark Tunnel | `dark://...`, `darktunnel://...` and compatible Dark Tunnel schemes |
-| NetMod | `nm-vmess://`, `nm-vless://`, `nm-dns://`, `nm-trojan://`, `nm-ssh://`, `nm-ssr://`, `nm-xray-json://` |
-| ARMOD | `ar-dns://`, `ar-vless://`, `ar-vmess://`, `ar-trojan://`, `ar-ssr://`, `ar-socks://`, `ar-trojan-go://`, `ar-ssh://` |
-| Howdy | `howdy://`, `N7pr://` |
-| XrayPB | `pb-vmess://`, `pb-ss://`, `pb-socks://`, `pb-vless://`, `pb-trojan://`, `pb-ssh://` |
-| Other supported handlers | `vmess://`, `zivpn://`, `v2box://locked=...` |
+| NetMod | `nm-dns://`, `nm-vless://`, `nm-vmess://`, `nm-trojan://`, `nm-socks://`, `nm-ss://`, `nm-ssr://`, `nm-ssh://`, `nm-xray-json://`, `nm-wireguard://`, `nm-trojan-go://` |
+| AR Tunnel / ARMOD | `ar-dns://`, `ar-vless://`, `ar-vmess://`, `ar-trojan://`, `ar-ssr://`, `ar-socks://`, `ar-trojan-go://`, `ar-ssh://`, `ar-ss://` |
+| XrayPB | `pb-ssh://`, `pb-vless://`, `pb-vmess://`, `pb-trojan://`, `pb-socks://`, `pb-ss://` |
+| Howdy / Mark / N7pr | `howdy://`, `Mark://`, `N7pr://` |
+| ZI VPN | `zivpn://` |
+| FlexNet | `flex://`, `flexnet://` |
+| NPV Tunnel v5 | `npvs://`, `vpvs://` (authenticated app-key payloads) |
+| V2Box | `v2box://locked=...` links and authenticated `v2box://` export envelopes; private-chat password flow when protected |
+| Dark/Kivu | `kivuvpn://` plus existing Dark Tunnel link aliases |
+| SlipNet plain | `slipnet://` (Base64 UTF-8; different from AES-GCM `slipnet-enc://`) |
+| VMess | `vmess://` (Base64 JSON representation) |
+| Creeb | A JSON object with `"type": "creeb_profile_bundle"`; extracts links and retains original metadata |
+| Existing family protocols | SSC `ssc://`, TLS `tls://`, Dark Tunnel `darktunnel://`, RENZ/7NET, IZPH, HAPP, XOR VPN, Falcon Tunnel, HTTP Tweak, EUT, WyrLite, WyrVPN, IntVPN and JuanScript |
+| NPVT / NPVS1 historical text | `npvt-ssh://`, `dns://` and recursive `npvs1:` fields |
 
-Multipart text sessions are currently implemented for **SSC Custom** and **Dark Tunnel**. The bot retries decoding after each received fragment and automatically closes the session once a valid result is produced.
+[Complete scheme matrix and maintenance notes](docs/BOT_TEXT_PROTOCOL_PARITY_66.md).
+
+Some formats above use Base64 or JSON decoding rather than cryptographic decryption.
+Multipart text sessions remain implemented for **SSC Custom** and **Dark Tunnel**;
+the bot retries decoding as fragments arrive and closes completed sessions.
+The additional text handlers do not modify the **239 bot file extensions** or the
+Android decoding inventory.
 
 ---
 
