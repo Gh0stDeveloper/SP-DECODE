@@ -152,7 +152,7 @@ def generate() -> dict:
         "androidNativePortSuffixes": 61 + enabled_generic,
         "androidPendingNativeSuffixes": 178 - enabled_generic,
         "migrationCounts": count_by_phase,
-        "syntheticLinuxCoveredSuffixes": 59,
+        "syntheticLinuxCoveredSuffixes": sum(bool(row["linuxGoldenSynthetic"]) for row in rows),
         "androidCertifiedSuffixes": 0,
         "androidPrototypeSuffixes": list(PROTO),
         "entries": rows,
