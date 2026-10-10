@@ -21,6 +21,8 @@ from Crypto.Protocol.KDF import PBKDF2
 from Crypto.Util.Padding import unpad
 logger=logging.getLogger(__name__)
 
+@dataclass(frozen=True, slots=True)
+class AesKey:
     name: str
     key: bytes
     iv: bytes
