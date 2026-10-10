@@ -1,5 +1,9 @@
 # SP-DECODE Android — documentación oficial
 
+> **Parche v1.0.7 — HTTP Injector (.ehi):** conserva los campos que fallan en el descifrado interno, mantiene el JSON completo con payloads multilínea y preserva el descifrado original. Firma de producción con la keystore definitiva tras CI `main`. La publicación estable usa aceptación manual del propietario acotada a esta versión y no es certificación independiente de 239 exportadores. [Informe 1.0.7](EHI_COMPLETE_JSON_1_0_7.md).
+
+
+
 > **Estado actual — Fase H (2026-10-10):** 239/239 rutas nativas para archivos y protocolos de texto integrados en Android. Versión candidata 1.0.6 (code 17). Las pruebas sintéticas no certifican todas las exportaciones reales. La publicación pública permanece **NO-GO** a falta de QA real. [Informe de auditoría y requisitos](PHASE_H_PRODUCTION_AUDIT.md).
 
 > Las descripciones de fases A–G más abajo son referencias históricas del diseño original. Las versiones estables anteriores se encuentran en [GitHub Releases](https://github.com/Gh0stDeveloper/SP-DECODE/releases).
