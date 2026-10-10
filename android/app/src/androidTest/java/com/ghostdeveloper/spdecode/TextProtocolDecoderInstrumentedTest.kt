@@ -115,4 +115,55 @@ class TextProtocolDecoderInstrumentedTest {
         assertNull(result("v2box://?locked="))
         assertNull(TextProtocolDecoder.identify("x".repeat(TextProtocolDecoder.MAX_CHARS+1)))
     }
+
+    @Test fun netmodSshTextUsesTextCipherAndPreservesNonJsonPayload() {
+        // Unlike the .nm file decoder, the nm-ssh:// text scheme uses the
+        // single bot-specific key, and the bot accepts non-JSON cleartext.
+        for((clear,field) in listOf(
+            "{\"username\":\"netmod-user\",\"server\":\"example.invalid\"}" to "username",
+            "ssh-user:secret@example.invalid:22" to "decodedText"
+        )) {
+            val encrypted=base64(encrypt(clear.toByteArray(Charsets.UTF_8),
+                "_netsyna_netmod_".toByteArray(Charsets.UTF_8),"AES/ECB/PKCS5Padding"))
+            val decoded=JsonParser.parseString(result("nm-ssh://"+encrypted)).asJsonObject
+            assertNotNull(decoded.get(field))
+            assertEquals(if(field=="decodedText")clear else "netmod-user",
+                decoded.get(field).asString)
+        }
+        assertNull(result("nm-ssh://AAAAAA"))
+    }
+
+    @Test fun armodSshTextMatchesBotQueryDecodingAndEmbeddedAccount() {
+        val body="payload=GET%2520%252F&profile=%7B%22host%22%3A%22demo%22%7D" +
+            "&ssh=user:pass@example.invalid:22&empty=&ignored"
+        val encrypted=base64(encrypt(body.toByteArray(Charsets.UTF_8),
+            Base64.decode("YXJ0dW5uZWw3ODc5Nzg5eA==",Base64.DEFAULT),
+            "AES/ECB/PKCS5Padding"))
+        val decoded=JsonParser.parseString(result("ar-ssh://"+encrypted)).asJsonObject
+        assertEquals("GET /",decoded.get("payload").asString)
+        assertEquals("demo",decoded.getAsJsonObject("profile").get("host").asString)
+        assertEquals("user:pass@example.invalid:22",decoded.get("ssh").asString)
+        assertFalse(decoded.has("empty"))
+        assertFalse(decoded.has("ignored"))
+    }
+
+    @Test fun darkTunnelTextAndFileReuseIdenticalDecoderAcrossImports() {
+        val original=InstrumentationRegistry.getInstrumentation().context.assets.open(
+            "parity/dark-aescfb-msgpack.dark").use { it.readBytes() }
+        val expected=TextProtocolDecoder.decode(ctx,
+            TextProtocolDecoder.identify("dtunnel://"+
+                String(original,Charsets.UTF_8).trim().substringAfter("://"))!!)
+        assertNotNull("Original Dark Tunnel golden must decode through text",expected)
+        val baseline=JsonParser.parseString(expected)
+        val raw=String(original,Charsets.UTF_8).trim().substringAfter("://")
+        for(scheme in listOf("dark","dtunnel","dt")) {
+            val resultText=result("$scheme://"+raw.chunked(47).joinToString("\n"))
+            assertEquals("Dark text $scheme must match first import",
+                baseline,JsonParser.parseString(resultText))
+        }
+        // Must never keep an old file's key, IV or decoded data between imports.
+        val second=result("dark://"+raw)
+        assertEquals(baseline,JsonParser.parseString(second))
+        assertNull(result("dark://invalid-data"))
+    }
 }
