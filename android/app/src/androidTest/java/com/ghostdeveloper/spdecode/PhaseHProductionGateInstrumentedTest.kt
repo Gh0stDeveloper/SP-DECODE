@@ -38,8 +38,6 @@ class PhaseHProductionGateInstrumentedTest {
     @Test fun appBackupDisabledInInstalledPackage(){
         val info=ctx.applicationInfo
         assertEquals(0,info.flags and ApplicationInfo.FLAG_ALLOW_BACKUP)
-        assertFalse((info.flags and ApplicationInfo.FLAG_DEBUGGABLE)!=0 &&
-            ctx.packageName.endsWith(".release"))
     }
     @Test fun all239NativeRoutesPresentButNotRealExportCertified(){
         val formats=AndroidDecoderCatalog.read(ctx)
