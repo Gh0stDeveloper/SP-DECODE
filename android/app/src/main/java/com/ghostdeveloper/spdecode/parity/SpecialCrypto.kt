@@ -40,8 +40,20 @@ internal object SpecialCrypto {
     fun hmac(k:ByteArray,b:ByteArray):ByteArray = Mac.getInstance("HmacSHA256").run {
         init(SecretKeySpec(k,"HmacSHA256"));doFinal(b)
     }
-    fun pbkdf(p:ByteArray,s:ByteArray,n:Int,len:Int):ByteArray =
-        GenericVpnPort.pbkdf2Sha256(p,s,n,len)
+    fun pbkdf(p:ByteArray,s:ByteArray,n:Int,len:Int):ByteArray {
+        require(p.isNotEmpty() && n in 1..150_000 && len in 1..32 && s.size<=128)
+        val mac=Mac.getInstance("HmacSHA256")
+        mac.init(SecretKeySpec(p,"HmacSHA256"))
+        val block=s+byteArrayOf(0,0,0,1)
+        var u=mac.doFinal(block)
+        val result=u.clone()
+        repeat(n-1) {
+            u=mac.doFinal(u)
+            for(i in result.indices)result[i]=(result[i].toInt() xor u[i].toInt()).toByte()
+        }
+        u.fill(0)
+        return result.copyOf(len).also {result.fill(0)}
+    }
     fun gcm(key:ByteArray,nonce:ByteArray,cipherAndTag:ByteArray):ByteArray {
         require(nonce.size==12 && cipherAndTag.size>=16)
         val cipher=Cipher.getInstance("AES/GCM/NoPadding")
