@@ -13,6 +13,7 @@ import logging
 import re
 import struct
 import zlib
+from datetime import datetime
 from pathlib import Path
 import sys
 from typing import Any
@@ -160,7 +161,8 @@ def flex_clean_output(raw_text: str) -> dict:
     raw_text = re.sub(r'<entry key="file\.msg">.*?</entry>', '<entry key="file.msg"/>', raw_text, flags=re.S)
     root = ET.fromstring(raw_text)
     props = {e.get("key"): (e.text or "") for e in root.findall("entry")}
-    out = {"app": "FlexNet"}
+    # Include all decrypted properties without discarding fields from newer exports.
+    out = {"app": "FlexNet", "rawProperties": props}
     if props.get("file.validade"):
         try:
             out["configExpiry"] = datetime.fromtimestamp(int(props["file.validade"]) / 1000).strftime("%Y-%m-%d %H:%M:%S")
