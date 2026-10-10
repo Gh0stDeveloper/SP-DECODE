@@ -7,13 +7,14 @@ import com.google.gson.JsonNull
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import org.json.JSONObject
-import org.w3c.dom.Element
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import javax.xml.parsers.DocumentBuilderFactory
+import android.util.Xml
+import org.xmlpull.v1.XmlPullParser
+import java.io.StringReader
 
 /** F.1 — FlexNet, LTM Tunnel and VN7 independent native source ports. */
 internal object IndependentF1Port {
@@ -84,25 +85,30 @@ internal object IndependentF1Port {
                 value in 0x20..0xD7FF || value in 0xE000..0xFFFD ||
                 value in 0x10000..0x10FFFF) match.value else ""
         }
-        val factory=DocumentBuilderFactory.newInstance()
-        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl",true)
-        factory.setFeature("http://xml.org/sax/features/external-general-entities",false)
-        factory.setFeature("http://xml.org/sax/features/external-parameter-entities",false)
-        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",false)
-        factory.isXIncludeAware=false
-        factory.isExpandEntityReferences=false
-        val root=factory.newDocumentBuilder().parse(
-            cleaned.byteInputStream(Charsets.UTF_8)).documentElement
+        // Android's XML DocumentBuilder does not uniformly support all JAXP
+        // external-entity features. Reject DTD/ENTITY outright, then use the
+        // platform XmlPullParser with no external entity resolver.
+        require(!cleaned.contains("<!DOCTYPE",ignoreCase=true) &&
+            !cleaned.contains("<!ENTITY",ignoreCase=true))
+        val parser=Xml.newPullParser()
+        parser.setInput(StringReader(cleaned))
         val result=linkedMapOf<String,String>()
         var comment:String?=null
-        val kids=root.childNodes
-        for(i in 0 until kids.length){
-            val e=kids.item(i)
-            if(e is Element && e.tagName=="entry" && e.hasAttribute("key")){
-                result[e.getAttribute("key")]=e.textContent?:""
-            }else if(e is Element && e.tagName=="comment" && comment==null){
-                comment=e.textContent?.takeIf{it.isNotEmpty()}
+        while(parser.eventType!=XmlPullParser.END_DOCUMENT){
+            if(parser.eventType==XmlPullParser.START_TAG && parser.depth==2){
+                when(parser.name) {
+                    "entry" -> {
+                        val key=parser.getAttributeValue(null,"key")
+                        val value=parser.nextText()
+                        if(key!=null)result[key]=value
+                    }
+                    "comment" -> {
+                        val text=parser.nextText()
+                        if(comment==null&&text.isNotEmpty())comment=text
+                    }
+                }
             }
+            parser.next()
         }
         return Pair(result,comment)
     }
