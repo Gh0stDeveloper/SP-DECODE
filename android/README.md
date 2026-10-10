@@ -1,5 +1,7 @@
 # SP-DECODE Android — baseline histórico y migración de 239 formatos
 
+> **Phase C:** 239 formats catalogued, 183 Android native routes (61 legacy + 81 generic + 41 Ultra/Sandok), and 56 still pending. [Ultra/Sandok port and QA gates](../docs/android/PHASE_C_ULTRA_SANDOK_41.md).
+
 > **Phase B update (migration branch):** the app recognizes 239 formats; **142** have native Android routes (61 historical + 81 generic AES/DES), **97** remain disabled. See [Phase B validation](../docs/android/PHASE_B_GENERIC_81.md).
 
 > Actualización de Fase A: el proyecto cuenta con aplicación Compose funcional y
