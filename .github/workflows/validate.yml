@@ -57,6 +57,9 @@ jobs:
       - name: Verify Phase E source parity generator
         run: PYTHONPATH=. python -m unittest tests.test_android_e_special_parity -v
 
+      - name: Verify Phase F source family fixtures and Flex key inventory
+        run: PYTHONPATH=. python -m unittest tests.test_android_f_independent_parity -v
+
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
 
@@ -145,6 +148,9 @@ jobs:
 
       - name: Generate independent Phase E special-engine Python parity vectors
         run: PYTHONPATH=. python scripts/android_e_special_fixtures.py --fixtures android/app/src/androidTest/assets/parity/e-special-fixtures.json
+
+      - name: Generate nine independent F engines and historical encrypted Python goldens
+        run: PYTHONPATH=. python scripts/android_f_independent_fixtures.py --fixtures android/app/src/androidTest/assets/parity/f-independent-fixtures.json
 
       - name: Prepare SHA-256-pinned synthetic parity assets
         run: PYTHONPATH=. python scripts/android_a24_prepare.py --output-dir android/app/src/androidTest/assets/parity
