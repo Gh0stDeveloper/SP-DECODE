@@ -94,7 +94,8 @@ object TextProtocolDecoder {
                 scheme.startsWith("ar-")&&scheme.removePrefix("ar-") in ar->
                     return Input("armod","ARMod","armod",body)
                 scheme.startsWith("pb-")&&scheme.removePrefix("pb-") in pb->
-                    return Input("xraypb","XrayPB","xraypb",body)
+                    return Input(if(scheme=="pb-vmess")"xraypb-vmess" else "xraypb",
+                        "XrayPB","xraypb",body)
             }
         }
         // The Telegram bot also accepts bare NetMod AES-ECB ciphertext in
@@ -128,10 +129,10 @@ object TextProtocolDecoder {
                 "vmess"->json(utf8(b64(input.content)))
                 "netmod"->netmod(input.content)
                 "armod"->armod(input.content)
-                "xraypb"->{
+                "xraypb","xraypb-vmess"->{
                     val first=cbcZeros(input.content,
                         "4p+ocx+hGTnbDdHOmzQCjVb9KTTSh+A3","android123456789")
-                    val second=if(input.content.startsWith("pb-vmess://"))utf8(b64(first))
+                    val second=if(input.protocol=="xraypb-vmess")utf8(b64(first))
                         else first
                     json(second) ?: JsonObject().apply{addProperty("decodedText",second)}
                 }
