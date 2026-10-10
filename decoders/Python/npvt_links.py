@@ -8,7 +8,7 @@ import re
 _SCHEMES = ("npvt-ssh://","dns://")
 
 def _b64(value: str) -> str:
-    payload=re.sub(r"\\s+","",value).replace("-","+").replace("_","/")
+    payload=re.sub(r"\s+","",value).replace("-","+").replace("_","/")
     payload+="="*(-len(payload)%4)
     return base64.b64decode(payload,validate=True).decode("utf-8")
 
