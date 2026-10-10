@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Deterministic Android catalog: 61 existing native routes + bot's 178 pending.
+"""Deterministic Android catalog: 61 legacy + 81 generic native + 97 pending.
 
-Phase A DOES NOT enable new crypto engines. The bot registry provides source
-metadata only, never keys, and existing Android adapters retain their status.
-The committed JSON asset must byte-match generate() or CI fails.
+Phase B activates ONLY the 81 source-matched generic AES/DES suffixes.
+The 61 legacy routes remain unchanged, phases C-F stay disabled and the
+public metadata catalog contains NO crypto keys. Generation is reproducible.
 """
 from __future__ import annotations
 
@@ -91,6 +91,7 @@ def generate() -> dict:
         raise ValueError("Original 61 native Android routes changed")
     rows = []
     count_by_phase = {phase: 0 for phase in EXPECTED_NEW_BY_PHASE}
+    enabled_generic = 0
     for suffix, spec in DECODER_REGISTRY.items():
         old = legacy.get(suffix)
         if old is not None:
@@ -113,23 +114,31 @@ def generate() -> dict:
         else:
             phase = phase_for(spec.script)
             count_by_phase[phase] += 1
+            is_generic = phase == "B"
+            if is_generic:
+                enabled_generic += 1
+            native_status = (
+                "experimental_generic_des_ecb_synthetic"
+                if spec.script.endswith("generic_des.py")
+                else "experimental_generic_aes_gcm_synthetic"
+            ) if is_generic else "registered_not_implemented"
             row = {
                 "suffix": suffix,
                 "name": spec.name,
                 "script": spec.script,
                 "originalRuntime": spec.runtime,
-                # The old frozen A23 corpus does NOT include the bot-only
-                # families even if separate Python synthetic tests exist.
-                "linuxGoldenSynthetic": False,
-                "androidPortStatus": "registered_not_implemented",
+                # B has source-derived reference vectors separate from A23;
+                # C-F still have no native synthetic parity baseline.
+                "linuxGoldenSynthetic": is_generic,
+                "androidPortStatus": native_status,
                 "androidVerified": False,
                 "exporterVersionsVerified": [],
                 "migrationPhase": phase,
                 "sourceCatalog": "spdecode.registry",
             }
         rows.append(row)
-    if count_by_phase != EXPECTED_NEW_BY_PHASE:
-        raise ValueError(f"Migration families drifted: {count_by_phase}")
+    if count_by_phase != EXPECTED_NEW_BY_PHASE or enabled_generic != 81:
+        raise ValueError(f"Migration/native families drifted: {count_by_phase}, {enabled_generic}")
     if len({row["suffix"] for row in rows}) != 239:
         raise ValueError("Duplicate suffix in generated catalog")
     rows.sort(key=lambda item: (-len(item["suffix"]), item["suffix"]))
@@ -139,7 +148,9 @@ def generate() -> dict:
         "legacyInventorySource": "decoders.json",
         "botRegisteredSuffixes": 239,
         "androidExistingSuffixes": 61,
-        "androidPendingNativeSuffixes": 178,
+        "androidGenericNativeSuffixes": enabled_generic,
+        "androidNativePortSuffixes": 61 + enabled_generic,
+        "androidPendingNativeSuffixes": 178 - enabled_generic,
         "migrationCounts": count_by_phase,
         "syntheticLinuxCoveredSuffixes": 59,
         "androidCertifiedSuffixes": 0,
@@ -158,7 +169,7 @@ def main() -> None:
         CATALOG.write_text(expected, encoding="utf-8")
     elif not CATALOG.is_file() or CATALOG.read_text("utf-8") != expected:
         raise SystemExit("Android catalog is stale: python scripts/android_a24_catalog.py --write")
-    print("[A] Android source inventory: 239 registered = 61 existing + 178 pending native; 0 certified")
+    print("[B] 239 formats: 61 legacy + 81 source-matched generic native + 97 pending; 0 certified")
 
 
 if __name__ == "__main__":
