@@ -16,7 +16,7 @@ data class ResultDocument(
 enum class ResultExport { JSON, ORDERED, ORIGINAL }
 
 object ResultPresentation {
-    private val pretty=GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create()
+    private val pretty=GsonBuilder().serializeNulls().setPrettyPrinting().disableHtmlEscaping().create()
     private val credentials=Regex("(?i)(?:password|passwd|passphrase|mypass|credential|privatekey|private_key|apisecret|accesstoken|refreshtoken|authtoken|apitoken|secretkey|sshpass)")
     private val decoration=Regex("(?i)(DEVELOPER|GROUP|CHANNEL|COPYRIGHT|CREDITS|SP\\s*-\\s*DECODE|Aplicaci[oó]n)")
     private val sourceLine=Regex("""^\s*│\[[^]]+]\s*([^:\r\n]+):\s*(.*)$""")
