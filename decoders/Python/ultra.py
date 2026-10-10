@@ -492,8 +492,8 @@ def decrypt_ultra_file(data, ext):
 
         return None
 
-    except Exception as e:
-        print(f"❌ decrypt_ultra_file error: {e}")
+    except Exception:
+        return None
 
 def run(file_bytes: bytes, extension: str = ".ultra") -> str | None:
     """Decode into complete, untruncated JSON; None denotes an unsupported input."""
