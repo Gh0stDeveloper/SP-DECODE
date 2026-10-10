@@ -137,7 +137,21 @@ def decode_v2box(text: str) -> str | dict | None:
         except (ValueError, UnicodeError, binascii.Error):
             return None
     # v2box:// may alternatively carry authenticated AES-GCM export JSON.
-    decoded=decrypt_v2box_data(text)
+    # Parse Base64URL or raw JSON BEFORE calling the existing file engine:
+    # the file decoder's historical Base64 parser only accepts '+' and '/',
+    # and direct prefix stripping must not erase spaces inside JSON strings.
+    try:
+        payload = text[len("v2box://"):].strip()
+        decoded_envelope = (
+            json.loads(payload) if payload.startswith("{")
+            else json.loads(_b64(payload).decode("utf-8"))
+        )
+        if not isinstance(decoded_envelope, dict) or decoded_envelope.get("magic") != "v2box_export":
+            return None
+        normalized = json.dumps(decoded_envelope, ensure_ascii=False, separators=(",", ":"))
+        decoded = decrypt_v2box_data(normalized)
+    except (ValueError, UnicodeError, TypeError, binascii.Error):
+        return None
     if isinstance(decoded,dict) and decoded.get("__need_password__"):
         # Caller must request the password privately, not print cipher internals.
         return {"__need_password__": True}
