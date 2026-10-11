@@ -138,7 +138,7 @@
     <string name="native_decoder_mixed_short">مختلط</string>
     <string name="clear_current_result">مسح النتيجة المعروضة</string>
     <string name="guide_settings_title">دليل تفاعلي</string>
-    <string name="guide_settings_detail">تعرّف على استيراد الملفات وفك النصوص وعرض النتائج وإدارة السجل. يمكنك إعادة الدليل في أي وقت.</string>
+    <string name="guide_settings_detail">يشمل الدليل الملفات والنصوص المحلية وHTTP Injector Cloud عبر الإنترنت وملفات HTTP Custom المحمية والنتائج والسجل. يمكن إعادة تشغيل الدليل في أي وقت.</string>
     <string name="guide_replay">بدء الجولة الإرشادية</string>
     <string name="settings_version">الإصدار %1$s</string>
     <string name="settings_build_code">رقم البناء %1$d</string>
@@ -199,4 +199,6 @@
     <string name="hc_auth_enter_manually">إدخال كلمة المرور يدويًا</string>
     <string name="hc_auth_input_invalid">أدخل كلمة المرور المطلوبة و/أو معرّف HWID صالحًا مكوّنًا من 32 حرفًا.</string>
     <string name="hc_auth_failed">تعذرت مصادقة ملف HTTP Custom المحمي. تحقق من كلمة المرور و/أو HWID؛ فقد يكون الملف تالفًا أو يستخدم صيغة غير مدعومة.</string>
+    <string name="guide_step_six">HTTP Injector Cloud (عبر الإنترنت): من الرئيسية، افتح السحابة والصق رابط ehi.link أو مفتاح السحابة أو رمز الرموز التعبيرية 💉…🚀، ثم اضغط استيراد. عندها فقط يُرسل المرجع إلى خادم HTTP Injector، ويلزم الاتصال بالإنترنت. تظل الملفات والنصوص المحلية دون اتصال.</string>
+    <string name="guide_step_seven">HTTP Custom ‏(.hc) المحمي: استورد الملف كالمعتاد. إذا طلب كلمة مرور التصدير أو HWID من 32 حرفًا أو كليهما، أدخل البيانات المطلوبة بدقة. لا يمكن فك التشفير ببيانات خاطئة أو بملف معدل، وتستمر ملفات .hc العادية بالطريقة السابقة.</string>
 </resources>
