@@ -23,6 +23,7 @@ internal fun PrivateCredentialImportDialog(
     credentials: List<DevicePrivateCredentialVault.Metadata>,
     onChoose: (String?) -> Unit,
     onCancel: () -> Unit,
+    onManual: () -> Unit = onCancel,
 ) {
     AlertDialog(
         onDismissRequest = onCancel,
@@ -42,6 +43,9 @@ internal fun PrivateCredentialImportDialog(
             }
         },
         confirmButton = {
+            TextButton(onClick = onManual) {
+                Text(stringResource(R.string.hc_auth_enter_manually))
+            }
             TextButton(onClick = { onChoose(null) }) {
                 Text(stringResource(R.string.s4_import_without_password))
             }
