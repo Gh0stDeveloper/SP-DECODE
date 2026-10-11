@@ -22,14 +22,6 @@ internal object IndependentF1Port {
     private val s=SpecialCrypto
     const val MAX_INPUT_BYTES=2*1024*1024
     private val magic="FLXCFG".toByteArray(Charsets.US_ASCII)
-    private val ltmHex="333a33333232c933cc393d3b3e38383fcbcfc8cbc9cf333f3e3ccb3a32cb3ccf"+
-        "3dcb3239c9cfc83c3c3a393f3e3332cf333fce3839cc3d323ec8c8ce32c83333"+
-        "898ee1ea8b"
-    private val ltmPassword=String(c.hex(ltmHex),Charsets.UTF_8).toByteArray(Charsets.UTF_8)
-    private val vn7Keys=listOf(
-        "SecurePart1SecurePart2SecurePart3SecurePart4SecurePart5",
-        "fubvx788b46v"
-    ).map {it.toByteArray()}
 
     @Volatile private var flexMaterials:Map<String,ByteArray>?=null
     private fun materialProfiles(ctx:Context):Map<String,ByteArray> =
@@ -67,8 +59,8 @@ internal object IndependentF1Port {
         if(input.isEmpty()||input.size>MAX_INPUT_BYTES)return null
         return try{when(suffix){
             "flex","flexnet"->flex(ctx,input)
-            "lt","ltm"->ltm(input)
-            "vn7"->vn7(input)
+            "lt","ltm"->ltm(ctx,input)
+            "vn7"->vn7(ctx,input)
             else->null
         }}catch(_:Exception){null}
     }
@@ -236,14 +228,14 @@ internal object IndependentF1Port {
         return s.gson.toJson(result)
     }
 
-    private fun ltm(input:ByteArray):String?{
+    private fun ltm(ctx:Context,input:ByteArray):String?{
         var text=c.stripScheme(c.utf8Ignore(input).trim())
         text=text.filterNot{it.isWhitespace()}
         val parts=text.split(".")
         require(parts.size==3)
         val salt=c.b64(parts[0]);val nonce=c.b64(parts[1]);val raw=c.b64(parts[2])
         require(salt.isNotEmpty() && nonce.size==12 && raw.size>=17)
-        val key=s.pbkdf(ltmPassword,salt,1000,16)
+        val key=s.pbkdf(EmbeddedDecoderMaterials.independentF1(ctx).ltmPassword,salt,1000,16)
         val plain=c.utf8(c.gcmAad(key,nonce,raw,null))
         val (values,comment)=properties(plain)
         val out=JsonObject()
@@ -252,12 +244,12 @@ internal object IndependentF1Port {
         return s.gson.toJson(out)
     }
 
-    private fun vn7(input:ByteArray):String? {
+    private fun vn7(ctx:Context,input:ByteArray):String? {
         val parts=c.utf8Ignore(input).split(".")
         require(parts.size==3)
         val salt=c.b64(parts[0]);val nonce=c.b64(parts[1]);val enc=c.b64(parts[2])
         require(salt.isNotEmpty() && nonce.size==12 && enc.size>=17)
-        for(password in vn7Keys)try {
+        for(password in EmbeddedDecoderMaterials.independentF1(ctx).vn7Passwords)try {
             val key=s.pbkdf(password,salt,1000,16)
             val out=c.utf8(c.gcmAad(key,nonce,enc,null))
             if(out.isNotBlank())return s.render(out)
