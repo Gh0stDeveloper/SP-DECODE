@@ -200,6 +200,17 @@ def decrypt_tls_payload(encrypted_b64: str) -> dict:
     return {key: value for key, value in config.items() if value != ""}
 
 
+def _render_config(config: dict) -> dict:
+    """Maintain the frozen original output for the historic sixth key.
+
+    The full authenticated positional metadata remains available to callers of
+    decrypt_tls_payload(), but the old CLI/bot result is not modified.
+    """
+    if config.get("_tls", {}).get("key_profile") == len(CONFIG_KEYS):
+        return {name: value for name, value in config.items() if name != "_tls"}
+    return config
+
+
 def run(file_bytes: bytes) -> str | None:
     """Punto de entrada compartido para archivos .tls y mensajes tls://."""
     try:
@@ -211,7 +222,7 @@ def run(file_bytes: bytes) -> str | None:
             raw_input = raw_input[6:]
 
         raw_input = "".join(raw_input.split())
-        config_dict = decrypt_tls_payload(raw_input)
+        config_dict = _render_config(decrypt_tls_payload(raw_input))
         if not config_dict:
             return None
 
@@ -238,7 +249,7 @@ def main() -> int:
         return 2
 
     try:
-        config = decrypt_tls_payload(file_bytes.decode("utf-8-sig"))
+        config = _render_config(decrypt_tls_payload(file_bytes.decode("utf-8-sig")))
     except (ValueError, UnicodeError, ImportError) as exc:
         print(f"No se pudo descifrar TLS Tunnel: {exc}", file=sys.stderr)
         return 1
