@@ -178,4 +178,15 @@
     <string name="json_more_items">Mostrar as próximas %1$d entradas</string>
     <string name="json_more_chars">Mostrar os próximos %1$d caracteres</string>
     <string name="json_visible_limit">Há muitas ramificações abertas. Recolha algumas para continuar.</string>
+    <string name="cloud_http_injector_title">HTTP Injector Cloud</string>
+    <string name="cloud_http_injector_open">Nuvem (Online)</string>
+    <string name="cloud_http_injector_hint">Cole um link ehi.link, uma chave cloud ou uma sequência 💉…🚀</string>
+    <string name="cloud_http_injector_action">Importar configuração cloud</string>
+    <string name="cloud_http_injector_privacy">Recurso online: somente após tocar em Importar a referência será enviada ao servidor do HTTP Injector. Os demais decodificadores de arquivos e textos continuam offline.</string>
+    <string name="cloud_http_injector_invalid">O link, a chave cloud ou a sequência de emojis é inválida. Confira a referência original.</string>
+    <string name="cloud_http_injector_network_error">Não foi possível conectar ao HTTP Injector Cloud. Confira sua conexão e tente novamente.</string>
+    <string name="cloud_http_injector_server_error">O HTTP Injector Cloud não aceitou esta referência. Ela pode ter expirado, sido revogada ou o serviço pode estar indisponível.</string>
+    <string name="cloud_http_injector_integrity_error">Não foi possível verificar ou descriptografar a resposta cloud.</string>
+    <string name="cloud_http_injector_decoder_error">A configuração cloud foi recuperada, mas seu conteúdo EHI não pôde ser decodificado pelo motor atual.</string>
+    <string name="npvs_private_key_unsupported">Lamentamos, não foi possível decodificar este arquivo NPVS. Ele pode usar proteção por chave privada (private key), um tipo de proteção ainda não suportado pelo aplicativo.</string>
 </resources>
