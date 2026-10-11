@@ -1,9 +1,11 @@
 package com.ghostdeveloper.spdecode
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.JsonParser
 import org.junit.Assert.*
 import org.junit.Rule
@@ -14,6 +16,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class JsonTreeViewerInstrumentedTest {
     @get:Rule val compose = createComposeRule()
+    private val ctx get() = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test fun nestedObjectsExpandAndCollapseWithoutChangingJson() {
         val raw = """{"host":"vpn.test","nested":{"city":"LA","port":443,"active":true}}"""
@@ -84,7 +87,7 @@ class JsonTreeViewerInstrumentedTest {
         compose.onNodeWithText("\"city\": \"LA\"", substring = true).assertExists()
         compose.onNodeWithText("\"port\": 443", substring = true).assertExists()
         compose.onNodeWithText("sample.hc").assertExists()
-        compose.onNodeWithText("Copy").assertExists()
-        compose.onNodeWithText("Export").assertExists()
+        compose.onNodeWithText(ctx.getString(R.string.copy)).assertExists()
+        compose.onNodeWithText(ctx.getString(R.string.export)).assertExists()
     }
 }
