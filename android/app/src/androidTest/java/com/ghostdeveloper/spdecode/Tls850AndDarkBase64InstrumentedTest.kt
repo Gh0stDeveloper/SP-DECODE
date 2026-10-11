@@ -54,7 +54,10 @@ class Tls850AndDarkBase64InstrumentedTest {
         assertNull(TlsReferencePort.decode(ByteArray(10)))
         // Alphabetically valid altered token must fail authentication.
         val damaged=token.toCharArray()
-        damaged[80]=if(damaged[80]=='A')'B' else 'A'
+        // The first reversed Base64 characters represent unauthenticated
+        // outer padding. Change the middle ciphertext, not that padding.
+        val ciphertextIndex=token.substringBefore(':').length/2
+        damaged[ciphertextIndex]=if(damaged[ciphertextIndex]=='A')'B' else 'A'
         assertNull(TlsReferencePort.decode(String(damaged).toByteArray()))
     }
 
