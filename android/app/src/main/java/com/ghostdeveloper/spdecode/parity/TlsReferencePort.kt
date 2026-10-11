@@ -9,32 +9,44 @@ import javax.crypto.spec.GCMParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 /**
- * Offline JCA reference port for the *synthetic* TLS Tunnel AES-256-GCM case.
- *
- * Does not imply compatibility with current third-party exporter versions.
- * A failed authentication tag is always an error, never partial plaintext.
+ * TLS Tunnel 8.5.0 offline AES-256-GCM importer.
+ * Six extracted configuration keys are tried in the exact Python order;
+ * profile 6 is the historic single-key format. Unknown field indices are
+ * retained, with strict tag authentication (never partial plaintext).
+ * Evidence for actual 8.5.0 sample is documented in the Python branch.
  */
 object TlsReferencePort {
     private const val MAX_INPUT_BYTES = 1024 * 1024
     private const val MAX_OUTPUT_BYTES = 1024 * 1024
     private const val KEY_HEX =
         "6b303068c2acc2b9c2b221352473c2b0c2b725c2a824614b674433c2b0467856"
+    private val configKeys=listOf(
+        "2474763534327665643235345671c38b72775742627236c2b324254856232433",
+        "33cf82ceb7cf84e1baa135566ec6b0686e33d8b661d0bed0bdd0b12578745630",
+        "23e4bc9acf82ceb7cf84e1baa135676ec6b0686e3332d8b661d0bed0bdd0b125",
+        "23e4bc9ae685a246e1baa14235676ec6b0686e3332d8b661d0bed0bdd0b12534",
+        "234673486ee1baa14246355c3332d8b6612534407c666433653247462847c38b",
+        KEY_HEX,
+    ).map(::hex)
+    private val b64Alphabet=Regex("^[A-Za-z0-9+/]*={0,2}$")
 
     fun decode(input: ByteArray): String? {
         if (input.isEmpty() || input.size > MAX_INPUT_BYTES) return null
         return try {
             val text = strictUtf8(input).trim()
-            val noScheme = if ("://" in text) text.substringAfter("://") else text
+            val noScheme = if (text.startsWith("tls://",ignoreCase=true))
+                text.substring(6) else text
             val token = noScheme.filterNot { it.isWhitespace() }.substringBefore(':')
             if (token.isEmpty() || token.length > MAX_INPUT_BYTES * 2) return null
             val encoded = token.reversed()
+            require(b64Alphabet.matches(encoded))
             val raw = Base64.decode(encoded.padEnd((encoded.length + 3) / 4 * 4, '='), Base64.DEFAULT)
             if (raw.size < 148 || raw.size > MAX_INPUT_BYTES) return null
 
             // The historical container is 12 bytes + C1 + IV1(18) +
             // C2 + IV2(18) + 84 bytes, with C1/C2 of equal length.
             val ciphertextLength = raw.size - 132
-            if (ciphertextLength < 16 || ciphertextLength % 2 != 0) return null
+            if (ciphertextLength < 16) return null
             val half = ciphertextLength / 2
             val c1 = raw.copyOfRange(12, 12 + half).reversedArray()
             val iv1 = raw.copyOfRange(12 + half, 30 + half).reversedArray()
@@ -43,78 +55,113 @@ object TlsReferencePort {
             val encrypted = c1 + c2
             if (encrypted.size < 16) return null
             val nonce = iv1 + iv2
-            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-            cipher.init(
-                Cipher.DECRYPT_MODE,
-                SecretKeySpec(hex(KEY_HEX), "AES"),
-                GCMParameterSpec(128, nonce),
-            )
-            val clear = cipher.doFinal(encrypted) // ciphertext + 128-bit authentication tag
+            var plaintext:ByteArray?=null
+            var profile=0
+            for((index,key) in configKeys.withIndex()) {
+                try {
+                    val cipher=Cipher.getInstance("AES/GCM/NoPadding")
+                    cipher.init(Cipher.DECRYPT_MODE,SecretKeySpec(key,"AES"),
+                        GCMParameterSpec(128,nonce))
+                    plaintext=cipher.doFinal(encrypted)
+                    profile=index+1
+                    break
+                } catch (_: javax.crypto.AEADBadTagException) {
+                    // A failed authenticated profile is never exposed.
+                }
+            }
+            val clear=plaintext?:return null
             if (clear.size > MAX_OUTPUT_BYTES) return null
-            formatPayload(strictUtf8(clear))
+            formatPayload(strictUtf8(clear),profile)
         } catch (_: Exception) {
             null
         }
     }
 
-    private fun formatPayload(clear: String): String {
-        val parts = clear.split(':')
-        fun part(index: Int): String = parts.getOrElse(index) { "" }
-        fun intValue(index: Int): Int = part(index).toIntOrNull() ?: 0
-        fun boolValue(index: Int): Boolean = part(index).equals("true", ignoreCase = true)
-        fun decoded(index: Int): String {
-            val value = part(index)
-            if (value.isEmpty()) return ""
+    private fun formatPayload(clear:String,profile:Int):String {
+        val parts=clear.split(':')
+        fun part(index:Int):String=parts.getOrElse(index){""}
+        fun intValue(index:Int)=part(index).toIntOrNull()?:0
+        fun boolValue(index:Int)=part(index).equals("true",ignoreCase=true)
+        val base64Positions=setOf(4,5,6,7,9,12,14,16,18,19,24,27)
+        fun decoded(index:Int):String {
+            val value=part(index)
+            if(value.isEmpty())return ""
             return try {
-                val padded = value.padEnd((value.length + 3) / 4 * 4, '=')
-                strictUtf8(Base64.decode(padded, Base64.DEFAULT))
-            } catch (_: Exception) { "" }
+                require(b64Alphabet.matches(value) && value.length%4!=1)
+                val data=Base64.decode(value.padEnd((value.length+3)/4*4,'='),
+                    Base64.DEFAULT)
+                strictUtf8(data)
+            }catch(_:Exception){value} // preserve unknown/unreadable field
         }
-
-        // Preserve the Python insertion order and only drop empty STRINGS.
-        // Integer zero and boolean false are meaningful and must be retained.
-        val fields = linkedMapOf<String, Any>()
-        fun keep(name: String, value: String) { if (value.isNotEmpty()) fields[name] = value }
-        fields["tlsvpnVersion"] = intValue(0)
-        fields["server"] = intValue(1)
-        fields["port"] = intValue(2)
-        fields["pserver"] = boolValue(3)
-        keep("sshuser", decoded(4))
-        keep("sshpass", decoded(5))
-        keep("sshhost", decoded(6))
-        keep("server_port", decoded(7))
-        keep("sshport", decoded(9))
-        fields["metodo"] = intValue(10)
-        fields["upayload"] = boolValue(11)
-        keep("payload", decoded(12))
-        fields["usnihost"] = boolValue(13)
-        keep("snihost", decoded(14))
-        fields["upayloadat"] = boolValue(15)
-        keep("payloadat", decoded(16))
-        fields["uproxy"] = boolValue(17)
-        keep("prxhost", decoded(18))
-        keep("prxport", decoded(19))
-        fields["legacy_dns_mode"] = intValue(20)
-        keep("dnsP", decoded(21))
-        keep("dns_port", decoded(22))
-        keep("nameserver", decoded(23))
-        keep("public_key", decoded(24))
-        fields["bloqmc"] = boolValue(25)
-        keep("mensagem", decoded(27).replace("Ѻ", "\n").replace("ѻ", "\r"))
-
-        return buildString {
-            append("TLS Tunnel\n==============================\n\n{\n")
-            fields.entries.forEachIndexed { index, (key, value) ->
-                append("    ").append(jsonQuote(key)).append(": ")
-                when (value) {
-                    is String -> append(jsonQuote(value))
-                    is Boolean -> append(if (value) "true" else "false")
-                    else -> append(value.toString())
-                }
-                if (index < fields.size - 1) append(',')
-                append('\n')
+        val fields=linkedMapOf<String,Any?>()
+        fun keep(name:String,value:String){if(value.isNotEmpty())fields[name]=value}
+        fields["tlsvpnVersion"]=intValue(0)
+        fields["server"]=intValue(1)
+        fields["port"]=intValue(2)
+        fields["pserver"]=boolValue(3)
+        keep("sshuser",decoded(4))
+        keep("sshpass",decoded(5))
+        keep("sshhost",decoded(6))
+        keep("server_port",decoded(7))
+        keep("sshport",decoded(9))
+        fields["metodo"]=intValue(10)
+        fields["upayload"]=boolValue(11)
+        keep("payload",decoded(12))
+        fields["usnihost"]=boolValue(13)
+        keep("snihost",decoded(14))
+        fields["upayloadat"]=boolValue(15)
+        keep("payloadat",decoded(16))
+        fields["uproxy"]=boolValue(17)
+        keep("prxhost",decoded(18))
+        keep("prxport",decoded(19))
+        // In the v8.5.0 sample, indices 20-23 are booleans, not old DNS
+        // parameters. The old names apply only to the historic profile 6.
+        if(profile==6) {
+            fields["legacy_dns_mode"]=intValue(20)
+            keep("dnsP",decoded(21))
+            keep("dns_port",decoded(22))
+            keep("nameserver",decoded(23))
+            keep("public_key",decoded(24))
+        }
+        fields["bloqmc"]=boolValue(25)
+        keep("mensagem",decoded(27).replace("Ѻ","\n").replace("ѻ","\r"))
+        fields["_tls"]=linkedMapOf<String,Any?>(
+            "authenticated" to true,
+            "key_profile" to profile,
+            "field_count" to parts.size,
+            "fields" to parts.mapIndexed { index,raw ->
+                linkedMapOf<String,Any?>(
+                    "index" to index,
+                    "raw" to raw,
+                    "value" to if(index in base64Positions)decoded(index) else raw,
+                )
             }
-            append("}\n\n==============================")
+        )
+        return "TLS Tunnel\n==============================\n\n"+
+            pretty(fields)+"\n\n=============================="
+    }
+
+    /** The JSON body exactly preserves Python insertion order and indent=4. */
+    private fun pretty(value:Any?,depth:Int=0):String {
+        require(depth<=48)
+        val indent=" ".repeat(depth*4)
+        val inner=" ".repeat((depth+1)*4)
+        return when(value) {
+            is Map<*,*> -> {
+                if(value.isEmpty())"{}" else value.entries.joinToString(
+                    separator=",\n",prefix="{\n",postfix="\n$indent}"
+                ){ (k,v) -> inner+jsonQuote(k.toString())+": "+pretty(v,depth+1) }
+            }
+            is List<*> -> {
+                if(value.isEmpty())"[]" else value.joinToString(
+                    separator=",\n",prefix="[\n",postfix="\n$indent]"
+                ){ inner+pretty(it,depth+1) }
+            }
+            is String -> jsonQuote(value)
+            is Boolean -> if(value)"true" else "false"
+            is Number -> value.toString()
+            null -> "null"
+            else -> jsonQuote(value.toString())
         }
     }
 
