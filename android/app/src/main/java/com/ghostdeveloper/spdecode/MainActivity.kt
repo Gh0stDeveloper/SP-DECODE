@@ -24,6 +24,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
 import com.ghostdeveloper.spdecode.parity.AndroidOfflineDecoderRouter
+import com.ghostdeveloper.spdecode.parity.HcHccfgPort
 import com.ghostdeveloper.spdecode.parity.GenericVpnPort
 import com.ghostdeveloper.spdecode.parity.UltraSandokPort
 import com.ghostdeveloper.spdecode.parity.RenzPort
@@ -57,6 +58,16 @@ import java.util.Date
 class MainActivity : ComponentActivity() {
     private companion object { const val MAX_BYTES=1024*1024 }
     private val scope=CoroutineScope(SupervisorJob()+Dispatchers.Main.immediate)
+    private val privateCredentialVault by lazy { DevicePrivateCredentialVault(this) }
+    private data class PendingCredentialImport(
+        val uri:Uri,
+        val filename:String,
+        val bytes:ByteArray,
+        val credentials:List<DevicePrivateCredentialVault.Metadata>,
+    )
+    private var pendingCredentialImport by mutableStateOf<PendingCredentialImport?>(null)
+    private var credentialPrepareJob:Job?=null
+    private var credentialPrepareGeneration=0
     private var selectedLanguage by mutableStateOf("system")
     private var hideCredentials by mutableStateOf(false)
     private val settings get()=getSharedPreferences("spdecode-ui-preferences",MODE_PRIVATE)
@@ -106,7 +117,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private val picker=registerForActivityResult(ActivityResultContracts.OpenDocument()){uri->
-        if(uri!=null)importFiles(listOf(uri))
+        if(uri!=null)prepareSingleImport(uri)
     }
     private val multiPicker=registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()){uris->
         if(uris.isNotEmpty())importFiles(uris.take(BatchImportQueue.MAX_FILES))
@@ -290,6 +301,14 @@ class MainActivity : ComponentActivity() {
                     tab=0
                 },
             )
+            pendingCredentialImport?.let { candidate ->
+                PrivateCredentialImportDialog(
+                    filename=candidate.filename,
+                    credentials=candidate.credentials,
+                    onChoose={id->choosePrivateCredential(id)},
+                    onCancel={cancelPrivateCredentialSelection()},
+                )
+            }
         }
         if(savedInstanceState==null)handleExternalIntent(intent)
     }
@@ -317,7 +336,59 @@ class MainActivity : ComponentActivity() {
                 incoming.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)?.take(BatchImportQueue.MAX_FILES).orEmpty()
             else->emptyList()
         }
-        if(uris.isNotEmpty())importFiles(uris.take(BatchImportQueue.MAX_FILES))
+        if(uris.size==1)prepareSingleImport(uris.first())
+        else if(uris.isNotEmpty())importFiles(uris.take(BatchImportQueue.MAX_FILES))
+    }
+
+    /**
+     * Preview one .hc locally. Only authenticated password-locked HCCFG
+     * containers can request a saved private password. The same byte array
+     * is decoded after authorization, so provider content cannot be swapped
+     * between password selection and import.
+     */
+    private fun prepareSingleImport(uri:Uri) {
+        pendingCredentialImport?.bytes?.fill(0)
+        pendingCredentialImport=null
+        credentialPrepareJob?.cancel()
+        val generation=++credentialPrepareGeneration
+        credentialPrepareJob=scope.launch {
+            var preview:ByteArray?=null
+            try {
+                val name=withContext(Dispatchers.IO){displayName(uri)}
+                if(name.endsWith(".hc",ignoreCase=true)){
+                    preview=withContext(Dispatchers.IO){readBounded(uri)}
+                    if(HcHccfgPort.requiresExternalPassword(preview)) {
+                        val credentials=withContext(Dispatchers.IO){
+                            privateCredentialVault.inventory().entries
+                        }
+                        if(credentials.isNotEmpty() && generation==credentialPrepareGeneration){
+                            pendingCredentialImport=PendingCredentialImport(
+                                uri,name,preview,credentials)
+                            preview=null // pending dialog now owns the buffer
+                            return@launch
+                        }
+                    }
+                }
+            }catch(e:CancellationException){throw e}
+            catch(_:Exception){ /* Existing decoder handles malformed imports. */ }
+            finally { preview?.fill(0) }
+            if(generation==credentialPrepareGeneration) importFiles(listOf(uri))
+        }
+    }
+
+    private fun choosePrivateCredential(id:String?) {
+        val request=pendingCredentialImport?:return
+        pendingCredentialImport=null
+        if(id!=null && request.credentials.none{it.id==id}){
+            request.bytes.fill(0)
+            return
+        }
+        importFiles(listOf(request.uri),id,request)
+    }
+
+    private fun cancelPrivateCredentialSelection() {
+        pendingCredentialImport?.bytes?.fill(0)
+        pendingCredentialImport=null
     }
 
     private fun cancelImport() {
@@ -421,7 +492,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun importFiles(uris:List<Uri>){
+    private fun importFiles(uris:List<Uri>,
+        privateCredentialId:String?=null,
+        prepared:PendingCredentialImport?=null){
+        require(privateCredentialId==null || (uris.size==1 && prepared?.uri==uris.single()))
         job?.cancel()
         val generation=++importGeneration
         val inputs=uris.take(BatchImportQueue.MAX_FILES)
@@ -440,7 +514,8 @@ class MainActivity : ComponentActivity() {
                     progressPosition=index
                     progressTotal=total
                     progressStage=0
-                    val name=withContext(Dispatchers.IO){displayName(uri)}
+                    val name=prepared?.filename
+                        ?:withContext(Dispatchers.IO){displayName(uri)}
                     progressFilename=name
                     val supported=AndroidDecoderCatalog.detect(
                         name,AndroidDecoderCatalog.read(this@MainActivity))
@@ -450,7 +525,7 @@ class MainActivity : ComponentActivity() {
                     if (!supported.hasNativeDecoder) {
                         throw DecodeFailure(R.string.native_decoder_pending)
                     }
-                    val input=withContext(Dispatchers.IO){readBounded(uri,
+                    val input=prepared?.bytes?:withContext(Dispatchers.IO){readBounded(uri,
                         when {
                             supported.suffix=="lnk" -> LinkLayerPort.MAX_INPUT
                             supported.suffix=="npvs" -> NpvsPort.MAX_INPUT
@@ -462,10 +537,20 @@ class MainActivity : ComponentActivity() {
                             else -> MAX_BYTES
                         })}
                     progressStage=1
-                    val text=withContext(Dispatchers.Default){
-                        AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
+                    val inputSize=input.size
+                    val text=try {
+                        withContext(Dispatchers.Default) {
+                            if(privateCredentialId!=null){
+                                privateCredentialVault.use(privateCredentialId){secret->
+                                    AndroidOfflineDecoderRouter.decodeWithUserPassword(
+                                        this@MainActivity,name,input,secret)
+                                }
+                            }else AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
+                        }
+                    }finally {
+                        if(prepared==null)input.fill(0)
                     }?:throw DecodeFailure(R.string.unsupported_variant_message)
-                    val processed=DecodeView(name,supported.suffix,text,input.size)
+                    val processed=DecodeView(name,supported.suffix,text,inputSize)
                     progressStage=2
                     val saved=try {
                         withContext(Dispatchers.IO){historyStore.save(processed)}
@@ -496,6 +581,7 @@ class MainActivity : ComponentActivity() {
                 message=getString(R.string.read_error);tab=0
             }}
             finally {
+                prepared?.bytes?.fill(0)
                 if(generation==importGeneration) {
                     busy=false
                     progressFilename=null
@@ -639,6 +725,8 @@ class MainActivity : ComponentActivity() {
         super.onStop()
     }
     override fun onDestroy(){
+        credentialPrepareJob?.cancel()
+        cancelPrivateCredentialSelection()
         job?.cancel()
         scope.cancel()
         super.onDestroy()
