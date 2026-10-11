@@ -42,7 +42,7 @@ class EhiStandardAndCompatibilityInstrumentedTest {
             encrypt.doFinal("VER7synthetic-profile".toByteArray(Charsets.US_ASCII)),
             Base64.NO_WRAP,
         ).toByteArray(Charsets.US_ASCII)
-        assertNull(SipPort.decode(encoded))
+        assertNull(SipPort.decode(inst.targetContext,encoded))
         assertNull(AndroidOfflineDecoderRouter.decode(inst.targetContext,"sample.sip",encoded))
     }
 }
