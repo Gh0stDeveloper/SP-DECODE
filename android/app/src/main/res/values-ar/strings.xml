@@ -73,12 +73,11 @@
     <string name="mask_passwords_title">إخفاء كلمات المرور في المعاينة</string>
     <string name="mask_passwords_detail">اختياري وغير مفعل افتراضيًا. تُعرض كل الحقول كاملة.</string>
     <string name="export_security_note">قد يؤدي النسخ أو المشاركة إلى كشف بيانات الدخول للتطبيقات الأخرى.</string>
-    <string name="developer_credits">المطور والاعتمادات</string>
-    <string name="contribute_invitation">مشروع مفتوح المصدر يرحب بالمساهمين والمختبرين وإضافات فك الترميز. ساهم أو أبلغ عن الأخطاء عبر GitHub.</string>
+    <string name="developer_credits">المطور</string>
+    <string name="contribute_invitation">التواصل الرسمي مع المطور وآخر الأخبار والمجتمع متاح حصريًا عبر تيليغرام.</string>
     <string name="contact_developer">الاتصال بالمطور</string>
     <string name="telegram_group">مجتمع تيليغرام</string>
     <string name="telegram_channel">قناة تيليغرام</string>
-    <string name="report_issue">الإبلاغ عن خطأ / المساهمة</string>
     <string name="clear_confirm_title">حذف السجل المحفوظ؟</string>
     <string name="clear_confirm_detail">سيتم حذف جميع نتائج فك الترميز المحفوظة من هذا الجهاز نهائيًا ولا يمكن التراجع.</string>
     <string name="complete_fields_count">%1$d حقول كاملة</string>
@@ -86,7 +85,6 @@
     <string name="ordered_option">منظم · جميع الحقول</string>
     <string name="original_option">النص الأصلي لفك الترميز</string>
     <string name="raw_masked_explanation">قد يحتوي النص الأصلي على كلمات مرور داخل JSON. أوقف الإخفاء من الإعدادات لعرضه.</string>
-    <string name="project_repo">المستودع · GitHub</string>
     <string name="history_select">تحديد</string>
     <string name="history_select_all">تحديد الكل</string>
     <string name="history_deselect_all">إلغاء تحديد الكل</string>
@@ -139,4 +137,22 @@
     <string name="native_decoder_pending_short">قيد الانتظار</string>
     <string name="native_decoder_mixed_short">مختلط</string>
     <string name="clear_current_result">مسح النتيجة المعروضة</string>
+    <string name="guide_settings_title">دليل تفاعلي</string>
+    <string name="guide_settings_detail">تعرّف على استيراد الملفات وفك النصوص وعرض النتائج وإدارة السجل. يمكنك إعادة الدليل في أي وقت.</string>
+    <string name="guide_replay">بدء الجولة الإرشادية</string>
+    <string name="settings_version">الإصدار %1$s</string>
+    <string name="settings_build_code">رقم البناء %1$d</string>
+    <string name="settings_security_offline">فك محلي · سجل مشفر · التحقق من التوقيع الرسمي</string>
+    <string name="guide_title">مرحبًا بك في SP-DECODE</string>
+    <string name="guide_step_one">الرئيسية: استورد ملفًا متوافقًا من جهازك واعرض النتيجة الكاملة.</string>
+    <string name="guide_step_two">فك النص: الصق رابطًا أو بروتوكولًا مشفرًا من الرئيسية وانسخ النتيجة أو صدّرها.</string>
+    <string name="guide_step_three">السجل: افتح النتائج السابقة وابحث وحدد المفضلة أو احذف السجلات.</string>
+    <string name="guide_step_four">الصيغ: استكشف امتدادات الملفات المتوافقة وابحث عن تطبيق أو صيغة.</string>
+    <string name="guide_step_five">الإعدادات: اختر اللغة واضبط الخصوصية وتواصل مع Ghost Developer عبر تيليغرام.</string>
+    <string name="guide_next">التالي</string>
+    <string name="guide_finish">إنهاء</string>
+    <string name="guide_skip">تخطي</string>
+    <string name="guide_progress">الخطوة %1$d من %2$d</string>
+    <string name="guide_replay_short">الدليل</string>
+    <string name="settings_contact_only">دعم المطور حصريًا عبر تيليغرام.</string>
 </resources>
