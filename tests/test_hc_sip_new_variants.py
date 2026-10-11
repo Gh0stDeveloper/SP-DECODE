@@ -12,11 +12,12 @@ from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 
 from decoders.Python.HTTPCUSTOM import run as hc_run
+from decoders.Python import _hc_hccfg as hc
 from decoders.Python.sockip import (
     SIP_AES_KEY, UnsupportedSocksIPVersion, decode_profile, run as sip_run,
 )
 from tests.golden.hc_sip_new_variants import (
-    hccfg_file, sip_ver8_file, sip_file, httpcustom_bytes,
+    hccfg_file, sip_ver8_file, sip_file, httpcustom_bytes, S4_SYNTHETIC_PASSWORD,
 )
 
 
@@ -39,6 +40,15 @@ class HcSipVersionedTests(unittest.TestCase):
         decoded=json.loads(hc_run(hccfg_file(7,"n7")))
         self.assertEqual(decoded["config"][0]["port"],443)
         self.assertEqual(decoded["config"][0]["payload"],"GET / HTTP/1.1")
+
+    def test_hccfg_password_lock_requires_explicit_correct_password(self):
+        locked=hccfg_file(password=S4_SYNTHETIC_PASSWORD)
+        with self.assertRaisesRegex(hc.HCError,"PASSWORD_REQUIRED"):
+            hc.decrypt(locked)
+        with self.assertRaises(hc.HCError):
+            hc.decrypt(locked,password="incorrect-password")
+        result=hc.decrypt(locked,password=S4_SYNTHETIC_PASSWORD)
+        self.assertEqual(result["config"][0]["host"],"example.org")
 
     def test_hc_rejects_outer_mac_tampering(self):
         broken=bytearray(hccfg_file())
