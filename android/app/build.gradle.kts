@@ -42,10 +42,10 @@ val prepareSecureAssetVault = tasks.register("prepareSecureAssetVault") {
         try {
             source.walkTopDown().filter { it.isFile }.forEach { input ->
                 val relative = input.relativeTo(source).invariantSeparatorsPath
-                val protected = relative in vaultNames
-                val output = java.io.File(destination, if (protected) "$relative.spv" else relative)
+                val isProtected = relative in vaultNames
+                val output = java.io.File(destination, if (isProtected) "$relative.spv" else relative)
                 output.parentFile.mkdirs()
-                if (!protected) {
+                if (!isProtected) {
                     input.copyTo(output, overwrite = true)
                 } else {
                     val nonce = ByteArray(12).also(random::nextBytes)
@@ -204,7 +204,8 @@ dependencies {
 tasks.configureEach {
     if (name == "preBuild" ||
         (name.startsWith("merge") && name.endsWith("Assets")) ||
-        (name.startsWith("compile") && name.endsWith("Kotlin"))) {
+        (name.startsWith("compile") && name.endsWith("Kotlin")) ||
+        name.startsWith("kaptGenerateStubs")) {
         dependsOn(prepareSecureAssetVault)
     }
 }
