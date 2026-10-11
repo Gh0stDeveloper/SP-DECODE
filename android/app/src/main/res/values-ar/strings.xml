@@ -130,9 +130,9 @@
     <string name="text_decode_invalid">بروتوكول غير معروف أو نص غير صالح أو تجاوز حد الحجم.</string>
     <string name="text_decode_unsupported">تعذر فك ترميز النص. ربما يكون غير مكتمل أو تالفًا أو يستخدم تشفيرًا مختلفًا.</string>
     <string name="whats_new_title">الجديد في SP-DECODE</string>
-    <string name="whats_new_description">الإصدار 1.0.7 · نتائج JSON كاملة لـ HTTP Injector</string>
-    <string name="whats_new_linklayer">HTTP Injector (.ehi): الاحتفاظ بجميع الحقول حتى عندما تكون نصًا عاديًا أو بترميز آخر.</string>
-    <string name="whats_new_fields">الحفاظ على أسطر حمولة HTTP والأسطر الفارغة وآخر الحقول داخل JSON دون حذف.</string>
+    <string name="whats_new_description">الإصدار 1.0.8 · نتائج JSON كاملة لـ NPVS v5</string>
+    <string name="whats_new_linklayer">NPVS v5: فك ترميز قيم Base64 المتداخلة التي تبدأ بـ npvs1: بعد التحقق من التوقيع.</string>
+    <string name="whats_new_fields">عرض خادم SSH واسم المستخدم وكلمة المرور وبيانات HTTP متعددة الأسطر في JSON مع الحفاظ على القيم غير المعلّمة.</string>
     <string name="whats_new_offline">تستمر محركات الملفات البالغ عددها 239 وبروتوكولات النص دون اتصال، ويظل السجل مشفرًا.</string>
     <string name="whats_new_continue">فهمت</string>
     <string name="native_decoder_pending">لم تتم إضافة أداة فك التشفير المحلية لهذه الصيغة بعد.</string>
