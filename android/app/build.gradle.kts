@@ -50,7 +50,12 @@ android {
             buildConfigField("String", "TRUSTED_SIGNER_SHA256", "\"\"")
         }
         release {
-            isMinifyEnabled = false
+            // R8 shrinks/obfuscates release code only; debug retains readable
+            // symbols for instrumentation and diagnostics.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro")
             // Fingerprint of the permanent certificate, injected by release CI.
             val trustedSha = providers.environmentVariable("SPDECODE_TRUSTED_SIGNER_SHA256").orNull
                 .orEmpty().lowercase()

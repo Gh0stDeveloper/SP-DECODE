@@ -73,12 +73,11 @@
     <string name="mask_passwords_title">Hide passwords in preview</string>
     <string name="mask_passwords_detail">Optional. Disabled by default; all decoded fields are visible unless enabled.</string>
     <string name="export_security_note">Sharing or copying original data can reveal credentials to other apps.</string>
-    <string name="developer_credits">Developer &amp; credits</string>
-    <string name="contribute_invitation">Open source project · collaborators, testers and decoder contributors are welcome. Report issues or contribute on GitHub.</string>
+    <string name="developer_credits">Developer</string>
+    <string name="contribute_invitation">Official developer contact, updates and community are available exclusively through Telegram.</string>
     <string name="contact_developer">Contact developer</string>
     <string name="telegram_group">Telegram community</string>
     <string name="telegram_channel">Telegram channel</string>
-    <string name="report_issue">Report an issue / Contribute</string>
     <string name="clear_confirm_title">Delete saved history?</string>
     <string name="clear_confirm_detail">All saved decoded results will be permanently deleted from this device. This cannot be undone.</string>
     <string name="complete_fields_count">%1$d complete fields</string>
@@ -86,7 +85,6 @@
     <string name="ordered_option">Structured · full ordered fields</string>
     <string name="original_option">Original decoder text</string>
     <string name="raw_masked_explanation">Raw decoder text may include credentials in embedded JSON. Disable masking in Settings to see it.</string>
-    <string name="project_repo">Repository · GitHub</string>
     <string name="history_select">Select</string>
     <string name="history_select_all">Select all</string>
     <string name="history_deselect_all">Deselect all</string>
@@ -139,4 +137,22 @@
     <string name="native_decoder_pending_short">Pending</string>
     <string name="native_decoder_mixed_short">Mixed</string>
     <string name="clear_current_result">Clear displayed result</string>
+    <string name="guide_settings_title">Interactive guide</string>
+    <string name="guide_settings_detail">Learn how to import files, decode text, review results and manage your history. You can restart the guide at any time.</string>
+    <string name="guide_replay">Start guided tour</string>
+    <string name="settings_version">Version %1$s</string>
+    <string name="settings_build_code">Build %1$d</string>
+    <string name="settings_security_offline">Local decoding · Encrypted history · Verified release signature</string>
+    <string name="guide_title">Welcome to SP-DECODE</string>
+    <string name="guide_step_one">Home: start here. Import a supported file from your device and inspect its decoded result.</string>
+    <string name="guide_step_two">Decode text: paste an encoded link or protocol directly from Home. Copy or export the full decoded result.</string>
+    <string name="guide_step_three">History: reopen previous results, find a configuration, mark favorites or delete records.</string>
+    <string name="guide_step_four">Formats: explore the supported file extensions and search for an app or format.</string>
+    <string name="guide_step_five">Settings: choose the language, control privacy, manage history and contact Ghost Developer through Telegram.</string>
+    <string name="guide_next">Next</string>
+    <string name="guide_finish">Finish</string>
+    <string name="guide_skip">Skip</string>
+    <string name="guide_progress">Step %1$d of %2$d</string>
+    <string name="guide_replay_short">Guide</string>
+    <string name="settings_contact_only">Developer support only via Telegram.</string>
 </resources>

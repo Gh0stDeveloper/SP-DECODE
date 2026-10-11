@@ -15,6 +15,13 @@ import java.security.MessageDigest
 internal object ReleaseIntegrity {
     fun isTrusted(context: Context): Boolean {
         if (BuildConfig.DEBUG) return true
+        // Rechecked at startup and on activity resume; no network required.
+        // Release debuggability and attached instrumentation are unexpected.
+        if (context.packageName != BuildConfig.APPLICATION_ID) return false
+        if ((context.applicationInfo.flags and
+                android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0) return false
+        if (android.os.Debug.isDebuggerConnected() ||
+            android.os.Debug.waitingForDebugger()) return false
         val expected = hex(BuildConfig.TRUSTED_SIGNER_SHA256) ?: return false
         if (expected.size != 32) return false
         return try {

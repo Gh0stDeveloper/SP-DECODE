@@ -83,6 +83,7 @@ class MainActivity : ComponentActivity() {
     private var navigationExplicit=false
     private var showBrandedSplash by mutableStateOf(true)
     private var showWhatsNew by mutableStateOf(false)
+    private var guideStep by mutableStateOf<Int?>(null)
     private var runningVersionCode=0L
     private var message by mutableStateOf<String?>(null)
     private var reveal:Boolean
@@ -143,8 +144,6 @@ class MainActivity : ComponentActivity() {
 
     private fun openExternal(url:String){
         if(url !in setOf(
-            "https://github.com/Gh0stDeveloper/SP-DECODE",
-            "https://github.com/Gh0stDeveloper/SP-DECODE/issues",
             "https://t.me/Gh0stDeveloper",
             "https://t.me/CodeBreakersHub",
             "https://t.me/GhostDeve"
@@ -175,6 +174,8 @@ class MainActivity : ComponentActivity() {
         val installed=packageManager.getPackageInfo(packageName,0)
         runningVersionCode=if(Build.VERSION.SDK_INT>=28)installed.longVersionCode else installed.versionCode.toLong()
         showWhatsNew=settings.getLong("last_seen_whats_new_version",0L)<runningVersionCode
+        if(savedInstanceState==null && !settings.getBoolean("first_run_guide_completed",false))
+            guideStep=0
         @Suppress("DEPRECATION")
         window.statusBarColor=android.graphics.Color.BLACK
         @Suppress("DEPRECATION")
@@ -261,9 +262,37 @@ class MainActivity : ComponentActivity() {
                     settings.edit().putLong("last_seen_whats_new_version",runningVersionCode).apply()
                     showWhatsNew=false
                 },
+                guideStep=guideStep,
+                onGuideNext={
+                    val next=(guideStep ?: 0)+1
+                    if(next>=FirstRunGuide.STEPS) {
+                        guideStep=null
+                        settings.edit().putBoolean("first_run_guide_completed",true).apply()
+                        tab=0
+                    }else {
+                        guideStep=next
+                        tab=FirstRunGuide.targetTab(next)
+                    }
+                },
+                onGuideSkip={
+                    guideStep=null
+                    settings.edit().putBoolean("first_run_guide_completed",true).apply()
+                    tab=0
+                },
+                onGuideRestart={
+                    guideStep=0
+                    tab=0
+                },
             )
         }
         if(savedInstanceState==null)handleExternalIntent(intent)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // A signature/debuggable check that runs only at cold start can be
+        // bypassed by a later process attachment. Defense-in-depth recheck.
+        if(!ReleaseIntegrity.isTrusted(this)) finishAndRemoveTask()
     }
 
     override fun onNewIntent(intent:Intent){
