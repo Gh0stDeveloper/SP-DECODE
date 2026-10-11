@@ -251,9 +251,53 @@ def decode_npvs(data: bytes) -> dict:
     return {"metadata": metadata, "document": document}
 
 
+def _decode_embedded_npvs1(value, depth: int = 0):
+    """Unwrap authenticated JSON's explicit npvs1: Base64 string layers.
+
+    Opaque fields (for example SSH passwords) are never guessed to be Base64:
+    only strings with the NPV legacy encoding marker are transformed.
+    """
+    if depth > 64:
+        raise DecodeError("Nested NPVS field encoding exceeds maximum depth")
+    if isinstance(value, dict):
+        return {key: _decode_embedded_npvs1(item, depth + 1)
+                for key, item in value.items()}
+    if isinstance(value, list):
+        return [_decode_embedded_npvs1(item, depth + 1) for item in value]
+    if not isinstance(value, str) or not value.startswith("npvs1:"):
+        return value
+
+    encoded = "".join(value[6:].split())
+    if not encoded or len(encoded) > 2 * _MAX_FILE:
+        raise DecodeError("Invalid NPVS embedded Base64 field size")
+    try:
+        normalized = encoded + "=" * (-len(encoded) % 4)
+        decoded = base64.b64decode(normalized, altchars=b"-_", validate=True)
+        text = decoded.decode("utf-8")
+    except (ValueError, UnicodeError) as exc:
+        raise DecodeError("Invalid NPVS embedded Base64/UTF-8 field") from exc
+
+    if text.startswith("npvs1:"):
+        return _decode_embedded_npvs1(text, depth + 1)
+    if text.lstrip().startswith(("{", "[")):
+        try:
+            nested = _json_load(decoded)
+        except DecodeError:
+            # A legitimate plaintext string can begin with a brace.
+            return text
+        return _decode_embedded_npvs1(nested, depth + 1)
+    return text
+
+
+def decode_npvs_complete(file_bytes: bytes) -> dict:
+    """Decrypt NPVS v5 and fully unwrap documented npvs1: embedded values."""
+    return _decode_embedded_npvs1(decode_npvs(file_bytes))
+
+
 def run(file_bytes: bytes) -> str:
-    """SP-DECODE-compatible entry point; failures raise DecodeError."""
-    return json.dumps(decode_npvs(file_bytes), ensure_ascii=False, indent=2, allow_nan=False)
+    """SP-DECODE-compatible complete JSON export; failures raise DecodeError."""
+    return json.dumps(decode_npvs_complete(file_bytes), ensure_ascii=False,
+                      indent=2, allow_nan=False)
 
 
 def main() -> int:
