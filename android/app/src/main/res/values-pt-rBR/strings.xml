@@ -6,7 +6,7 @@
     <string name="import_detail">Selecione um arquivo compatível do dispositivo</string>
     <string name="select_file">Selecionar arquivo</string>
     <string name="home_import_action">Importar arquivo</string>
-    <string name="offline_status">Processamento local · Sem Internet</string>
+    <string name="offline_status">Arquivos/textos · Offline; Nuvem · Online</string>
     <string name="result">Resultado</string>
     <string name="illustrative">Exemplo ilustrativo</string>
     <string name="sample">Exemplo</string>
