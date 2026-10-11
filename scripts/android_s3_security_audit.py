@@ -108,7 +108,13 @@ def android_guards(root: Path = ROOT) -> list[dict]:
     diagnostic = (root / DIAGNOSTICS).read_text("utf-8")
     conditions = {
         "app-backup-disabled": 'android:allowBackup="false"' in manifest,
-        "no-internet-permission": not re.search(r'<uses-permission[^>]+android:name="android.permission.(?:INTERNET|ACCESS_NETWORK_STATE)"', manifest),
+        "cloud-network-permission-opt-in-only":
+            len(re.findall(r'<uses-permission[^>]+android:name="android.permission.INTERNET"', manifest)) == 1
+            and "android.permission.ACCESS_NETWORK_STATE" not in manifest
+            and "android:usesCleartextTraffic=\"false\"" in manifest
+            and "decodeOnline(reference" not in activity
+            and "HttpInjectorCloudPort.decodeOnline(this@MainActivity,parsed)" in activity
+            and (root / "android/app/src/main/java/com/ghostdeveloper/spdecode/HttpInjectorCloudPort.kt").is_file(),
         "no-application-debuggable": 'android:debuggable="true"' not in manifest,
         "clipboard-is-sensitive": 'android.content.extra.IS_SENSITIVE' in activity,
         "no-raw-throwable-api": not re.search(r"fun\s+record\s*\([^)]*(?:Throwable|Exception|String|ByteArray|DecodeView)", diagnostic),
