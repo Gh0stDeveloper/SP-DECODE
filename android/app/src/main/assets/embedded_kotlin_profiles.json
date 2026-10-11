@@ -91,5 +91,47 @@
       "AYJZIHTTPINIECKC",
       "SBHSIHTTPINILITE"
     ]
+  },
+  "specialKeyFamilies": {
+    "e1": {
+      "sentinelAscii": "SENTINEL_TUNNEL_CONFIG_KEY_V1_20",
+      "v2boxKeyHex": "5632426f78456e6372797074696f6e4b6579323032365f536563726574212325",
+      "slipnetKeyHex": "214f052025b2f949605a5429ec3d5fa80c2022c168ad946e68852d447214dbd3",
+      "eutPasswordLatin1": "@Hh8Y2/[q$-@2f<9",
+      "juanPassword": "rdxiNA3WXwfRAjdm@092898yue"
+    },
+    "e2": {
+      "wyrPassword": "84EE1C1019099C62",
+      "intPassword": "AD079CFF21766C8A",
+      "wyrlChaChaKeyHex": "bb7f0ac243b7e737ad621c1c43b620b8c240c08f10ebccc97ef91e1bd57afaea",
+      "arMainKeyHex": "496f8d4107be912a6b3b23057dd5ffafaa999bdf77c6a53d1b49b6b0fc555333",
+      "arFieldKeyHex": "d4b28c7cc782e7b756718e84cdb4ff4ba79a3a3cb2ddbec55b8c235853e22dca",
+      "arFieldIvHex": "0123456789abcdef1032547698badcfe",
+      "ecPassword": "technore_101014",
+      "wyrlPbkdfPassword": "acf54cb87cb8bca0",
+      "fthpPasswords": [
+        "furious0982",
+        "Version6"
+      ]
+    },
+    "f2": {
+      "crevPasswords": [
+        "DEV_CREEB",
+        "CREEB",
+        "dev_creeb",
+        "DEV_CREV"
+      ],
+      "ktrAesHex": "6f8deb1015ca70be2b53aef0858d77811f352c073b6708d72d9d10a30914dff9",
+      "ktrIvHex": "000102030405060708090a0b0c0d0e0f",
+      "devSeed": "demondevs",
+      "devPassword": "❤️🧑‍💻Bøbõ⁰⁰!!",
+      "devAlphabet": "           ​‌‍‎‏",
+      "zobaPassword": "technore_008515\u0000",
+      "n4Password": "modmkk",
+      "n4Seed": "jdk",
+      "n4Table2": "′':‽,·ထ\\u200cယငခပဆအနတမ",
+      "n4Table3": "′':‽,·難手火水日山田金中大",
+      "n4Table4": "           ​‌‍‎‏"
+    }
   }
 }
