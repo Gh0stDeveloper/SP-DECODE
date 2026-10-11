@@ -4,7 +4,7 @@
 
 The separate research branch analysis/tls-tunnel-850 identified six AES-256-GCM configuration-key profiles for TLS Tunnel 8.5.0. It authenticated one private real TLS export with profile 1; the old key is profile 6. The private sample is not in the repository.
 
-Python decoders/Python/TLS.py and Android TlsReferencePort.kt now share the verified six-profile container algorithm. A failed GCM authentication tag never yields plaintext. Five modern profiles keep all previously unknown fields in the structured _tls.fields array as index, raw and decoded value; they do not mislabel modern booleans as old DNS settings. The historic key retains the older field names. Unknown or invalid inner Base64 remains untouched.
+Python decoders/Python/TLS.py and Android TlsReferencePort.kt now share the verified six-profile container algorithm. A failed GCM authentication tag never yields plaintext. Five modern profiles keep all previously unknown fields in the structured _tls.fields array as index, raw and decoded value; they do not mislabel modern booleans as old DNS settings. The historic key retains the older field names and the exact old on-screen/CLI output without additional metadata; the programmatic Python decrypt_tls_payload() still exposes detailed metadata for all six profiles. Unknown or invalid inner Base64 remains untouched.
 
 The Android parity corpus contains six independently generated authenticated TLS synthetic profiles and compares byte-for-byte with the original Python outputs. The private real export has not been loaded on the Android device.
 
