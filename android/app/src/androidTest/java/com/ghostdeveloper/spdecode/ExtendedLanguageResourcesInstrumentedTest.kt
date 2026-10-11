@@ -32,7 +32,10 @@ class ExtendedLanguageResourcesInstrumentedTest {
                 R.string.cloud_http_injector_privacy, R.string.hc_auth_failed,
                 R.string.hc_auth_hwid_hint, R.string.npvs_private_key_unsupported,
             )) assertTrue("missing resource $tag:$id",res.getString(id).isNotBlank())
-            assertTrue(res.getString(R.string.guide_progress,1,7).contains("7"))
+            val progress=res.getString(R.string.guide_progress,1,7)
+            // Android may format 7 as ۷ in Persian; test numeric value, not glyph.
+            assertTrue("localized progress $tag: $progress",
+                progress.any { Character.getNumericValue(it)==7 })
             assertTrue(res.getString(R.string.hc_auth_description,"file.hc")
                 .contains("file.hc"))
             assertTrue(res.getString(R.string.batch_import_summary,1,2).isNotBlank())
