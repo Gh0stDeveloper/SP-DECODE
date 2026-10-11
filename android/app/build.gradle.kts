@@ -1,3 +1,9 @@
+import java.io.File
+import java.security.SecureRandom
+import javax.crypto.Cipher
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -35,7 +41,7 @@ val prepareSecureAssetVault = tasks.register("prepareSecureAssetVault") {
         destination.deleteRecursively()
         codeRoot.deleteRecursively()
         destination.mkdirs()
-        val random = java.security.SecureRandom()
+        val random = SecureRandom()
         val key = ByteArray(32).also(random::nextBytes)
         val share = ByteArray(32).also(random::nextBytes)
         val other = ByteArray(32) { i -> (key[i].toInt() xor share[i].toInt()).toByte() }
@@ -43,17 +49,17 @@ val prepareSecureAssetVault = tasks.register("prepareSecureAssetVault") {
             source.walkTopDown().filter { it.isFile }.forEach { input ->
                 val relative = input.relativeTo(source).invariantSeparatorsPath
                 val isProtected = relative in vaultNames
-                val output = java.io.File(destination, if (isProtected) "$relative.spv" else relative)
+                val output = File(destination, if (isProtected) "$relative.spv" else relative)
                 output.parentFile.mkdirs()
                 if (!isProtected) {
                     input.copyTo(output, overwrite = true)
                 } else {
                     val nonce = ByteArray(12).also(random::nextBytes)
-                    val cipher = javax.crypto.Cipher.getInstance("AES/GCM/NoPadding")
+                    val cipher = Cipher.getInstance("AES/GCM/NoPadding")
                     cipher.init(
-                        javax.crypto.Cipher.ENCRYPT_MODE,
-                        javax.crypto.spec.SecretKeySpec(key, "AES"),
-                        javax.crypto.spec.GCMParameterSpec(128, nonce),
+                        Cipher.ENCRYPT_MODE,
+                        SecretKeySpec(key, "AES"),
+                        GCMParameterSpec(128, nonce),
                     )
                     cipher.updateAAD("spdecode:s1:$relative".toByteArray(Charsets.UTF_8))
                     output.writeBytes(
@@ -63,13 +69,13 @@ val prepareSecureAssetVault = tasks.register("prepareSecureAssetVault") {
                 }
             }
             val required = vaultNames - "npv_whitebox.bin"
-            require(required.all { java.io.File(destination, "$it.spv").isFile }) {
+            require(required.all { File(destination, "$it.spv").isFile }) {
                 "Missing secure vault source material"
             }
-            require(vaultNames.none { java.io.File(destination, it).exists() }) {
+            require(vaultNames.none { File(destination, it).exists() }) {
                 "Plaintext protected asset was packaged"
             }
-            val keyFile = java.io.File(
+            val keyFile = File(
                 codeRoot,
                 "com/ghostdeveloper/spdecode/parity/VaultBuildKey.kt",
             )
