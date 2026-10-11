@@ -128,9 +128,9 @@
     <string name="text_decode_invalid">Unrecognized text protocol, invalid input or size limit exceeded.</string>
     <string name="text_decode_unsupported">Could not decode this text. It may be incomplete, corrupted or a different cipher version.</string>
     <string name="whats_new_title">What\'s new in SP-DECODE</string>
-    <string name="whats_new_description">Version 1.0.9 · Ultra Tunnel full JSON fields</string>
-    <string name="whats_new_linklayer">Ultra Tunnel (.ultra): nested proxy, DNS, SNI and payload fields now decode using authenticated AES-GCM with salt AAD.</string>
-    <string name="whats_new_fields">Security: verify the official release signing certificate; Telegram copy credits Ghost Developer only.</string>
+    <string name="whats_new_description">Version 1.1.0 · Settings, interactive guide and security</string>
+    <string name="whats_new_linklayer">Settings: Ghost Developer Telegram contact, group and channel only. Installed version and build code are now accurate.</string>
+    <string name="whats_new_fields">New localized first-use walkthrough, restartable from Settings. Production R8 optimization and offline signing integrity checks protect official APKs.</string>
     <string name="whats_new_offline">All 239 native file routes and text decoders remain offline. Previous results stay encrypted on this device.</string>
     <string name="whats_new_continue">Got it</string>
     <string name="native_decoder_pending">Native decoder not yet integrated for this format.</string>

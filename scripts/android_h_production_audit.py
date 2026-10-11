@@ -130,7 +130,7 @@ def inspect(expected_version: str | None = None, expected_code: int | None = Non
         and readiness.get("ownerStableAcceptance", {}).get("approved") is True
         and readiness.get("ownerStableAcceptance", {}).get("version") == version
         and not check(readiness, "stable", version)
-        and bool(check(readiness, "stable", "1.1.0"))
+        and bool(check(readiness, "stable", "1.1.1"))
     )
     no_go = (
         readiness.get("decision") == "NO-GO"

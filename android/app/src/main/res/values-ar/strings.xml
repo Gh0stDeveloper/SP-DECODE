@@ -128,9 +128,9 @@
     <string name="text_decode_invalid">بروتوكول غير معروف أو نص غير صالح أو تجاوز حد الحجم.</string>
     <string name="text_decode_unsupported">تعذر فك ترميز النص. ربما يكون غير مكتمل أو تالفًا أو يستخدم تشفيرًا مختلفًا.</string>
     <string name="whats_new_title">الجديد في SP-DECODE</string>
-    <string name="whats_new_description">الإصدار 1.0.9 · حقول Ultra Tunnel الكاملة</string>
-    <string name="whats_new_linklayer">Ultra Tunnel (.ultra): فك تشفير حقول البروكسي و DNS و SNI والحمولة باستخدام AES-GCM الموثق مع AAD للملح.</string>
-    <string name="whats_new_fields">الأمان: التحقق من شهادة توقيع الإصدار الرسمي وعرض Ghost Developer فقط في الاعتمادات.</string>
+    <string name="whats_new_description">الإصدار 1.1.0 · الإعدادات والدليل والأمان</string>
+    <string name="whats_new_linklayer">الإعدادات: تواصل مع Ghost Developer عبر تيليغرام فقط، وعرض رقم الإصدار ورقم البناء الصحيح.</string>
+    <string name="whats_new_fields">دليل تفاعلي لأول استخدام بأربع لغات يمكن إعادة تشغيله من الإعدادات، مع تشويش R8 وفحوص سلامة الإصدار الرسمي.</string>
     <string name="whats_new_offline">تستمر محركات الملفات البالغ عددها 239 وبروتوكولات النص دون اتصال، ويظل السجل مشفرًا.</string>
     <string name="whats_new_continue">فهمت</string>
     <string name="native_decoder_pending">لم تتم إضافة أداة فك التشفير المحلية لهذه الصيغة بعد.</string>
