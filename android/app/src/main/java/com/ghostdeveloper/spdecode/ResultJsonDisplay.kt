@@ -22,20 +22,26 @@ object ResultJsonDisplay {
         """(?i)^\s*│?\s*(?:SP\s*[-–]\s*DECODE|[┌└├╔╚].*|(?:Developer|Group|Channel|Créditos|Credits|Copyright)\s*:)""")
     private const val MAX_DEPTH=24
 
-    fun render(raw:String,suffix:String,maskCredentials:Boolean=false):String {
-        // Supports plain JSON arrays, primitives and objects, not just the
-        // original bot-style text accepted by ResultPresentation.parse().
+    fun render(raw:String,suffix:String,maskCredentials:Boolean=false):String =
+        gson.toJson(element(raw,suffix,maskCredentials))
+
+    /**
+     * Parse once for the on-screen tree. UI never needs to build a multi-MB
+     * pretty-printed String. Exports keep using render() unchanged.
+     */
+    internal fun element(raw:String,suffix:String,maskCredentials:Boolean=false):JsonElement {
         val trimmed=raw.trim()
         val direct=if(trimmed.startsWith("{")||trimmed.startsWith("["))parse(trimmed)
             else null
-        val document=ResultPresentation.parse(raw,suffix)
-        val base=when {
-            direct!=null->direct
-            document.jsonParsed||document.fields.isNotEmpty()->
+        // Avoid a second field-flattening and pretty-printing pass for JSON
+        // documents which have already parsed successfully.
+        val base=direct ?: run {
+            val document=ResultPresentation.parse(raw,suffix)
+            if(document.jsonParsed||document.fields.isNotEmpty())
                 parse(document.json) ?: JsonObject()
-            else->fallback(raw,suffix)
+            else fallback(raw,suffix)
         }
-        return gson.toJson(normalize(base,maskCredentials,0))
+        return normalize(base,maskCredentials,0)
     }
 
     private fun fallback(raw:String,suffix:String):JsonObject {
