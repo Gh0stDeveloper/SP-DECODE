@@ -66,7 +66,8 @@ def private_filename(path: Path) -> bool:
     name = path.name.lower()
     return (
         name in PRIVATE_FILE_NAMES
-        or name in {".env", "config.json"} and len(path.parts) <= 2
+        or name == ".env"
+        or name == "config.json" and len(path.parts) <= 2
         or name.startswith(".env.") and not name.endswith(".example")
         or path.suffix.lower() in PRIVATE_SUFFIXES
     )
