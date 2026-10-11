@@ -199,20 +199,29 @@ class EHIDecryptor:
 
     @staticmethod
     def _decode_inner_fields(parsed_json: Dict[str, Any], salt_key: str) -> Dict[str, Any]:
-        cleaned_json = {}
-        
-        for k, v in parsed_json.items():
-            if isinstance(v, str) and v.strip():
-                decrypted_val = EHIDecryptor._decode_config_message(v) if k == "configMessage" else EHIDecryptor._decrypt_xor_layer(v, salt_key)
-                    
-                # Some HTTP Injector exporters keep individual fields as
-                # plaintext or use a newer, unrecognized field encoding.
-                # Retain those exact strings; silently discarding a key
-                # produces incomplete JSON in Android and in the bot.
-                cleaned_json[k] = v if decrypted_val is None else decrypted_val
-            else:
-                cleaned_json[k] = v
-        return cleaned_json
+        """Decode field-local known XOR/configMessage wrappers at every JSON depth.
+
+        The historical decoder only inspected the root dictionary. Some current
+        profiles put encrypted scalar fields inside arrays/objects. Preserve every
+        key and original string when the known scheme cannot authenticate/parse
+        the value. Never reinterpret random-looking strings or invent a cipher.
+        """
+        def visit(value: Any, name: str = "", depth: int = 0) -> Any:
+            if depth > 32:
+                return value
+            if isinstance(value, dict):
+                return {key: visit(item, key if isinstance(key,str) else "", depth+1)
+                        for key,item in value.items()}
+            if isinstance(value, list):
+                return [visit(item,"",depth+1) for item in value]
+            if not isinstance(value,str) or not value.strip():
+                return value
+            decoded = (EHIDecryptor._decode_config_message(value)
+                       if name == "configMessage"
+                       else EHIDecryptor._decrypt_xor_layer(value,salt_key))
+            return value if decoded is None else decoded
+
+        return visit(parsed_json)
 
     @staticmethod
     def _xxtea_decrypt(data: bytes, key: bytes) -> bytes:
