@@ -2,9 +2,16 @@ package com.ghostdeveloper.spdecode
 
 import android.content.Context
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -56,6 +63,21 @@ class FirstRunGuideInstrumentedTest {
         }
         ui.onNodeWithText(context.getString(R.string.guide_skip)).performClick()
         ui.runOnIdle { assertFalse(visible) }
+    }
+
+    @Test fun overlayIsCenteredAndGuideActionsFitCompactScreens() {
+        val ctx=InstrumentationRegistry.getInstrumentation().targetContext
+        ui.setContent {
+            Box(Modifier.size(320.dp,420.dp).testTag("guide_viewport")) {
+                CenteredFirstRunGuide(0,onNext={},onSkip={})
+            }
+        }
+        val viewport=ui.onNodeWithTag("guide_viewport").getUnclippedBoundsInRoot()
+        val panel=ui.onNodeWithTag("first_run_guide_panel").getUnclippedBoundsInRoot()
+        assertEquals((viewport.top.value+viewport.bottom.value)/2f,
+            (panel.top.value+panel.bottom.value)/2f,3f)
+        ui.onNodeWithText(ctx.getString(R.string.guide_next)).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.guide_skip)).assertExists()
     }
 
     @Test fun onboardingTranslationsExistInAllAvailableLanguages() {

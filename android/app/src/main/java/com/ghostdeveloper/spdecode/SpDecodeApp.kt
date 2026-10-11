@@ -111,9 +111,9 @@ fun SpDecodeApp(
                         onLanguage,onMaskCredentials,onClear,onExternalLink,
                         retentionDays,onRetention,onShowGuide=onGuideRestart)
                 }
-            }
-            if(guideStep!=null && !whatsNew && !busy && error==null && dialog==null) {
-                FirstRunGuidePanel(guideStep,onGuideNext,onGuideSkip)
+                if(guideStep!=null && !whatsNew && !busy && error==null && dialog==null) {
+                    CenteredFirstRunGuide(guideStep,onGuideNext,onGuideSkip)
+                }
             }
             BottomTabs(activeTab,onTab,
                 spotlight=if(guideStep!=null && !whatsNew && !busy)

@@ -128,10 +128,10 @@
     <string name="text_decode_invalid">Protocolo no reconocido, texto inválido o límite de tamaño excedido.</string>
     <string name="text_decode_unsupported">No fue posible decodificar este texto. Puede estar incompleto, dañado o usar otra variante de cifrado.</string>
     <string name="whats_new_title">Novedades de SP-DECODE</string>
-    <string name="whats_new_description">Versión 1.1.0 · Ajustes, guía y seguridad</string>
-    <string name="whats_new_linklayer">Ajustes: contacto, grupo y canal de Ghost Developer únicamente por Telegram; versión y código de compilación reales.</string>
-    <string name="whats_new_fields">Nueva guía interactiva de inicio en cuatro idiomas, reiniciable desde Ajustes. Ofuscación R8 y controles locales de integridad de las APK oficiales.</string>
-    <string name="whats_new_offline">Los 239 motores de archivos y los protocolos de texto siguen funcionando sin conexión. El historial continúa cifrado.</string>
+    <string name="whats_new_description">Versión 1.1.1 · TLS 8.5.0, HTTP Injector y Dark Tunnel</string>
+    <string name="whats_new_linklayer">TLS Tunnel 8.5.0: seis perfiles de claves AES-GCM en Android; los métodos anteriores siguen disponibles.</string>
+    <string name="whats_new_fields">HTTP Injector: mejor tratamiento de campos anidados y codificados. Las variantes .ehi excepcionales requieren pruebas con archivos reales.</string>
+    <string name="whats_new_offline">Dark Tunnel: descifrado de textos solo en Base64. Guía centrada en pantalla. Los 239 formatos siguen sin conexión.</string>
     <string name="whats_new_continue">Entendido</string>
     <string name="native_decoder_pending">El decodificador nativo de este formato todavía no está integrado.</string>
     <string name="native_decoder_pending_short">Pendiente</string>
