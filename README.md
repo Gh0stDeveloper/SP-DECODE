@@ -4,7 +4,7 @@
 
 > **Android v1.0.7 production patch (owner-approved, CI/signature gated):** HTTP Injector (`.ehi`) now preserves non-encrypted/unknown fields and multiline HTTP payloads in the full JSON view. 239 native file routes and offline text protocols remain. The owner reports manually validating the other formats; current-vendor exhaustive certification remains incomplete. Stable release approval applies **only to 1.0.7 after exact-main Python/Android success and permanent keystore signing**. [Evidence and limits](docs/android/EHI_COMPLETE_JSON_1_0_7.md).
 
-# SP-DECODE
+> **Android v1.0.8 stable production update (OWNER-GO, exact-main CI/signature gated):** NPVS v5 compact app-key decoding now has Python/Kotlin parity for nested `npvs1:` fields and produces fully unwrapped JSON after cryptographic authentication. The existing HTTP Injector v1.0.7 complete JSON fix is preserved. NPVS v1 and recipient-locked v6 remain outside this decoder's coverage; independent testing of every current vendor exporter is not claimed. [Release evidence and limits](docs/android/NPVS_V5_ANDROID_1_0_8_RELEASE.md).\n\n# SP-DECODE
 
 **Modular Telegram configuration decoder powered by Python, Node.js and PHP.**
 
