@@ -50,7 +50,7 @@ object AndroidOfflineDecoderRouter {
         }
         if (input.size > maxInput) return null
         if ((userPassword!=null || userHwid!=null) && (format.suffix != "hc" ||
-            HcHccfgPort.inspectRequirements(input)?.protected != true)) return null
+            HcHccfgPort.inspectRequirements(input)?.requiresCredentials != true)) return null
         if(userPassword!=null && !HcHccfgPort.requiresExternalPassword(input))return null
         // Phase A: 178 bot-only suffixes are catalogued but have no native port.
         // Keep a hard gate before the old 61-case dispatcher to prevent
