@@ -124,9 +124,6 @@ internal object IndependentF2Port {
         return sc.gson.toJson(obj)
     }
 
-    private val table2="′':‽,·ထ\u200cယငခပဆအနတမ"
-    private val table3="′':‽,·難手火水日山田金中大"
-    private val table4="           ​‌‍‎‏"
     private val preserveN4=setOf("isSSL","isPayloadSSL","isDirect","isSSLRp","isInject",
         "isUdp","isV2ray","isSlow","isOvpn","isHwid","isReward")
     private val n4Morse=mapOf(
@@ -149,7 +146,7 @@ internal object IndependentF2Port {
         }
         return out.toString().trim()
     }
-    private fun n4DecryptField(value:String,table:String):String {
+    private fun n4DecryptField(value:String,table:String,keys:PhaseS2FamilyMaterials.F2):String {
         if(value.length<2||value.length%2!=0)return value
         return try {
             val bytes=ByteArray(value.length/2) { index->
@@ -159,13 +156,13 @@ internal object IndependentF2Port {
             }
             val encoded=crypto.utf8(bytes)
             val ciphertext=crypto.b64(encoded)
-            val password="modmkk".toByteArray()
+            val password=keys.n4Password
             val hex=password.joinToString(""){"%02X".format(it.toInt() and 255)}
             val key=sc.sha(hex.toByteArray())
             crypto.utf8(sc.cbc(key,ByteArray(16),ciphertext))
         }catch(_:Exception){value}
     }
-    private fun n4Deep(obj:JsonElement,level:Int):JsonElement {
+    private fun n4Deep(obj:JsonElement,level:Int,keys:PhaseS2FamilyMaterials.F2):JsonElement {
         if(level>32)return obj
         if(obj.isJsonObject){
             val data=obj.asJsonObject
@@ -177,13 +174,13 @@ internal object IndependentF2Port {
                 }else if(value.isJsonPrimitive&&value.asJsonPrimitive.isString&&value.asString.isNotEmpty()){
                     val raw=value.asString
                     val plain=when(key){
-                        "N4User","N4Pass"->n4DecryptField(raw,table2)
-                        "ServerIP","ProxyIP"->n4DecryptField(raw,table3)
-                        "Payload","SNI","v2rayjson","ovpn_config"->n4DecryptField(raw,table4)
+                        "N4User","N4Pass"->n4DecryptField(raw,keys.table2,keys)
+                        "ServerIP","ProxyIP"->n4DecryptField(raw,keys.table3,keys)
+                        "Payload","SNI","v2rayjson","ovpn_config"->n4DecryptField(raw,keys.table4,keys)
                         else -> {
                             var result=raw
-                            for(table in listOf(table2,table3,table4)){
-                                result=n4DecryptField(raw,table)
+                            for(table in listOf(keys.table2,keys.table3,keys.table4)){
+                                result=n4DecryptField(raw,table,keys)
                                 if(result!=raw)break
                             }
                             result
@@ -191,12 +188,12 @@ internal object IndependentF2Port {
                     }
                     data.addProperty(key,plain)
                 }else if(value.isJsonObject||value.isJsonArray){
-                    data.add(key,n4Deep(value,level+1))
+                    data.add(key,n4Deep(value,level+1,keys))
                 }
             }
         }else if(obj.isJsonArray){
             val arr=obj.asJsonArray
-            for(i in 0 until arr.size())arr.set(i,n4Deep(arr[i],level+1))
+            for(i in 0 until arr.size())arr.set(i,n4Deep(arr[i],level+1,keys))
         }
         return obj
     }
@@ -205,10 +202,10 @@ internal object IndependentF2Port {
         val encrypted=crypto.b64(source)
         require(encrypted.size%16==0 && encrypted.isNotEmpty())
         val cipher=Cipher.getInstance("AES/ECB/PKCS5Padding")
-        cipher.init(Cipher.DECRYPT_MODE,SecretKeySpec(sc.sha("jdk".toByteArray()),"AES"))
+        cipher.init(Cipher.DECRYPT_MODE,SecretKeySpec(sc.sha(keys.n4Seed),"AES"))
         val clear=crypto.utf8(cipher.doFinal(encrypted))
         val doc=sc.parseDocument(clear)?.takeIf{it.isJsonObject}?:return null
-        return sc.gson.toJson(n4Deep(doc,0))
+        return sc.gson.toJson(n4Deep(doc,0,keys))
     }
 
     private fun ktrDecrypt(raw:String,keys:PhaseS2FamilyMaterials.F2):String?{
