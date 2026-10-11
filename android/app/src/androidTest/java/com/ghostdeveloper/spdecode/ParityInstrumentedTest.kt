@@ -16,6 +16,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ParityInstrumentedTest {
     private val assets get() = InstrumentationRegistry.getInstrumentation().context.assets
+    private val target get() = InstrumentationRegistry.getInstrumentation().targetContext
 
     private fun fixture(name: String): ByteArray =
         assets.open("parity/$name").use { it.readBytes() }
@@ -40,18 +41,18 @@ class ParityInstrumentedTest {
     fun syntheticTlsAesGcmMatchesLinuxRawUtf8() {
         assertArrayEquals(
             fixture("tls-aesgcm.txt"),
-            TlsReferencePort.decode(fixture("tls-aesgcm.tls"))?.toByteArray(Charsets.UTF_8)
+            TlsReferencePort.decode(target,fixture("tls-aesgcm.tls"))?.toByteArray(Charsets.UTF_8)
         )
     }
 
     @Test
     fun tlsRejectsCorruptionAndOversizedInput() {
-        assertNull(TlsReferencePort.decode(byteArrayOf()))
-        assertNull(TlsReferencePort.decode("not a TLS profile".toByteArray()))
-        assertNull(TlsReferencePort.decode(ByteArray(1024 * 1024 + 1)))
+        assertNull(TlsReferencePort.decode(target,byteArrayOf()))
+        assertNull(TlsReferencePort.decode(target,"not a TLS profile".toByteArray()))
+        assertNull(TlsReferencePort.decode(target,ByteArray(1024 * 1024 + 1)))
         val damaged = fixture("tls-aesgcm.tls").clone()
         damaged[damaged.size / 2] = (damaged[damaged.size / 2].toInt() xor 1).toByte()
-        assertNull(TlsReferencePort.decode(damaged))
+        assertNull(TlsReferencePort.decode(target,damaged))
     }
 
     @Test
