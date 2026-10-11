@@ -1,6 +1,9 @@
 package com.ghostdeveloper.spdecode
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -9,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,16 +43,37 @@ internal object FirstRunGuide {
     }
 }
 
+/** Center the onboarding overlay in the available content viewport. */
 @Composable
-internal fun FirstRunGuidePanel(step: Int, onNext: () -> Unit, onSkip: () -> Unit) {
+internal fun CenteredFirstRunGuide(step: Int, onNext: () -> Unit, onSkip: () -> Unit) {
+    BoxWithConstraints(
+        modifier=Modifier.fillMaxSize().background(Color.Black.copy(alpha=0.70f)),
+        contentAlignment=Alignment.Center,
+    ) {
+        FirstRunGuidePanel(
+            step=step,
+            onNext=onNext,
+            onSkip=onSkip,
+            modifier=Modifier.heightIn(max=(maxHeight-12.dp).coerceAtLeast(0.dp)),
+        )
+    }
+}
+
+@Composable
+internal fun FirstRunGuidePanel(
+    step: Int,
+    onNext: () -> Unit,
+    onSkip: () -> Unit,
+    modifier: Modifier=Modifier,
+) {
     Surface(
-        modifier=Modifier.fillMaxWidth().padding(horizontal=13.dp, vertical=6.dp),
+        modifier=modifier.fillMaxWidth().padding(horizontal=13.dp, vertical=6.dp).testTag("first_run_guide_panel"),
         color=Color(0xFF242424),
         shape=RoundedCornerShape(17.dp),
         border=BorderStroke(1.dp,Color(0xFF565656)),
         shadowElevation=7.dp,
     ) {
-        Column(Modifier.padding(horizontal=17.dp,vertical=13.dp),
+        Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal=17.dp,vertical=13.dp),
             verticalArrangement=Arrangement.spacedBy(8.dp)) {
             Row(verticalAlignment=Alignment.CenterVertically) {
                 Icon(Icons.Outlined.TipsAndUpdates, null,
