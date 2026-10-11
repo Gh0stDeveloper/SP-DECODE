@@ -1,5 +1,6 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
 import android.util.Base64
 import java.nio.ByteBuffer
 import java.nio.charset.CodingErrorAction
@@ -18,21 +19,12 @@ import javax.crypto.spec.SecretKeySpec
 object TlsReferencePort {
     private const val MAX_INPUT_BYTES = 1024 * 1024
     private const val MAX_OUTPUT_BYTES = 1024 * 1024
-    private const val KEY_HEX =
-        "6b303068c2acc2b9c2b221352473c2b0c2b725c2a824614b674433c2b0467856"
-    private val configKeys=listOf(
-        "2474763534327665643235345671c38b72775742627236c2b324254856232433",
-        "33cf82ceb7cf84e1baa135566ec6b0686e33d8b661d0bed0bdd0b12578745630",
-        "23e4bc9acf82ceb7cf84e1baa135676ec6b0686e3332d8b661d0bed0bdd0b125",
-        "23e4bc9ae685a246e1baa14235676ec6b0686e3332d8b661d0bed0bdd0b12534",
-        "234673486ee1baa14246355c3332d8b6612534407c666433653247462847c38b",
-        KEY_HEX,
-    ).map(::hex)
     private val b64Alphabet=Regex("^[A-Za-z0-9+/]*={0,2}$")
 
-    fun decode(input: ByteArray): String? {
+    fun decode(context: Context, input: ByteArray): String? {
         if (input.isEmpty() || input.size > MAX_INPUT_BYTES) return null
         return try {
+            val configKeys = AdditionalDecoderMaterials.tls(context)
             val text = strictUtf8(input).trim()
             val noScheme = if (text.startsWith("tls://",ignoreCase=true))
                 text.substring(6) else text
