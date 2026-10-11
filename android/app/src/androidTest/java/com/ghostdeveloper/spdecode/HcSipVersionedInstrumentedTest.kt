@@ -82,7 +82,8 @@ class HcSipVersionedInstrumentedTest {
         assertNull(AndroidOfflineDecoderRouter.decode(app,"locked.hc",input))
         val document=AndroidOfflineDecoderRouter.decodeWithCredentials(
             app,"locked.hc",input,null,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-        assertNotNull(document)
+        assertNotNull("stage="+HcHccfgPort.syntheticTestStage(
+            input,null,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),document)
         val root=JSONObject(document!!)
         assertEquals("7.11.19 (885)",root.getString("app_version"))
         assertEquals(false,root.getJSONObject("requirements").getBoolean("password_required"))
@@ -123,7 +124,8 @@ class HcSipVersionedInstrumentedTest {
                 app,"dual.hc",input,right,"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"))
             val result=AndroidOfflineDecoderRouter.decodeWithCredentials(
                 app,"dual.hc",input,right,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-            assertNotNull(result)
+            assertNotNull("stage="+HcHccfgPort.syntheticTestStage(
+                input,right,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),result)
             val root=JSONObject(result!!)
             assertEquals(443,root.getJSONArray("config").getJSONObject(0).getInt("port"))
             assertTrue(root.getJSONObject("requirements").getBoolean("password_required"))
