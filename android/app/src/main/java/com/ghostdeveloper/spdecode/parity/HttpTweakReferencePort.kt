@@ -21,7 +21,7 @@ internal object HttpTweakReferencePort {
         require(raw.size>=33 && raw.size%16==1)
         val variant=raw[0].toInt() and 255
         require(variant in 1..4)
-        val catalog=JSONObject(context.assets.open("http_tweak_source_tables.json")
+        val catalog=JSONObject(SecureAssetVault.open(context,"http_tweak_source_tables.json")
             .bufferedReader(Charsets.UTF_8).use{it.readText()})
         val tables=catalog.getJSONObject(variant.toString())
         val keys=p.b64(tables.getString("round_keys"))
