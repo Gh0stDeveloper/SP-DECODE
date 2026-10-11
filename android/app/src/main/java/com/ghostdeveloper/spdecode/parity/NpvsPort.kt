@@ -47,7 +47,10 @@ object NpvsPort {
         val binding=p.sha(p.join(p.ascii("NPVS-v5/source-fields-v1/"),
             NpvsJson.canonical(sourceHeader).toByteArray(Charsets.UTF_8),env.nonce))
         val doc=NpvsFields.read(env.body,dek,binding)
-        return JSONObject().put("metadata",meta).put("document",doc)
+        val authenticated=JSONObject().put("metadata",meta).put("document",doc)
+        // Match npvs.py::decode_npvs_complete after all signature, AEAD and
+        // authenticated field-inventory checks. No partial/plaintext fallback.
+        return NpvsEmbeddedFields.unwrap(authenticated) as JSONObject
     }
     fun decode(context:Context,input:ByteArray):String? = try {
         LegacyPortPrimitives.prettyJson(decodeDocument(context,input))+"\n"
