@@ -131,7 +131,10 @@ class MainActivity : ComponentActivity() {
                     }?:throw IOException("Destination unavailable")
                 }
                 toast(R.string.saved)
-            }catch(_:Exception){toast(R.string.write_error)}
+             }catch(_:Exception){
+            SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.EXPORT_FAILURE)
+            toast(R.string.write_error)
+        }
         }
     }
 
@@ -351,6 +354,7 @@ class MainActivity : ComponentActivity() {
                     TextProtocolDecoder.decode(this@MainActivity,candidate)
                 }
                 if(decoded==null) {
+                    SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.TEXT_UNSUPPORTED)
                     message=getString(R.string.text_decode_unsupported)
                     return@launch
                 }
@@ -364,7 +368,10 @@ class MainActivity : ComponentActivity() {
                     withContext(Dispatchers.IO){historyStore.save(record)}
                     true
                 }catch(e:CancellationException){throw e}
-                catch(_:Exception){false}
+                catch(_:Exception){
+                    SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.HISTORY_WRITE_FAILURE)
+                    false
+                }
                 result=record
                 recent.add(0,record)
                 if(!stored)toast(R.string.history_storage_error)
@@ -373,8 +380,10 @@ class MainActivity : ComponentActivity() {
                 catch(_:Exception){toast(R.string.history_storage_error)}
                 tab=0
             }catch(e:CancellationException){throw e}
-            catch(_:Exception){if(generation==importGeneration)
+            catch(_:Exception){if(generation==importGeneration) {
+                SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.TEXT_FAILURE)
                 message=getString(R.string.text_decode_unsupported)
+            }
             }finally {
                 if(generation==importGeneration) {
                     busy=false
@@ -459,7 +468,10 @@ class MainActivity : ComponentActivity() {
                         withContext(Dispatchers.IO){historyStore.save(processed)}
                         true
                     }catch(e:CancellationException){throw e}
-                    catch(_:Exception){false}
+                    catch(_:Exception){
+                        SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.HISTORY_WRITE_FAILURE)
+                        false
+                    }
                     result=processed
                     recent.add(0,processed)
                     if(!saved)toast(R.string.history_storage_error)
@@ -477,6 +489,7 @@ class MainActivity : ComponentActivity() {
                 }
             }catch(e:CancellationException){throw e}
             catch(_:Exception){if(generation==importGeneration){
+                SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.FILE_IMPORT_FAILURE)
                 message=getString(R.string.read_error);tab=0
             }}
             finally {
