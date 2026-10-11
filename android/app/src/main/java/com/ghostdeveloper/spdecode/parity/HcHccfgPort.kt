@@ -204,8 +204,7 @@ internal object HcHccfgPort {
     private fun key(env:JSONObject):ByteArray=p.hex(env.getString("g")).also {
         require(it.size==32)
     }
-    private fun derive(env:JSONObject,passwordBytes:ByteArray?,hwid:String?,
-        ):Pair<ByteArray,ByteArray>{
+    private fun derive(env:JSONObject,passwordBytes:ByteArray?,hwid:String?):Pair<ByteArray,ByteArray>{
         require(env.getString("a")=="HCCFG")
         val schema=env.getInt("b")
         require(schema in listOf(1,2,5,7))
