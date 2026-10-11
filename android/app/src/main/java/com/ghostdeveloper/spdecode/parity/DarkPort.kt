@@ -1,5 +1,6 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
 import android.util.Base64
@@ -15,9 +16,6 @@ import javax.crypto.spec.SecretKeySpec
  */
 object DarkPort {
     private val p=LegacyPortPrimitives
-    private val key256=("$"+"B&E)H@McQfThWmZq4t7w!z%C*F-JaNd").toByteArray(Charsets.UTF_8)
-    private val key192="F)J@NcRfUjXn2r4u7x!A%D*G".toByteArray(Charsets.UTF_8)
-    private val iv=p.hex("232e39185523184a5723586242200e05")
     /** DARKTUNNEL.py _base64_decode_safe accepts URL-safe Base64 and ignores
      * non-alphabet transport characters (Python b64decode(validate=false)).
      * Applied only to Dark Tunnel; other decoders keep their strict input rules.
@@ -49,7 +47,7 @@ object DarkPort {
         } && '\u007f' !in value }
     }
 
-    private fun cfb(raw:ByteArray,key:ByteArray):ByteArray {
+    private fun cfb(raw:ByteArray,key:ByteArray,iv:ByteArray):ByteArray {
         require(raw.size in 1..p.MAX_INPUT)
         val cipher=Cipher.getInstance("AES/CFB/NoPadding")
         cipher.init(Cipher.DECRYPT_MODE,SecretKeySpec(key,"AES"),IvParameterSpec(iv))
@@ -68,34 +66,35 @@ object DarkPort {
             else->value
         }
     }
-    private fun decryptNested(value:Any?,depth:Int=0):Any? {
+    private fun decryptNested(value:Any?,material:AdditionalDecoderMaterials.Dark,depth:Int=0):Any? {
         require(depth<=32)
         return when(value){
             is Map<*,*>->{
                 val obj=linkedMapOf<String,Any?>()
                 for((key,v)in value)if(key is String)
                     obj[key]=if(key.startsWith("Encrypted")&&v is ByteArray&&v.isNotEmpty()){
-                        try{cfb(v,key192)}catch(_:Exception){v}
-                    }else decryptNested(v,depth+1)
+                        try{cfb(v,material.nestedKey,material.iv)}catch(_:Exception){v}
+                    }else decryptNested(v,material,depth+1)
                 obj
             }
-            is List<*>->value.map{decryptNested(it,depth+1)}
+            is List<*>->value.map{decryptNested(it,material,depth+1)}
             else->value
         }
     }
-    fun decode(input:ByteArray):String?=p.safeDecode {
+    fun decode(context:Context,input:ByteArray):String?=p.safeDecode {
         p.bounded(input)
+        val material=AdditionalDecoderMaterials.dark(context)
         var text=inputText(input).trim()
         if("://" in text)text=text.substringAfter("://")
         val envelope=JSONObject(p.utf8(darkBase64(text)))
-        val decoded=cfb(darkBase64(envelope.getString("encryptedLockedConfig")),key256)
+        val decoded=cfb(darkBase64(envelope.getString("encryptedLockedConfig")),material.outerKey,material.iv)
         val outer=StrictMessagePack(decoded).decode() as? Map<*,*>
             ?:error("Expected DARK MessagePack map")
         val inner=outer["EncryptedLockedConfig"]
         val copy=linkedMapOf<String,Any?>()
         for((name,value)in outer)if(name is String)
             copy[name]=if(name=="EncryptedLockedConfig" && inner is ByteArray){
-                decryptNested(StrictMessagePack(cfb(inner,key192)).decode())
+                decryptNested(StrictMessagePack(cfb(inner,material.nestedKey,material.iv)).decode(),material)
             }else value
         envelope.put("encryptedLockedConfig",json(copy))
         val filtered=JSONObject()
