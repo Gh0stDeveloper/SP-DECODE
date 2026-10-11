@@ -28,9 +28,21 @@ import javax.crypto.spec.GCMParameterSpec
  * This is independent of legacy decoder keys: only an explicitly integrated
  * per-format opt-in caller may consume a provisioned secret.
  */
-internal class DevicePrivateCredentialVault(context: Context) {
-    private val directory = File(context.applicationContext.noBackupFilesDir, "private-credentials")
-    private val alias = "spdecode.private-credentials.v1"
+internal class DevicePrivateCredentialVault(context: Context, testNamespace: String? = null) {
+    // The production namespace is immutable. A test-specific namespace is
+    // available exclusively in debug builds so destructive invalidation tests
+    // can never remove the user's real Android Keystore alias or records.
+    init {
+        require(testNamespace == null || (BuildConfig.DEBUG &&
+            testNamespace.matches(Regex("[a-z0-9-]{1,40}")))) {
+            "Private credential test namespace is invalid or unavailable"
+        }
+    }
+    private val directory = File(context.applicationContext.noBackupFilesDir,
+        if(testNamespace == null) "private-credentials"
+        else "private-credentials-s4-tests/$testNamespace")
+    private val alias = if(testNamespace == null) "spdecode.private-credentials.v1"
+        else "spdecode.private-credentials.test.$testNamespace"
 
     internal data class Metadata(val id: String, val label: String)
     internal data class Inventory(val entries: List<Metadata>, val unreadable: Int)
