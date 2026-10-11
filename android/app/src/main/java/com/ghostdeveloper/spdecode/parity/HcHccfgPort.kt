@@ -510,6 +510,29 @@ internal object HcHccfgPort {
         return false
     }
 
+    /** Test-only stage report, never contains plaintext, keys or credentials. */
+    internal fun syntheticTestStage(input:ByteArray,password:ByteArray?,hwid:String?):String {
+        val env=try{openOuter(input)}catch(_:Exception){return "outer"}
+        val (contentKey,aad)=try{derive(env,password,hwid)}
+            catch(_:Exception){return "slot-derive"}
+        val main=try{section(env.getJSONObject("i"),contentKey,aad)}
+            catch(_:Exception){return "main-aead"}
+        if(runCatching{parseObject(main)}.isFailure)return "main-json"
+        val sections=try{sections(env.opt("j")?:JSONArray())}
+            catch(_:Exception){return "profiles-list"}
+        for(sec in sections) {
+            val label=sec.optString("a")
+            val raw=try{section(sec,contentKey,aad)}
+                catch(_:Exception){return "profile-aead"}
+            val plain=try{hpr1(raw,contentKey,aad,label,true)}
+                catch(_:Exception){return "hpr1-aead"}
+            if(plain.size>=4 && plain.copyOfRange(0,4).contentEquals(utf("HPC1"))) {
+                try{HPC1(plain).parse(label)}catch(_:Exception){return "profile-hpc1"}
+            }
+        }
+        return "complete"
+    }
+
     /** Original S.4 password detector retained for existing security gates. */
     fun requiresExternalPassword(input:ByteArray):Boolean =
         inspectRequirements(input)?.passwordRequired==true
