@@ -382,7 +382,8 @@ private fun HomeScreen(
             shape=RoundedCornerShape(14.dp),
             colors=ButtonDefaults.outlinedButtonColors(
                 contentColor=White,disabledContentColor=Secondary),
-            border=BorderStroke(1.dp,Outline),
+            border=BorderStroke(if(highlightGuide==5)2.dp else 1.dp,
+                if(highlightGuide==5)White else Outline),
         ) {
             Icon(Icons.Outlined.Cloud,null,modifier=Modifier.size(19.dp))
             Spacer(Modifier.width(8.dp))
