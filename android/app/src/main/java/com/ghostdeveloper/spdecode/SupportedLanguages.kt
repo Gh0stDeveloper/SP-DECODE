@@ -14,6 +14,7 @@ object SupportedLanguages {
         SupportedLanguage("fr","Français"),
         SupportedLanguage("id","Bahasa Indonesia"),
         SupportedLanguage("ru","Русский"),
+        SupportedLanguage("de","Deutsch"),
     )
     fun supports(tag:String):Boolean=options.any{it.tag==tag}
 }
