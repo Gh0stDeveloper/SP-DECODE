@@ -30,18 +30,18 @@ object HatPort {
         is Number->v.toDouble()!=0.0
         else->v.toString().isNotEmpty()
     }
-    private fun xorB64(encoded:String):String {
+    private fun xorB64(encoded:String,key:String):String {
         val raw=p.utf8(p.b64(encoded))
-        val key="**rVg7EkL~c2"+96.toChar()+"D[aNn"
         return buildString {raw.forEachIndexed{i,ch->
             append((ch.code xor key[i%key.length].code).toChar())}}
     }
     fun decode(context:Context,input:ByteArray):String?=p.safeDecode {
         p.bounded(input)
+        val materials=EmbeddedDecoderMaterials.hat(context)
         val encoded=p.b64(p.utf8(input).trim())
         require(encoded.isNotEmpty()&&encoded.size%16==0)
         val aes=Cipher.getInstance("AES/ECB/PKCS5Padding")
-        aes.init(Cipher.DECRYPT_MODE,SecretKeySpec(p.b64("zbNkuNCGSLivpEuep3BcNA=="),"AES"))
+        aes.init(Cipher.DECRYPT_MODE,SecretKeySpec(materials.aesKey,"AES"))
         val obj=JSONObject(p.utf8(aes.doFinal(encoded)))
         val layout=JSONObject(context.assets.open("nodehat_original_layout.json")
             .bufferedReader(Charsets.UTF_8).use{it.readText()})
@@ -67,10 +67,10 @@ object HatPort {
             "profilev4" to "descriptionv4","profilev5" to "descriptionv5")){
             obj.optJSONObject(profile)?.let{cfg->
                 if(profile=="profilev5"){
-                    put("connectionMethod",xorB64(cfg.getString("connection_mode")))
+                    put("connectionMethod",xorB64(cfg.getString("connection_mode"),materials.xorPassword))
                     for((s,d)in listOf("custom_payload" to "payload",
                         "custom_host" to "hostHeader","custom_sni" to "sniValue"))
-                        put(d,xorB64(cfg.getString(s)))
+                        put(d,xorB64(cfg.getString(s),materials.xorPassword))
                     copy(cfg,"custom_resolver","customresolver")
                     copy(cfg,"dns_primary_host","dnsprimaryhost")
                 }else{
