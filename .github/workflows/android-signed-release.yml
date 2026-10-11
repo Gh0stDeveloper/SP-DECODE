@@ -128,6 +128,13 @@ jobs:
           test "$(stat -c %s "$RUNNER_TEMP/spdecode-production.p12")" -gt 1000
           keytool -list -keystore "$RUNNER_TEMP/spdecode-production.p12" \
             -storetype PKCS12 -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null
+          # Public certificate digest only. Never include private key material.
+          SIGNER_SHA256="$(keytool -exportcert \
+            -keystore "$RUNNER_TEMP/spdecode-production.p12" \
+            -storetype PKCS12 -storepass "$STORE_PASSWORD" \
+            -alias "$KEY_ALIAS" | sha256sum | awk '{print $1}')"
+          [[ "$SIGNER_SHA256" =~ ^[0-9a-f]{64}$ ]] || exit 1
+          echo "SPDECODE_TRUSTED_SIGNER_SHA256=$SIGNER_SHA256" >> "$GITHUB_ENV"
       - name: Assemble real Android release using the repository keystore
         working-directory: android
         env:
