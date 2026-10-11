@@ -22,7 +22,7 @@ class EhiStandardAndCompatibilityInstrumentedTest {
     @Test fun standardArgon2idXChaCha20MatchesOriginalBotText() {
         val sample=fixture("ehi-standard-id.ehi")
         val expected=fixture("ehi-standard-id.txt")
-        assertArrayEquals(expected,EhiPort.decode(sample)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,EhiPort.decode(inst.targetContext,sample)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             inst.targetContext,"profile.EHI",sample)?.toByteArray(Charsets.UTF_8))
     }
@@ -30,7 +30,7 @@ class EhiStandardAndCompatibilityInstrumentedTest {
     @Test fun standardEhiWithTamperedEnvelopeNeverRendersSuccessfulProfile() {
         val sample=fixture("ehi-standard-id.ehi").clone()
         sample[sample.lastIndex-20]=(sample[sample.lastIndex-20].toInt() xor 0x40).toByte()
-        assertNull(EhiPort.decode(sample))
+        assertNull(EhiPort.decode(inst.targetContext,sample))
     }
 
     @Test fun socksIpUnsupportedInnerVersionIsNotMisreportedAsSuccess() {
