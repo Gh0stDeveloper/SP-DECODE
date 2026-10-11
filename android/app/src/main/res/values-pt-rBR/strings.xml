@@ -128,9 +128,9 @@
     <string name="text_decode_invalid">Protocolo desconhecido, texto inválido ou limite de tamanho excedido.</string>
     <string name="text_decode_unsupported">Não foi possível decodificar o texto. Pode estar incompleto, danificado ou usar outra versão de criptografia.</string>
     <string name="whats_new_title">Novidades do SP-DECODE</string>
-    <string name="whats_new_description">Versão 1.0.9 · Campos completos do Ultra Tunnel</string>
-    <string name="whats_new_linklayer">Ultra Tunnel (.ultra): os campos internos de proxy, DNS, SNI e payload agora são decifrados com AES-GCM autenticado com AAD do salt.</string>
-    <string name="whats_new_fields">Segurança: verificação do certificado de assinatura oficial; créditos de cópia apenas para Ghost Developer.</string>
+    <string name="whats_new_description">Versão 1.1.0 · Configurações, guia e segurança</string>
+    <string name="whats_new_linklayer">Configurações: contato, grupo e canal do Ghost Developer apenas pelo Telegram; versão e código reais.</string>
+    <string name="whats_new_fields">Novo guia interativo inicial em quatro idiomas, reiniciável pelas Configurações. Ofuscação R8 e verificação local de integridade das APKs oficiais.</string>
     <string name="whats_new_offline">Os 239 motores de arquivos e os protocolos de texto continuam offline. O histórico permanece criptografado.</string>
     <string name="whats_new_continue">Entendi</string>
     <string name="native_decoder_pending">O decodificador nativo deste formato ainda não foi integrado.</string>
