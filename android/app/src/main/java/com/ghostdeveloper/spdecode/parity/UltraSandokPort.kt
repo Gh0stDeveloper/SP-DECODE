@@ -121,7 +121,10 @@ object UltraSandokPort {
         return try {
             val derived = derive(profile.password2, salt, profile.memoryKiB)
             key = derived
-            val plain = decryptGcm(derived, nonce, sealed, null) ?: return null
+            // Modern Ultra second-layer fields use AAD=salt; older
+            // authenticated exports use no AAD. Never ignore GCM tag failures.
+            val plain = decryptGcm(derived, nonce, sealed, salt)
+                ?: decryptGcm(derived, nonce, sealed, null) ?: return null
             utf8(plain)
         } catch (_: RuntimeException) { null }
           catch (_: java.nio.charset.CharacterCodingException) { null }
