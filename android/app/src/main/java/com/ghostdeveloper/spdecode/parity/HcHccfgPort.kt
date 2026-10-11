@@ -36,7 +36,7 @@ internal object HcHccfgPort {
     private val schemaVersions=mapOf(
         756 to "7.9.21",759 to "7.9.24",766 to "7.9.28",789 to "7.10.7",
         810 to "7.10.12",831 to "7.10.19",848 to "7.10.25",
-        859 to "7.11.1",864 to "7.11.8"
+        859 to "7.11.1",864 to "7.11.8",885 to "7.11.19"
     )
     private val protectionNames=mapOf(
         "a" to "accessMode","c" to "expiryEnabled","d" to "expiryTime",
@@ -287,13 +287,16 @@ internal object HcHccfgPort {
         return xdec(key,p.hex(nested.getString("a")),
             bytes(aad,zero,utf(label),utf(":x")),p.hex(nested.getString("b")))
     }
-    private fun hpr1(raw:ByteArray,key:ByteArray,aad:ByteArray,label:String):ByteArray{
+    private fun hpr1(raw:ByteArray,key:ByteArray,aad:ByteArray,label:String,
+        strictAuthentication:Boolean=false):ByteArray{
         if(raw.size<44 || !raw.copyOfRange(0,4).contentEquals(utf("HPR1")))return raw
         val nonce=raw.copyOfRange(4,28);val body=raw.copyOfRange(28,raw.size)
         return try{xdec(key,nonce,bytes(aad,zero,utf("$label:r")),body)}
-        catch(_:Exception){
-            // The reference retains stream fallback for HPR1, which is itself
-            // nested inside an already authenticated outer section.
+        catch(failure:Exception){
+            // New protected imports match HTTPCUSTOM_AUTH.py: never downgrade
+            // an invalid HPR1 tag into unverified stream plaintext.
+            if(strictAuthentication)throw failure
+            // Retain pre-existing legacy/unprotected behavior for parity.
             xor(body.copyOfRange(0,body.size-16),key,nonce)
         }
     }
@@ -343,7 +346,8 @@ internal object HcHccfgPort {
         for(k in p.keys(pObj))out.put(protectionNames[k]?:k,pObj.get(k))
         return out
     }
-    private fun decodeEnv(env:JSONObject,passwordBytes:ByteArray?,hwid:String?):JSONObject {
+    private fun decodeEnv(env:JSONObject,passwordBytes:ByteArray?,hwid:String?,
+        strictAuthentication:Boolean=false,fullResult:Boolean=false):JSONObject {
         val (key,aad)=derive(env,passwordBytes,hwid)
         val main=env.getJSONObject("i")
         val raw=section(main,key,aad)
@@ -352,7 +356,7 @@ internal object HcHccfgPort {
         for(sec in sections(env.opt("j")?:JSONArray())){
             val label=sec.getString("a")
             var plaintext=section(sec,key,aad)
-            plaintext=hpr1(plaintext,key,aad,label)
+            plaintext=hpr1(plaintext,key,aad,label,strictAuthentication)
             val side=sidecar(sec,key,aad)
             if(plaintext.size>=4 && plaintext.copyOfRange(0,4).contentEquals(utf("HPC1"))){
                 val profile=HPC1(plaintext).parse(label)
@@ -364,7 +368,7 @@ internal object HcHccfgPort {
                 if(profile.optString("payload").isNotEmpty())clean.put("payload",profile.getString("payload"))
                 if(side!=null)try {clean.put("custom_payload_sidecar",p.utf8(side))}
                 catch(_:Exception){clean.put("custom_payload_sidecar_hex",side.joinToString(""){"%02x".format(it.toInt() and 255)})}
-                configs.put(clean)
+                configs.put(if(fullResult)profile else clean)
             }else {
                 val item=JSONObject().put("label",label)
                 val text=try{p.utf8(plaintext)}catch(_:Exception){null}
@@ -382,25 +386,100 @@ internal object HcHccfgPort {
         return JSONObject().apply {
             put("app_version",appVer);put("config",configs)
             put("protections",normalizedProtections(decoded.optJSONObject("g")?:JSONObject()))
+            if(fullResult){
+                val schedule=env.getString("e")
+                put("requirements",JSONObject()
+                    .put("password_required",passwordRequired(env))
+                    .put("hwid_required",schedule=="n2"||schedule=="n8")
+                    .put("hwid_slots",env.optJSONArray("o")?.length()?:0))
+                put("main_config",decoded)
+            }
             if(others.length()>0)put("other_sections",others)
         }
     }
-    /** Inspect the authenticated outer HCCFG header without guessing passwords. */
-    fun requiresExternalPassword(input:ByteArray):Boolean=runCatching {
+    data class Requirements(
+        val passwordRequired:Boolean,
+        val hwidRequired:Boolean,
+        val headerAuthenticated:Boolean,
+        val schema:Int,
+        val schedule:String,
+    ) {
+        val protected:Boolean get()=passwordRequired||hwidRequired
+    }
+
+    private fun passwordRequired(env:JSONObject):Boolean=when(val flag=env.opt("h")){
+        null,JSONObject.NULL,false->false
+        true->true
+        is Number->{
+            val int=flag.toInt()
+            require((int==0||int==1) && flag.toString()==int.toString())
+            int==1
+        }
+        else->error("Invalid password flag")
+    }
+
+    /**
+     * No KDF is executed during inspection. The stream-v3 outer header is
+     * explicitly NOT authenticated; trust is only established after the
+     * protected sections (and HPR1) authenticate with supplied credentials.
+     */
+    fun inspectRequirements(input:ByteArray):Requirements?=runCatching {
         p.bounded(input)
         val env=openOuter(input)
-        if(env.optString("a")!="HCCFG")false
-        else when(val flag=env.opt("h")){
-            true->true
-            is Number->flag.toInt()==1
-            else->false
+        if(env.optString("a")!="HCCFG")return@runCatching null
+        val schema=env.getInt("b")
+        require(schema in listOf(1,2,5,7))
+        require(env.getString("c")==if(schema==1)"XCHACHA20P1305" else "s1")
+        require(env.getString("d")==if(schema==1)"NATIVE-HKDF-SHA256" else "h1")
+        val schedule=env.getString("e")
+        require(schedule in listOf("n1","n2","n7","n8"))
+        featureBytes(env);nBytes(env);key(env)
+        val locked=passwordRequired(env)
+        if(locked){
+            require(env.getString("k") in listOf("ARGON2ID13","a1"))
+            val ops=env.getInt("l");val mem=env.getInt("m")
+            require(ops in 1..16 && mem in (8*1024*1024)..(256*1024*1024) &&
+                mem%1024==0)
         }
-    }.getOrDefault(false)
+        val hwidLocked=schedule=="n2"||schedule=="n8"
+        if(hwidLocked)require(env.getJSONArray("o").length() in 1..256)
+        // Current inspection can parse both outer forms; do not claim
+        // authenticated-v1 unless its tag is independently verified.
+        Requirements(locked,hwidLocked,outerHeaderAuthenticated(input),schema,schedule)
+    }.getOrNull()
 
-    private fun decodeBytes(input:ByteArray,passwordBytes:ByteArray?,hwid:String?):String?=
+    private fun outerHeaderAuthenticated(input:ByteArray):Boolean {
+        val key=hkdf(c0hash(outerSeed),outerSalt,outerInfo)
+        var logical=input
+        repeat(6){
+            if(logical.size>=40) {
+                try {
+                    val plain=xdec(key,logical.copyOfRange(0,24),outerAad,
+                        logical.copyOfRange(24,logical.size))
+                    if(parseObject(plain).optString("a")=="HCCFG")return true
+                }catch(_:Exception){}
+            }
+            logical=try {
+                val str=p.utf8(logical)
+                if(str.any{it.code>255})return false
+                val next=ByteArray(str.length){str[it].code.toByte()}
+                if(next.contentEquals(logical))return false
+                next
+            }catch(_:Exception){return false}
+        }
+        return false
+    }
+
+    /** Original S.4 password detector retained for existing security gates. */
+    fun requiresExternalPassword(input:ByteArray):Boolean =
+        inspectRequirements(input)?.passwordRequired==true
+
+    private fun decodeBytes(input:ByteArray,passwordBytes:ByteArray?,hwid:String?,
+        strictAuthentication:Boolean=false,fullResult:Boolean=false):String?=
         p.safeDecode {
             p.bounded(input)
-            p.prettyJson(decodeEnv(openOuter(input),passwordBytes,hwid))+"\n"
+            p.prettyJson(decodeEnv(openOuter(input),passwordBytes,hwid,
+                strictAuthentication,fullResult))+"\n"
         }
 
     /** Legacy source compatibility; any temporary UTF-8 copy is zeroed. */
@@ -413,6 +492,22 @@ internal object HcHccfgPort {
     /** Password bytes are owned and immediately cleared by the vault callback. */
     fun decodeWithUserPassword(input:ByteArray,password:ByteArray):String? {
         if(password.isEmpty() || password.size>4096)return null
-        return decodeBytes(input,password,null)
+        return decodeBytes(input,password,null,strictAuthentication=true,fullResult=true)
+    }
+
+    /**
+     * Protected HCCFG only. Password bytes and HWID are caller-supplied and
+     * never taken from Android identifiers or embedded into result JSON.
+     * Password and HWID must be entered together for n8 + h=1.
+     */
+    fun decodeWithCredentials(input:ByteArray,password:ByteArray?,hwid:String?):String? {
+        val needs=inspectRequirements(input)?:return null
+        if(!needs.protected)return null
+        if(needs.passwordRequired && (password==null || password.isEmpty() ||
+            password.size>4096))return null
+        if(needs.hwidRequired && hwid.isNullOrBlank())return null
+        return decodeBytes(input,if(needs.passwordRequired)password else null,
+            if(needs.hwidRequired)hwid else null,
+            strictAuthentication=true,fullResult=true)
     }
 }
