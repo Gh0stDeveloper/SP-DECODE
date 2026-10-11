@@ -335,7 +335,7 @@ private fun HomeScreen(
                 enabled=!busy,
                 modifier=Modifier.weight(1f).heightIn(min=52.dp),
                 shape=RoundedCornerShape(14.dp),
-                border=if(highlightGuide==0)BorderStroke(2.dp,White)else null,
+                border=if(highlightGuide==0 || highlightGuide==6)BorderStroke(2.dp,White)else null,
                 contentPadding=PaddingValues(horizontal=8.dp,vertical=12.dp),
                 colors=ButtonDefaults.buttonColors(
                     containerColor=Panel,contentColor=White,
