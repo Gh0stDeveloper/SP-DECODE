@@ -143,8 +143,6 @@ class MainActivity : ComponentActivity() {
 
     private fun openExternal(url:String){
         if(url !in setOf(
-            "https://github.com/Gh0stDeveloper/SP-DECODE",
-            "https://github.com/Gh0stDeveloper/SP-DECODE/issues",
             "https://t.me/Gh0stDeveloper",
             "https://t.me/CodeBreakersHub",
             "https://t.me/GhostDeve"
