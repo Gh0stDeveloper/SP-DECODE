@@ -238,7 +238,7 @@ internal object HcHccfgPort {
             require(passwordBytes!=null && passwordBytes.isNotEmpty()){"PASSWORD_REQUIRED"}
             val ops=env.getInt("l")
             val mem=env.getInt("m")
-            require(ops in 1..10 && mem in (8*1024*1024)..(256*1024*1024) && mem%1024==0) {
+            require(ops in 1..16 && mem in (8*1024*1024)..(256*1024*1024) && mem%1024==0) {
                 "Argon2 parameter limits exceeded"
             }
             require(env.getString("k") in listOf("ARGON2ID13","a1"))
@@ -289,7 +289,11 @@ internal object HcHccfgPort {
     }
     private fun hpr1(raw:ByteArray,key:ByteArray,aad:ByteArray,label:String,
         strictAuthentication:Boolean=false):ByteArray{
-        if(raw.size<44 || !raw.copyOfRange(0,4).contentEquals(utf("HPR1")))return raw
+        if(raw.size<4 || !raw.copyOfRange(0,4).contentEquals(utf("HPR1")))return raw
+        if(raw.size<44) {
+            if(strictAuthentication)error("Truncated protected HPR1 envelope")
+            return raw
+        }
         val nonce=raw.copyOfRange(4,28);val body=raw.copyOfRange(28,raw.size)
         return try{xdec(key,nonce,bytes(aad,zero,utf("$label:r")),body)}
         catch(failure:Exception){
