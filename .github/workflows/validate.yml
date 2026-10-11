@@ -63,16 +63,16 @@ jobs:
       - name: Verify source-derived Phase G text protocol reference vectors
         run: PYTHONPATH=. python -m unittest tests.test_android_g_text_parity -v
 
-      - name: Audit Phase H offline privacy, source provenance, release gate and v1.0.7
+      - name: Audit Phase H offline privacy, source provenance, release gate and v1.0.8
         run: |
-          PYTHONPATH=. python scripts/android_h_production_audit.py --version 1.0.7 --code 18 --report "$RUNNER_TEMP/spdecode-h/audit.json"
+          PYTHONPATH=. python scripts/android_h_production_audit.py --version 1.0.8 --code 19 --report "$RUNNER_TEMP/spdecode-h/audit.json"
           PYTHONPATH=. python -m unittest tests.test_android_h_production_audit -v
 
       - name: Upload sanitized Phase H audit report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-v1.0.7-H-SOURCE-AUDIT
+          name: SP-DECODE-v1.0.8-H-SOURCE-AUDIT
           path: ${{ runner.temp }}/spdecode-h/audit.json
           if-no-files-found: ignore
           retention-days: 90
