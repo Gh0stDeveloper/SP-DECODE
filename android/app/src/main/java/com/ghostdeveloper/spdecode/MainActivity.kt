@@ -658,7 +658,7 @@ class MainActivity : ComponentActivity() {
                     val summary=getString(R.string.batch_import_summary,
                         report.successes,report.failures)
                     message=if(failedNpvs)
-                        getString(R.string.npvs_private_key_unsupported)+"\\n\\n"+summary
+                        getString(R.string.npvs_private_key_unsupported)+"\n\n"+summary
                     else summary
                     tab=0
                 }
