@@ -128,7 +128,7 @@
     <string name="text_decode_invalid">Unrecognized text protocol, invalid input or size limit exceeded.</string>
     <string name="text_decode_unsupported">Could not decode this text. It may be incomplete, corrupted or a different cipher version.</string>
     <string name="whats_new_title">What\'s new in SP-DECODE</string>
-    <string name="whats_new_description">Version 1.1.1 · TLS 8.5.0, HTTP Injector and Dark Tunnel</string>
+    <string name="whats_new_description">Version 1.1.2 · HTTP Custom password/HWID, cloud import and JSON viewer</string>
     <string name="whats_new_linklayer">TLS Tunnel 8.5.0: six AES-GCM key profiles in Android; previous TLS methods remain supported.</string>
     <string name="whats_new_fields">HTTP Injector: deeper processing of nested and encoded fields. Rare .ehi variants still need verification with a real file.</string>
     <string name="whats_new_offline">Dark Tunnel: decode Base64-only text configurations. The guide is centered. All 239 file routes remain offline.</string>

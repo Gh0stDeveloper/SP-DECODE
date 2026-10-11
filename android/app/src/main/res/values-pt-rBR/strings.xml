@@ -128,7 +128,7 @@
     <string name="text_decode_invalid">Protocolo desconhecido, texto inválido ou limite de tamanho excedido.</string>
     <string name="text_decode_unsupported">Não foi possível decodificar o texto. Pode estar incompleto, danificado ou usar outra versão de criptografia.</string>
     <string name="whats_new_title">Novidades do SP-DECODE</string>
-    <string name="whats_new_description">Versão 1.1.1 · TLS 8.5.0, HTTP Injector e Dark Tunnel</string>
+    <string name="whats_new_description">Versão 1.1.2 · HTTP Custom com senha/HWID, nuvem e visualizador JSON</string>
     <string name="whats_new_linklayer">TLS Tunnel 8.5.0: seis perfis de chaves AES-GCM no Android; métodos anteriores preservados.</string>
     <string name="whats_new_fields">HTTP Injector: análise mais profunda de campos aninhados e codificados. Variantes raras de .ehi exigem amostras reais.</string>
     <string name="whats_new_offline">Dark Tunnel: decodificação de textos somente em Base64. Guia centralizado. As 239 rotas seguem offline.</string>
