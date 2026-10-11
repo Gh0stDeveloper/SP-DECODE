@@ -69,6 +69,32 @@ internal object AdditionalDecoderMaterials {
         )
     }
 
+    data class Ehil(
+        val firstKeys: List<ByteArray>,
+        val secondKeys: List<ByteArray>,
+        val ivs: List<ByteArray>,
+    )
+
+    fun ehil(context: Context): Ehil {
+        val data = source(context).getJSONObject("ehil")
+        fun keys(name: String, count: Int, bytes: Int): List<ByteArray> {
+            val arr = data.getJSONArray(name)
+            require(arr.length() == count)
+            return (0 until count).map { fixedHex(arr.getString(it), bytes) }
+        }
+        val first = keys("firstLayerKeyHex", 3, 32)
+        val second = keys("secondLayerKeyHex", 2, 16)
+        val arr = data.getJSONArray("ivAscii")
+        require(arr.length() == 7)
+        val ivs = (0 until arr.length()).map {
+            arr.getString(it).toByteArray(Charsets.US_ASCII)
+                .also { iv -> require(iv.size == 16) }
+        }
+        // HTTP Injector Lite and full EHI share exactly the first-layer key.
+        require(first[0].contentEquals(ehi(context).firstKey))
+        return Ehil(first, second, ivs)
+    }
+
     fun dark(context: Context): Dark {
         val data = source(context).getJSONObject("dark")
         val outer = data.getString("outerKeyText").toByteArray(Charsets.UTF_8)
