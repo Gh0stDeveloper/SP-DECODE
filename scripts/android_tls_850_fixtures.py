@@ -56,7 +56,7 @@ def samples():
         # Profile 6 preserves the frozen historical result text, while the
         # 8.5.0 keys include all positional metadata for new schema fields.
         assert ('"_tls": {' in text) == (profile != 6)
-        yield f"tls850-profile-{profile}", raw, text + "\n"
+        yield f"tls850-profile-{profile}", raw, text
 
 
 def export(outdir: Path) -> None:
