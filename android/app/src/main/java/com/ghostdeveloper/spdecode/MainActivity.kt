@@ -46,6 +46,8 @@ import android.os.SystemClock
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.Locale
+import java.text.DateFormat
+import java.util.Date
 
 /**
  * First functional offline Android alpha.
@@ -155,6 +157,13 @@ class MainActivity : ComponentActivity() {
         val splashStarted=SystemClock.elapsedRealtime()
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        // A new launch starts with an empty Home result. Rotation keeps the
+        // existing ViewModel result; neither case deletes encrypted history.
+        if(savedInstanceState==null) {
+            result=null
+            tab=0
+            reveal=false
+        }
         selectedLanguage=settings.getString("language","system") ?: "system"
         hideCredentials=settings.getBoolean("mask_credentials",false)
         @Suppress("DEPRECATION")
@@ -171,20 +180,18 @@ class MainActivity : ComponentActivity() {
             try {
                 val preferences = historyPreferences.values.first()
                 retentionDays=preferences.retentionDays
-                // Restore only navigation metadata; the decoded payload always
-                // comes from the Keystore-encrypted record, never from DataStore.
-                if(!navigationExplicit && tab==0)tab=preferences.lastTab
+                // Keep retention settings. A new app launch always opens Home;
+                // returning from Telegram or rotating the device keeps the live UI.
                 val saved=withContext(Dispatchers.IO) {
                     val days=preferences.retentionDays
                     if(days>0) historyStore.pruneOlderThan(
                         System.currentTimeMillis()-days.toLong()*86_400_000L)
                     historyStore.load()
                 }
-                // Process death: restore the last result by an opaque UUID only.
+                // Load the history list without automatically promoting an old
+                // record to the Home result after an app restart.
                 val existingIds=recent.map{it.id}.toSet()
                 saved.filterNot{it.id in existingIds}.forEach{recent.add(it)}
-                if(result==null && preferences.selectedId!=null)
-                    result=recent.firstOrNull{it.id==preferences.selectedId}
             }catch(_:CancellationException){throw CancellationException()}
             catch(_:Exception){toast(R.string.history_storage_error)}
         }
@@ -223,7 +230,12 @@ class MainActivity : ComponentActivity() {
                 onImportMultiple={multiPicker.launch(arrayOf("*/*"))},
                 onCancel={cancelImport()},
                 onReveal={reveal=it},
-                onCopy={format->result?.let{copy(ResultPresentation.formatted(it.document,format))}},
+                onCopy={format->result?.let { entry ->
+                    val date=DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+                        DateFormat.SHORT,resources.configuration.locales[0])
+                        .format(Date(entry.savedAtMillis))
+                    copy(TelegramResultCopy.clipboard(entry,format,date))
+                }},
                 onExport={format->result?.let{export(ResultPresentation.formatted(it.document,format),it.filename,format)}},
                 selectedLanguage=selectedLanguage,
                 hideCredentials=hideCredentials,
@@ -232,6 +244,7 @@ class MainActivity : ComponentActivity() {
                 onExternalLink={url->openExternal(url)},
                 onSelect={selectResult(it)},
                 onClear={clearHistory()},
+                onClearResult={clearVisibleResult()},
                 onDeleteSelected={ids->deleteHistory(ids)},
                 onFavorite={id,favorite->updateFavorite(id,favorite)},
                 retentionDays=retentionDays,
@@ -335,6 +348,19 @@ class MainActivity : ComponentActivity() {
                     progressStage=0
                 }
             }
+        }
+    }
+
+    private fun clearVisibleResult() {
+        if(busy)return
+        result=null
+        reveal=false
+        message=null
+        scope.launch {
+            // Only clear the obsolete selection pointer. Do NOT touch records.
+            try { historyPreferences.setSelectedId(null) }
+            catch(e:CancellationException){throw e}
+            catch(_:Exception){toast(R.string.history_storage_error)}
         }
     }
 
