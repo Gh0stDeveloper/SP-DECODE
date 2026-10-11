@@ -21,6 +21,38 @@ permanent Android signing identity. It does not publish a new release.
   canonical historical material, while Gradle packages only its authenticated
   `SPV1` ciphertext in the Android APK.
 
+## Second S.2 migration batch — additional legacy engines
+
+The following six native decoder ports were added, with source-exact material
+in the same authenticated `embedded_kotlin_profiles.json.spv` bundle:
+
+| Port | Migrated material | Semantics preserved |
+| --- | --- | --- |
+| SocksIP (`SipPort.kt`) | AES-128 key and VER8 AES-256 key | Original ECB wrapper; VER8 GCM requires authentication |
+| SSH (`SshPort.kt`) | Blowfish password | Existing fixed IV, XML filtering and output untouched |
+| SKS (`SksPort.kt`) | Original 32-character MD5 input prefix | Preserves version-specific MD5-to-AES derivation |
+| Cloudy (`CloudyPort.kt`) | Base64-derived AES-256 key and IV | Identical CBC operation and output labels |
+| Gold Tunnel (`GoldPort.kt`) | Historical SHA-256 seed | Original nested field decryption and fixed nonsecret string mappings |
+| TNL/OpenTunnel (`TnlPort.kt`) | Two original TNL passphrases, OPL2 secret and OpenTunnel key | Keeps original candidate order, checksums, password derivation and scramble |
+
+`LegacyBatch2Materials.kt` provides typed byte-level adapters rather than
+adding plaintext fallbacks. The Android router and existing synthetic golden
+tests now pass the application context, without changing public filenames,
+output schemas, encryption modes or key selection.
+
+`scripts/android_s2_legacy_audit.py` independently inventories **11** source
+materials and fails if the old literal strings are reintroduced into the six
+source ports or any `classes*.dex` in an APK. Its sanitized SHA-256 parity
+manifest is checked at runtime by
+`PhaseS2LegacyMaterialsInstrumentedTest.kt`. Existing parity fixtures for
+SocksIP, SSH, SKS, Cloudy, Gold and TNL remain mandatory.
+
+Across S.2 so far: 5 ports in PR #72, 3 higher-risk ports in this PR and
+6 additional legacy ports, for **14 migrated engine ports**. This is not a
+claim that all 103 Kotlin parity/support files contain sensitive secrets or
+that every format's constants are already migrated. The original public
+source remains available for reproducible compatibility checks.
+
 ### Validation
 - Python metadata checks in `scripts/android_s2_extra_audit.py` hash 18 source
   materials and compare expected counts/sizes, without logging secrets.
