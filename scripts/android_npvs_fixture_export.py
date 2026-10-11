@@ -65,7 +65,7 @@ def _export_variant(folder:Path,embedded:bool):
             (3,80),
             (4,wrap(wrap("cybertunnel-fidelson015"))),
             (5,wrap("1234")),
-            (6,wrap("GET / HTTP/1.1\\nHost: fr1.wssht.site").replace("\\\\n","\\n")),
+            (6,wrap("GET / HTTP/1.1\nHost: fr1.wssht.site")),
             (7,wrap(nested)),
             (8,"dGVzdA=="),
             (65535,{"configs":[{"name":1,"sshConfig":{
