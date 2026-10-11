@@ -51,7 +51,7 @@ object AndroidOfflineDecoderRouter {
                 "decoders/Python/eut.py","decoders/Python/v2box_export.py",
                 "decoders/Python/slipnet.py","decoders/Python/juanscript.py" ->
                     SpecialE1Port.decode(context,format.suffix,input)
-                else -> SpecialE2Port.decode(format.suffix,input)
+                else -> SpecialE2Port.decode(context,format.suffix,input)
             }
         }
         if (format.migrationPhase == "F") {
