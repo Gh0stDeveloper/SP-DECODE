@@ -84,6 +84,27 @@ class UltraSandokBotTests(unittest.TestCase):
         self.assertEqual(actual["config"]["List"], ["first", "second"])
         self.assertEqual(actual["config"]["_vpn_key"], "ultratunnel")
 
+    def test_modern_authenticated_inner_fields_use_aad_salt(self):
+        profile = ultra.ULTRA_CONFIGS["ultratunnel"]
+        for aad in (True, False):
+            with self.subTest(aad=aad):
+                ciphertext = seal(b"GET / HTTP/1.1\\r\\nHost: example.invalid",
+                                  profile["password2"], profile["mem"],
+                                  aad=aad, nonce=bytes(range(12, 24)))
+                encoded = base64.b64encode(ciphertext).decode("ascii")
+                self.assertEqual(ultra.decrypt_ultra_field(
+                    encoded, profile["password2"], profile["mem"]),
+                    "GET / HTTP/1.1\\r\\nHost: example.invalid")
+
+                tampered = bytearray(ciphertext)
+                tampered[-1] ^= 1
+                invalid = base64.b64encode(tampered).decode("ascii")
+                self.assertEqual(ultra.decrypt_ultra_field(
+                    invalid, profile["password2"], profile["mem"]), invalid)
+
+        self.assertEqual(ultra.decrypt_ultra_field(
+            "NotEncrypted", profile["password2"], profile["mem"]), "NotEncrypted")
+
     def test_different_key_and_memory_profiles_without_aad(self):
         for suffix, profile in ((".tx", "txtunnel"),
                                 (".flynet", "flynetvpn"),
