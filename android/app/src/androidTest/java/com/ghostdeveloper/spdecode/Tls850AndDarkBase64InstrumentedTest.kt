@@ -29,12 +29,17 @@ class Tls850AndDarkBase64InstrumentedTest {
                     ?.toByteArray(Charsets.UTF_8))
             val structured=JsonParser.parseString(
                 ResultJsonDisplay.render(source,"tls")).asJsonObject
-            assertEquals(profile,structured.getAsJsonObject("_tls")
-                .get("key_profile").asInt)
-            assertTrue(structured.getAsJsonObject("_tls")
-                .get("authenticated").asBoolean)
-            if(profile<6) assertFalse(structured.has("legacy_dns_mode"))
-            else assertEquals(2,structured.get("legacy_dns_mode").asInt)
+            if(profile<6) {
+                assertEquals(profile,structured.getAsJsonObject("_tls")
+                    .get("key_profile").asInt)
+                assertTrue(structured.getAsJsonObject("_tls")
+                    .get("authenticated").asBoolean)
+                assertFalse(structured.has("legacy_dns_mode"))
+            }else {
+                assertFalse("Historical TLS renderer must remain unchanged",
+                    structured.has("_tls"))
+                assertEquals(2,structured.get("legacy_dns_mode").asInt)
+            }
         }
     }
 
