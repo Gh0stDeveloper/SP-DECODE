@@ -48,15 +48,57 @@ permiso `INTERNET`, y no hay cambios silenciosos a motores de descifrado.
   en estado persistente de Compose. Los secretos no se adjuntan a
   diagnósticos, logs, accesos directos, Intent o APK.
 
+## S.4.1 — Selección explícita para HTTP Custom HCCFG (.hc)
+
+La importación **individual** de un archivo `.hc` identifica localmente si
+contiene una envoltura HCCFG autenticada y tiene el indicador de protección
+por contraseña (`h=1`). Si existen credenciales privadas guardadas, aparece
+un diálogo de **selección manual por archivo** con nombres, nunca valores.
+No existe una credencial predeterminada, autoselección ni reintento con todas
+las claves del almacén.
+
+Una selección válida llama `DevicePrivateCredentialVault.use(id)` únicamente
+dentro de la operación en curso. El motor HCCFG recibe `ByteArray` de UTF-8
+temporal y deriva la clave Argon2id con los parámetros autenticados del archivo.
+El vault sobrescribe el búfer tras el callback, incluso en fallo. La misma copia
+acotada del archivo cifrado que se inspeccionó se usa para el descifrado, luego
+se limpia. No se guardan identificadores de credencial, contraseñas, ni
+preferencias por extensión. Solo un **resultado descifrado correctamente**
+entra al historial cifrado habitual.
+
+Los demás motores y el descifrado de `.hc` histórico continúan con la ruta
+sin contraseña; el despachador rechaza una clave externa en cualquier
+otro formato y en archivos HCCFG sin la marca de protección. Importaciones por
+lotes no escogen claves automáticamente: el propietario debe importar esos
+archivos protegidos de forma individual. Si la clave falta, es incorrecta, fue
+eliminada o el registro es ilegible, se conserva el fallo normal sin
+degradar a claves de otros formatos.
+
+La selección S.4.1 cubre **contraseña HCCFG**, no perfiles con bloqueo HWID
+que requieran también la identidad del dispositivo. No genera ni falsifica
+identidades, no evita las protecciones propias de un formato y no permite
+seleccionar archivos con extensión distinta de `.hc`.
+
+### Evidencia y límites
+
+- `HcSipVersionedInstrumentedTest` comprueba una configuración HCCFG
+  sintética con Argon2id que falla sin contraseña, descifra con la correcta,
+  rechaza una incorrecta, no aplica la contraseña a `.ehi` y conserva
+  la ruta histórica de `.hc`.
+- `tests/test_hc_sip_new_variants.py` y el exportador reproducible
+  `scripts/android_hc_sip_fixture_export.py` añaden el vector protegido
+  artificial `variant-hc-hccfg-password.hc` (sin secretos reales).
+- No hay certificación de compatibilidad universal con exportadores HCCFG
+  de terceros. Los archivos reales, dispositivos físicos, rotación,
+  reinstalación, bloqueo y cambio de credenciales requieren pruebas de S.5.
+
 ## Qué NO hace todavía
 
-El almacén **no se conecta automáticamente a ningún descifrador existente**:
-los formatos con claves públicas siguen usando sus claves históricas y
-conservan todos sus resultados actuales. Conectar una contraseña del usuario
-a un formato exige conocer su protocolo exacto y una acción de selección/
-autorización, así como pruebas de paridad de archivos reales; nunca se
-sustituirá una clave de compatibilidad pública por una clave privada
-arbitraria. Tampoco se implementa sincronización, recuperación en la nube
+El almacén **no se conecta automáticamente a ningún descifrador**. Solo
+la opción de contraseña explícita HCCFG descrita arriba está integrada. Los
+formatos con claves públicas siguen usando sus claves históricas y conservan
+sus resultados previos. No se sustituye una clave de compatibilidad por una
+clave privada arbitraria. Tampoco hay sincronización, recuperación en la nube
 ni recuperación después de reinstalar la aplicación.
 
 Android Keystore puede estar respaldado por hardware/TEE/StrongBox según el
@@ -86,9 +128,8 @@ absoluta de borrado de todos los objetos JVM anteriores.
 
 ## Próximos pasos de seguridad
 
-1. Si un formato realmente necesita una contraseña externa, definir el
-   esquema de identificación y selección manual por archivo, sin reutilizar
-   automáticamente credenciales entre formatos.
+1. Evaluar otros formatos que realmente admitan una contraseña externa, con
+   selección por archivo y vectores independientes; no generalizar la ruta HCCFG.
 2. Probar restauración de instalación, bloqueo de pantalla, eliminación de
    credenciales y pérdida de clave en dispositivos físicos.
 3. Auditar las rutas de autorización de claves opcionales al avanzar a
