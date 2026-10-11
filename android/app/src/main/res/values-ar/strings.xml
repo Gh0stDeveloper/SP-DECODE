@@ -128,7 +128,7 @@
     <string name="text_decode_invalid">بروتوكول غير معروف أو نص غير صالح أو تجاوز حد الحجم.</string>
     <string name="text_decode_unsupported">تعذر فك ترميز النص. ربما يكون غير مكتمل أو تالفًا أو يستخدم تشفيرًا مختلفًا.</string>
     <string name="whats_new_title">الجديد في SP-DECODE</string>
-    <string name="whats_new_description">الإصدار 1.1.1 · TLS 8.5.0 وHTTP Injector وDark Tunnel</string>
+    <string name="whats_new_description">الإصدار 1.1.2 · HTTP Custom بكلمة مرور/HWID واستيراد سحابي وعرض JSON</string>
     <string name="whats_new_linklayer">TLS Tunnel 8.5.0: ستة ملفات مفاتيح AES-GCM على أندرويد مع الحفاظ على الطرق السابقة.</string>
     <string name="whats_new_fields">HTTP Injector: معالجة أعمق للحقول المتداخلة والمشفرة. بعض ملفات .ehi النادرة تحتاج إلى عينة حقيقية.</string>
     <string name="whats_new_offline">Dark Tunnel: فك نصوص Base64 دون بادئة. الدليل في منتصف الشاشة. تظل مسارات الملفات الـ239 تعمل دون إنترنت.</string>
