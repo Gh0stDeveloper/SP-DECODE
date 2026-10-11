@@ -6,7 +6,7 @@
     <string name="import_detail">اختر ملفًا متوافقًا من جهازك</string>
     <string name="select_file">اختيار ملف</string>
     <string name="home_import_action">استيراد ملف</string>
-    <string name="offline_status">معالجة محلية · دون إنترنت</string>
+    <string name="offline_status">الملفات والنصوص دون إنترنت · السحابة متصلة</string>
     <string name="result">النتيجة</string>
     <string name="illustrative">مثال توضيحي</string>
     <string name="sample">مثال</string>
@@ -178,4 +178,15 @@
     <string name="json_more_items">عرض الإدخالات %1$d التالية</string>
     <string name="json_more_chars">عرض الأحرف %1$d التالية</string>
     <string name="json_visible_limit">هناك فروع مفتوحة كثيرة. اطوِ بعضها لمتابعة التصفح.</string>
+    <string name="cloud_http_injector_title">HTTP Injector Cloud</string>
+    <string name="cloud_http_injector_open">السحابة (متصل)</string>
+    <string name="cloud_http_injector_hint">الصق رابط ehi.link أو مفتاح السحابة أو تسلسل 💉…🚀</string>
+    <string name="cloud_http_injector_action">استيراد إعدادات السحابة</string>
+    <string name="cloud_http_injector_privacy">ميزة تتطلب الاتصال بالإنترنت: لا يُرسل المرجع إلى خادم HTTP Injector إلا بعد الضغط على استيراد. تبقى طرق فك ترميز الملفات والنصوص الأخرى دون اتصال.</string>
+    <string name="cloud_http_injector_invalid">رابط السحابة أو المفتاح أو تسلسل الرموز غير صالح. راجع المرجع الأصلي.</string>
+    <string name="cloud_http_injector_network_error">تعذر الاتصال بخادم HTTP Injector Cloud. تحقق من اتصال الإنترنت وأعد المحاولة.</string>
+    <string name="cloud_http_injector_server_error">لم يقبل خادم HTTP Injector Cloud هذا المرجع. ربما انتهت صلاحيته أو أُلغي أو كانت الخدمة غير متاحة.</string>
+    <string name="cloud_http_injector_integrity_error">تعذر التحقق من استجابة السحابة أو فك تشفيرها.</string>
+    <string name="cloud_http_injector_decoder_error">تم استرجاع إعدادات السحابة، ولكن تعذر فك ترميز محتوى EHI باستخدام المحرك الحالي.</string>
+    <string name="npvs_private_key_unsupported">نعتذر، تعذر فك ترميز ملف NPVS هذا. قد يكون محميًا بمفتاح خاص (private key)، وهذا النوع من الحماية غير مدعوم في التطبيق حاليًا.</string>
 </resources>

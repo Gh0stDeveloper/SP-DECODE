@@ -6,7 +6,7 @@
     <string name="import_detail">Select a compatible file from your device</string>
     <string name="select_file">Select file</string>
     <string name="home_import_action">Import file</string>
-    <string name="offline_status">Local processing · Offline</string>
+    <string name="offline_status">Local files/text · Offline; Cloud · Online</string>
     <string name="result">Result</string>
     <string name="illustrative">Illustrative example</string>
     <string name="sample">Example</string>
@@ -178,4 +178,15 @@
     <string name="json_more_items">Show next %1$d entries</string>
     <string name="json_more_chars">Show next %1$d characters</string>
     <string name="json_visible_limit">Many branches are expanded. Collapse some to continue navigating.</string>
+    <string name="cloud_http_injector_title">HTTP Injector Cloud</string>
+    <string name="cloud_http_injector_open">Cloud (Online)</string>
+    <string name="cloud_http_injector_hint">Paste an ehi.link link, cloud key, or 💉…🚀 sequence</string>
+    <string name="cloud_http_injector_action">Import cloud configuration</string>
+    <string name="cloud_http_injector_privacy">Online feature: only after tapping Import, the reference is sent to the HTTP Injector cloud server. All other file and text decoders stay offline.</string>
+    <string name="cloud_http_injector_invalid">Invalid cloud link, key, or emoji sequence. Check the original reference.</string>
+    <string name="cloud_http_injector_network_error">Unable to connect to HTTP Injector Cloud. Check your connection and try again.</string>
+    <string name="cloud_http_injector_server_error">HTTP Injector Cloud did not accept this reference. It may have expired, been revoked, or the service may be unavailable.</string>
+    <string name="cloud_http_injector_integrity_error">Cloud response could not be verified or decrypted.</string>
+    <string name="cloud_http_injector_decoder_error">The cloud configuration was retrieved, but its EHI content could not be decoded by the current engine.</string>
+    <string name="npvs_private_key_unsupported">Sorry, this NPVS file could not be decoded. It may use private-key protection, which is not supported by the application at this time.</string>
 </resources>

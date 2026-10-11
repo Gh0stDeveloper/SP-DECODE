@@ -27,7 +27,6 @@ WORKFLOW = ROOT / ".github/workflows/android-signed-release.yml"
 CI = ROOT / ".github/workflows/validate.yml"
 READINESS = ROOT / "release/android-readiness.json"
 RESTRICTED = frozenset((
-    "android.permission.INTERNET",
     "android.permission.ACCESS_NETWORK_STATE",
     "android.permission.READ_EXTERNAL_STORAGE",
     "android.permission.WRITE_EXTERNAL_STORAGE",
@@ -62,8 +61,10 @@ def inspect(expected_version: str | None = None, expected_code: int | None = Non
                  for x in root
                  if x.tag in ("uses-permission", "uses-permission-sdk-23")}
     record("source_manifest_offline",
-           not requested.intersection(RESTRICTED),
-           "No prohibited network, legacy storage, overlay, or QUERY_ALL_PACKAGES permissions in source manifest")
+           requested == {"android.permission.INTERNET"}
+           and not requested.intersection(RESTRICTED)
+           and (ROOT / "android/app/src/main/java/com/ghostdeveloper/spdecode/HttpInjectorCloudPort.kt").is_file(),
+           "Local file/text decoders remain offline; sole INTERNET permission is for the explicit HTTP Injector Cloud action; no broad storage, overlay or package-query permissions")
     app = root.find("application")
     flags = app.attrib if app is not None else {}
     record("history_backup_disabled",

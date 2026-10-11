@@ -78,6 +78,7 @@ fun SpDecodeApp(
     onRetention:(Int)->Unit,
     onDismissError:()->Unit,
     onDecodeText:(String)->Unit={},
+    onDecodeCloud:(String)->Unit={},
     whatsNew:Boolean=false,
     onDismissWhatsNew:()->Unit={},
     guideStep:Int?=null,
@@ -104,6 +105,7 @@ fun SpDecodeApp(
                     0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
                         onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect,
                         onClearResult=onClearResult,onDecodeText=onDecodeText,
+                        onDecodeCloud=onDecodeCloud,
                         highlightGuide=if(!whatsNew && !busy)guideStep else null)
                     1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple,onFavorite)
                     2->FormatsScreen()
@@ -293,6 +295,7 @@ private fun HomeScreen(
     onSelect:(DecodeView)->Unit,
     onClearResult:()->Unit,
     onDecodeText:(String)->Unit,
+    onDecodeCloud:(String)->Unit,
     highlightGuide:Int?=null,
 ) {
     Column(
@@ -301,13 +304,19 @@ private fun HomeScreen(
         verticalArrangement=Arrangement.spacedBy(19.dp),
     ) {
         var textExpanded by rememberSaveable { mutableStateOf(false) }
+        var cloudExpanded by rememberSaveable { mutableStateOf(false) }
         var awaitingTextResult by remember { mutableStateOf(false) }
+        var awaitingCloudResult by remember { mutableStateOf(false) }
         // Keep previous results visible. Hide the editor only after a new,
         // successfully decoded result arrives; failures leave text editable.
         LaunchedEffect(current?.id) {
             if(awaitingTextResult && current != null) {
                 textExpanded=false
                 awaitingTextResult=false
+            }
+            if(awaitingCloudResult && current != null) {
+                cloudExpanded=false
+                awaitingCloudResult=false
             }
         }
         Row(
@@ -316,7 +325,13 @@ private fun HomeScreen(
             verticalAlignment=Alignment.CenterVertically,
         ) {
             Button(
-                onClick={awaitingTextResult=false;textExpanded=false;onImport()},
+                onClick={
+                    awaitingTextResult=false
+                    awaitingCloudResult=false
+                    textExpanded=false
+                    cloudExpanded=false
+                    onImport()
+                },
                 enabled=!busy,
                 modifier=Modifier.weight(1f).heightIn(min=52.dp),
                 shape=RoundedCornerShape(14.dp),
@@ -333,7 +348,11 @@ private fun HomeScreen(
                     textAlign=TextAlign.Center)
             }
             Button(
-                onClick={textExpanded=!textExpanded},
+                onClick={
+                    cloudExpanded=false
+                    awaitingCloudResult=false
+                    textExpanded=!textExpanded
+                },
                 enabled=!busy,
                 modifier=Modifier.weight(1f).heightIn(min=52.dp),
                 shape=RoundedCornerShape(14.dp),
@@ -351,6 +370,32 @@ private fun HomeScreen(
                     textAlign=TextAlign.Center)
             }
         }
+        // Online actions are always separate from the offline Texts panel.
+        OutlinedButton(
+            onClick={
+                textExpanded=false
+                awaitingTextResult=false
+                cloudExpanded=!cloudExpanded
+            },
+            enabled=!busy,
+            modifier=Modifier.fillMaxWidth().heightIn(min=46.dp),
+            shape=RoundedCornerShape(14.dp),
+            colors=ButtonDefaults.outlinedButtonColors(
+                contentColor=White,disabledContentColor=Secondary),
+            border=BorderStroke(1.dp,Outline),
+        ) {
+            Icon(Icons.Outlined.Cloud,null,modifier=Modifier.size(19.dp))
+            Spacer(Modifier.width(8.dp))
+            Text(stringResource(R.string.cloud_http_injector_open),
+                fontSize=13.sp)
+        }
+        if(cloudExpanded) HttpInjectorCloudPanel(
+            enabled=!busy,
+            onDecode={input->
+                awaitingCloudResult=true
+                onDecodeCloud(input)
+            },
+        )
         if(textExpanded) TextDecoderPanel(
             enabled=!busy,
             onDecode={input->
