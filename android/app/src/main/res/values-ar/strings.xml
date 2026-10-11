@@ -138,4 +138,5 @@
     <string name="native_decoder_pending">لم تتم إضافة أداة فك التشفير المحلية لهذه الصيغة بعد.</string>
     <string name="native_decoder_pending_short">قيد الانتظار</string>
     <string name="native_decoder_mixed_short">مختلط</string>
+    <string name="clear_current_result">مسح النتيجة المعروضة</string>
 </resources>
