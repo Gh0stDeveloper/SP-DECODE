@@ -138,7 +138,7 @@
     <string name="native_decoder_mixed_short">Mixto</string>
     <string name="clear_current_result">Limpiar resultado visible</string>
     <string name="guide_settings_title">Guía interactiva</string>
-    <string name="guide_settings_detail">Aprende a importar archivos, descifrar textos, revisar resultados y usar el historial. Puedes repetir la guía cuando quieras.</string>
+    <string name="guide_settings_detail">Incluye archivos y textos locales, HTTP Injector Cloud (online), HTTP Custom .hc protegido, resultados e historial. Puedes reiniciar la guía cuando quieras.</string>
     <string name="guide_replay">Iniciar recorrido guiado</string>
     <string name="settings_version">Versión %1$s</string>
     <string name="settings_build_code">Compilación %1$d</string>
@@ -199,4 +199,6 @@
     <string name="hc_auth_enter_manually">Introducir contraseña manualmente</string>
     <string name="hc_auth_input_invalid">Introduce la contraseña requerida y/o un HWID válido de 32 caracteres.</string>
     <string name="hc_auth_failed">No se pudo autenticar este archivo HTTP Custom protegido. Comprueba la contraseña y/o el HWID; también es posible que el archivo esté dañado o utilice una variante no compatible.</string>
+    <string name="guide_step_six">HTTP Injector Cloud (online): en Inicio abre Nube, pega un enlace ehi.link, una clave cloud o un código de emojis 💉…🚀 y pulsa Importar. Solo entonces se envía la referencia al servidor de HTTP Injector; se necesita Internet. Los archivos y textos locales siguen sin conexión.</string>
+    <string name="guide_step_seven">HTTP Custom (.hc) protegido: importa el archivo normalmente. Si solicita contraseña de exportación, HWID (32 caracteres) o ambos, introduce exactamente los datos requeridos. Los valores incorrectos o archivos alterados no se pueden descifrar; los .hc normales conservan su método anterior.</string>
 </resources>
