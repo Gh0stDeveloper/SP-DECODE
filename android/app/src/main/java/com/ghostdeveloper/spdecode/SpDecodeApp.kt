@@ -71,6 +71,7 @@ fun SpDecodeApp(
     onExternalLink:(String)->Unit,
     onSelect:(DecodeView)->Unit,
     onClear:()->Unit,
+    onClearResult:()->Unit,
     onDeleteSelected:(Set<String>)->Unit,
     onFavorite:(String,Boolean)->Unit,
     retentionDays:Int,
@@ -98,7 +99,7 @@ fun SpDecodeApp(
                 when(activeTab) {
                     0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
                         onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect,
-                        onDecodeText=onDecodeText)
+                        onClearResult=onClearResult,onDecodeText=onDecodeText)
                     1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple,onFavorite)
                     2->FormatsScreen()
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
@@ -280,6 +281,7 @@ private fun HomeScreen(
     onCopy:()->Unit,
     onExport:()->Unit,
     onSelect:(DecodeView)->Unit,
+    onClearResult:()->Unit,
     onDecodeText:(String)->Unit,
 ) {
     Column(
@@ -347,11 +349,18 @@ private fun HomeScreen(
         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
             Text(stringResource(R.string.result),color=White,fontWeight=FontWeight.Bold,
                 fontSize=18.sp,modifier=Modifier.weight(1f))
-            Text(
-                if(current==null)stringResource(R.string.illustrative)
-                else stringResource(R.string.experimental),
-                color=Secondary,fontSize=12.sp
-            )
+            if(current==null) Text(stringResource(R.string.illustrative),
+                color=Secondary,fontSize=12.sp)
+            else {
+                Text(stringResource(R.string.experimental),
+                    color=Secondary,fontSize=12.sp)
+                IconButton(onClick=onClearResult,enabled=!busy,
+                    modifier=Modifier.size(42.dp)) {
+                    Icon(Icons.Outlined.DeleteOutline,
+                        contentDescription=stringResource(R.string.clear_current_result),
+                        tint=if(busy)Secondary else White,modifier=Modifier.size(21.dp))
+                }
+            }
         }
         CompleteResultCard(current,reveal,hideCredentials,onReveal,onCopy,onExport)
         Row(verticalAlignment=Alignment.CenterVertically){

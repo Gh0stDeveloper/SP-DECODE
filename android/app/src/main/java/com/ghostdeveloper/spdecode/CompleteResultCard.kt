@@ -29,8 +29,9 @@ private val Tile=Color(0xFF242424)
 
 /**
  * JSON is the ONLY on-screen decoded data representation.
- * Decoder raw text is NEVER rewritten. Copy/export continue to support the
- * exact original. The metadata and developer attribution are outside JSON.
+ * Decoder raw text is NEVER rewritten. Original FILE export preserves it;
+ * clipboard shares add credits outside the payload. JSON file export stays
+ * pure JSON. The on-screen attribution is outside the displayed JSON.
  */
 @Composable
 fun CompleteResultCard(

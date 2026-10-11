@@ -138,4 +138,5 @@
     <string name="native_decoder_pending">Native decoder not yet integrated for this format.</string>
     <string name="native_decoder_pending_short">Pending</string>
     <string name="native_decoder_mixed_short">Mixed</string>
+    <string name="clear_current_result">Clear displayed result</string>
 </resources>

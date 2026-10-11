@@ -175,8 +175,9 @@ object ResultPresentation {
             }
         }
     }
-    // Attribution is added ONLY to the ordered copy/export: original raw output
-    // remains immutable and JSON copy/export must remain valid machine-readable JSON.
+    // Ordered projection has built-in attribution. TelegramResultCopy adds an
+    // external credited Markdown wrapper for clipboard JSON and original text;
+    // file exports from this object remain pure JSON or exact raw text.
     // Keep the official SP-DECODE group/channel consistent with Settings links.
     fun structure(suffix:String,fields:List<ResultField>):String=buildString {
         append("┌────────────────────────────\n")
