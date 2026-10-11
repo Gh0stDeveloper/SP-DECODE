@@ -17,8 +17,8 @@ import org.bouncycastle.crypto.params.Argon2Parameters
  * HcPort. Never guesses other formats, executes code or uses network access.
  * A valid AEAD authentication tag is required before accepting sections.
  *
- * Optional password/HWID arguments are for future explicit user input;
- * Android never guesses either secret or fetches a device identity silently.
+ * External passwords are accepted only through the per-file S.4 opt-in route;
+ * Android never guesses secrets or fetches device identity silently.
  */
 internal object HcHccfgPort {
     private val p=LegacyPortPrimitives
@@ -201,7 +201,7 @@ internal object HcHccfgPort {
     private fun key(env:JSONObject):ByteArray=p.hex(env.getString("g")).also {
         require(it.size==32)
     }
-    private fun derive(env:JSONObject,password:String?,hwid:String?):Pair<ByteArray,ByteArray>{
+    private fun derive(env:JSONObject,passwordBytes:ByteArray?,hwid:String?):Pair<ByteArray,ByteArray>{
         require(env.getString("a")=="HCCFG")
         val schema=env.getInt("b")
         require(schema in listOf(1,2,5,7))
@@ -235,7 +235,7 @@ internal object HcHccfgPort {
             else -> error("Bad HCCFG protection flag")
         }
         val protectionAad=if(protectionFlag==1){
-            require(!password.isNullOrEmpty()){"PASSWORD_REQUIRED"}
+            require(passwordBytes!=null && passwordBytes.isNotEmpty()){"PASSWORD_REQUIRED"}
             val ops=env.getInt("l")
             val mem=env.getInt("m")
             require(ops in 1..10 && mem in (8*1024*1024)..(256*1024*1024) && mem%1024==0) {
@@ -247,7 +247,7 @@ internal object HcHccfgPort {
                 .withMemoryAsKB(mem/1024).withParallelism(1)
                 .withVersion(Argon2Parameters.ARGON2_VERSION_13).build()
             val out=ByteArray(32)
-            Argon2BytesGenerator().apply{init(params)}.generateBytes(utf(password),out)
+            Argon2BytesGenerator().apply{init(params)}.generateBytes(passwordBytes,out)
             ikm=bytes(ikm,out);out.fill(0)
             utf("|1|ARGON2ID13|$ops|$mem")
         }else utf("|0")
@@ -343,8 +343,8 @@ internal object HcHccfgPort {
         for(k in p.keys(pObj))out.put(protectionNames[k]?:k,pObj.get(k))
         return out
     }
-    private fun decodeEnv(env:JSONObject,password:String?,hwid:String?):JSONObject {
-        val (key,aad)=derive(env,password,hwid)
+    private fun decodeEnv(env:JSONObject,passwordBytes:ByteArray?,hwid:String?):JSONObject {
+        val (key,aad)=derive(env,passwordBytes,hwid)
         val main=env.getJSONObject("i")
         val raw=section(main,key,aad)
         val decoded=parseObject(raw)
@@ -385,8 +385,34 @@ internal object HcHccfgPort {
             if(others.length()>0)put("other_sections",others)
         }
     }
-    fun decode(input:ByteArray,password:String?=null,hwid:String?=null):String?=p.safeDecode{
+    /** Inspect the authenticated outer HCCFG header without guessing passwords. */
+    fun requiresExternalPassword(input:ByteArray):Boolean=runCatching {
         p.bounded(input)
-        p.prettyJson(decodeEnv(openOuter(input),password,hwid))+"\n"
+        val env=openOuter(input)
+        if(env.optString("a")!="HCCFG")false
+        else when(val flag=env.opt("h")){
+            true->true
+            is Number->flag.toInt()==1
+            else->false
+        }
+    }.getOrDefault(false)
+
+    private fun decodeBytes(input:ByteArray,passwordBytes:ByteArray?,hwid:String?):String?=
+        p.safeDecode {
+            p.bounded(input)
+            p.prettyJson(decodeEnv(openOuter(input),passwordBytes,hwid))+"\n"
+        }
+
+    /** Legacy source compatibility; any temporary UTF-8 copy is zeroed. */
+    fun decode(input:ByteArray,password:String?=null,hwid:String?=null):String? {
+        val bytes=password?.toByteArray(Charsets.UTF_8)
+        return try { decodeBytes(input,bytes,hwid) }
+        finally { bytes?.fill(0) }
+    }
+
+    /** Password bytes are owned and immediately cleared by the vault callback. */
+    fun decodeWithUserPassword(input:ByteArray,password:ByteArray):String? {
+        if(password.isEmpty() || password.size>4096)return null
+        return decodeBytes(input,password,null)
     }
 }
