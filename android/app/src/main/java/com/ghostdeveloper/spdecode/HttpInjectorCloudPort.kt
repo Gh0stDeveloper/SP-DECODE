@@ -58,11 +58,12 @@ internal object HttpInjectorCloudPort {
         val url = try { URI(reference) } catch (_: Exception) {
             throw CloudException(Reason.REFERENCE)
         }
+        val path = url.rawPath ?: throw CloudException(Reason.REFERENCE)
         if ((url.scheme != "https" && url.scheme != "ehi") ||
             url.host != "ehi.link" || url.port != -1 ||
             url.rawUserInfo != null || url.rawQuery != null || url.rawFragment != null ||
-            !url.rawPath.startsWith("/")) throw CloudException(Reason.REFERENCE)
-        val key = url.rawPath.substring(1)
+            !path.startsWith("/")) throw CloudException(Reason.REFERENCE)
+        val key = path.substring(1)
         if (!keyPattern.matches(key)) throw CloudException(Reason.REFERENCE)
         return key
     }
