@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "android/app/src/main/assets"
 REQUIRED = (
+    "embedded_kotlin_profiles.json",
     "flex_f_profiles.json",
     "generic_b_profiles.json",
     "hc_source_keys.json",
@@ -29,6 +30,7 @@ OPTIONAL = ("npv_whitebox.bin",)
 ALL = REQUIRED + OPTIONAL
 KOTLIN = ROOT / "android/app/src/main/java/com/ghostdeveloper/spdecode/parity"
 LOADERS = {
+    "EmbeddedDecoderMaterials.kt": "embedded_kotlin_profiles.json",
     "GenericProfileStore.kt": "generic_b_profiles.json",
     "UltraProfileStore.kt": "ultra_c_profiles.json",
     "RenzProfileStore.kt": "renz_d_profiles.json",
@@ -81,7 +83,8 @@ def check_source(root: Path = ROOT) -> None:
         text = (root / "android/app/src/main/java/com/ghostdeveloper/spdecode/parity" / file).read_text("utf-8")
         if f'SecureAssetVault.open(context,"{name}")' not in text and (
             f'SecureAssetVault.open(ctx,"{name}")' not in text and
-            f'SecureAssetVault.open(context,ASSET)' not in text
+            f'SecureAssetVault.open(context,ASSET)' not in text and
+            f'SecureAssetVault.readText(ctx, ASSET)' not in text
         ):
             raise ValueError("Unprotected Android resource loader: " + file)
     # These are different security classes. Do not put signing secrets,
