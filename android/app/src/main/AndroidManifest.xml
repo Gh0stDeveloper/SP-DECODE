@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 100% offline: no INTERNET, storage-all-files, or network permissions. -->
+    <!-- INTERNET is used solely by the explicitly selected HTTP Injector Cloud importer.
+         All 239 file decoders, text decoders, local history and credentials remain offline.
+         No background requests, analytics or cleartext networking. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".SpDecodeApplication"
         android:allowBackup="false"
