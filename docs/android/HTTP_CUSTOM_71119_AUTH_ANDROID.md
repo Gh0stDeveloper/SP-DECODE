@@ -58,8 +58,10 @@ servidor, no la credencial que abre el archivo.
   individual**. El lote continúa y reporta el fallo.
 - Los tres archivos comerciales (sin bloqueo, contraseña, HWID) fueron
   verificados en **Python**, según el documento proporcionado por el usuario.
-  **No se adjuntaron aquí los archivos comerciales para probar el motor
-  Android.** Las pruebas de CI usan exclusivamente datos sintéticos.
+  En esta continuación se comparó el JSON completo del mismo código Kotlin
+  en JVM contra `HTTPCUSTOM_AUTH.py` con las muestras privadas de contraseña
+  y HWID, incluidas credenciales correctas, omitidas e incorrectas. Las muestras
+  y las credenciales no se incorporan al repositorio. CI/API35 usa datos sintéticos.
 - El **doble bloqueo** se ha demostrado con una fixture generada, no con
   una exportación comercial 7.11.19 real. Falta esa confirmación externa.
 
@@ -92,3 +94,26 @@ comercial se publica**.
 
 Cuatro idiomas: inglés, español, portugués de Brasil y árabe.
 No se modifica la publicación de la APK estable automáticamente.
+
+## Corrección del fallo de slots y presentación completa
+
+Las fixtures HWID/doble bloqueo contenían caracteres literales `\\0`,
+`\\xd3` y `\\x00` en lugar de bytes NUL y D3. Por ello el decoder Python
+original también las rechazaba. Las huellas temporales del slot ya correspondían
+al vector correcto: el error `slot-ciphertext-mismatch` describía una fixture
+inválida, no un fallo de Poly1305 de Android.
+
+El generador ahora usa bytes reales y comprueba su derivación y descifrado con
+`_hc_hccfg.py` antes de exportar. Se eliminaron las huellas y el diagnóstico
+`syntheticTestStage`, además de la alternativa criptográfica basada en esa
+suposición. Todos los slots siguen autenticándose antes de usar su clave.
+Las pruebas negativas alteran cada capa: slot, main, perfil, HPR1 y sidecar;
+ninguna puede entregar un JSON parcial. Los sidecars autenticados también se
+conservan en los perfiles completos de la ruta con credenciales. `flags` se
+interpreta como uint32 (Long en Kotlin), evitando valores negativos que no
+coincidían con Python en el segundo perfil de las muestras reales.
+
+El resultado mantiene el diseño y los colores aprobados. Todas las ramas y
+valores del JSON se muestran completos al abrirlo y únicamente se desplaza
+la pantalla exterior. Copia, exportación y ocultación de credenciales mantienen
+sus rutas anteriores.

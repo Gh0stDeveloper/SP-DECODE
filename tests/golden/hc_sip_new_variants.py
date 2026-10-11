@@ -30,7 +30,7 @@ def aead(key: bytes, nonce: bytes, aad: bytes, plain: bytes) -> bytes:
     return ct+tag
 
 
-def hpc1() -> bytes:
+def hpc1(flags: int = 3) -> bytes:
     def txt(value: str) -> bytes:
         raw=value.encode("utf-8")
         return struct.pack(">I", len(raw))+raw
@@ -38,7 +38,7 @@ def hpc1() -> bytes:
         txt("Synthetic HCCFG")+txt("ssh")+txt("example.org")+
         struct.pack(">I",443)+txt("demo")+txt("dummy")+
         txt("GET / HTTP/1.1")+txt('{"sni":"example.org"}')+
-        struct.pack(">I",3)+struct.pack(">Q",1700000000000)+txt("ssh"))
+        struct.pack(">I",flags)+struct.pack(">Q",1700000000000)+txt("ssh"))
 
 
 def hccfg_file(schema: int=1,schedule: str="n1",password: str | None=None) -> bytes:
@@ -74,7 +74,7 @@ NONCE_SLOT = bytes(range(72,96))
 NONCE_HPR = bytes(range(96,120))
 
 
-def hccfg_hwid_file(password: str | None = None) -> bytes:
+def hccfg_hwid_file(password: str | None = None, *, tamper_layer: str | None = None) -> bytes:
     """Synthetic HTTP Custom 7.11.19 stream-v3 with HWID or dual lock.
 
     Builds the wrapping key independently from _derive(), then verifies it
@@ -91,10 +91,10 @@ def hccfg_hwid_file(password: str | None = None) -> bytes:
         env.update({"k":"ARGON2ID13","l":2,"m":8*1024*1024})
     seed=bytes.fromhex(env["g"])
     hw=SYNTHETIC_HWID.encode("utf-8")
-    transcript=(b"HCCFG\\0"+hc.PKG+b"\\0"+b"1\\0"+b"ssh,profiles\\0"+
-                b"885\\0"+b"hwid\\0"+hw+b"\\0"+seed)
+    transcript=(b"HCCFG\0"+hc.PKG+b"\0"+b"1\0"+b"ssh,profiles\0"+
+                b"885\0"+b"hwid\0"+hw+b"\0"+seed)
     intermediate=hmac.new(hc.N7_HMAC_KEY,
-        b"\\xd3"+hc.C0_PREFIX[:32]+transcript,hashlib.sha256).digest()
+        b"\xd3"+hc.C0_PREFIX[:32]+transcript,hashlib.sha256).digest()
     protection=b"|0"
     if password is not None:
         from argon2.low_level import Type, hash_secret_raw
@@ -108,20 +108,39 @@ def hccfg_hwid_file(password: str | None = None) -> bytes:
     section_key=bytes(reversed(range(32)))
     env["o"]=[{
         "a":NONCE_SLOT.hex(),
-        "b":aead(wrapped_key,NONCE_SLOT,aad+b"\\x00w",section_key).hex(),
+        "b":aead(wrapped_key,NONCE_SLOT,aad+b"\x00w",section_key).hex(),
     }]
     env["i"]={"a":"m0","b":NONCE_MAIN.hex(),
-        "c":aead(section_key,NONCE_MAIN,aad+b"\\x00m0",
+        "c":aead(section_key,NONCE_MAIN,aad+b"\x00m0",
             b'{"g":{"a":"free","m":false}}').hex()}
     payload=b"HPR1"+NONCE_HPR+aead(section_key,NONCE_HPR,
-        aad+b"\\x00s0:r",hpc1())
+        aad+b"\x00s0:r",hpc1(flags=0xffffffff))
+    if tamper_layer == "hpr1":
+        payload = payload[:-1] + bytes([payload[-1] ^ 1])
     env["j"]=[{"a":"s0","b":NONCE_PROFILE.hex(),
-        "c":aead(section_key,NONCE_PROFILE,aad+b"\\x00s0",payload).hex()}]
+        "c":aead(section_key,NONCE_PROFILE,aad+b"\x00s0",payload).hex(),
+        "d":{"a":NONCE_HPR.hex(),
+             "b":aead(section_key,NONCE_HPR,aad+b"\x00s0:x",
+                      b"Synthetic authenticated sidecar").hex()}}]
+    # Cross-check the independently built wrapping key/AAD before exporting.
+    # A malformed fixture must fail here, rather than look like an Android bug.
+    assert hc._derive(env,password,SYNTHETIC_HWID) == (section_key,aad)
+    targets = {"slot": (env["o"][0], "b"), "main": (env["i"], "c"),
+               "profile": (env["j"][0], "c"), "sidecar": (env["j"][0]["d"], "b")}
+    if tamper_layer in targets:
+        target,field = targets[tamper_layer]
+        ciphertext = bytes.fromhex(target[field])
+        target[field] = (ciphertext[:-1] + bytes([ciphertext[-1] ^ 1])).hex()
+    elif tamper_layer not in (None, "hpr1"):
+        raise ValueError("Unknown synthetic tamper layer")
     body=json.dumps(env,separators=(",",":")).encode("utf-8")
     sub=hc._hchacha20(hc.OUTER_KEY_V3,NONCE_OUTER[:16])
     n12=bytes(4)+NONCE_OUTER[16:]
     logical=NONCE_OUTER+hc._stream_xor(body,sub,n12)+bytes(16)
-    return logical.decode("latin-1").encode("utf-8")
+    raw = logical.decode("latin-1").encode("utf-8")
+    if tamper_layer is None:
+        assert hc.decrypt(raw,password=password,hwid=SYNTHETIC_HWID)["config"][0]["host"] == "example.org"
+    return raw
 
 
 def sip_ver8_file() -> bytes:
@@ -149,3 +168,6 @@ def export_android(output_dir):
         "variant-sip-legacy.sip":sip_file(),
     }.items():
         (output_dir/filename).write_bytes(raw)
+    for layer in ("slot", "main", "profile", "hpr1", "sidecar"):
+        (output_dir/f"variant-hc-hccfg-dual-bad-{layer}.hc").write_bytes(
+            hccfg_hwid_file(S4_SYNTHETIC_PASSWORD,tamper_layer=layer))

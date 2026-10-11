@@ -4,6 +4,13 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.hasScrollAction
+import androidx.compose.ui.test.onAllNodes
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.Modifier
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.JsonParser
@@ -36,7 +43,7 @@ class JsonTreeViewerInstrumentedTest {
         assertEquals(original, ResultJsonDisplay.render(raw, "hc"))
     }
 
-    @Test fun veryLargeJsonArraysArePagedNotFlattened() {
+    @Test fun largeArraysShowEveryValueWithoutPaginationOrRowCutoff() {
         val text = buildString {
             append("[")
             for (i in 0 until 12500) {
@@ -47,14 +54,32 @@ class JsonTreeViewerInstrumentedTest {
         }
         val root = JsonParser.parseString(text)
         val first = JsonTreeProjection.project(root)
-        assertEquals(80, first.count { it.kind == JsonTreeProjection.Kind.VALUE })
-        assertEquals(12420, first.first { it.kind == JsonTreeProjection.Kind.MORE }.remaining)
-        assertTrue(first.size < 100)
-        val next = JsonTreeProjection.project(root,
-            pageLimits = mapOf("root" to 160))
-        assertEquals(160, next.count { it.kind == JsonTreeProjection.Kind.VALUE })
-        assertEquals(12340, next.first { it.kind == JsonTreeProjection.Kind.MORE }.remaining)
+        assertEquals(12500, first.count { it.kind == JsonTreeProjection.Kind.VALUE })
+        assertEquals(12499, first.last { it.kind == JsonTreeProjection.Kind.VALUE }.value!!.asInt)
+        assertEquals(12502, first.size)
         assertEquals(12500, root.asJsonArray.size())
+    }
+
+    @Test fun fullNestedJsonAndLongValuesUseOnlyTheOuterScroll() {
+        val longValue="x".repeat(1800)+"END_OF_COMPLETE_VALUE"
+        val raw="""{"profiles":[{"options":{"payload":"$longValue"}}],"items":${(0..99).toList()}}"""
+        compose.setContent {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                CompleteResultCard(
+                    current=DecodeView("complete.hc","hc",raw,raw.length),
+                    reveal=false,hideCredentials=false,onReveal={},onCopy={},onExport={}
+                )
+            }
+        }
+        compose.waitUntil(timeoutMillis=20000) {
+            compose.onAllNodesWithText("END_OF_COMPLETE_VALUE",substring=true)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
+        compose.onNodeWithText("\"payload\": \"$longValue\"",substring=true).assertExists()
+        assertEquals(1,compose.onAllNodes(hasScrollAction()).fetchSemanticsNodes().size)
+        compose.onNodeWithText("99",substring=false).performScrollTo().assertExists()
+        compose.onNodeWithText(ctx.getString(R.string.export)).performScrollTo().assertExists()
+        assertEquals(raw,DecodeView("complete.hc","hc",raw,raw.length).rawText)
     }
 
     @Test fun strangeObjectFieldNamesCannotCollideAndMaskingIsPreserved() {

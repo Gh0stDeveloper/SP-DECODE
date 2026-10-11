@@ -10,9 +10,6 @@ import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import org.bouncycastle.crypto.generators.Argon2BytesGenerator
-import org.bouncycastle.crypto.modes.ChaCha20Poly1305
-import org.bouncycastle.crypto.params.AEADParameters
-import org.bouncycastle.crypto.params.KeyParameter
 import org.bouncycastle.crypto.params.Argon2Parameters
 
 /**
@@ -273,50 +270,16 @@ internal object HcHccfgPort {
         for(i in 0 until slots.length()){
             val sec=slots.optJSONObject(i)?:continue
             try{
-                val sk=verifiedSlotDecrypt(skey,p.hex(sec.getString("a")),
+                val sk=xdec(skey,p.hex(sec.getString("a")),
                     bytes(aad,zero,utf("w")),p.hex(sec.getString("b")))
                 if(sk.size==32)return sk to aad
             }catch(e:Exception){
-                // Never return unauthenticated plaintext. Keep the cause only
-                // for local diagnostics; p.safeDecode still returns null.
+                // A failed slot never supplies a section key or plaintext.
                 lastFailure=e
             }
         }
         throw IllegalStateException("AUTH_FAILED",lastFailure)
     }
-    /**
-     * Android's BigInteger-based Poly1305 fallback had a slot-only parity
-     * mismatch on API35, although the derived key and AAD matched the Python
-     * reference. Verify the HWID slot via the vetted, already bundled BC
-     * ChaCha20-Poly1305 implementation using the XChaCha20 subkey/nonce.
-     * Never downgrade a failed authenticated slot to stream plaintext.
-     */
-    private fun verifiedSlotDecrypt(key:ByteArray,nonce:ByteArray,aad:ByteArray,
-        ciphertextWithTag:ByteArray):ByteArray {
-        require(key.size==32 && nonce.size==24 && ciphertextWithTag.size>=16 &&
-            ciphertextWithTag.size<=p.MAX_INPUT)
-        val sub=hchacha(key,nonce.copyOfRange(0,16))
-        val nonce12=bytes(ByteArray(4),nonce.copyOfRange(16,24))
-        try {
-            val cipher=ChaCha20Poly1305()
-            cipher.init(false,AEADParameters(KeyParameter(sub),128,nonce12,aad))
-            val clear=ByteArray(cipher.getOutputSize(ciphertextWithTag.size))
-            val produced=cipher.processBytes(ciphertextWithTag,0,
-                ciphertextWithTag.size,clear,0)
-            val completed=cipher.doFinal(clear,produced)
-            val size=produced+completed
-            if(size!=clear.size) {
-                val result=clear.copyOf(size)
-                clear.fill(0)
-                return result
-            }
-            return clear
-        } finally {
-            sub.fill(0)
-            nonce12.fill(0)
-        }
-    }
-
     private fun section(sec:JSONObject,key:ByteArray,aad:ByteArray):ByteArray {
         val label=sec.getString("a");require(label.isNotEmpty()&&label.length<=256)
         return xdec(key,p.hex(sec.getString("b")),
@@ -361,7 +324,8 @@ internal object HcHccfgPort {
             require(int()==11)
             val name=text();val proto=text();val host=text();val port=int()
             val user=text();val pass=text();val payload=text();val opts=text()
-            val flags=int();val updated=long();val mode=text()
+            val flags=int().toLong() and 0xffffffffL
+            val updated=long();val mode=text()
             require(!buf.hasRemaining())
             val obj=JSONObject()
             obj.put("name",name);obj.put("protocol",proto);obj.put("host",host)
@@ -411,9 +375,10 @@ internal object HcHccfgPort {
                 val opts=profile.optJSONObject("options")
                 if(opts!=null)for(k in p.keys(opts))clean.put(k,opts.get(k))
                 if(profile.optString("payload").isNotEmpty())clean.put("payload",profile.getString("payload"))
-                if(side!=null)try {clean.put("custom_payload_sidecar",p.utf8(side))}
-                catch(_:Exception){clean.put("custom_payload_sidecar_hex",side.joinToString(""){"%02x".format(it.toInt() and 255)})}
-                configs.put(if(fullResult)profile else clean)
+                val result=if(fullResult)profile else clean
+                if(side!=null)try {result.put("custom_payload_sidecar",p.utf8(side))}
+                catch(_:Exception){result.put("custom_payload_sidecar_hex",side.joinToString(""){"%02x".format(it.toInt() and 255)})}
+                configs.put(result)
             }else {
                 val item=JSONObject().put("label",label)
                 val text=try{p.utf8(plaintext)}catch(_:Exception){null}
@@ -513,42 +478,6 @@ internal object HcHccfgPort {
             }catch(_:Exception){return false}
         }
         return false
-    }
-
-    /** Test-only stage report, never contains plaintext, keys or credentials. */
-    internal fun syntheticTestStage(input:ByteArray,password:ByteArray?,hwid:String?):String {
-        val env=try{openOuter(input)}catch(_:Exception){return "outer"}
-        val nonceDigest="41a75976a0fa2a53055e6ce1b5fe7263e6b2b6aff7ab3771b62f2fbb5d159e61"
-        val ciphertextDigest=if(password==null)
-            "831c8e175cb79d7ca26368bc89281822538bd455cf74ab75f55e85198365f147"
-            else "a45dd406c95be0b0f962b412c52e84983bc796494022d986654c4eb8b8c58411"
-        try {
-            val slot=env.getJSONArray("o").getJSONObject(0)
-            if(!MessageDigest.isEqual(sha(p.hex(slot.getString("a"))),
-                p.hex(nonceDigest)))return "slot-nonce-mismatch"
-            if(!MessageDigest.isEqual(sha(p.hex(slot.getString("b"))),
-                p.hex(ciphertextDigest)))return "slot-ciphertext-mismatch"
-        }catch(_:Exception){return "slot-envelope-invalid"}
-        val (contentKey,aad)=try{derive(env,password,hwid)}
-            catch(e:Exception){
-                return "slot-derive-"+(e.cause?.javaClass?.simpleName ?: e.javaClass.simpleName)
-            }
-        val main=try{section(env.getJSONObject("i"),contentKey,aad)}
-            catch(_:Exception){return "main-aead"}
-        if(runCatching{parseObject(main)}.isFailure)return "main-json"
-        val sections=try{sections(env.opt("j")?:JSONArray())}
-            catch(_:Exception){return "profiles-list"}
-        for(sec in sections) {
-            val label=sec.optString("a")
-            val raw=try{section(sec,contentKey,aad)}
-                catch(_:Exception){return "profile-aead"}
-            val plain=try{hpr1(raw,contentKey,aad,label,true)}
-                catch(_:Exception){return "hpr1-aead"}
-            if(plain.size>=4 && plain.copyOfRange(0,4).contentEquals(utf("HPC1"))) {
-                try{HPC1(plain).parse(label)}catch(_:Exception){return "profile-hpc1"}
-            }
-        }
-        return "complete"
     }
 
     /** Original S.4 password detector retained for existing security gates. */
