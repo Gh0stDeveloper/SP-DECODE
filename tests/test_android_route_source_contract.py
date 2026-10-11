@@ -45,13 +45,15 @@ class AndroidSourceWiringContract(unittest.TestCase):
         self.assertIn('"dark" -> DarkPort.decode(input)', router)
         self.assertIn('"nm" -> NmPort.decode(input)', router)
 
-    def test_attribution_has_telegram_profile_but_not_redundant_label(self):
+    def test_android_structured_copy_credits_ghost_developer_only(self):
         source = PRESENTATION.read_text("utf-8")
-        self.assertNotIn('append("│ Créditos', source)
-        self.assertIn("https://t.me/Gh0stDeveloper", source)
-        self.assertIn("https://t.me/CodeBreakersHub", source)
-        self.assertIn("https://t.me/GhostDeve", source)
+        clipboard = (ROOT / "android/app/src/main/java/com/ghostdeveloper/spdecode/TelegramResultCopy.kt").read_text("utf-8")
         self.assertIn("Desarrollado por: Ghost Developer", source)
+        self.assertIn("// Credits: Ghost Developer", clipboard)
+        self.assertNotIn("AES224", source + clipboard)
+        self.assertNotIn("https://t.me/CodeBreakersHub", source)
+        self.assertNotIn("https://t.me/GhostDeve", source)
+        self.assertNotIn("│ Telegram:", source)
 
 
 if __name__ == "__main__":
