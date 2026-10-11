@@ -60,7 +60,35 @@ def _chacha20_poly1305_decrypt(
 
     from cryptography.hazmat.primitives.ciphers.aead import ChaCha20Poly1305
 
+    if len(nonce) == 24:
+        key = _hchacha20(key, nonce[:16])
+        nonce = bytes(4) + nonce[16:]
     return ChaCha20Poly1305(key).decrypt(nonce, ciphertext + tag, aad)
+
+
+def _hchacha20(key: bytes, nonce16: bytes) -> bytes:
+    """XChaCha subkey; lets the existing cryptography fallback use nonce24."""
+    if len(key) != 32 or len(nonce16) != 16:
+        raise ValueError("clave o nonce HChaCha20 inválidos")
+    v = list(struct.unpack('<4I', b'expand 32-byte k') +
+             struct.unpack('<8I', key) + struct.unpack('<4I', nonce16))
+    def rotate(x, n):
+        return ((x << n) | (x >> (32 - n))) & 0xffffffff
+    def quarter(a, b, c, d):
+        v[a] = (v[a] + v[b]) & 0xffffffff
+        v[d] = rotate(v[d] ^ v[a], 16)
+        v[c] = (v[c] + v[d]) & 0xffffffff
+        v[b] = rotate(v[b] ^ v[c], 12)
+        v[a] = (v[a] + v[b]) & 0xffffffff
+        v[d] = rotate(v[d] ^ v[a], 8)
+        v[c] = (v[c] + v[d]) & 0xffffffff
+        v[b] = rotate(v[b] ^ v[c], 7)
+    for _ in range(10):
+        quarter(0, 4, 8, 12); quarter(1, 5, 9, 13)
+        quarter(2, 6, 10, 14); quarter(3, 7, 11, 15)
+        quarter(0, 5, 10, 15); quarter(1, 6, 11, 12)
+        quarter(2, 7, 8, 13); quarter(3, 4, 9, 14)
+    return struct.pack('<8I', *(v[i] for i in (0, 1, 2, 3, 12, 13, 14, 15)))
 
 
 def _format_top_level_json(data):
@@ -101,6 +129,14 @@ def _format_top_level_json(data):
         lines.append(f"│[۞] {key}: {rendered}")
 
     return "\n".join(lines)
+
+
+def _format_ehi_document(document):
+    return (
+        f"┌───────────────\n│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (.ehi)\n│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu\n├───────────────\n"
+        f"{_format_top_level_json(document)}\n\n"
+        f"├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
+    )
 
 
 class EHIConstants:
@@ -258,19 +294,25 @@ class EHIDecryptor:
     def _parse_ehi_bytes(file_bytes: bytes) -> Optional[bytes]:
         try:
             f = io.BytesIO(file_bytes)
+            def read_exact(n: int) -> bytes:
+                value = f.read(n)
+                if len(value) != n:
+                    raise ValueError("contenedor EHI truncado")
+                return value
             
             def r_utf() -> str:
-                if len(l_bytes := f.read(2)) < 2: return ""
-                return f.read(struct.unpack('>H', l_bytes)[0]).decode('utf-8', errors='ignore')
+                length = struct.unpack('>H', read_exact(2))[0]
+                return read_exact(length).decode('utf-8')
             
-            r_utf(); f.read(8); r_utf(); f.read(8)
-            if len(p_len_bytes := f.read(4)) < 4: 
+            if r_utf() != 'ehi':
                 return None
-            
-            p_len = struct.unpack('>I', p_len_bytes)[0]
-            f.read(8)
-            return f.read(p_len)
-        except struct.error:
+            read_exact(8); r_utf(); read_exact(8)
+            p_len = struct.unpack('>I', read_exact(4))[0]
+            read_exact(8)
+            if not p_len or p_len % 16:
+                return None
+            return read_exact(p_len)
+        except (struct.error, ValueError, UnicodeError):
             return None
 
     @staticmethod
@@ -289,10 +331,14 @@ class EHIDecryptor:
         return hashlib.sha256(payload.encode('utf-8')).digest()
 
     @classmethod
-    def execute(cls, file_bytes: bytes) -> Optional[str]:
-        if not ARGON2_AVAILABLE:
-            return None
+    def decode(cls, file_bytes: bytes, audit: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+        """Return complete typed JSON. Audit describes transformations, not guesses.
 
+        Unchanged strings may be literal text, identifiers or unsupported wrappers;
+        their appearance never proves encryption or successful decryption.
+        """
+        if audit is not None:
+            audit.clear()
         payload = cls._parse_ehi_bytes(file_bytes)
         if not payload:
             return None
@@ -321,7 +367,7 @@ class EHIDecryptor:
                         matched_iv = iv
                         break 
 
-        if not config:
+        if not isinstance(config, dict) or not config:
             return None 
 
         target_salt = config.get('configSalt', "EVZJNI")
@@ -329,21 +375,29 @@ class EHIDecryptor:
         if matched_iv in EHIConstants.BYPASS_IVS:
             parsed_final = config
         else:
+            if not ARGON2_AVAILABLE:
+                return None
             target_data = config.get('configData')
             if not target_data or not (aaa_result := cls._decrypt_xor_layer(target_data, target_salt)):
                 return None
 
-            raw_payload = base64.b64decode(aaa_result)
-            if len(raw_payload) <= 50:
-                return None 
-
             try:
+                raw_payload = base64.b64decode(aaa_result, validate=True)
+                if len(raw_payload) < 66:
+                    return None
+                passes = int.from_bytes(raw_payload[1:5], 'little')
+                memory_kib = int.from_bytes(raw_payload[5:9], 'little')
+                lanes = raw_payload[9]
+                # Parameters come from the file; bound resource use before Argon2.
+                if not (1 <= passes <= 16 and 1 <= lanes <= 16 and
+                        8 * lanes <= memory_kib <= 262144):
+                    return None
                 argon_key = hash_secret_raw(
                     secret=cls._generate_master_key(config), 
                     salt=raw_payload[0x0a:0x1a], 
-                    time_cost=int.from_bytes(raw_payload[1:5], "little"),
-                    memory_cost=int.from_bytes(raw_payload[5:9], "little"), 
-                    parallelism=raw_payload[9],
+                    time_cost=passes,
+                    memory_cost=memory_kib,
+                    parallelism=lanes,
                     hash_len=32, 
                     type=Type.ID
                 )
@@ -358,25 +412,53 @@ class EHIDecryptor:
                 parsed_final = json.loads(decrypted_json_bytes.decode('utf-8', errors='ignore'))
             except Exception:
                 return None
+        if not isinstance(parsed_final, dict):
+            return None
         cleaned_final_json = cls._decode_inner_fields(parsed_final, target_salt)
-        
-        # Los campos que contienen otro JSON (por ejemplo v2rRawJson) se dejan
-        # como cadenas. No se vuelven a parsear para mantenerlos copiables tal cual.
+        if audit is not None:
+            bypass = matched_iv in EHIConstants.BYPASS_IVS
+            ivs = EHIConstants.BYPASS_IVS if bypass else EHIConstants.STANDARD_IVS
+            transformed, untouched = [], []
+            def inspect(before, after, path=''):
+                if isinstance(before, dict):
+                    for k, v in before.items():
+                        inspect(v, after[k], path + '/' + k.replace('~', '~0').replace('/', '~1'))
+                elif isinstance(before, list):
+                    for i, v in enumerate(before):
+                        inspect(v, after[i], path + '/' + str(i))
+                elif isinstance(before, str) and before.strip():
+                    (transformed if before != after else untouched).append(path)
+            inspect(parsed_final, cleaned_final_json)
+            audit.update({
+                'input_sha256': hashlib.sha256(file_bytes).hexdigest(),
+                'profile': ('bypass' if bypass else 'standard') + '-' + str(ivs.index(matched_iv) + 1),
+                'authenticated': not bypass,
+                'top_level_fields': len(cleaned_final_json),
+                'transformed_fields': transformed,
+                'untransformed_strings': untouched,
+                'note': 'Sin transformación no significa cifrado: puede ser texto literal o un formato no reconocido.',
+            })
+        return cleaned_final_json
 
-
-        return (
-            f"┌───────────────\n│𝗦𝗣 - 𝗗𝗘𝗖𝗢𝗗𝗘 (.ehi)\n│𝗗𝗘𝗩𝗘𝗟𝗢𝗣𝗘𝗥 : https://bit.ly/3TOrZEu\n├───────────────\n"
-            f"{_format_top_level_json(cleaned_final_json)}\n\n"
-            f"├───────────────\n│[۞] 𝗚𝗥𝗢𝗨𝗣 : @CodeBreakersHub\n│[۞] 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 : @GhostDeve\n└───────────────\n"
-        )
+    @classmethod
+    def execute(cls, file_bytes: bytes) -> Optional[str]:
+        cleaned_final_json = cls.decode(file_bytes)
+        if cleaned_final_json is None:
+            return None
+        return _format_ehi_document(cleaned_final_json)
 
 
 def run(file_bytes: bytes) -> Optional[str]:
     return EHIDecryptor.execute(file_bytes)
 
 
+def decode_ehi(file_bytes: bytes, audit: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
+    return EHIDecryptor.decode(file_bytes, audit)
+
+
 def main() -> int:
-    """CLI: python SCRIPT.py \"archivo.ext\"."""
+    """Legacy text by default; --json gives lossless typed JSON, --audit a report."""
+    import argparse
     import sys
     from pathlib import Path
 
@@ -388,11 +470,17 @@ def main() -> int:
         except (AttributeError, ValueError):
             pass
 
-    if len(sys.argv) != 2:
-        print(f'Uso: {Path(sys.argv[0]).name} \"archivo\"', file=sys.stderr)
+    parser = argparse.ArgumentParser(description='HTTP Injector EHI: texto del bot o JSON completo.')
+    parser.add_argument('archivo', type=Path)
+    parser.add_argument('--json', action='store_true', help='imprimir JSON con tipos y todos los campos')
+    parser.add_argument('-o', '--output', type=Path, help='guardar el resultado')
+    parser.add_argument('--audit', type=Path, help='guardar diagnóstico sin valores de configuración')
+    args = parser.parse_args()
+    input_path = args.archivo
+    paths = [p.resolve() for p in (input_path, args.output, args.audit) if p is not None]
+    if len(set(paths)) != len(paths):
+        print('La entrada, la salida y el informe deben tener rutas diferentes.', file=sys.stderr)
         return 2
-
-    input_path = Path(sys.argv[1])
     if not input_path.is_file():
         print(f"No se encontró el archivo: {input_path}", file=sys.stderr)
         return 2
@@ -404,7 +492,15 @@ def main() -> int:
         return 2
 
     try:
-        result = run(file_bytes)
+        audit = {} if args.audit else None
+        document = decode_ehi(file_bytes, audit) if args.json or args.audit else None
+        if args.json:
+            result = json.dumps(document, ensure_ascii=False, indent=2) if document is not None else None
+        elif args.audit:
+            # Keep the historic bot text exactly; only format the decoded document.
+            result = _format_ehi_document(document) if document is not None else None
+        else:
+            result = run(file_bytes)
     except Exception as exc:
         print(f"Error al ejecutar el decodificador: {exc}", file=sys.stderr)
         return 1
@@ -413,9 +509,19 @@ def main() -> int:
         print("No se pudo decodificar el archivo o su formato no es válido.", file=sys.stderr)
         return 1
 
-    print(result)
+    try:
+        if args.output:
+            args.output.write_text(result + '\n', encoding='utf-8')
+        else:
+            print(result)
+        if args.audit:
+            args.audit.write_text(json.dumps(audit, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    except OSError as exc:
+        print(f'No se pudo guardar el resultado: {exc}', file=sys.stderr)
+        return 2
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
