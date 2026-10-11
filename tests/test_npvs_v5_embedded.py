@@ -95,7 +95,7 @@ class NPVSCompleteJSONTests(unittest.TestCase):
             self.assertEqual(fields["sshUsername"], "cybertunnel-fidelson015")
             self.assertEqual(fields["opaque"], "dGVzdA==")
             self.assertEqual(fields["extra"]["region"], "El Salvador")
-            self.assertIn("\\n", fields["payload"])
+            self.assertIn("\n", fields["payload"])
             corrupted = bytearray(raw)
             corrupted[-1] ^= 1
             with self.assertRaises(npvs.DecodeError):
