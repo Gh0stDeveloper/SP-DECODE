@@ -31,7 +31,7 @@ internal object EmbeddedDecoderMaterials {
         val aes = GenericProfileStore.strictBase64(data.getString("aesKeyB64"))
         require(aes.size == 16) { "HAT source key length mismatch" }
         val xor = data.getString("profileV5XorPassword")
-        require(xor.length == 20) { "HAT profile v5 source parameter mismatch" }
+        require(xor.length == 18) { "HAT profile v5 source parameter mismatch" }
         return Hat(aes, xor)
     }
 
