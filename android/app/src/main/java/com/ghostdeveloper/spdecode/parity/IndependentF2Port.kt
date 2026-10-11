@@ -34,11 +34,11 @@ internal object IndependentF2Port {
         if(input.isEmpty() || input.size>IndependentCrypto.MAX)return null
         return try { val keys=PhaseS2FamilyMaterials.f2(context)
             when(suffix){
-            "crev","cer","cerv"->crev(input)
-            "zoba"->zoba(input)
-            "dev"->dev(input)
-            "ktr"->ktr(input)
-            "n4"->n4(input)
+            "crev","cer","cerv"->crev(input,keys)
+            "zoba"->zoba(input,keys)
+            "dev"->dev(input,keys)
+            "ktr"->ktr(input,keys)
+            "n4"->n4(input,keys)
             else->null
         } }catch(_:Exception){null}
     }
@@ -48,7 +48,7 @@ internal object IndependentF2Port {
         val clear=crypto.xxteaDecrypt(raw,key.toByteArray(),-1703701580)?:return null
         return crypto.utf8Ignore(clear)
     }
-    private fun crev(input:ByteArray):String?{
+    private fun crev(input:ByteArray,keys:PhaseS2FamilyMaterials.F2):String?{
         var text=crypto.utf8Ignore(input).trim()
         text=crypto.stripScheme(text).filterNot{it.isWhitespace()}
         for(key in crevKeys) {
@@ -74,7 +74,7 @@ internal object IndependentF2Port {
         return null
     }
 
-    private fun zoba(input:ByteArray):String? {
+    private fun zoba(input:ByteArray,keys:PhaseS2FamilyMaterials.F2):String? {
         val raw=try{crypto.b64(crypto.utf8Ignore(input))}catch(_:Exception){input}
         val clear=crypto.xxteaDecrypt(raw,"technore_008515\u0000".toByteArray(),-1704280)
             ?:return null
@@ -114,7 +114,7 @@ internal object IndependentF2Port {
             crypto.utf8(output.copyOf(cut))
         }catch(_:Exception){raw}
     }
-    private fun dev(input:ByteArray):String?{
+    private fun dev(input:ByteArray,keys:PhaseS2FamilyMaterials.F2):String?{
         val encoded=crypto.utf8Ignore(input).trim()
         val clear=crypto.xxteaDecrypt(crypto.b64(encoded),devSky,0x9a7393b4.toInt())
             ?:return null
@@ -206,7 +206,7 @@ internal object IndependentF2Port {
         }
         return obj
     }
-    private fun n4(input:ByteArray):String?{
+    private fun n4(input:ByteArray,keys:PhaseS2FamilyMaterials.F2):String?{
         val source=crypto.utf8Ignore(input).filterNot{it.isWhitespace()}
         val encrypted=crypto.b64(source)
         require(encrypted.size%16==0 && encrypted.isNotEmpty())
@@ -270,7 +270,7 @@ internal object IndependentF2Port {
         if(pending!=null)pairs[pending]=null
         return pairs
     }
-    private fun ktr(input:ByteArray):String? {
+    private fun ktr(input:ByteArray,keys:PhaseS2FamilyMaterials.F2):String? {
         if(input.size<4||!input.copyOfRange(0,4).contentEquals(byteArrayOf(
                 0xac.toByte(),0xed.toByte(),0,5)))return null
         val strings=ktrExtract(input)
