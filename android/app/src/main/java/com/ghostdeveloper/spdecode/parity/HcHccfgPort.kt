@@ -10,6 +10,9 @@ import java.security.MessageDigest
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import org.bouncycastle.crypto.generators.Argon2BytesGenerator
+import org.bouncycastle.crypto.modes.ChaCha20Poly1305
+import org.bouncycastle.crypto.params.AEADParameters
+import org.bouncycastle.crypto.params.KeyParameter
 import org.bouncycastle.crypto.params.Argon2Parameters
 
 /**
@@ -202,7 +205,7 @@ internal object HcHccfgPort {
         require(it.size==32)
     }
     private fun derive(env:JSONObject,passwordBytes:ByteArray?,hwid:String?,
-        wrappingProbe:((ByteArray,ByteArray)->Unit)?=null):Pair<ByteArray,ByteArray>{
+        ):Pair<ByteArray,ByteArray>{
         require(env.getString("a")=="HCCFG")
         val schema=env.getInt("b")
         require(schema in listOf(1,2,5,7))
@@ -264,20 +267,52 @@ internal object HcHccfgPort {
             write(pkg);write(utf("|1|"));write(features);write(protectionAad)
             if(nb!=null){write(utf("|"));write(nb)}
         }.toByteArray()
-        wrappingProbe?.invoke(skey,aad)
         if(!hwidRequired)return skey to aad
         val slots=env.getJSONArray("o")
         require(slots.length() in 1..256)
         for(i in 0 until slots.length()){
             val sec=slots.optJSONObject(i)?:continue
             try{
-                val sk=xdec(skey,p.hex(sec.getString("a")),
+                val sk=verifiedSlotDecrypt(skey,p.hex(sec.getString("a")),
                     bytes(aad,zero,utf("w")),p.hex(sec.getString("b")))
                 if(sk.size==32)return sk to aad
             }catch(_:Exception){}
         }
         error("AUTH_FAILED")
     }
+    /**
+     * Android's BigInteger-based Poly1305 fallback had a slot-only parity
+     * mismatch on API35, although the derived key and AAD matched the Python
+     * reference. Verify the HWID slot via the vetted, already bundled BC
+     * ChaCha20-Poly1305 implementation using the XChaCha20 subkey/nonce.
+     * Never downgrade a failed authenticated slot to stream plaintext.
+     */
+    private fun verifiedSlotDecrypt(key:ByteArray,nonce:ByteArray,aad:ByteArray,
+        ciphertextWithTag:ByteArray):ByteArray {
+        require(key.size==32 && nonce.size==24 && ciphertextWithTag.size>=16 &&
+            ciphertextWithTag.size<=p.MAX_INPUT)
+        val sub=hchacha(key,nonce.copyOfRange(0,16))
+        val nonce12=bytes(ByteArray(4),nonce.copyOfRange(16,24))
+        try {
+            val cipher=ChaCha20Poly1305()
+            cipher.init(false,AEADParameters(KeyParameter(sub),128,nonce12,aad))
+            val clear=ByteArray(cipher.getOutputSize(ciphertextWithTag.size))
+            val produced=cipher.processBytes(ciphertextWithTag,0,
+                ciphertextWithTag.size,clear,0)
+            val completed=cipher.doFinal(clear,produced)
+            val size=produced+completed
+            if(size!=clear.size) {
+                val result=clear.copyOf(size)
+                clear.fill(0)
+                return result
+            }
+            return clear
+        } finally {
+            sub.fill(0)
+            nonce12.fill(0)
+        }
+    }
+
     private fun section(sec:JSONObject,key:ByteArray,aad:ByteArray):ByteArray {
         val label=sec.getString("a");require(label.isNotEmpty()&&label.length<=256)
         return xdec(key,p.hex(sec.getString("b")),
@@ -474,50 +509,6 @@ internal object HcHccfgPort {
             }catch(_:Exception){return false}
         }
         return false
-    }
-
-    /**
-     * Temporary synthetic-fixture probe for emulator parity validation.
-     * Reports only a stage identifier, never keys, credentials or plaintext.
-     */
-    internal fun syntheticTestStage(input:ByteArray,password:ByteArray?,hwid:String?):String {
-        val env=try{openOuter(input)}catch(_:Exception){return "outer"}
-        var wrapperCorrect=false
-        var aadCorrect=false
-        val keys=try{derive(env,password,hwid){key,aad->
-            // Fixed synthetic test fingerprints only; no private data exposed.
-            val expectedKey=if(password==null)
-                "e665949ef268cdb8289998ae6309637c6db28e392dbe327f4465d8b00d833fa2"
-                else "8036ac0d39383abe8a54041c102379bb00d8d71656a7cc16caf57bddc476d354"
-            val expectedAad=if(password==null)
-                "61ffd12f4e2ecbada1cec36c701a27e8a206fd4628ef10e5816fe0808c6b291f"
-                else "ccbb6ae20212d876bdf0c4523a77aa6c5e45f4207af7ff93d122f09eb29b896d"
-            wrapperCorrect=MessageDigest.isEqual(sha(key),p.hex(expectedKey))
-            aadCorrect=MessageDigest.isEqual(sha(aad),p.hex(expectedAad))
-        }}catch(_:Exception){
-            return when {
-                !wrapperCorrect->"wrapped-key-mismatch"
-                !aadCorrect->"aad-mismatch"
-                else->"slot-aead"
-            }
-        }
-        val main=try{section(env.getJSONObject("i"),keys.first,keys.second)}
-            catch(_:Exception){return "main-aead"}
-        if(runCatching{parseObject(main)}.isFailure)return "main-json"
-        val items=try{sections(env.opt("j")?:JSONArray())}
-            catch(_:Exception){return "inventory"}
-        for(sec in items){
-            val label=sec.optString("a")
-            val plain=try{section(sec,keys.first,keys.second)}
-                catch(_:Exception){return "profile-aead"}
-            val unwrapped=try{hpr1(plain,keys.first,keys.second,label,true)}
-                catch(_:Exception){return "hpr1-aead"}
-            if(unwrapped.size>=4 && unwrapped.copyOfRange(0,4)
-                .contentEquals(utf("HPC1"))) {
-                try{HPC1(unwrapped).parse(label)}catch(_:Exception){return "hpc1"}
-            }
-        }
-        return "complete"
     }
 
     /** Original S.4 password detector retained for existing security gates. */
