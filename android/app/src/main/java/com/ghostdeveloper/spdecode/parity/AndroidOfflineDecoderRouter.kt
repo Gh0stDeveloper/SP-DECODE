@@ -50,8 +50,8 @@ object AndroidOfflineDecoderRouter {
                 "decoders/Python/sentinel.py","decoders/Python/itv.py",
                 "decoders/Python/eut.py","decoders/Python/v2box_export.py",
                 "decoders/Python/slipnet.py","decoders/Python/juanscript.py" ->
-                    SpecialE1Port.decode(format.suffix,input)
-                else -> SpecialE2Port.decode(format.suffix,input)
+                    SpecialE1Port.decode(context,format.suffix,input)
+                else -> SpecialE2Port.decode(context,format.suffix,input)
             }
         }
         if (format.migrationPhase == "F") {
@@ -61,7 +61,7 @@ object AndroidOfflineDecoderRouter {
                 "decoders/Python/vn7.py" -> { IndependentF1Port.decode(context,format.suffix,input) }
                 "decoders/Python/crev.py", "decoders/Python/zoba.py",
                 "decoders/Python/n4.py", "decoders/Python/dev.py",
-                "decoders/Python/ktr.py" -> { IndependentF2Port.decode(format.suffix,input) }
+                "decoders/Python/ktr.py" -> { IndependentF2Port.decode(context,format.suffix,input) }
                 else -> null
             }
         }

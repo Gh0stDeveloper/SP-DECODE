@@ -1,5 +1,7 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
+
 import android.util.Base64
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -15,31 +17,26 @@ import java.security.MessageDigest
  */
 internal object SpecialE1Port {
     private val p=SpecialCrypto
-    private val sentinelKey="SENTINEL_TUNNEL_CONFIG_KEY_V1_20".toByteArray(Charsets.US_ASCII)
-    private val v2boxKey=intArrayOf(12,104,24,53,34,31,52,57,40,35,42,46,51,53,52,17,
-        63,35,104,106,104,108,5,9,63,57,40,63,46,123,121,127)
-        .map{(it xor 90).toByte()}.toByteArray()
-    private val slipKey=p.hex("214f052025b2f949605a5429ec3d5fa80c2022c168ad946e68852d447214dbd3")
     private val html=Regex("<[^>]+>")
     private val entry=Regex("""<entry\s+key="([^"]+)"(?:>([\s\S]*?)</entry>|/>)""")
-    private val eutKey="@Hh8Y2/[q$-@2f<9}8x£1_PU2RX!Aqlw".take(16).toByteArray(Charsets.ISO_8859_1)
 
-    fun decode(suffix:String,data:ByteArray):String? {
+    fun decode(context:Context,suffix:String,data:ByteArray):String? {
         if(!p.check(data))return null
         return try{
+            val keys=PhaseS2FamilyMaterials.e1(context)
             when(suffix) {
-                "st"->sentinel(data)
+                "st"->sentinel(data,keys)
                 "itv"->itv(data)
-                "eut"->eut(data)
-                "v2box"->v2box(data)
-                "slipnet"->slipnet(data)
-                "juanscript","juan","mobi"->juan(data)
+                "eut"->eut(data,keys)
+                "v2box"->v2box(data,keys)
+                "slipnet"->slipnet(data,keys)
+                "juanscript","juan","mobi"->juan(data,keys)
                 else->null
             }
         }catch(_:Exception){null}
     }
 
-    private fun sentinel(data:ByteArray):String? {
+    private fun sentinel(data:ByteArray,keys:PhaseS2FamilyMaterials.E1):String? {
         require(data.size>=8)
         val decoded=data.clone()
         // Source reverses each 16-byte leading half-block BEFORE XORing.
@@ -47,7 +44,7 @@ internal object SpecialE1Port {
             var left=i;var right=i+15
             while(left<right){val t=decoded[left];decoded[left]=decoded[right];decoded[right]=t;left++;right--}
         }
-        for(i in decoded.indices)decoded[i]=(decoded[i].toInt() xor sentinelKey[i%32].toInt()).toByte()
+        for(i in decoded.indices)decoded[i]=(decoded[i].toInt() xor keys.sentinelKey[i%32].toInt()).toByte()
         require(String(decoded.copyOfRange(0,4),Charsets.US_ASCII)=="STCF" &&
             decoded[4].toInt()==1)
         val obj=JsonParser.parseString(p.utf8(decoded.copyOfRange(5,decoded.size))).asJsonObject
@@ -58,7 +55,7 @@ internal object SpecialE1Port {
         val raw=p.b64(content.get("data").asString)
         val key= if(obj.has("passwordHash") && !obj.get("passwordHash").isJsonNull &&
             obj.get("passwordHash").asString.isNotEmpty()) p.b64(obj.get("passwordHash").asString)
-            else p.sha(sentinelKey+salt)
+            else p.sha(keys.sentinelKey+salt)
         require(MessageDigest.isEqual(p.hmac(key,nonce+raw),tag))
         val decrypted=p.gcm(key,nonce,raw)
         obj.add("configData",JsonParser.parseString(p.utf8(decrypted)))
@@ -89,7 +86,7 @@ internal object SpecialE1Port {
         return if(lines.isNotEmpty()) lines.joinToString("\n") else text
     }
 
-    private fun eutLayer(text:String):String {
+    private fun eutLayer(text:String,keys:PhaseS2FamilyMaterials.E1):String {
         if(text.isEmpty()||text=="null")return text
         val i=text.indexOf(':')
         if(i<0)return text
@@ -97,48 +94,48 @@ internal object SpecialE1Port {
         val iv=text.substring(i+1)
         if(!iv.matches(Regex("[A-Za-z0-9+/=]+")))return text
         return try{
-            val clear=p.cbc(eutKey,p.b64(iv),p.b64(enc))
+            val clear=p.cbc(keys.eutKey,p.b64(iv),p.b64(enc))
             p.utf8(clear)
         }catch(_:Exception){text}
     }
-    private fun eutNested(node:JsonElement,depth:Int):JsonElement {
+    private fun eutNested(node:JsonElement,depth:Int,keys:PhaseS2FamilyMaterials.E1):JsonElement {
         if(depth>32)return node
         return when{
             node.isJsonObject->{
                 val obj=node.asJsonObject
-                for((k,v) in obj.entrySet().toList())obj.add(k,eutNested(v,depth+1))
+                for((k,v) in obj.entrySet().toList())obj.add(k,eutNested(v,depth+1,keys))
                 obj
             }
             node.isJsonArray->{
                 val arr=node.asJsonArray
-                for(i in 0 until arr.size())arr.set(i,eutNested(arr[i],depth+1))
+                for(i in 0 until arr.size())arr.set(i,eutNested(arr[i],depth+1,keys))
                 arr
             }
             node.isJsonPrimitive && node.asJsonPrimitive.isString -> {
                 val raw=node.asString
                 if(raw.count{it==':'}!=1)node
                 else {
-                    val decrypted=eutLayer(raw)
+                    val decrypted=eutLayer(raw,keys)
                     val nested=p.parse(decrypted)
-                    if(nested!=null)eutNested(nested,depth+1)
+                    if(nested!=null)eutNested(nested,depth+1,keys)
                     else JsonParser.parseString(p.gson.toJson(decrypted))
                 }
             }
             else->node
         }
     }
-    private fun eut(data:ByteArray):String? {
+    private fun eut(data:ByteArray,keys:PhaseS2FamilyMaterials.E1):String? {
         val original=String(data,Charsets.UTF_8).trim()
         if(original.isEmpty())return null
         val text=if(original.startsWith("eut-settings://"))original.substring(15)else original
-        val first=eutLayer(text)
+        val first=eutLayer(text,keys)
         val el=p.parse(first)
-        if(el!=null) return p.gson.toJson(eutNested(el,0))
+        if(el!=null) return p.gson.toJson(eutNested(el,0,keys))
         if(first==original)return null
         return first
     }
 
-    private fun v2box(data:ByteArray):String? {
+    private fun v2box(data:ByteArray,keys:PhaseS2FamilyMaterials.E1):String? {
         var raw=String(data,Charsets.UTF_8).trim()
         for(scheme in listOf("v2box://","locked="))if(scheme in raw)raw=raw.substringAfter(scheme)
         raw=raw.filterNot{it.isWhitespace()}
@@ -150,7 +147,7 @@ internal object SpecialE1Port {
         val nonce=p.b64(wrapper.get("nonce").asString)
         val ciphertext=p.b64(wrapper.get("ciphertext").asString)
         val tag=p.b64(wrapper.get("tag").asString)
-        for(key in listOf(v2boxKey,p.sha(v2boxKey))){
+        for(key in listOf(keys.v2boxKey,p.sha(keys.v2boxKey))){
             try {
                 return p.gson.toJson(JsonParser.parseString(p.utf8(p.gcm(key,nonce,ciphertext+tag))))
             }catch(_:Exception){}
@@ -158,7 +155,7 @@ internal object SpecialE1Port {
         return null
     }
 
-    private fun slipnet(data:ByteArray):String? {
+    private fun slipnet(data:ByteArray,keys:PhaseS2FamilyMaterials.E1):String? {
         var text=String(data,Charsets.UTF_8)
         if(text.startsWith("slipnet-enc://"))text=text.substringAfter("://")
         val bytes=try{p.b64(text)}catch(_:Exception){data}
@@ -167,7 +164,7 @@ internal object SpecialE1Port {
             try{
                 require(bytes.size>=offset+28)
                 val iv=bytes.copyOfRange(offset,offset+12)
-                decrypted=p.utf8(p.gcm(slipKey,iv,bytes.copyOfRange(offset+12,bytes.size)))
+                decrypted=p.utf8(p.gcm(keys.slipKey,iv,bytes.copyOfRange(offset+12,bytes.size)))
                 break
             }catch(_:Exception){}
         }
@@ -193,7 +190,7 @@ internal object SpecialE1Port {
         return p.gson.toJson(out)
     }
 
-    private fun juan(data:ByteArray):String? {
+    private fun juan(data:ByteArray,keys:PhaseS2FamilyMaterials.E1):String? {
         var text=String(data,Charsets.UTF_8).trim()
         if(text.startsWith("juanscript://"))text=text.substring(13)
         else if(text.startsWith("mobi://"))text=text.substring(7)
@@ -214,7 +211,7 @@ internal object SpecialE1Port {
         require(nonceLen==12 && b.remaining()>=nonceLen+16)
         val nonce=ByteArray(nonceLen).also{b.get(it)}
         val sealed=ByteArray(b.remaining()).also{b.get(it)}
-        val key=p.pbkdf("rdxiNA3WXwfRAjdm@092898yue".toByteArray(),salt,120000,32)
+        val key=p.pbkdf(keys.juanPassword,salt,120000,32)
         val clear=p.gcm(key,nonce,sealed)
         val payloadClear=try{p.gzip(clear)}catch(_:Exception){clear}
         return p.render(p.utf8(payloadClear))
