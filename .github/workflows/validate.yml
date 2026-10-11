@@ -73,6 +73,11 @@ jobs:
           python scripts/android_s_vault_audit.py --report "$RUNNER_TEMP/spdecode-s/audit.json"
           PYTHONPATH=. python -m unittest tests.test_android_s_vault_audit -v
 
+      - name: Phase S.2 Kotlin constant inventory and source regression
+        run: |
+          python scripts/android_s2_dex_audit.py --report "$RUNNER_TEMP/spdecode-s/s2-dex-audit.json"
+          PYTHONPATH=. python -m unittest tests.test_android_s2_dex_audit -v
+
       - name: Upload sanitized Phase S audit report
         if: always()
         uses: actions/upload-artifact@v4
@@ -221,6 +226,11 @@ jobs:
           python scripts/android_s_vault_audit.py \
             --fixtures android/app/src/androidTest/assets/parity/s-vault-fixtures.json
 
+      - name: Generate Phase S.2 independent decoder constant parity fixtures
+        run: |
+          python scripts/android_s2_dex_audit.py \
+            --fixtures android/app/src/androidTest/assets/parity/s2-constants-fixtures.json
+
       - name: Verify 239-format Android support catalog and Phase B profiles
         run: |
           PYTHONPATH=. python scripts/android_a24_catalog.py
@@ -235,6 +245,9 @@ jobs:
       - name: Ensure debug APK does not package protected plaintext assets
         run: python scripts/android_s_vault_audit.py --apk android/app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Ensure migrated decoder constants are absent from debug DEX
+        run: python scripts/android_s2_dex_audit.py --apk android/app/build/outputs/apk/debug/app-debug.apk
+
       - name: Compile minified release with R8 (unsigned CI smoke, never published)
         working-directory: android
         run: |
@@ -243,6 +256,8 @@ jobs:
           test -f app/build/outputs/apk/release/app-release-unsigned.apk
           cd ..
           python scripts/android_s_vault_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
+          python scripts/android_s2_dex_audit.py \
             --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
 
       - name: Enable hardware acceleration for Android emulator
