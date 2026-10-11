@@ -1,11 +1,12 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
+
 /** ZIV: two original candidate PBKDF2-SHA256 passwords, AES-GCM and XML labels.
  * Only ZIV's own two known passwords may be tested, no other format's keys.
  */
 object ZivPort {
     private val p=LegacyPortPrimitives
-    private val passwords=listOf("fubvx788b46v","SecurePart1SecurePart2SecurePart3SecurePart4SecurePart5")
     private val extra=linkedMapOf(
         "v2rayprotocol" to "V2ray protocol",
         "file.appVersionCode" to "File App Version Code",
@@ -18,8 +19,11 @@ object ZivPort {
         "file.protect" to "File protect",
         "speedup" to "Speedup",
         "tunnelType" to "Tunnel Type")
-    fun decode(input:ByteArray):String?=p.safeDecode {
+    fun decode(context:Context,input:ByteArray):String?=p.safeDecode {
         p.bounded(input)
+        // ZIV's historical order is the reverse of VN7; preserve it.
+        val passwords=EmbeddedDecoderMaterials.independentF1(context).vn7Passwords
+            .asReversed().map { String(it,Charsets.UTF_8) }
         val text=passwords.firstNotNullOfOrNull { password ->
             try { p.dotGcm(input,password) } catch (_:Exception) { null }
         } ?: error("unsupported ZIV key")

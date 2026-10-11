@@ -11,7 +11,6 @@ import javax.crypto.spec.SecretKeySpec
 object HcPort {
     private val p=LegacyPortPrimitives
     private val fixedNonce=ByteArray(8){0xdb.toByte()}
-    private val xorKey=p.hex("e382e4b8adc386f09f9293")
     private val labels=listOf("payload","proxy","lockAllConfig","blockedByRoot",
         "expiryTime","noteEnabled","notes","sshField",
         "mobileDataAndLockProvider","unlockUserAndPass","ovpnConfig",
@@ -55,6 +54,7 @@ object HcPort {
             p.hex(cfg.getJSONArray("chaChaKeys").getString(it))}
         val rstKeys=cfg.getJSONArray("rstKeys")
         val candidates=(0 until rstKeys.length()).map{rstKeys.getString(it)}
+        val xorKey=EmbeddedDecoderMaterials.httpCustomXor(context)
         val binary=try{
             // Original Python decodes UTF-8 with errors='ignore' then latin-1.
             p.utf8(input).toByteArray(Charsets.ISO_8859_1)

@@ -14,13 +14,14 @@ import com.ghostdeveloper.spdecode.parity.*
 @RunWith(AndroidJUnit4::class)
 class Batch10InstrumentedTest {
     private val assets get() = InstrumentationRegistry.getInstrumentation().context.assets
+    private val target get() = InstrumentationRegistry.getInstrumentation().targetContext
     private fun asset(filename: String): ByteArray =
         assets.open("parity/$filename").use { it.readBytes() }
 
     @Test
     fun phcMatchesOriginalLinuxGolden() {
         assertArrayEquals(asset("batch4-phc.txt"),
-            PhcPort.decode(asset("batch4-phc.phc"))?.toByteArray(Charsets.UTF_8))
+            PhcPort.decode(target,asset("batch4-phc.phc"))?.toByteArray(Charsets.UTF_8))
     }
 
     @Test
@@ -79,9 +80,9 @@ class Batch10InstrumentedTest {
 
     @Test
     fun batch10FailClosedOnEmptyMalformedAndOversizeInputs() {
-        assertNull("Phc empty", PhcPort.decode(byteArrayOf()))
-        assertNull("Phc malformed", PhcPort.decode("NOT_A_PROFILE".toByteArray()))
-        assertNull("Phc oversized", PhcPort.decode(ByteArray(1024 * 1024 + 1)))
+        assertNull("Phc empty", PhcPort.decode(target,byteArrayOf()))
+        assertNull("Phc malformed", PhcPort.decode(target,"NOT_A_PROFILE".toByteArray()))
+        assertNull("Phc oversized", PhcPort.decode(target,ByteArray(1024 * 1024 + 1)))
         assertNull("Mina empty", MinaPort.decode(byteArrayOf()))
         assertNull("Mina malformed", MinaPort.decode("NOT_A_PROFILE".toByteArray()))
         assertNull("Mina oversized", MinaPort.decode(ByteArray(1024 * 1024 + 1)))
