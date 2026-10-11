@@ -52,7 +52,7 @@ class NpvsSignedFixtureInstrumentedTest {
             .getJSONObject(0).getJSONObject("sshConfig")
         assertEquals("cybertunnel-fidelson015",config.getString("sshUsername"))
         assertEquals("1234",config.getString("sshPassword"))
-        assertEquals("GET / HTTP/1.1\\nHost: fr1.wssht.site",config.getString("payload"))
+        assertEquals("GET / HTTP/1.1\nHost: fr1.wssht.site",config.getString("payload"))
         assertEquals("El Salvador",config.getJSONObject("extra").getString("region"))
         // Unmarked, Base64-shaped credentials remain literal (Python parity).
         assertEquals("dGVzdA==",config.getString("opaque"))
