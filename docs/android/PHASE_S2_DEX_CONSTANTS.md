@@ -26,6 +26,8 @@ reverse engineering**, rooting, runtime instrumentation or source inspection.
 | HTTP Custom (`HcPort.kt`) | outer XOR key | original hexadecimal to bytes |
 | LTM Tunnel (`IndependentF1Port.kt`) | source password encoded as hexadecimal | preserve old hex → UTF-8 decode (replacement semantics) → UTF-8 encode |
 | VN7 (`IndependentF1Port.kt`) | two candidate passwords in original order | UTF-8 encoding; preserve candidate-loop/fallback behavior |
+| ZIV (`ZivPort.kt`) | shared historical VN7 candidates | use exact reverse key order relative to VN7 |
+| PHC (`PhcPort.kt`) | shared shorter VN7 key | preserve PHC-only key selection and PBKDF2 parameters |
 
 **Not migrated in S.2:** protocol identifiers, nonsecret fixed nonces, JSON
 field labels, algorithm behavior, the remaining hardcoded Kotlin constants
