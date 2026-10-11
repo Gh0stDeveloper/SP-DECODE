@@ -84,7 +84,7 @@ class FirstRunGuideInstrumentedTest {
 
     @Test fun onboardingTranslationsExistInAllAvailableLanguages() {
         val context=InstrumentationRegistry.getInstrumentation().targetContext
-        for(tag in listOf("en","es","pt-BR","ar","fa","fr","id","ru")) {
+        for(tag in listOf("en","es","pt-BR","ar","fa","fr","id","ru","de")) {
             val config=Configuration(context.resources.configuration)
             config.setLocale(Locale.forLanguageTag(tag))
             val resources=context.createConfigurationContext(config).resources
