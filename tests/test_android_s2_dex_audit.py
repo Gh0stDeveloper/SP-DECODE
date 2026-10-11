@@ -12,7 +12,7 @@ from scripts.android_s2_dex_audit import check_apk, check_source, fixture, forbi
 class S2DexAuditTest(unittest.TestCase):
     def test_all_six_materials_classified_and_hashed(self):
         result = check_source()
-        self.assertEqual(3, len(result["migratedPorts"]))
+        self.assertEqual(5, len(result["migratedPorts"]))
         self.assertEqual(6, result["migratedMaterialCount"])
         self.assertGreater(result["scannedKotlinFiles"], 50)
         digest = fixture()
@@ -23,7 +23,7 @@ class S2DexAuditTest(unittest.TestCase):
 
     def test_migrated_ports_have_no_original_embedded_literals(self):
         candidates = forbidden_literals()
-        self.assertEqual(3, len(candidates))
+        self.assertEqual(5, len(candidates))
         for file, strings in candidates.items():
             source = (Path("android/app/src/main/java/com/ghostdeveloper/spdecode/parity") / file).read_text("utf-8")
             self.assertTrue(strings)
