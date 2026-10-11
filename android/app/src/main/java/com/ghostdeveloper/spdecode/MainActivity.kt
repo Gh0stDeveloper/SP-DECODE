@@ -288,6 +288,13 @@ class MainActivity : ComponentActivity() {
         if(savedInstanceState==null)handleExternalIntent(intent)
     }
 
+    override fun onResume() {
+        super.onResume()
+        // A signature/debuggable check that runs only at cold start can be
+        // bypassed by a later process attachment. Defense-in-depth recheck.
+        if(!ReleaseIntegrity.isTrusted(this)) finishAndRemoveTask()
+    }
+
     override fun onNewIntent(intent:Intent){
         super.onNewIntent(intent)
         setIntent(intent)
