@@ -67,7 +67,7 @@ class Final7InstrumentedTest {
     @Test fun sipExactGoldenAndRouting() {
         val input=source("batch6-sip.sip")
         val expected=source("batch6-sip.txt")
-        assertArrayEquals(expected,SipPort.decode(input)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,SipPort.decode(app,input)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             app,"case.SIP",input)?.toByteArray(Charsets.UTF_8))
     }
@@ -103,9 +103,9 @@ class Final7InstrumentedTest {
         assertNull("npvt empty",NpvtPort.decode(app,byteArrayOf()))
         assertNull("npvt malformed",NpvtPort.decode(app,"INVALID CONFIG".toByteArray()))
         assertNull("npvt too large",NpvtPort.decode(app,ByteArray(1024*1024+1)))
-        assertNull("sip empty",SipPort.decode(byteArrayOf()))
-        assertNull("sip malformed",SipPort.decode("INVALID CONFIG".toByteArray()))
-        assertNull("sip too large",SipPort.decode(ByteArray(1024*1024+1)))
+        assertNull("sip empty",SipPort.decode(app,byteArrayOf()))
+        assertNull("sip malformed",SipPort.decode(app,"INVALID CONFIG".toByteArray()))
+        assertNull("sip too large",SipPort.decode(app,ByteArray(1024*1024+1)))
         assertNull("ssc empty",SscPort.decode(byteArrayOf()))
         assertNull("ssc malformed",SscPort.decode("INVALID CONFIG".toByteArray()))
         assertNull("ssc too large",SscPort.decode(ByteArray(1024*1024+1)))
