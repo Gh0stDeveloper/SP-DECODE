@@ -103,7 +103,7 @@ class Batch15InstrumentedTest {
     @Test fun zivMatchesLinuxAndDispatch() {
         val input=fixture("batch6-ziv.ziv")
         val golden=fixture("batch6-ziv.txt")
-        assertArrayEquals(golden,ZivPort.decode(input)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(golden,ZivPort.decode(context,input)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(golden,AndroidOfflineDecoderRouter.decode(context,"CASE.ZIV",input)?.toByteArray(Charsets.UTF_8))
     }
 
@@ -160,9 +160,9 @@ class Batch15InstrumentedTest {
         assertNull("hrt empty",HrtPort.decode(byteArrayOf()))
         assertNull("hrt malformed",HrtPort.decode("NOT A PROFILE".toByteArray()))
         assertNull("hrt oversized",HrtPort.decode(ByteArray(1024*1024+1)))
-        assertNull("ziv empty",ZivPort.decode(byteArrayOf()))
-        assertNull("ziv malformed",ZivPort.decode("NOT A PROFILE".toByteArray()))
-        assertNull("ziv oversized",ZivPort.decode(ByteArray(1024*1024+1)))
+        assertNull("ziv empty",ZivPort.decode(context,byteArrayOf()))
+        assertNull("ziv malformed",ZivPort.decode(context,"NOT A PROFILE".toByteArray()))
+        assertNull("ziv oversized",ZivPort.decode(context,ByteArray(1024*1024+1)))
         assertNull("epro empty",EproPort.decode(context,byteArrayOf()))
         assertNull("epro malformed",EproPort.decode(context,"NOT A PROFILE".toByteArray()))
         assertNull("epro oversized",EproPort.decode(context,ByteArray(1024*1024+1)))
