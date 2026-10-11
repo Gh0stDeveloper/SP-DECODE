@@ -1,5 +1,7 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
+
 import org.json.JSONObject
 import java.security.MessageDigest
 
@@ -9,7 +11,6 @@ import java.security.MessageDigest
  */
 object SksPort {
     private val p=LegacyPortPrimitives
-    private const val CONFIG_KEY="162exe235948e37ws6d057d9d85324e2"
     private fun truth(value:Any?):Boolean=when(value) {
         null,JSONObject.NULL -> false
         is Boolean ->value
@@ -21,11 +22,12 @@ object SksPort {
         is Boolean->if(value)"true" else "false"
         else->value.toString()
     }
-    fun decode(input:ByteArray):String?=p.safeDecode {
+    fun decode(context:Context,input:ByteArray):String?=p.safeDecode {
         p.bounded(input)
+        val configKey=LegacyBatch2Materials.sks(context)
         val profile=JSONObject(p.utf8(input))
         val digest=MessageDigest.getInstance("MD5")
-            .digest((CONFIG_KEY+" "+profile.get("v").toString()).toByteArray(Charsets.UTF_8))
+            .digest((configKey+" "+profile.get("v").toString()).toByteArray(Charsets.UTF_8))
         val password=digest.joinToString("") { "%02x".format(it.toInt() and 255) }
             .toByteArray(Charsets.US_ASCII)
         val fields=profile.getString("d").split('.')
