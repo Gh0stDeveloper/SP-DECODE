@@ -42,7 +42,7 @@ class AndroidSourceWiringContract(unittest.TestCase):
         self.assertIn('"tls","dark","ssc"', kotlin)
         self.assertIn("AndroidOfflineDecoderRouter.decode", kotlin)
         router = ROUTER.read_text("utf-8")
-        self.assertIn('"dark" -> DarkPort.decode(input)', router)
+        self.assertIn('"dark" -> DarkPort.decode(context,input)', router)
         self.assertIn('"nm" -> NmPort.decode(input)', router)
 
     def test_android_structured_copy_credits_ghost_developer_only(self):

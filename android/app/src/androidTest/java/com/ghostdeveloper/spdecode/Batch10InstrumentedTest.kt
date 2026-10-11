@@ -39,7 +39,7 @@ class Batch10InstrumentedTest {
     @Test
     fun cloudyMatchesOriginalLinuxGolden() {
         assertArrayEquals(asset("batch4-cloudy.txt"),
-            CloudyPort.decode(asset("batch4-cloudy.cloudy"))?.toByteArray(Charsets.UTF_8))
+            CloudyPort.decode(target,asset("batch4-cloudy.cloudy"))?.toByteArray(Charsets.UTF_8))
     }
 
     @Test
@@ -89,9 +89,9 @@ class Batch10InstrumentedTest {
         assertNull("VpnLite empty", VpnLitePort.decode(byteArrayOf()))
         assertNull("VpnLite malformed", VpnLitePort.decode("NOT_A_PROFILE".toByteArray()))
         assertNull("VpnLite oversized", VpnLitePort.decode(ByteArray(1024 * 1024 + 1)))
-        assertNull("Cloudy empty", CloudyPort.decode(byteArrayOf()))
-        assertNull("Cloudy malformed", CloudyPort.decode("NOT_A_PROFILE".toByteArray()))
-        assertNull("Cloudy oversized", CloudyPort.decode(ByteArray(1024 * 1024 + 1)))
+        assertNull("Cloudy empty", CloudyPort.decode(target,byteArrayOf()))
+        assertNull("Cloudy malformed", CloudyPort.decode(target,"NOT_A_PROFILE".toByteArray()))
+        assertNull("Cloudy oversized", CloudyPort.decode(target,ByteArray(1024 * 1024 + 1)))
         assertNull("Mij empty", MijPort.decode(byteArrayOf()))
         assertNull("Mij malformed", MijPort.decode("NOT_A_PROFILE".toByteArray()))
         assertNull("Mij oversized", MijPort.decode(ByteArray(1024 * 1024 + 1)))

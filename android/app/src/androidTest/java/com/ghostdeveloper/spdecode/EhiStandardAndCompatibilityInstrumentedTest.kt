@@ -22,7 +22,7 @@ class EhiStandardAndCompatibilityInstrumentedTest {
     @Test fun standardArgon2idXChaCha20MatchesOriginalBotText() {
         val sample=fixture("ehi-standard-id.ehi")
         val expected=fixture("ehi-standard-id.txt")
-        assertArrayEquals(expected,EhiPort.decode(sample)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,EhiPort.decode(inst.targetContext,sample)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             inst.targetContext,"profile.EHI",sample)?.toByteArray(Charsets.UTF_8))
     }
@@ -30,7 +30,7 @@ class EhiStandardAndCompatibilityInstrumentedTest {
     @Test fun standardEhiWithTamperedEnvelopeNeverRendersSuccessfulProfile() {
         val sample=fixture("ehi-standard-id.ehi").clone()
         sample[sample.lastIndex-20]=(sample[sample.lastIndex-20].toInt() xor 0x40).toByte()
-        assertNull(EhiPort.decode(sample))
+        assertNull(EhiPort.decode(inst.targetContext,sample))
     }
 
     @Test fun socksIpUnsupportedInnerVersionIsNotMisreportedAsSuccess() {
@@ -42,7 +42,7 @@ class EhiStandardAndCompatibilityInstrumentedTest {
             encrypt.doFinal("VER7synthetic-profile".toByteArray(Charsets.US_ASCII)),
             Base64.NO_WRAP,
         ).toByteArray(Charsets.US_ASCII)
-        assertNull(SipPort.decode(encoded))
+        assertNull(SipPort.decode(inst.targetContext,encoded))
         assertNull(AndroidOfflineDecoderRouter.decode(inst.targetContext,"sample.sip",encoded))
     }
 }

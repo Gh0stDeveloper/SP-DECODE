@@ -78,8 +78,20 @@ jobs:
           python scripts/android_s2_dex_audit.py --report "$RUNNER_TEMP/spdecode-s/s2-dex-audit.json"
           PYTHONPATH=. python -m unittest tests.test_android_s2_dex_audit -v
 
+      - name: Phase S.2 TLS EHI and Dark Tunnel source-key guard
+        run: |
+          python scripts/android_s2_extra_audit.py --report "$RUNNER_TEMP/spdecode-s/s2-extra-audit.json"
+          PYTHONPATH=. python -m unittest tests.test_android_s2_extra_audit -v
+
+      - name: Audit six additional S.2 legacy decoder key families
+        run: |
+          python scripts/android_s2_legacy_audit.py --report "$RUNNER_TEMP/spdecode-s/s2-legacy.json"
+          PYTHONPATH=. python -m unittest tests.test_android_s2_legacy_audit -v
+
       - name: Upload sanitized Phase S audit report
         if: always()
+        # Optional diagnostic upload: artifact quota must not invalidate passing tests.
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: spdecode-phase-s-source-inventory
@@ -89,6 +101,8 @@ jobs:
 
       - name: Upload sanitized Phase H audit report
         if: always()
+        # Optional diagnostic upload: artifact quota must not invalidate passing tests.
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: SP-DECODE-v1.1.1-H-SOURCE-AUDIT
@@ -116,6 +130,8 @@ jobs:
 
       - name: Upload sanitized A.2 decoder audit
         if: always()
+        # Optional diagnostic upload: artifact quota must not invalidate passing tests.
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: spdecode-android-a2-audit
@@ -131,6 +147,8 @@ jobs:
 
       - name: Upload A.2.3 synthetic golden coverage
         if: always()
+        # Optional diagnostic upload: artifact quota must not invalidate passing tests.
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: spdecode-android-a23-golden-coverage
@@ -231,6 +249,16 @@ jobs:
           python scripts/android_s2_dex_audit.py \
             --fixtures android/app/src/androidTest/assets/parity/s2-constants-fixtures.json
 
+      - name: Generate independent TLS EHI Dark S.2 material fixtures
+        run: |
+          python scripts/android_s2_extra_audit.py \
+            --fixtures android/app/src/androidTest/assets/parity/s2-extra-fixtures.json
+
+      - name: Generate source-key material SHA-256 for six legacy S.2 engines
+        run: |
+          python scripts/android_s2_legacy_audit.py \
+            --fixtures android/app/src/androidTest/assets/parity/s2-legacy-fixtures.json
+
       - name: Verify 239-format Android support catalog and Phase B profiles
         run: |
           PYTHONPATH=. python scripts/android_a24_catalog.py
@@ -248,6 +276,12 @@ jobs:
       - name: Ensure migrated decoder constants are absent from debug DEX
         run: python scripts/android_s2_dex_audit.py --apk android/app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Reject TLS EHI and Dark Tunnel decoder strings in debug DEX
+        run: python scripts/android_s2_extra_audit.py --apk android/app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Block readable six-engine legacy constants in debug DEX
+        run: python scripts/android_s2_legacy_audit.py --apk android/app/build/outputs/apk/debug/app-debug.apk
+
       - name: Compile minified release with R8 (unsigned CI smoke, never published)
         working-directory: android
         run: |
@@ -258,6 +292,10 @@ jobs:
           python scripts/android_s_vault_audit.py \
             --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
           python scripts/android_s2_dex_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
+          python scripts/android_s2_extra_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
+          python scripts/android_s2_legacy_audit.py \
             --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
 
       - name: Enable hardware acceleration for Android emulator
@@ -286,6 +324,8 @@ jobs:
 
       - name: Upload real Compose home screenshot from emulator
         if: success()
+        # Optional diagnostic upload: artifact quota must not invalidate passing tests.
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: SP-DECODE-Android-v1.1.1-ci-home-screenshot
@@ -295,6 +335,8 @@ jobs:
 
       - name: Upload instrumented test reports
         if: always()
+        # Optional diagnostic upload: artifact quota must not invalidate passing tests.
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: spdecode-a24-android-parity-test-evidence
@@ -306,6 +348,8 @@ jobs:
 
       - name: Upload functional SP-DECODE alpha debug APK
         if: success()
+        # Optional diagnostic upload: artifact quota must not invalidate passing tests.
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: SP-DECODE-Android-v1.1.1-CI-DEBUG-NOT-PRODUCTION

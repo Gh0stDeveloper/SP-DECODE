@@ -1,5 +1,6 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
 import org.json.JSONObject
 import org.json.JSONArray
 import android.util.Base64
@@ -21,15 +22,6 @@ import java.nio.ByteOrder
  */
 object EhiPort {
     private val p=LegacyPortPrimitives
-    private val l1=p.hex("7e1210f7aab956f7a668bda6e57feddb7f84ad840aef8d27b1b969959be3ab6c")
-    private val l2=p.hex("b2bc617c32d8b9eb1943a5ffa8051eea")
-    private val eoo="null=V5kU5+FFrY\u0000".toByteArray(Charsets.UTF_8)
-    private val bypassIvs=listOf("221d572349555f1d112133236b1f4a3f",
-        "5543494c53443e3f4a6a4539384e776a",
-        "374c2541575e4d531a3c327b75431e5f").map{p.hex(it)}
-    private val standardIvs=listOf("2c5d1147bbad422b3b334d4d235f1a53",
-        "522b01433a5e8b2fc7549e1ad368e541",
-        "337a1035aaedf3458ca167e92d74b839").map{p.hex(it)}
     private const val NORMAL="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     private const val CUSTOM="RkLC2QaVMPYgGJW/A4f7qzDb9e+t6Hr0Zp8OlNyjuxKcTw1o5EIimhBn3UvdSFXs"
     private fun unwrap(input:ByteArray):ByteArray {
@@ -52,7 +44,7 @@ object EhiPort {
             v=v or ((raw[i*4+j].toInt()and 255) shl (j*8))
         v
     }
-    private fun xxtea(input:ByteArray):ByteArray {
+    private fun xxtea(input:ByteArray,eoo:ByteArray):ByteArray {
         val v=words(input)
         require(v.size>=2)
         val k=words(eoo.copyOf(16))
@@ -241,7 +233,12 @@ object EhiPort {
         }
     }
 
-    fun decode(input:ByteArray):String?=p.safeDecode {
+    fun decode(context:Context,input:ByteArray):String?=p.safeDecode {
+        val keys=AdditionalDecoderMaterials.ehi(context)
+        val l1=keys.firstKey
+        val l2=keys.secondKey
+        val bypassIvs=keys.bypassIvs
+        val standardIvs=keys.standardIvs
         val payload=unwrap(input)
         var profile:JSONObject?=null
         var bypass=false
@@ -252,7 +249,7 @@ object EhiPort {
             val raw=try{
                 p.cbc(p.b64(parts[2]),l2,p.b64(parts[0]))
             }catch(_:Exception){continue}
-            val clear=xxtea(raw)
+            val clear=xxtea(raw,keys.xxteaKey)
             val begin=clear.indexOf('{'.code.toByte())
             if(begin<0)continue
             profile=try{JSONObject(p.utf8(clear.copyOfRange(begin,clear.size)))}catch(_:Exception){null}

@@ -41,7 +41,7 @@ class FinalExtra4InstrumentedTest {
     @Test fun ehilOriginalGoldenAndStrictRouting() {
         val input=fixture("ehil-aescbc-double.ehil")
         val expected=fixture("ehil-aescbc-double.txt")
-        assertArrayEquals(expected,EhilPort.decode(input)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,EhilPort.decode(inst.targetContext,input)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             inst.targetContext,"test.EHIL",input)?.toByteArray(Charsets.UTF_8))
     }
@@ -56,8 +56,8 @@ class FinalExtra4InstrumentedTest {
         assertNull("hat empty",HatPort.decode(inst.targetContext,byteArrayOf()))
         assertNull("hat invalid",HatPort.decode(inst.targetContext,"INVALID".toByteArray()))
         assertNull("hat oversized",HatPort.decode(inst.targetContext,ByteArray(1024*1024+1)))
-        assertNull("ehil empty",EhilPort.decode(byteArrayOf()))
-        assertNull("ehil invalid",EhilPort.decode("INVALID".toByteArray()))
-        assertNull("ehil oversized",EhilPort.decode(ByteArray(1024*1024+1)))
+        assertNull("ehil empty",EhilPort.decode(inst.targetContext,byteArrayOf()))
+        assertNull("ehil invalid",EhilPort.decode(inst.targetContext,"INVALID".toByteArray()))
+        assertNull("ehil oversized",EhilPort.decode(inst.targetContext,ByteArray(1024*1024+1)))
     }
 }

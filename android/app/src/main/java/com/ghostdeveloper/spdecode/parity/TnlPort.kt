@@ -1,5 +1,7 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
+
 import org.json.JSONObject
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -19,11 +21,7 @@ import javax.crypto.spec.SecretKeySpec
  */
 object TnlPort {
     private val p=LegacyPortPrimitives
-    private val passwords=listOf("B1m93p\$\$9pZcL9yBs0b\$jJwtPM5VG@Vg",
-        "A^ST^f6ASG6AS5asd")
-    private const val OPL_SECRET="f3a91c4e2d7b05869e4f1a3c8d2e6b07a5c9f2e14d8b3a76e0f5c1d9b4a72e3f"
     private const val OPL_LEN_XOR= -1481390639
-    private val OT_KEY=p.hex("bd561d5a60918ccde642091edd0f754c3346ecf0d609f161811f8c26c130e287")
     private val ignored=setOf("file.proteger","file.msg","file.appVersionCode",
         "file.validade","file.pedirLogin","file.VersionCode",
         "file.protection","file.validate","file.askLogin")
@@ -38,7 +36,7 @@ object TnlPort {
         cipher.init(Cipher.DECRYPT_MODE,SecretKeySpec(key,"AES"),GCMParameterSpec(128,nonce))
         return cipher.doFinal(encrypted)
     }
-    private fun openTnl(input:ByteArray):ByteArray {
+    private fun openTnl(input:ByteArray,material:LegacyBatch2Materials.Tnl):ByteArray {
         p.bounded(input)
         if(input.size>=12 && input[0]==0x4f.toByte()&&input[1]==0x50.toByte()
             &&input[2]==0x4c.toByte()&&input[3]==2.toByte()){
@@ -53,10 +51,10 @@ object TnlPort {
             }
             val checksum=CRC32().apply{update(actual)}.value
             require(checksum==(header.getInt(8).toLong() and 0xffffffffL))
-            return gcmTriple(p.utf8(actual),OPL_SECRET,100000,256)
+            return gcmTriple(p.utf8(actual),material.oplSecret,100000,256)
         }
         val text=p.utf8(input).trim()
-        if('.' in text)for(password in passwords){
+        if('.' in text)for(password in material.passwords){
             try{return gcmTriple(text,password,1000,128)}
             catch (_:Exception){}
         }
@@ -69,12 +67,13 @@ object TnlPort {
         return ByteArray(n){i->
             val x=(raw[8+i].toInt() and 255) xor ((7*i+13)and 255)
             val rotated=((x ushr 3) or (x shl 5)) and 255
-            ((OT_KEY[i%32].toInt() and 255) xor ((seed ushr ((i*8)and 24))and 255)
+            ((material.otKey[i%32].toInt() and 255) xor ((seed ushr ((i*8)and 24))and 255)
                 xor rotated).toByte()
         }
     }
-    fun decode(input:ByteArray):String?=p.safeDecode{
-        val xml=p.utf8(openTnl(input))
+    fun decode(context:Context,input:ByteArray):String?=p.safeDecode{
+        val material=LegacyBatch2Materials.tnl(context)
+        val xml=p.utf8(openTnl(input,material))
         val values=linkedMapOf<String,String>()
         val lines=xml.split('\n')
         var i=0

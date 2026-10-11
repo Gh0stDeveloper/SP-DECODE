@@ -80,7 +80,7 @@ class Batch20InstrumentedTest {
     @Test fun goldMatchesLinuxAndStrictDispatch() {
         val source=asset("batch7-gold.gold")
         val gold=asset("batch7-gold.txt")
-        assertArrayEquals(gold,GoldPort.decode(source)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(gold,GoldPort.decode(instrumentation.targetContext,source)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(gold,AndroidOfflineDecoderRouter.decode(
             instrumentation.targetContext,"test.GOLD",source)?.toByteArray(Charsets.UTF_8))
     }
@@ -115,8 +115,8 @@ class Batch20InstrumentedTest {
         assertNull("ipt empty",IptPort.decode(byteArrayOf()))
         assertNull("ipt random",IptPort.decode("INVALID PROFILE".toByteArray()))
         assertNull("ipt oversized",IptPort.decode(ByteArray(1024*1024+1)))
-        assertNull("gold empty",GoldPort.decode(byteArrayOf()))
-        assertNull("gold random",GoldPort.decode("INVALID PROFILE".toByteArray()))
-        assertNull("gold oversized",GoldPort.decode(ByteArray(1024*1024+1)))
+        assertNull("gold empty",GoldPort.decode(instrumentation.targetContext,byteArrayOf()))
+        assertNull("gold random",GoldPort.decode(instrumentation.targetContext,"INVALID PROFILE".toByteArray()))
+        assertNull("gold oversized",GoldPort.decode(instrumentation.targetContext,ByteArray(1024*1024+1)))
     }
 }

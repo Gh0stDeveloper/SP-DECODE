@@ -1,5 +1,7 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
+
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -11,14 +13,13 @@ import javax.crypto.spec.SecretKeySpec
  */
 object SshPort {
     private val p=LegacyPortPrimitives
-    private val key="263386285977449155626236830061505221752"
-        .toByteArray(Charsets.US_ASCII)
     private val iv=ByteArray(8){it.toByte()}
     private const val GLYPH="🚀"
     private val hidden=listOf("cproxyRemoto","sslProxy","dnsKey","cchaveKey",
         "cserverNameKey","cdnssshUser","cdnssshPass")
-    fun decode(input:ByteArray):String?=p.safeDecode {
+    fun decode(context:Context,input:ByteArray):String?=p.safeDecode {
         p.bounded(input)
+        val key=LegacyBatch2Materials.ssh(context)
         val raw=p.b64(p.utf8(input))
         require(raw.size>=8 && raw.size%8==0)
         val cipher=Cipher.getInstance("Blowfish/CBC/PKCS5Padding")

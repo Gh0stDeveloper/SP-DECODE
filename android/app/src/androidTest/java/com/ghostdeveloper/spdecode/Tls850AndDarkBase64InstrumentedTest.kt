@@ -20,7 +20,7 @@ class Tls850AndDarkBase64InstrumentedTest {
         for(profile in 1..6) {
             val raw=fixture("tls850-profile-$profile.tls")
             val expected=fixture("tls850-profile-$profile.txt")
-            val source=TlsReferencePort.decode(raw)
+            val source=TlsReferencePort.decode(ctx,raw)
             assertNotNull("No TLS profile $profile",source)
             assertArrayEquals("TLS authenticated Python match $profile",
                 expected,source!!.toByteArray(Charsets.UTF_8))
@@ -49,16 +49,16 @@ class Tls850AndDarkBase64InstrumentedTest {
         val input=TextProtocolDecoder.identify("tls://"+token)
         assertNotNull(input)
         assertNotNull(TextProtocolDecoder.decode(ctx,input!!))
-        assertNotNull(TlsReferencePort.decode(raw))
-        assertNull(TlsReferencePort.decode("tls://!!!!".toByteArray()))
-        assertNull(TlsReferencePort.decode(ByteArray(10)))
+        assertNotNull(TlsReferencePort.decode(ctx,raw))
+        assertNull(TlsReferencePort.decode(ctx,"tls://!!!!".toByteArray()))
+        assertNull(TlsReferencePort.decode(ctx,ByteArray(10)))
         // Alphabetically valid altered token must fail authentication.
         val damaged=token.toCharArray()
         // The first reversed Base64 characters represent unauthenticated
         // outer padding. Change the middle ciphertext, not that padding.
         val ciphertextIndex=token.substringBefore(':').length/2
         damaged[ciphertextIndex]=if(damaged[ciphertextIndex]=='A')'B' else 'A'
-        assertNull(TlsReferencePort.decode(String(damaged).toByteArray()))
+        assertNull(TlsReferencePort.decode(ctx,String(damaged).toByteArray()))
     }
 
     @Test fun bareDarkTunnelBase64DispatchedBeforeNetmod() {

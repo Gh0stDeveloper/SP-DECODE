@@ -188,6 +188,18 @@ jobs:
           python scripts/android_s2_dex_audit.py \
             --apk android/app/build/outputs/apk/release/app-release.apk
 
+      - name: Audit signed APK for legacy TLS EHI and Dark DEX literals
+        run: |
+          set -euo pipefail
+          python scripts/android_s2_extra_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Reject remaining migrated S.2 legacy key strings from signed APK
+        run: |
+          set -euo pipefail
+          python scripts/android_s2_legacy_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release.apk
+
       - name: Verify release signature schemes, package, version and 16 KiB alignment
         env:
           VERSION: ${{ needs.preflight.outputs.version }}

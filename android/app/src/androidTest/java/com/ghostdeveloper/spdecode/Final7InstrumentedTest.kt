@@ -20,7 +20,7 @@ class Final7InstrumentedTest {
     @Test fun darkExactGoldenAndRouting() {
         val input=source("dark-aescfb-msgpack.dark")
         val expected=source("dark-aescfb-msgpack.txt")
-        assertArrayEquals(expected,DarkPort.decode(input)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,DarkPort.decode(app,input)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             app,"case.DARK",input)?.toByteArray(Charsets.UTF_8))
     }
@@ -31,9 +31,9 @@ class Final7InstrumentedTest {
             val golden=source("$name.txt")
             // Compare actual original DARKTUNNEL.py stdout, not a Kotlin snapshot.
             assertArrayEquals("Python parity for $name",
-                golden,DarkPort.decode(data)?.toByteArray(Charsets.UTF_8))
+                golden,DarkPort.decode(app,data)?.toByteArray(Charsets.UTF_8))
             assertArrayEquals("Reimport must be deterministic for $name",
-                golden,DarkPort.decode(data)?.toByteArray(Charsets.UTF_8))
+                golden,DarkPort.decode(app,data)?.toByteArray(Charsets.UTF_8))
             assertArrayEquals("Router must use the same Dark Tunnel engine",
                 golden,AndroidOfflineDecoderRouter.decode(app,"case.dark",data)
                     ?.toByteArray(Charsets.UTF_8))
@@ -43,7 +43,7 @@ class Final7InstrumentedTest {
     @Test fun ehiExactGoldenAndRouting() {
         val input=source("batch7-ehi.ehi")
         val expected=source("batch7-ehi.txt")
-        assertArrayEquals(expected,EhiPort.decode(input)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,EhiPort.decode(app,input)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             app,"case.EHI",input)?.toByteArray(Charsets.UTF_8))
     }
@@ -67,7 +67,7 @@ class Final7InstrumentedTest {
     @Test fun sipExactGoldenAndRouting() {
         val input=source("batch6-sip.sip")
         val expected=source("batch6-sip.txt")
-        assertArrayEquals(expected,SipPort.decode(input)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,SipPort.decode(app,input)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             app,"case.SIP",input)?.toByteArray(Charsets.UTF_8))
     }
@@ -91,21 +91,21 @@ class Final7InstrumentedTest {
     @Test fun strictFailuresAreNeverMisclassified() {
         assertNull(AndroidOfflineDecoderRouter.decode(app,"unknown.zzz",source("batch7-ehi.ehi")))
         assertNull(AndroidOfflineDecoderRouter.decode(app,"wrong.ssc",source("batch6-sip.sip")))
-        assertNull("dark empty",DarkPort.decode(byteArrayOf()))
-        assertNull("dark malformed",DarkPort.decode("INVALID CONFIG".toByteArray()))
-        assertNull("dark too large",DarkPort.decode(ByteArray(1024*1024+1)))
-        assertNull("ehi empty",EhiPort.decode(byteArrayOf()))
-        assertNull("ehi malformed",EhiPort.decode("INVALID CONFIG".toByteArray()))
-        assertNull("ehi too large",EhiPort.decode(ByteArray(1024*1024+1)))
+        assertNull("dark empty",DarkPort.decode(app,byteArrayOf()))
+        assertNull("dark malformed",DarkPort.decode(app,"INVALID CONFIG".toByteArray()))
+        assertNull("dark too large",DarkPort.decode(app,ByteArray(1024*1024+1)))
+        assertNull("ehi empty",EhiPort.decode(app,byteArrayOf()))
+        assertNull("ehi malformed",EhiPort.decode(app,"INVALID CONFIG".toByteArray()))
+        assertNull("ehi too large",EhiPort.decode(app,ByteArray(1024*1024+1)))
         assertNull("npv4 empty",Npv4Port.decode(app,byteArrayOf()))
         assertNull("npv4 malformed",Npv4Port.decode(app,"INVALID CONFIG".toByteArray()))
         assertNull("npv4 too large",Npv4Port.decode(app,ByteArray(1024*1024+1)))
         assertNull("npvt empty",NpvtPort.decode(app,byteArrayOf()))
         assertNull("npvt malformed",NpvtPort.decode(app,"INVALID CONFIG".toByteArray()))
         assertNull("npvt too large",NpvtPort.decode(app,ByteArray(1024*1024+1)))
-        assertNull("sip empty",SipPort.decode(byteArrayOf()))
-        assertNull("sip malformed",SipPort.decode("INVALID CONFIG".toByteArray()))
-        assertNull("sip too large",SipPort.decode(ByteArray(1024*1024+1)))
+        assertNull("sip empty",SipPort.decode(app,byteArrayOf()))
+        assertNull("sip malformed",SipPort.decode(app,"INVALID CONFIG".toByteArray()))
+        assertNull("sip too large",SipPort.decode(app,ByteArray(1024*1024+1)))
         assertNull("ssc empty",SscPort.decode(byteArrayOf()))
         assertNull("ssc malformed",SscPort.decode("INVALID CONFIG".toByteArray()))
         assertNull("ssc too large",SscPort.decode(ByteArray(1024*1024+1)))
