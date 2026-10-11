@@ -202,7 +202,7 @@ internal object HcHccfgPort {
         require(it.size==32)
     }
     private fun derive(env:JSONObject,passwordBytes:ByteArray?,hwid:String?,
-        wrappingProbe:((ByteArray)->Unit)?=null):Pair<ByteArray,ByteArray>{
+        wrappingProbe:((ByteArray,ByteArray)->Unit)?=null):Pair<ByteArray,ByteArray>{
         require(env.getString("a")=="HCCFG")
         val schema=env.getInt("b")
         require(schema in listOf(1,2,5,7))
@@ -259,12 +259,12 @@ internal object HcHccfgPort {
             if(hw!=null){write(utf("|hwid|"));write(hw)}
         }.toByteArray()
         val skey=hkdf(ikm,seedKey,info)
-        wrappingProbe?.invoke(skey)
         val aad=ByteArrayOutputStream().apply{
             write(utf("HCCFG|$schema|XCHACHA20P1305|NATIVE-HKDF-SHA256|$schedule|"))
             write(pkg);write(utf("|1|"));write(features);write(protectionAad)
             if(nb!=null){write(utf("|"));write(nb)}
         }.toByteArray()
+        wrappingProbe?.invoke(skey,aad)
         if(!hwidRequired)return skey to aad
         val slots=env.getJSONArray("o")
         require(slots.length() in 1..256)
@@ -483,15 +483,23 @@ internal object HcHccfgPort {
     internal fun syntheticTestStage(input:ByteArray,password:ByteArray?,hwid:String?):String {
         val env=try{openOuter(input)}catch(_:Exception){return "outer"}
         var wrapperCorrect=false
-        val keys=try{derive(env,password,hwid){key->
-            // Compare only with fixed synthetic vector fingerprints; no
-            // real-user key or digest is returned to diagnostics.
-            val expected=if(password==null)
+        var aadCorrect=false
+        val keys=try{derive(env,password,hwid){key,aad->
+            // Fixed synthetic test fingerprints only; no private data exposed.
+            val expectedKey=if(password==null)
                 "e665949ef268cdb8289998ae6309637c6db28e392dbe327f4465d8b00d833fa2"
                 else "8036ac0d39383abe8a54041c102379bb00d8d71656a7cc16caf57bddc476d354"
-            wrapperCorrect=MessageDigest.isEqual(sha(key),p.hex(expected))
+            val expectedAad=if(password==null)
+                "61ffd12f4e2ecbada1cec36c701a27e8a206fd4628ef10e5816fe0808c6b291f"
+                else "ccbb6ae20212d876bdf0c4523a77aa6c5e45f4207af7ff93d122f09eb29b896d"
+            wrapperCorrect=MessageDigest.isEqual(sha(key),p.hex(expectedKey))
+            aadCorrect=MessageDigest.isEqual(sha(aad),p.hex(expectedAad))
         }}catch(_:Exception){
-            return if(wrapperCorrect)"slot-auth" else "wrapped-key-mismatch"
+            return when {
+                !wrapperCorrect->"wrapped-key-mismatch"
+                !aadCorrect->"aad-mismatch"
+                else->"slot-aead"
+            }
         }
         val main=try{section(env.getJSONObject("i"),keys.first,keys.second)}
             catch(_:Exception){return "main-aead"}
