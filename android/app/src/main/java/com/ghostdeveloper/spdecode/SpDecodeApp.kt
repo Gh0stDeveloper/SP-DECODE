@@ -80,6 +80,10 @@ fun SpDecodeApp(
     onDecodeText:(String)->Unit={},
     whatsNew:Boolean=false,
     onDismissWhatsNew:()->Unit={},
+    guideStep:Int?=null,
+    onGuideNext:()->Unit={},
+    onGuideSkip:()->Unit={},
+    onGuideRestart:()->Unit={},
 ){
     var dialog by remember{mutableStateOf<String?>(null)}
     MaterialTheme(colorScheme=darkColorScheme(
@@ -99,15 +103,21 @@ fun SpDecodeApp(
                 when(activeTab) {
                     0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
                         onCopy={dialog="copy"},onExport={dialog="export"},onSelect=onSelect,
-                        onClearResult=onClearResult,onDecodeText=onDecodeText)
+                        onClearResult=onClearResult,onDecodeText=onDecodeText,
+                        highlightGuide=if(!whatsNew && !busy)guideStep else null)
                     1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple,onFavorite)
                     2->FormatsScreen()
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
                         onLanguage,onMaskCredentials,onClear,onExternalLink,
-                        retentionDays,onRetention)
+                        retentionDays,onRetention,onShowGuide=onGuideRestart)
                 }
             }
-            BottomTabs(activeTab,onTab)
+            if(guideStep!=null && !whatsNew && !busy && error==null && dialog==null) {
+                FirstRunGuidePanel(guideStep,onGuideNext,onGuideSkip)
+            }
+            BottomTabs(activeTab,onTab,
+                spotlight=if(guideStep!=null && !whatsNew && !busy)
+                    FirstRunGuide.targetTab(guideStep) else null)
         }
         if(whatsNew && !busy) AlertDialog(
             onDismissRequest=onDismissWhatsNew,
@@ -283,6 +293,7 @@ private fun HomeScreen(
     onSelect:(DecodeView)->Unit,
     onClearResult:()->Unit,
     onDecodeText:(String)->Unit,
+    highlightGuide:Int?=null,
 ) {
     Column(
         modifier=Modifier.fillMaxSize().verticalScroll(rememberScrollState())
@@ -309,6 +320,7 @@ private fun HomeScreen(
                 enabled=!busy,
                 modifier=Modifier.weight(1f).heightIn(min=52.dp),
                 shape=RoundedCornerShape(14.dp),
+                border=if(highlightGuide==0)BorderStroke(2.dp,White)else null,
                 contentPadding=PaddingValues(horizontal=8.dp,vertical=12.dp),
                 colors=ButtonDefaults.buttonColors(
                     containerColor=Panel,contentColor=White,
@@ -325,6 +337,7 @@ private fun HomeScreen(
                 enabled=!busy,
                 modifier=Modifier.weight(1f).heightIn(min=52.dp),
                 shape=RoundedCornerShape(14.dp),
+                border=if(highlightGuide==1)BorderStroke(2.dp,White)else null,
                 contentPadding=PaddingValues(horizontal=8.dp,vertical=12.dp),
                 colors=ButtonDefaults.buttonColors(
                     containerColor=if(textExpanded)Raised else Panel,
@@ -679,7 +692,7 @@ private fun CardText(value:String) {
 }
 
 @Composable
-private fun BottomTabs(active:Int,onTab:(Int)->Unit) {
+private fun BottomTabs(active:Int,onTab:(Int)->Unit,spotlight:Int?=null) {
     val tabs=listOf(
         Triple(R.string.home,Icons.Outlined.Home,0),
         Triple(R.string.history,Icons.Outlined.History,1),
@@ -692,6 +705,9 @@ private fun BottomTabs(active:Int,onTab:(Int)->Unit) {
         tabs.forEach{(label,icon,index)->
             val selected=active==index
             Column(Modifier.weight(1f).clickable{onTab(index)}
+                    .then(if(spotlight==index) Modifier
+                        .background(Raised,RoundedCornerShape(11.dp))
+                        .padding(horizontal=2.dp) else Modifier)
                     .padding(vertical=9.dp),
                 horizontalAlignment=Alignment.CenterHorizontally,
                 verticalArrangement=Arrangement.spacedBy(4.dp)){
