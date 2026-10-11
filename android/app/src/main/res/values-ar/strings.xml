@@ -172,4 +172,10 @@
     <string name="s4_import_title">اختيار بيانات اعتماد خاصة</string>
     <string name="s4_import_description">يتطلب ملف HCCFG المحمي %1$s كلمة مرور خارجية. اختر بيانات اعتماد لهذا الملف فقط، ولن يُعاد استخدامها تلقائيًا.</string>
     <string name="s4_import_without_password">المحاولة بدون كلمة مرور</string>
+    <string name="json_viewer_loading">جارٍ تجهيز عرض JSON…</string>
+    <string name="json_expand">توسيع عقدة JSON</string>
+    <string name="json_collapse">طي عقدة JSON</string>
+    <string name="json_more_items">عرض الإدخالات %1$d التالية</string>
+    <string name="json_more_chars">عرض الأحرف %1$d التالية</string>
+    <string name="json_visible_limit">هناك فروع مفتوحة كثيرة. اطوِ بعضها لمتابعة التصفح.</string>
 </resources>

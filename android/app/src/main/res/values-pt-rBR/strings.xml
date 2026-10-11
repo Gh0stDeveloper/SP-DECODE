@@ -172,4 +172,10 @@
     <string name="s4_import_title">Selecionar credencial privada</string>
     <string name="s4_import_description">O arquivo HCCFG protegido %1$s precisa de uma senha externa. Selecione uma credencial apenas para este arquivo; ela não será reutilizada automaticamente.</string>
     <string name="s4_import_without_password">Tentar sem senha</string>
+    <string name="json_viewer_loading">Preparando visualização JSON…</string>
+    <string name="json_expand">Expandir nó JSON</string>
+    <string name="json_collapse">Recolher nó JSON</string>
+    <string name="json_more_items">Mostrar as próximas %1$d entradas</string>
+    <string name="json_more_chars">Mostrar os próximos %1$d caracteres</string>
+    <string name="json_visible_limit">Há muitas ramificações abertas. Recolha algumas para continuar.</string>
 </resources>

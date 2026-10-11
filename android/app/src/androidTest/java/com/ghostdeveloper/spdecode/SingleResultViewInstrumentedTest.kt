@@ -1,6 +1,7 @@
 package com.ghostdeveloper.spdecode
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -27,6 +28,10 @@ class SingleResultViewInstrumentedTest {
         }
         ui.onNodeWithText(ctx.getString(R.string.result_decoded_by,"SP-DECODE"),substring=true).assertExists()
         ui.onNodeWithText(ctx.getString(R.string.result_decoded_by,"HTTP Injector"),substring=true).assertDoesNotExist()
+        ui.waitUntil(timeoutMillis=20000) {
+            ui.onAllNodesWithText("\"city\": \"LA\"",substring=true)
+                .fetchSemanticsNodes().isNotEmpty()
+        }
         ui.onNodeWithText("\"city\": \"LA\"",substring=true).assertExists()
         ui.onNodeWithText(ctx.getString(R.string.detailed_fields)).assertDoesNotExist()
         ui.onNodeWithText(ctx.getString(R.string.raw_text)).assertDoesNotExist()

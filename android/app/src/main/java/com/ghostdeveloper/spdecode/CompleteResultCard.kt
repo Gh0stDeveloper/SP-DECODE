@@ -3,7 +3,6 @@ package com.ghostdeveloper.spdecode
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
@@ -45,9 +44,6 @@ fun CompleteResultCard(
     val context=LocalContext.current
     val sample=current==null
     val mask=hideCredentials&&!reveal
-    val primary=remember(current?.id,mask) {
-        current?.let { ResultJsonDisplay.render(it.rawText,it.extension,mask) }.orEmpty()
-    }
     val formattedDate=remember(current?.savedAtMillis,
         context.resources.configuration.locales[0]) {
         current?.let {
@@ -90,11 +86,12 @@ fun CompleteResultCard(
                         color=Muted,fontSize=12.sp,lineHeight=17.sp,
                         style=TextStyle(textDirection=TextDirection.Ltr))
                 }
-                SelectionContainer {
-                    Text(primary,color=Ink,fontSize=13.sp,lineHeight=19.sp,
-                        style=TextStyle(textDirection=TextDirection.Ltr),
-                        modifier=Modifier.fillMaxWidth())
-                }
+                JsonTreeViewer(
+                    raw=current.rawText,
+                    suffix=current.extension,
+                    maskCredentials=mask,
+                    identity=current.id,
+                )
                 if(hideCredentials) {
                     TextButton(onClick={onReveal(!reveal)},
                         contentPadding=PaddingValues(0.dp)) {
