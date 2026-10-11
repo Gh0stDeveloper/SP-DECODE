@@ -38,6 +38,7 @@ object AndroidOfflineDecoderRouter {
         // The historical ports stay at 1 MiB; only B/C and the collided .ost
         // use the 2 MiB limit already implemented by their specific engines.
         val maxInput = when {
+            format.suffix == "solid" -> NurTunnelPort.MAX_INPUT
             format.suffix == "lnk" -> LinkLayerPort.MAX_INPUT
             format.suffix == "npvs" -> NpvsPort.MAX_INPUT
             format.migrationPhase == "B" -> GenericVpnPort.MAX_INPUT_BYTES
@@ -58,6 +59,7 @@ object AndroidOfflineDecoderRouter {
         if (!format.hasNativeDecoder) return null
         // The 81 generic suffixes are explicitly selected by catalog phase,
         // never inserted into the old 61-case switch or treated as fallback.
+        if (format.suffix == "solid") return NurTunnelPort.decodeSolid(input)
         if (format.migrationPhase == "B") {
             return GenericVpnPort.decode(context, format.suffix, input)
         }
