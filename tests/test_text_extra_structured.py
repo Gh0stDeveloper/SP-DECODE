@@ -101,7 +101,7 @@ class StructuredTextProtocolsTests(unittest.TestCase):
         # Here we test only the Base64 adapter; no fake decryption.
         raw=b"NPVS"+bytes(90)
         data={"metadata":{"creator":"fixture"},"document":{"configs":[{"sshHost":"npvs.example"}]}}
-        with patch("decoders.Python.npvs.decode_npvs",return_value=data) as dec:
+        with patch("decoders.Python.npvs.decode_npvs_complete",return_value=data) as dec:
             for scheme in ("npvs://","vpvs://"):
                 output=structured.decode_text(scheme+b64(raw))
                 self.assertEqual(json.loads(output),data)
