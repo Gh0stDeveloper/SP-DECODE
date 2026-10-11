@@ -16,6 +16,7 @@ plugins {
 // unzipping the APK. Its runtime key is compiled into the APK and is recoverable
 // by reverse engineering: this is hardening, NOT absolute confidentiality.
 val vaultNames = setOf(
+    "embedded_kotlin_profiles.json",
     "flex_f_profiles.json",
     "generic_b_profiles.json",
     "hc_source_keys.json",
