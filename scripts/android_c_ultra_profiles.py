@@ -131,7 +131,8 @@ def make_fixtures() -> dict:
                 # including the case where the nested tag has been corrupted.
                 for j, field in enumerate(INNER_FIELDS):
                     inner = encrypt(("value-" + field).encode(), p["password2"],
-                                    p["mem"], seed + "-" + field, aad=False)
+                                    p["mem"], seed + "-" + field,
+                                    aad=(j % 2 == 0))
                     doc[field] = base64.b64encode(inner).decode()
                 failed = bytearray(encrypt(b"should remain encrypted", p["password2"],
                                            p["mem"], seed + "-bad-tag", aad=False))

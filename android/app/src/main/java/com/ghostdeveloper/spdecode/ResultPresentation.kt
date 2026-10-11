@@ -184,15 +184,15 @@ object ResultPresentation {
         append("│ SP-DECODE (.").append(suffix).append(")\n")
         append("│ Decodificado por: SP-DECODE\n")
         append("│ Desarrollado por: Ghost Developer\n")
-        append("│ Telegram: https://t.me/Gh0stDeveloper\n")
+
         append("├────────────────────────────\n")
         for(field in fields){
             append("│[۞] ").append(field.path).append(": ")
                 .append(field.value).append('\n')
         }
         append("├────────────────────────────\n")
-        append("│ Grupo: https://t.me/CodeBreakersHub\n")
-        append("│ Canal: https://t.me/GhostDeve\n")
+
+
         append("└────────────────────────────")
     }
     fun formatted(doc:ResultDocument,format:ResultExport)=when(format){

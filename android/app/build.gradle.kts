@@ -12,12 +12,12 @@ android {
         applicationId = "com.ghostdeveloper.spdecode"
         minSdk = 24
         targetSdk = 35
-        versionCode = 19
-        versionName = "1.0.8"
+        versionCode = 20
+        versionName = "1.0.9"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("en", "es", "pt-rBR", "ar")
     }
-    buildFeatures { compose = true }
+    buildFeatures { compose = true; buildConfig = true }
     packaging {
         resources {
             // Bouncy Castle and jspecify both ship JVM 9 multi-release metadata;
@@ -46,8 +46,18 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField("String", "TRUSTED_SIGNER_SHA256", "\"\"")
+        }
         release {
             isMinifyEnabled = false
+            // Fingerprint of the permanent certificate, injected by release CI.
+            val trustedSha = providers.environmentVariable("SPDECODE_TRUSTED_SIGNER_SHA256").orNull
+                .orEmpty().lowercase()
+            require(trustedSha.isEmpty() || trustedSha.matches(Regex("[0-9a-f]{64}"))) {
+                "Invalid trusted release signer fingerprint"
+            }
+            buildConfigField("String", "TRUSTED_SIGNER_SHA256", "\"$trustedSha\"")
             signingConfig=signingConfigs.findByName("production")
         }
     }

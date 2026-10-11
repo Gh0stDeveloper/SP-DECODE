@@ -128,6 +128,13 @@ jobs:
           test "$(stat -c %s "$RUNNER_TEMP/spdecode-production.p12")" -gt 1000
           keytool -list -keystore "$RUNNER_TEMP/spdecode-production.p12" \
             -storetype PKCS12 -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null
+          # Public certificate digest only. Never include private key material.
+          SIGNER_SHA256="$(keytool -exportcert \
+            -keystore "$RUNNER_TEMP/spdecode-production.p12" \
+            -storetype PKCS12 -storepass "$STORE_PASSWORD" \
+            -alias "$KEY_ALIAS" | sha256sum | awk '{print $1}')"
+          [[ "$SIGNER_SHA256" =~ ^[0-9a-f]{64}$ ]] || exit 1
+          echo "SPDECODE_TRUSTED_SIGNER_SHA256=$SIGNER_SHA256" >> "$GITHUB_ENV"
       - name: Assemble real Android release using the repository keystore
         working-directory: android
         env:
@@ -318,7 +325,7 @@ jobs:
             "dist/SHA256SUMS.txt" "dist/SIGNATURE_VERIFICATION.txt" \
             --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" \
             --title "SP-DECODE Android v$VERSION" --latest \
-            --notes "SP-DECODE Android v$VERSION — stable production APK. NPVS v5: authenticated Kotlin decoder now resolves explicitly marked nested npvs1: Base64 values and JSON recursively, with full Python parity on a signed synthetic v5 fixture; preserves opaque unmarked credentials, multiline payloads and previous HTTP Injector (.ehi) complete-JSON correction. NPVS v1 and recipient-locked v6 are not covered by this method. The APK is offline, built from the exact successful main SHA and signed with the permanent GitHub Secrets certificate (V1/V2/V3); SHA-256, 16 KiB ZIP alignment and upgrade signing identity verified. Owner explicitly approved production v1.0.8 with documented risk limits. Emulator and synthetic parity PASS; independent all-vendor corpus, physical-device rerun of specific NPVS sample, accessibility and installed-upgrade logs remain pending. This is NOT certification for all 239 vendor exporter variants. Evidence: docs/android/NPVS_V5_ANDROID_1_0_8_RELEASE.md; release/android-readiness.json."
+            --notes "SP-DECODE Android v$VERSION — public stable production APK. Ultra Tunnel (.ultra): restored fully authenticated second-layer AES-256-GCM fields using AAD=salt, preserving the old no-AAD fallback and rejecting tampered tags. Exact Python/Kotlin synthetic parity tests cover both variants; eight encrypted fields in the owner-provided JSON were successfully authenticated locally (original private profile not committed). Android clipboard credits now name Ghost Developer only. Production APK checks that the installed signer matches the permanent signing certificate, rejecting normal third-party re-signed variants; this is defense in depth, not unbreakable DRM or protection of static bundled decoder secrets. Previous NPVS v5 complete JSON and HTTP Injector full output fixes remain. Offline app; no advertisement SDK is present until owner supplies real AdMob identifiers and privacy/consent setup. Built from validated exact-main SHA, same permanent GitHub Secrets signer (V1/V2/V3), 16 KiB aligned, SHA-256 verified. Owner approves v1.0.9 distribution accepting incomplete independent physical-device, current-vendor, accessibility and upgrade evidence. Scope: docs/android/ULTRA_INNER_AAD_1_0_9.md; release/android-readiness.json."
 
   publish-signed-preview:
     name: Publish public production-signed prerelease (stable GO remains separate)

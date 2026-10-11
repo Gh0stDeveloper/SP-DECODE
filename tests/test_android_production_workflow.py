@@ -57,9 +57,23 @@ class AndroidProductionWorkflowTest(unittest.TestCase):
         self.assertIn("SHA256SUMS.txt", w)
         self.assertIn("production-signed.apk", w)
 
+    def test_production_signer_pin_is_derived_from_permanent_keystore(self):
+        flow = self.workflow
+        app = (ROOT / "android/app/src/main/java/com/ghostdeveloper/spdecode/ReleaseIntegrity.kt").read_text("utf-8")
+        activity = (ROOT / "android/app/src/main/java/com/ghostdeveloper/spdecode/MainActivity.kt").read_text("utf-8")
+        self.assertIn("SPDECODE_TRUSTED_SIGNER_SHA256", flow)
+        self.assertIn("keytool -exportcert", flow)
+        self.assertIn("sha256sum", flow)
+        self.assertIn('buildConfigField("String", "TRUSTED_SIGNER_SHA256"', self.gradle)
+        self.assertIn("hasSigningCertificate(", app)
+        self.assertIn("BuildConfig.DEBUG", app)
+        self.assertIn("return false", app)
+        self.assertIn("ReleaseIntegrity.isTrusted(this)", activity)
+        self.assertIn("finishAndRemoveTask()", activity)
+
     def test_stable_identity_and_publication_are_separate(self):
-        self.assertRegex(self.gradle, r'versionName\s*=\s*"1\.0\.8"')
-        self.assertRegex(self.gradle, r'versionCode\s*=\s*19\b')
+        self.assertRegex(self.gradle, r'versionName\s*=\s*"1\.0\.9"')
+        self.assertRegex(self.gradle, r'versionCode\s*=\s*20\b')
         w = self.workflow
         self.assertIn("Previous public signer: v1.0.5-rc.1", w)
         self.assertIn("Same permanent SHA-256 signer certificate: yes", w)

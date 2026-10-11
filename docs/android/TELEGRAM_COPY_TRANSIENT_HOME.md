@@ -6,7 +6,7 @@
 
 The **Copy → JSON** option now copies a complete Telegram-oriented text message:
 - Plain, human-readable comments above the code fence, matching the result card's attribution: decoded by SP-DECODE, original decoding date and Powered by Ghost Developer
-- Additional attribution to `@AES224` and `@Gh0stDeveloper`
+- Sole application developer attribution: **Ghost Developer**; no additional personal credits.
 - A blank line, then `\`\`\`json` on its own line, **complete, unmasked, pretty, typed JSON**, and a closing `\`\`\`` code fence
 - The JSON payload uses the same normalization as the full Home result preview (`ResultJsonDisplay.render`), including nested objects, arrays, numbers, nulls and multiline HTTP payload strings.
 

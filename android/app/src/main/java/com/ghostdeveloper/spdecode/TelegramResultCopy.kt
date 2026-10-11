@@ -8,7 +8,7 @@ package com.ghostdeveloper.spdecode
  * Markdown formatting enabled. Attribution is deliberately outside the JSON.
  */
 object TelegramResultCopy {
-    private const val HEADER_CREDITS = "// Credits: @AES224 and @Gh0stDeveloper"
+    private const val HEADER_CREDITS = "// Credits: Ghost Developer"
 
     fun clipboard(view: DecodeView, format: ResultExport, displayDate: String): String {
         val header = buildString {
