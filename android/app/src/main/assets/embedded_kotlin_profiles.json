@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "source": "Historical, already-public Android decoder source constants; never store private signing/API/user secrets",
+  "hat": {
+    "aesKeyB64": "zbNkuNCGSLivpEuep3BcNA==",
+    "profileV5XorPassword": "**rVg7EkL~c2`D[aNn"
+  },
+  "httpCustom": {
+    "outerXorKeyHex": "e382e4b8adc386f09f9293"
+  },
+  "independentF1": {
+    "ltmPasswordHex": "333a33333232c933cc393d3b3e38383fcbcfc8cbc9cf333f3e3ccb3a32cb3ccf3dcb3239c9cfc83c3c3a393f3e3332cf333fce3839cc3d323ec8c8ce32c83333898ee1ea8b",
+    "vn7Passwords": [
+      "SecurePart1SecurePart2SecurePart3SecurePart4SecurePart5",
+      "fubvx788b46v"
+    ]
+  }
+}
