@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 class SettingsEnhancementsInstrumentedTest {
     @get:Rule val ui=createAndroidComposeRule<MainActivity>()
 
-    @Test fun settingsShowsFiveLanguagesPrivacyAndVerifiedContributorLinks(){
+    @Test fun settingsShowsLanguagesPrivacyVersionAndTelegramOnlyLinks(){
         val ctx=ui.activity
         ui.waitUntil(10000) {
             ui.onAllNodesWithContentDescription(ctx.getString(R.string.settings))
@@ -33,8 +33,13 @@ class SettingsEnhancementsInstrumentedTest {
         ui.onNodeWithText("English").assertExists()
         ui.onNodeWithText("Português (Brasil)").assertExists()
         ui.onNodeWithText("العربية").assertExists()
-        ui.onNodeWithText("Ghost Developer · @Gh0stDeveloper").assertExists()
-        ui.onNodeWithText(ctx.getString(R.string.project_repo)).assertExists()
         ui.onNodeWithText(ctx.getString(R.string.mask_passwords_title)).assertExists()
+        // Telegram is the sole contact surface. No repository/source links.
+        ui.onNodeWithText(ctx.getString(R.string.contact_developer)).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.telegram_group)).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.telegram_channel)).assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.settings_version,BuildConfig.VERSION_NAME))
+            .assertExists()
+        ui.onNodeWithText(ctx.getString(R.string.guide_replay)).assertExists()
     }
 }
