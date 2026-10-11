@@ -274,6 +274,7 @@ class MainActivity : ComponentActivity() {
                 onRetention={days->setRetention(days)},
                 onDismissError={message=null},
                 onDecodeText={input->decodeText(input)},
+                onDecodeCloud={reference->decodeCloud(reference)},
                 whatsNew=showWhatsNew,
                 onDismissWhatsNew={
                     settings.edit().putLong("last_seen_whats_new_version",runningVersionCode).apply()
@@ -468,6 +469,80 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * User-triggered, opt-in ONLINE import. No network request is made by any
+     * offline file/text decoder, and a failed fetch never saves a result.
+     */
+    private fun decodeCloud(reference:String) {
+        if(busy)return
+        if(reference.isBlank() || reference.length>1024) {
+            message=getString(R.string.cloud_http_injector_invalid)
+            return
+        }
+        val parsed=try { HttpInjectorCloudPort.parseReference(reference) }
+        catch(_:HttpInjectorCloudPort.CloudException) {
+            message=getString(R.string.cloud_http_injector_invalid)
+            return
+        }
+        val generation=++importGeneration
+        job?.cancel()
+        job=scope.launch {
+            busy=true
+            progressStage=1
+            progressPosition=1
+            progressTotal=1
+            progressFilename=getString(R.string.cloud_http_injector_title)
+            message=null
+            reveal=false
+            try {
+                historyLoad?.await()
+                val decoded=withContext(Dispatchers.IO) {
+                    HttpInjectorCloudPort.decodeOnline(this@MainActivity,parsed)
+                }
+                progressStage=2
+                val record=DecodeView(
+                    "http-injector-cloud.ehi","ehi",decoded,
+                    reference.toByteArray(Charsets.UTF_8).size
+                )
+                val stored=try {
+                    withContext(Dispatchers.IO){historyStore.save(record)}
+                    true
+                }catch(e:CancellationException){throw e}
+                catch(_:Exception){
+                    SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.HISTORY_WRITE_FAILURE)
+                    false
+                }
+                result=record
+                recent.add(0,record)
+                if(!stored)toast(R.string.history_storage_error)
+                try { historyPreferences.setSelectedId(record.id) }
+                catch(e:CancellationException){throw e}
+                catch(_:Exception){toast(R.string.history_storage_error)}
+                tab=0
+            }catch(e:CancellationException){throw e}
+            catch(e:HttpInjectorCloudPort.CloudException) {
+                if(generation==importGeneration) {
+                    message=getString(when(e.reason) {
+                        HttpInjectorCloudPort.Reason.REFERENCE->R.string.cloud_http_injector_invalid
+                        HttpInjectorCloudPort.Reason.NETWORK->R.string.cloud_http_injector_network_error
+                        HttpInjectorCloudPort.Reason.SERVER->R.string.cloud_http_injector_server_error
+                        HttpInjectorCloudPort.Reason.INTEGRITY->R.string.cloud_http_injector_integrity_error
+                        HttpInjectorCloudPort.Reason.DECODER->R.string.cloud_http_injector_decoder_error
+                    })
+                }
+            }catch(_:Exception){
+                if(generation==importGeneration)
+                    message=getString(R.string.cloud_http_injector_network_error)
+            }finally {
+                if(generation==importGeneration) {
+                    busy=false
+                    progressFilename=null
+                    progressStage=0
+                }
+            }
+        }
+    }
+
     private fun clearVisibleResult() {
         if(busy)return
         result=null
@@ -510,7 +585,16 @@ class MainActivity : ComponentActivity() {
             reveal=false
             try {
                 historyLoad?.await()
-                val report=BatchImportQueue.process(inputs){uri,index,total->
+                var failedNpvs=false
+                val report=BatchImportQueue.process(inputs,
+                    onFailure={uri,_-> 
+                        val filename=runCatching {
+                            withContext(Dispatchers.IO){displayName(uri)}
+                        }.getOrDefault("")
+                        if(filename.endsWith(".npvs",ignoreCase=true))
+                            failedNpvs=true
+                    }
+                ){uri,index,total->
                     progressPosition=index
                     progressTotal=total
                     progressStage=0
@@ -571,8 +655,11 @@ class MainActivity : ComponentActivity() {
                     tab=0
                 }
                 if(generation==importGeneration && report.failures>0) {
-                    message=getString(R.string.batch_import_summary,
+                    val summary=getString(R.string.batch_import_summary,
                         report.successes,report.failures)
+                    message=if(failedNpvs)
+                        getString(R.string.npvs_private_key_unsupported)+"\\n\\n"+summary
+                    else summary
                     tab=0
                 }
             }catch(e:CancellationException){throw e}
