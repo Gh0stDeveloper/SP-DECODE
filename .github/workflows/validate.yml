@@ -63,16 +63,16 @@ jobs:
       - name: Verify source-derived Phase G text protocol reference vectors
         run: PYTHONPATH=. python -m unittest tests.test_android_g_text_parity -v
 
-      - name: Audit Phase H offline privacy, source provenance, release gate and v1.0.7
+      - name: Audit Phase H offline privacy, source provenance, release gate and v1.0.8
         run: |
-          PYTHONPATH=. python scripts/android_h_production_audit.py --version 1.0.7 --code 18 --report "$RUNNER_TEMP/spdecode-h/audit.json"
+          PYTHONPATH=. python scripts/android_h_production_audit.py --version 1.0.8 --code 19 --report "$RUNNER_TEMP/spdecode-h/audit.json"
           PYTHONPATH=. python -m unittest tests.test_android_h_production_audit -v
 
       - name: Upload sanitized Phase H audit report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-v1.0.7-H-SOURCE-AUDIT
+          name: SP-DECODE-v1.0.8-H-SOURCE-AUDIT
           path: ${{ runner.temp }}/spdecode-h/audit.json
           if-no-files-found: ignore
           retention-days: 90
@@ -124,7 +124,7 @@ jobs:
 
 
   android-parity:
-    name: Android v1.0.7 production source regression (API 35)
+    name: Android v1.0.8 production source regression (API 35)
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -238,7 +238,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v1.0.7-ci-home-screenshot
+          name: SP-DECODE-Android-v1.0.8-ci-home-screenshot
           path: android/app/build/outputs/spdecode-ui/home.png
           if-no-files-found: error
           retention-days: 30
@@ -258,7 +258,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: SP-DECODE-Android-v1.0.7-CI-DEBUG-NOT-PRODUCTION
+          name: SP-DECODE-Android-v1.0.8-CI-DEBUG-NOT-PRODUCTION
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 30

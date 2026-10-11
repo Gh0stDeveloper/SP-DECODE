@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class PhaseHProductionAuditTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.data = inspect("1.0.7", 18)
+        cls.data = inspect("1.0.8", 19)
 
     def test_source_inventory_still_exactly_239(self):
         self.assertEqual(self.data["sourceGate"], "PASS",
@@ -42,20 +42,20 @@ class PhaseHProductionAuditTests(unittest.TestCase):
         self.assertIn("signingInstallUpgrade",flags)
         self.assertIn("real_text_protocol_version_matrix",flags)
 
-    def test_documented_owner_go_only_applies_to_1_0_7_not_future_versions(self):
+    def test_documented_owner_go_only_applies_to_1_0_8_not_future_versions(self):
         readiness=json.loads((ROOT/"release/android-readiness.json").read_text("utf-8"))
-        self.assertEqual(readiness["stableVersion"],"1.0.7")
+        self.assertEqual(readiness["stableVersion"],"1.0.8")
         self.assertEqual(readiness["decision"],"OWNER-GO")
         self.assertFalse(readiness["publicPreviewApproval"])
         self.assertTrue(readiness["ownerStableAcceptance"]["approved"])
-        self.assertEqual([],check(readiness,"stable","1.0.7"))
-        self.assertTrue(check(readiness,"public-preview","1.0.7"))
-        self.assertTrue(check(readiness,"stable","1.0.8"))
-        self.assertTrue(check(readiness,"stable","1.0.6"))
+        self.assertEqual([],check(readiness,"stable","1.0.8"))
+        self.assertTrue(check(readiness,"public-preview","1.0.8"))
+        self.assertTrue(check(readiness,"stable","1.0.9"))
+        self.assertTrue(check(readiness,"stable","1.0.7"))
         self.assertEqual(self.data["productionGate"],"OWNER-GO-PENDING-CI-SIGNING")
         tampered=copy.deepcopy(readiness)
         tampered["ownerStableAcceptance"]["report"]="docs/android/fake-report.md"
-        self.assertTrue(check(tampered,"stable","1.0.7"))
+        self.assertTrue(check(tampered,"stable","1.0.8"))
         # Owner's manual QA report does not convert the missing external
         # evidence into independent/current-exporter certification.
         self.assertEqual(0,self.data["catalog"]["certifiedCurrentExporterSuffixes"])
@@ -65,7 +65,7 @@ class PhaseHProductionAuditTests(unittest.TestCase):
             with self.subTest(locale=folder):
                 path=ROOT/"android/app/src/main/res"/folder/"strings.xml"
                 content=path.read_text("utf-8")
-                self.assertIn("1.0.7",content)
+                self.assertIn("1.0.8",content)
                 self.assertIn("239",content)
                 self.assertNotIn("183 native",content)
                 self.assertNotIn("56 pending",content)

@@ -130,9 +130,9 @@
     <string name="text_decode_invalid">Protocolo desconhecido, texto inválido ou limite de tamanho excedido.</string>
     <string name="text_decode_unsupported">Não foi possível decodificar o texto. Pode estar incompleto, danificado ou usar outra versão de criptografia.</string>
     <string name="whats_new_title">Novidades do SP-DECODE</string>
-    <string name="whats_new_description">Versão 1.0.7 · JSON completo do HTTP Injector</string>
-    <string name="whats_new_linklayer">HTTP Injector (.ehi): preserva todos os campos, inclusive texto sem criptografia ou outras codificações.</string>
-    <string name="whats_new_fields">Payload HTTP: mantém todas as linhas, espaços em branco e os últimos campos no JSON.</string>
+    <string name="whats_new_description">Versão 1.0.8 · JSON completo do NPVS v5</string>
+    <string name="whats_new_linklayer">NPVS (.npvs) v5: decodificação de valores Base64 npvs1: aninhados após verificar a assinatura.</string>
+    <string name="whats_new_fields">Endereços SSH, usuários, senhas e payloads HTTP multilinha aparecem no JSON legível. Valores sem marcador são preservados.</string>
     <string name="whats_new_offline">Os 239 motores de arquivos e os protocolos de texto continuam offline. O histórico permanece criptografado.</string>
     <string name="whats_new_continue">Entendi</string>
     <string name="native_decoder_pending">O decodificador nativo deste formato ainda não foi integrado.</string>
