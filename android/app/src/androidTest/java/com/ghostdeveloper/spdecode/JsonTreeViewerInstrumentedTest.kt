@@ -3,9 +3,7 @@ package com.ghostdeveloper.spdecode
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.hasScrollAction
-import androidx.compose.ui.test.onAllNodes
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.rememberScrollState
