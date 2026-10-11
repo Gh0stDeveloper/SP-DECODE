@@ -128,6 +128,7 @@ fun FunctionalSettingsPanel(
                 Text(stringResource(R.string.delete_session))
             }
         }
+        DeviceCredentialSettingsSection()
         SettingsCard {
             Row(verticalAlignment=Alignment.CenterVertically) {
                 Icon(Icons.Outlined.HelpOutline,null,tint=TitleText)

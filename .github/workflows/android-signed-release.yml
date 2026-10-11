@@ -119,6 +119,9 @@ jobs:
       - name: Phase S.3 prohibit tracked secrets and dangerous diagnostics before signing
         run: python scripts/android_s3_security_audit.py
 
+      - name: Phase S.4 reject private credential provisioning policy regressions
+        run: python scripts/android_s4_provisioning_audit.py
+
       - name: Load permanent signing keystore exclusively from GitHub Secrets
         env:
           STORE_BASE64: ${{ secrets.SPDECODE_SIGNING_KEYSTORE_BASE64 }}
@@ -213,6 +216,12 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/android_s3_security_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Phase S.4 ensure signed APK excludes device credential and private key files
+        run: |
+          set -euo pipefail
+          python scripts/android_s4_provisioning_audit.py \
             --apk android/app/build/outputs/apk/release/app-release.apk
 
       - name: Verify release signature schemes, package, version and 16 KiB alignment

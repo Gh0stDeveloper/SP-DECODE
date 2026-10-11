@@ -155,4 +155,18 @@
     <string name="guide_progress">Etapa %1$d de %2$d</string>
     <string name="guide_replay_short">Guia</string>
     <string name="settings_contact_only">Suporte do desenvolvedor somente pelo Telegram.</string>
+    <string name="s4_vault_title">Chaves privadas deste dispositivo</string>
+    <string name="s4_vault_detail">Salve uma credencial pessoal no dispositivo. O Android Keystore protege seu registro criptografado. Os decodificadores integrados não a usam automaticamente.</string>
+    <string name="s4_vault_empty">Nenhuma credencial privada salva.</string>
+    <string name="s4_vault_stored">Armazenada com segurança neste dispositivo</string>
+    <string name="s4_vault_unreadable">Não foi possível abrir %1$d registros criptografados. Eles não foram excluídos.</string>
+    <string name="s4_vault_error">Falha na operação de credenciais. Nenhum dado foi exportado.</string>
+    <string name="s4_vault_success">Lista de credenciais atualizada.</string>
+    <string name="s4_vault_add">Adicionar credencial privada</string>
+    <string name="s4_vault_label">Nome</string>
+    <string name="s4_vault_secret">Segredo ou senha</string>
+    <string name="s4_vault_warning">Salve apenas credenciais que pertencem a você. Elas não desbloqueiam formatos até que um decodificador compatível com consentimento explícito seja adicionado. Chaves perdidas do Android Keystore não podem ser recuperadas.</string>
+    <string name="s4_vault_save">Salvar com segurança</string>
+    <string name="s4_vault_delete">Excluir credencial</string>
+    <string name="s4_vault_delete_confirm">Excluir permanentemente esta credencial privada do dispositivo?</string>
 </resources>

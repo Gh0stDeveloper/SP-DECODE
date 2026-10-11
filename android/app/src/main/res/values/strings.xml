@@ -155,4 +155,18 @@
     <string name="guide_progress">Step %1$d of %2$d</string>
     <string name="guide_replay_short">Guide</string>
     <string name="settings_contact_only">Developer support only via Telegram.</string>
+    <string name="s4_vault_title">Private keys on this device</string>
+    <string name="s4_vault_detail">Add a personal credential locally. Android Keystore protects its encrypted record. Built-in decoders do not use it automatically.</string>
+    <string name="s4_vault_empty">No private credentials saved.</string>
+    <string name="s4_vault_stored">Stored securely on this device</string>
+    <string name="s4_vault_unreadable">Could not open %1$d encrypted records. They have not been deleted.</string>
+    <string name="s4_vault_error">Private credential operation failed. Nothing was exported.</string>
+    <string name="s4_vault_success">Private credential list updated.</string>
+    <string name="s4_vault_add">Add private credential</string>
+    <string name="s4_vault_label">Label</string>
+    <string name="s4_vault_secret">Secret / password</string>
+    <string name="s4_vault_warning">Only provision credentials you own. They are not used to unlock supported formats until a compatible opt-in decoder is added. Lost Keystore keys cannot be recovered.</string>
+    <string name="s4_vault_save">Save securely</string>
+    <string name="s4_vault_delete">Delete credential</string>
+    <string name="s4_vault_delete_confirm">Permanently delete this private credential from this device?</string>
 </resources>

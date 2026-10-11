@@ -155,4 +155,18 @@
     <string name="guide_progress">الخطوة %1$d من %2$d</string>
     <string name="guide_replay_short">الدليل</string>
     <string name="settings_contact_only">دعم المطور حصريًا عبر تيليغرام.</string>
+    <string name="s4_vault_title">المفاتيح الخاصة بهذا الجهاز</string>
+    <string name="s4_vault_detail">احفظ بيانات اعتماد شخصية على الجهاز. يحمي Android Keystore سجلها المشفر. لا تستخدمها أدوات فك التشفير المدمجة تلقائيًا.</string>
+    <string name="s4_vault_empty">لا توجد بيانات اعتماد خاصة محفوظة.</string>
+    <string name="s4_vault_stored">محفوظة بأمان على هذا الجهاز</string>
+    <string name="s4_vault_unreadable">تعذر فتح %1$d من السجلات المشفرة. لم تُحذف.</string>
+    <string name="s4_vault_error">فشلت عملية بيانات الاعتماد. لم يُصدَّر أي محتوى.</string>
+    <string name="s4_vault_success">تم تحديث قائمة بيانات الاعتماد.</string>
+    <string name="s4_vault_add">إضافة بيانات اعتماد خاصة</string>
+    <string name="s4_vault_label">الاسم</string>
+    <string name="s4_vault_secret">السر أو كلمة المرور</string>
+    <string name="s4_vault_warning">احفظ بيانات الاعتماد التي تملكها فقط. لن تُستخدم لفك الملفات حتى تتم إضافة طريقة متوافقة تتطلب اختيارك الصريح. لا يمكن استعادة مفاتيح Android Keystore بعد فقدانها.</string>
+    <string name="s4_vault_save">حفظ آمن</string>
+    <string name="s4_vault_delete">حذف بيانات الاعتماد</string>
+    <string name="s4_vault_delete_confirm">هل تريد حذف بيانات الاعتماد الخاصة هذه نهائيًا من الجهاز؟</string>
 </resources>
