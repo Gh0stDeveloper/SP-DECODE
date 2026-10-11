@@ -14,8 +14,8 @@ object BatchImportQueue {
 
     suspend fun <T> process(
         inputs:List<T>,
-        action:suspend (value:T, index:Int, total:Int)->Unit,
         onFailure:suspend (value:T, cause:Exception)->Unit={_,_->},
+        action:suspend (value:T, index:Int, total:Int)->Unit,
     ):BatchImportReport {
         require(inputs.size<=MAX_FILES) { "Batch exceeds $MAX_FILES entries" }
         var passed=0
