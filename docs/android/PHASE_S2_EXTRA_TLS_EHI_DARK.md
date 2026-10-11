@@ -1,4 +1,4 @@
-# Phase S.2 continuation — TLS 8.5.0, HTTP Injector and Dark Tunnel
+# Phase S.2 continuation — TLS 8.5.0, EHI, EHIL, Dark Tunnel and six legacy engines
 
 ## Scope and status
 This is the next high-exposure security batch after PR #72. The implementation
@@ -12,6 +12,9 @@ permanent Android signing identity. It does not publish a new release.
 - **HTTP Injector .ehi:** the two outer-layer keys, the original XXTEA key,
   three bypass IVs and three standard IVs. Argon2id and XChaCha20-Poly1305
   processing and field-local recovery are unchanged.
+- **HTTP Injector Lite .ehil:** three first-layer AES keys, two second-layer
+  keys and seven IV candidates. Its shared first key is verified against EHI.
+  The independent source candidate order and parser remain unchanged.
 - **Dark Tunnel:** original AES-256 outer key, AES-192 nested key and CFB IV.
   All nested/recursive calls now receive per-decode material explicitly,
   avoiding global mutable context.
@@ -47,20 +50,20 @@ manifest is checked at runtime by
 `PhaseS2LegacyMaterialsInstrumentedTest.kt`. Existing parity fixtures for
 SocksIP, SSH, SKS, Cloudy, Gold and TNL remain mandatory.
 
-Across S.2 so far: 5 ports in PR #72, 3 higher-risk ports in this PR and
-6 additional legacy ports, for **14 migrated engine ports**. This is not a
+Across S.2 so far: 5 ports in PR #72, 4 higher-risk ports in this PR and
+6 additional legacy ports, for **15 migrated engine ports**. This is not a
 claim that all 103 Kotlin parity/support files contain sensitive secrets or
 that every format's constants are already migrated. The original public
 source remains available for reproducible compatibility checks.
 
 ### Validation
-- Python metadata checks in `scripts/android_s2_extra_audit.py` hash 18 source
+- Python metadata checks in `scripts/android_s2_extra_audit.py` hash 30 source
   materials and compare expected counts/sizes, without logging secrets.
 - Source audit rejects the original constants being reinstated as Kotlin literals.
 - Debug, R8 and signed APK checks reject those exact literals from all
   `classes*.dex` or an unencrypted `embedded_kotlin_profiles.json` asset.
-- Android instrumentation compares all 18 runtime materials with independent
-  SHA-256 fixtures, then runs existing TLS, EHI and Dark Python golden
+- Android instrumentation compares all 30 runtime materials with independent
+  SHA-256 fixtures, then runs existing TLS, EHI, EHIL and Dark Python golden
   fixtures including failure and tampering paths.
 - No fallback to plaintext assets if the authentication tag is invalid.
 
