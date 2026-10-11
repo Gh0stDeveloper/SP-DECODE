@@ -64,8 +64,10 @@ class MainActivity : ComponentActivity() {
         val filename:String,
         val bytes:ByteArray,
         val credentials:List<DevicePrivateCredentialVault.Metadata>,
+        val requirements:HcHccfgPort.Requirements,
     )
     private var pendingCredentialImport by mutableStateOf<PendingCredentialImport?>(null)
+    private var enteringHcManually by mutableStateOf(false)
     private var credentialPrepareJob:Job?=null
     private var credentialPrepareGeneration=0
     private var selectedLanguage by mutableStateOf("system")
@@ -303,12 +305,26 @@ class MainActivity : ComponentActivity() {
                 },
             )
             pendingCredentialImport?.let { candidate ->
-                PrivateCredentialImportDialog(
-                    filename=candidate.filename,
-                    credentials=candidate.credentials,
-                    onChoose={id->choosePrivateCredential(id)},
-                    onCancel={cancelPrivateCredentialSelection()},
-                )
+                if(enteringHcManually || candidate.requirements.hwidRequired ||
+                    candidate.credentials.isEmpty()) {
+                    HcProtectedImportDialog(
+                        filename=candidate.filename,
+                        requirements=candidate.requirements,
+                        onSubmit={password,hwid->submitHcCredentials(password,hwid)},
+                        onCancel={cancelPrivateCredentialSelection()},
+                    )
+                } else {
+                    PrivateCredentialImportDialog(
+                        filename=candidate.filename,
+                        credentials=candidate.credentials,
+                        onChoose={id->
+                            if(id==null)enteringHcManually=true
+                            else choosePrivateCredential(id)
+                        },
+                        onCancel={cancelPrivateCredentialSelection()},
+                        onManual={enteringHcManually=true},
+                    )
+                }
             }
         }
         if(savedInstanceState==null)handleExternalIntent(intent)
@@ -350,6 +366,7 @@ class MainActivity : ComponentActivity() {
     private fun prepareSingleImport(uri:Uri) {
         pendingCredentialImport?.bytes?.fill(0)
         pendingCredentialImport=null
+        enteringHcManually=false
         credentialPrepareJob?.cancel()
         val generation=++credentialPrepareGeneration
         credentialPrepareJob=scope.launch {
@@ -358,13 +375,15 @@ class MainActivity : ComponentActivity() {
                 val name=withContext(Dispatchers.IO){displayName(uri)}
                 if(name.endsWith(".hc",ignoreCase=true)){
                     preview=withContext(Dispatchers.IO){readBounded(uri)}
-                    if(HcHccfgPort.requiresExternalPassword(preview)) {
-                        val credentials=withContext(Dispatchers.IO){
-                            privateCredentialVault.inventory().entries
-                        }
-                        if(credentials.isNotEmpty() && generation==credentialPrepareGeneration){
+                    val requirements=HcHccfgPort.inspectRequirements(preview)
+                    if(requirements?.protected==true) {
+                        val credentials=if(requirements.passwordRequired &&
+                            !requirements.hwidRequired) withContext(Dispatchers.IO){
+                                privateCredentialVault.inventory().entries
+                            } else emptyList()
+                        if(generation==credentialPrepareGeneration){
                             pendingCredentialImport=PendingCredentialImport(
-                                uri,name,preview,credentials)
+                                uri,name,preview,credentials,requirements)
                             preview=null // pending dialog now owns the buffer
                             return@launch
                         }
@@ -377,9 +396,30 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /** Pass caller-owned credential bytes only once; never persist either input. */
+    private fun submitHcCredentials(password:String?,hwid:String?) {
+        val request=pendingCredentialImport?:return
+        val required=request.requirements
+        val passwordBytes=if(required.passwordRequired)password?.toByteArray(Charsets.UTF_8)
+            else null
+        if((required.passwordRequired && (passwordBytes==null ||
+                passwordBytes.isEmpty() || passwordBytes.size>4096)) ||
+            (required.hwidRequired &&
+                !hwid.orEmpty().trim().matches(Regex("[0-9a-fA-FhH]{32}")))) {
+            passwordBytes?.fill(0)
+            message=getString(R.string.hc_auth_input_invalid)
+            return
+        }
+        pendingCredentialImport=null
+        enteringHcManually=false
+        importFiles(listOf(request.uri),prepared=request,
+            hcPassword=passwordBytes,hcHwid=if(required.hwidRequired)hwid else null)
+    }
+
     private fun choosePrivateCredential(id:String?) {
         val request=pendingCredentialImport?:return
         pendingCredentialImport=null
+        enteringHcManually=false
         if(id!=null && request.credentials.none{it.id==id}){
             request.bytes.fill(0)
             return
@@ -390,6 +430,7 @@ class MainActivity : ComponentActivity() {
     private fun cancelPrivateCredentialSelection() {
         pendingCredentialImport?.bytes?.fill(0)
         pendingCredentialImport=null
+        enteringHcManually=false
     }
 
     private fun cancelImport() {
@@ -569,8 +610,12 @@ class MainActivity : ComponentActivity() {
 
     private fun importFiles(uris:List<Uri>,
         privateCredentialId:String?=null,
-        prepared:PendingCredentialImport?=null){
+        prepared:PendingCredentialImport?=null,
+        hcPassword:ByteArray?=null,
+        hcHwid:String?=null){
         require(privateCredentialId==null || (uris.size==1 && prepared?.uri==uris.single()))
+        require((hcPassword==null && hcHwid==null) ||
+            (uris.size==1 && prepared?.uri==uris.single() && privateCredentialId==null))
         job?.cancel()
         val generation=++importGeneration
         val inputs=uris.take(BatchImportQueue.MAX_FILES)
@@ -586,6 +631,7 @@ class MainActivity : ComponentActivity() {
             try {
                 historyLoad?.await()
                 var failedNpvs=false
+                var failedProtectedHc=false
                 val report=BatchImportQueue.process(inputs,
                     onFailure={uri,_-> 
                         val filename=runCatching {
@@ -593,6 +639,8 @@ class MainActivity : ComponentActivity() {
                         }.getOrDefault("")
                         if(filename.endsWith(".npvs",ignoreCase=true))
                             failedNpvs=true
+                        if((prepared?.filename?:filename).endsWith(".hc",ignoreCase=true) &&
+                            prepared?.requirements?.protected==true)failedProtectedHc=true
                     }
                 ){uri,index,total->
                     progressPosition=index
@@ -629,6 +677,9 @@ class MainActivity : ComponentActivity() {
                                     AndroidOfflineDecoderRouter.decodeWithUserPassword(
                                         this@MainActivity,name,input,secret)
                                 }
+                            }else if(hcPassword!=null || hcHwid!=null){
+                                AndroidOfflineDecoderRouter.decodeWithCredentials(
+                                    this@MainActivity,name,input,hcPassword,hcHwid)
                             }else AndroidOfflineDecoderRouter.decode(this@MainActivity,name,input)
                         }
                     }finally {
@@ -657,9 +708,11 @@ class MainActivity : ComponentActivity() {
                 if(generation==importGeneration && report.failures>0) {
                     val summary=getString(R.string.batch_import_summary,
                         report.successes,report.failures)
-                    message=if(failedNpvs)
-                        getString(R.string.npvs_private_key_unsupported)+"\n\n"+summary
-                    else summary
+                    message=when {
+                        failedProtectedHc->getString(R.string.hc_auth_failed)+"\n\n"+summary
+                        failedNpvs->getString(R.string.npvs_private_key_unsupported)+"\n\n"+summary
+                        else->summary
+                    }
                     tab=0
                 }
             }catch(e:CancellationException){throw e}
@@ -668,6 +721,7 @@ class MainActivity : ComponentActivity() {
                 message=getString(R.string.read_error);tab=0
             }}
             finally {
+                hcPassword?.fill(0)
                 prepared?.bytes?.fill(0)
                 if(generation==importGeneration) {
                     busy=false
