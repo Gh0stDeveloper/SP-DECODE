@@ -17,11 +17,8 @@ import javax.crypto.spec.IvParameterSpec
 internal object IndependentF2Port {
     private val crypto=IndependentCrypto
     private val sc=SpecialCrypto
-    private val crevKeys=listOf("DEV_CREEB","CREEB","dev_creeb","DEV_CREV")
     private val crevFields=setOf("Payload","Nameserver","Slowchave","ServerPass",
         "ServerUser","ProxyHost","DnsHost","ServerHost","SNI")
-    private val ktrKey=crypto.hex("6f8deb1015ca70be2b53aef0858d77811f352c073b6708d72d9d10a30914dff9")
-    private val ktrIv=crypto.hex("000102030405060708090a0b0c0d0e0f")
     private val javaField=Regex("^[A-Z][A-Z0-9_]{1,60}$")
     private val javaB64=Regex("[A-Za-z0-9+/]{20,}={0,2}")
     private val skipPrefix=listOf("java.","com.","org.","sun.","javax.","Ljava.","[L","Lsc.","Lcom/")
@@ -51,7 +48,7 @@ internal object IndependentF2Port {
     private fun crev(input:ByteArray,keys:PhaseS2FamilyMaterials.F2):String?{
         var text=crypto.utf8Ignore(input).trim()
         text=crypto.stripScheme(text).filterNot{it.isWhitespace()}
-        for(key in crevKeys) {
+        for(key in keys.crevKeys) {
             val raw=try{crevOne(text,key)}catch(_:Exception){null}?:continue
             val doc=sc.parseDocument(raw)?.takeIf{it.isJsonObject}?:continue
             val obj=doc.asJsonObject
@@ -217,12 +214,12 @@ internal object IndependentF2Port {
         return sc.gson.toJson(n4Deep(doc,0))
     }
 
-    private fun ktrDecrypt(raw:String):String?{
+    private fun ktrDecrypt(raw:String,keys:PhaseS2FamilyMaterials.F2):String?{
         if(raw.length<4||raw.length%4!=0)return null
         return try {
             val bytes=crypto.b64(raw)
             if(bytes.size<16||bytes.size%16!=0)return null
-            val clear=crypto.utf8(sc.cbc(ktrKey,ktrIv,bytes))
+            val clear=crypto.utf8(sc.cbc(keys.ktrKey,keys.ktrIv,bytes))
             if(clear.isEmpty())return null
             val printable=clear.count{!it.isISOControl()||it=='\r'||it=='\n'||it=='\t'}
             if(printable.toDouble()/clear.length<0.85)return null
@@ -274,7 +271,7 @@ internal object IndependentF2Port {
         if(input.size<4||!input.copyOfRange(0,4).contentEquals(byteArrayOf(
                 0xac.toByte(),0xed.toByte(),0,5)))return null
         val strings=ktrExtract(input)
-        val plain=strings.map{ktrDecrypt(it)?:it}
+        val plain=strings.map{ktrDecrypt(it,keys)?:it}
         val result=ktrPairs(plain)
         val seen=mutableSetOf<String>()
         val extracted=mutableListOf<String>()
@@ -284,7 +281,7 @@ internal object IndependentF2Port {
             if(value in seen)continue
             val decoded=try{crypto.b64(value)}catch(_:Exception){continue}
             if(decoded.size<16||decoded.size%16!=0)continue
-            val plainText=ktrDecrypt(value)?:continue
+            val plainText=ktrDecrypt(value,keys)?:continue
             seen.add(value);extracted.add(plainText)
         }
         for((key,value) in ktrPairs(extracted))if(key !in result)result[key]=value
