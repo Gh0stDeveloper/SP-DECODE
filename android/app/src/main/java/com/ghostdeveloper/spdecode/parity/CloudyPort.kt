@@ -1,16 +1,17 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
+
 import org.json.JSONObject
 
 /** .cloudy: fixed AES-256-CBC key/IV decoded from original Base64 constants. */
 object CloudyPort {
-    private const val KEY = "LCdfvh2u/dKiiMEqc5IgI94kPacAy0WccVaWA6MCt9c="
-    private const val IV = "G3z+oWcWTxe+Ggap/TvBhw=="
 
-    fun decode(input: ByteArray): String? = LegacyPortPrimitives.safeDecode {
+    fun decode(context: Context, input: ByteArray): String? = LegacyPortPrimitives.safeDecode {
         val p = LegacyPortPrimitives
         p.bounded(input)
-        val plaintext = p.cbc(p.b64(p.utf8(input)), p.b64(KEY), p.b64(IV))
+        val material=LegacyBatch2Materials.cloudy(context)
+        val plaintext = p.cbc(p.b64(p.utf8(input)), material.aesKey, material.iv)
         val decoded = try { p.utf8(plaintext) }
         catch (_: Exception) { String(plaintext, Charsets.ISO_8859_1) }
         val json = JSONObject(decoded)
