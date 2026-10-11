@@ -37,7 +37,7 @@ internal object IndependentF1Port {
             flexMaterials ?: loadMaterials(ctx).also {flexMaterials=it}
         }
     private fun loadMaterials(ctx:Context):Map<String,ByteArray> {
-        val root=JSONObject(ctx.assets.open("flex_f_profiles.json")
+        val root=JSONObject(SecureAssetVault.open(ctx,"flex_f_profiles.json")
             .bufferedReader(Charsets.UTF_8).use{it.readText()})
         require(root.getInt("schemaVersion")==1 && root.getInt("materialCount")==30)
         val doc=root.getJSONObject("materials")
