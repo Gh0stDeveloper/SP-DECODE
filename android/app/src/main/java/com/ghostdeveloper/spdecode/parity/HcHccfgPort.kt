@@ -404,7 +404,7 @@ internal object HcHccfgPort {
         val schema:Int,
         val schedule:String,
     ) {
-        val protected:Boolean get()=passwordRequired||hwidRequired
+        val requiresCredentials:Boolean get()=passwordRequired||hwidRequired
     }
 
     private fun passwordRequired(env:JSONObject):Boolean=when(val flag=env.opt("h")){
@@ -502,7 +502,7 @@ internal object HcHccfgPort {
      */
     fun decodeWithCredentials(input:ByteArray,password:ByteArray?,hwid:String?):String? {
         val needs=inspectRequirements(input)?:return null
-        if(!needs.protected)return null
+        if(!needs.requiresCredentials)return null
         if(needs.passwordRequired && (password==null || password.isEmpty() ||
             password.size>4096))return null
         if(needs.hwidRequired && hwid.isNullOrBlank())return null
