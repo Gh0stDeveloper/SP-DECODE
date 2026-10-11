@@ -1,5 +1,7 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
+
 import org.json.JSONObject
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -11,15 +13,6 @@ import java.nio.ByteOrder
  */
 object EhilPort {
     private val p=LegacyPortPrimitives
-    private val k1=listOf(
-        "7e1210f7aab956f7a668bda6e57feddb7f84ad840aef8d27b1b969959be3ab6c",
-        "4678e0f5295fc9ab3e9daf321b0897c78d045ebf95219514cfef570f49281811",
-        "322510155da7325d644ca6e6b7df8b80ed20c30ed932eccb9fe7e2b04cf8f8a4").map{p.hex(it)}
-    private val k2=listOf("73dcf1fdbf82509064e000a41d494c01",
-        "2207a5b5a7ded2ded4eb17ce91c98266").map{p.hex(it)}
-    private val ivs=listOf("CFHSIHTTPINISSCF","V5HSIHTTPINISS20",
-        "V5HSIHTTPINISS21","SBHSIHTTPINISSLS","OBHSIHTTPINIOCTO",
-        "AYJZIHTTPINIECKC","SBHSIHTTPINILITE").map{it.toByteArray(Charsets.US_ASCII)}
     private val innerKeys=setOf("host","user","password","remoteProxy","payload",
         "sniHostname","shadowsocksConfig","httpObfsSettings","v2rWsPath","v2rWsHeader",
         "v2rVmessSecurity","v2rVlessSecurity","v2rUserId","v2rSsSecurity","v2rQuicSecurity",
@@ -111,7 +104,11 @@ object EhilPort {
             "│[۞] Aplicación: HTTP Injector Lite\n├───────────────\n"+
             fields+"\n\n"+p.footer().dropLast(1)
     }
-    fun decode(input:ByteArray):String?=p.safeDecode {
+    fun decode(context:Context,input:ByteArray):String?=p.safeDecode {
+        val materials=AdditionalDecoderMaterials.ehil(context)
+        val k1=materials.firstKeys
+        val k2=materials.secondKeys
+        val ivs=materials.ivs
         val outer=payload(input)
         var parsed:JSONObject?=null
         outer@ for(key1 in k1)for(iv1 in ivs){
