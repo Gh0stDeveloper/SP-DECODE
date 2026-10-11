@@ -16,7 +16,7 @@ class Tls850AndroidFixtureTests(unittest.TestCase):
                 out=TLS.decrypt_tls_payload(raw.decode())
                 self.assertTrue(out["_tls"]["authenticated"])
                 self.assertEqual(out["_tls"]["key_profile"],profile)
-                self.assertEqual(rendered,TLS.run(raw)+"\n")
+                self.assertEqual(rendered,TLS.run(raw))
                 self.assertEqual(out["_tls"]["field_count"],len(out["_tls"]["fields"]))
                 if profile!=6:
                     self.assertNotIn("nameserver",out)
