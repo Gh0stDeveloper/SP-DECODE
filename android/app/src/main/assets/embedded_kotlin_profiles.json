@@ -71,5 +71,25 @@
       "oplSecret": "f3a91c4e2d7b05869e4f1a3c8d2e6b07a5c9f2e14d8b3a76e0f5c1d9b4a72e3f",
       "otKeyHex": "bd561d5a60918ccde642091edd0f754c3346ecf0d609f161811f8c26c130e287"
     }
+  },
+  "ehil": {
+    "firstLayerKeyHex": [
+      "7e1210f7aab956f7a668bda6e57feddb7f84ad840aef8d27b1b969959be3ab6c",
+      "4678e0f5295fc9ab3e9daf321b0897c78d045ebf95219514cfef570f49281811",
+      "322510155da7325d644ca6e6b7df8b80ed20c30ed932eccb9fe7e2b04cf8f8a4"
+    ],
+    "secondLayerKeyHex": [
+      "73dcf1fdbf82509064e000a41d494c01",
+      "2207a5b5a7ded2ded4eb17ce91c98266"
+    ],
+    "ivAscii": [
+      "CFHSIHTTPINISSCF",
+      "V5HSIHTTPINISS20",
+      "V5HSIHTTPINISS21",
+      "SBHSIHTTPINISSLS",
+      "OBHSIHTTPINIOCTO",
+      "AYJZIHTTPINIECKC",
+      "SBHSIHTTPINILITE"
+    ]
   }
 }
