@@ -67,7 +67,7 @@ object AndroidOfflineDecoderRouter {
         }
         return when (format.suffix) {
             "v2" -> V2RayReferencePort.decode(input)
-            "tls" -> TlsReferencePort.decode(input)
+            "tls" -> TlsReferencePort.decode(context,input)
             "phc" -> PhcPort.decode(context,input)
             "mina" -> MinaPort.decode(input)
             "vpnlite" -> VpnLitePort.decode(input)
@@ -118,8 +118,8 @@ object AndroidOfflineDecoderRouter {
             "htb" -> HtbPort.decode(context,input)
             "hat" -> HatPort.decode(context,input)
             "ehil" -> EhilPort.decode(input)
-            "dark" -> DarkPort.decode(input)
-            "ehi" -> EhiPort.decode(input)
+            "dark" -> DarkPort.decode(context,input)
+            "ehi" -> EhiPort.decode(context,input)
             "npv4" -> Npv4Port.decode(context,input)
             "npvt" -> NpvtPort.decode(context,input)
             "npvs" -> NpvsPort.decode(context,input)
