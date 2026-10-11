@@ -83,6 +83,11 @@ jobs:
           python scripts/android_s2_extra_audit.py --report "$RUNNER_TEMP/spdecode-s/s2-extra-audit.json"
           PYTHONPATH=. python -m unittest tests.test_android_s2_extra_audit -v
 
+      - name: Audit six additional S.2 legacy decoder key families
+        run: |
+          python scripts/android_s2_legacy_audit.py --report "$RUNNER_TEMP/spdecode-s/s2-legacy.json"
+          PYTHONPATH=. python -m unittest tests.test_android_s2_legacy_audit -v
+
       - name: Upload sanitized Phase S audit report
         if: always()
         # Optional diagnostic upload: artifact quota must not invalidate passing tests.
@@ -249,6 +254,11 @@ jobs:
           python scripts/android_s2_extra_audit.py \
             --fixtures android/app/src/androidTest/assets/parity/s2-extra-fixtures.json
 
+      - name: Generate source-key material SHA-256 for six legacy S.2 engines
+        run: |
+          python scripts/android_s2_legacy_audit.py \
+            --fixtures android/app/src/androidTest/assets/parity/s2-legacy-fixtures.json
+
       - name: Verify 239-format Android support catalog and Phase B profiles
         run: |
           PYTHONPATH=. python scripts/android_a24_catalog.py
@@ -269,6 +279,9 @@ jobs:
       - name: Reject TLS EHI and Dark Tunnel decoder strings in debug DEX
         run: python scripts/android_s2_extra_audit.py --apk android/app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Block readable six-engine legacy constants in debug DEX
+        run: python scripts/android_s2_legacy_audit.py --apk android/app/build/outputs/apk/debug/app-debug.apk
+
       - name: Compile minified release with R8 (unsigned CI smoke, never published)
         working-directory: android
         run: |
@@ -281,6 +294,8 @@ jobs:
           python scripts/android_s2_dex_audit.py \
             --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
           python scripts/android_s2_extra_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
+          python scripts/android_s2_legacy_audit.py \
             --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
 
       - name: Enable hardware acceleration for Android emulator
