@@ -178,7 +178,7 @@ internal object TextPhaseGPort {
                     if(bytes.size<6 || !bytes.copyOfRange(0,6).contentEquals("FLXCFG".toByteArray()))
                         null else file(ctx,"flex",bytes)
                 }
-                scheme=="v2box-export"->v2boxExport(source)
+                scheme=="v2box-export"->v2boxExport(ctx,source)
                 scheme=="slipnet-plain"-> {
                     val clear=utf8(b64(payload(source)))
                     if(clear.isBlank())null else document(clear)?:JsonObject().apply{
@@ -253,7 +253,7 @@ internal object TextPhaseGPort {
         return nestedNpvs(parsed,0)
     }
 
-    private fun v2boxExport(source:String):JsonElement?{
+    private fun v2boxExport(ctx:Context,source:String):JsonElement?{
         val value=payload(source)
         val data=if(value.startsWith("{"))document(value) else document(utf8(b64(value)))
         val obj=data?.takeIf{it.isJsonObject}?.asJsonObject?:return null
@@ -273,7 +273,7 @@ internal object TextPhaseGPort {
             }
         val raw=Base64.encodeToString(normalized.toString().toByteArray(Charsets.UTF_8),
             Base64.NO_WRAP)
-        val output=SpecialE1Port.decode("v2box",raw.toByteArray(Charsets.UTF_8))?:return null
+        val output=SpecialE1Port.decode(ctx,"v2box",raw.toByteArray(Charsets.UTF_8))?:return null
         return document(output)?:return null
     }
 
