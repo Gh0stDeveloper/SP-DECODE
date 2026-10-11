@@ -73,12 +73,11 @@
     <string name="mask_passwords_title">Ocultar senhas na visualização</string>
     <string name="mask_passwords_detail">Opcional e desativado por padrão. Todos os campos são exibidos.</string>
     <string name="export_security_note">Copiar ou compartilhar pode expor credenciais a outros aplicativos.</string>
-    <string name="developer_credits">Desenvolvedor e créditos</string>
-    <string name="contribute_invitation">Projeto de código aberto. Colaboradores, testes e novos decodificadores são bem-vindos. Contribua ou informe erros no GitHub.</string>
+    <string name="developer_credits">Desenvolvedor</string>
+    <string name="contribute_invitation">O contato oficial com o desenvolvedor, novidades e comunidade estão disponíveis somente pelo Telegram.</string>
     <string name="contact_developer">Contato com o desenvolvedor</string>
     <string name="telegram_group">Comunidade no Telegram</string>
     <string name="telegram_channel">Canal do Telegram</string>
-    <string name="report_issue">Reportar problema / Contribuir</string>
     <string name="clear_confirm_title">Apagar histórico salvo?</string>
     <string name="clear_confirm_detail">Todos os resultados decodificados serão apagados permanentemente deste dispositivo. Não é possível desfazer.</string>
     <string name="complete_fields_count">%1$d campos completos</string>
@@ -86,7 +85,6 @@
     <string name="ordered_option">Estruturado · todos os campos</string>
     <string name="original_option">Texto original do decodificador</string>
     <string name="raw_masked_explanation">O texto original pode conter senhas em JSON. Desative a ocultação nas Configurações para vê-lo.</string>
-    <string name="project_repo">Repositório · GitHub</string>
     <string name="history_select">Selecionar</string>
     <string name="history_select_all">Selecionar todos</string>
     <string name="history_deselect_all">Desmarcar todos</string>
@@ -139,4 +137,22 @@
     <string name="native_decoder_pending_short">Pendente</string>
     <string name="native_decoder_mixed_short">Misto</string>
     <string name="clear_current_result">Limpar resultado exibido</string>
+    <string name="guide_settings_title">Guia interativo</string>
+    <string name="guide_settings_detail">Aprenda a importar arquivos, decodificar textos, visualizar resultados e usar o histórico. Reinicie o guia quando quiser.</string>
+    <string name="guide_replay">Iniciar apresentação guiada</string>
+    <string name="settings_version">Versão %1$s</string>
+    <string name="settings_build_code">Compilação %1$d</string>
+    <string name="settings_security_offline">Decodificação local · Histórico criptografado · Assinatura oficial verificada</string>
+    <string name="guide_title">Boas-vindas ao SP-DECODE</string>
+    <string name="guide_step_one">Início: importe um arquivo compatível do dispositivo e veja o resultado completo.</string>
+    <string name="guide_step_two">Decodificar texto: cole links ou protocolos codificados na tela inicial e copie ou exporte o resultado.</string>
+    <string name="guide_step_three">Histórico: abra resultados antigos, pesquise, marque favoritos ou exclua registros.</string>
+    <string name="guide_step_four">Formatos: explore extensões compatíveis e pesquise um aplicativo ou formato.</string>
+    <string name="guide_step_five">Configurações: escolha o idioma, gerencie a privacidade e entre em contato com Ghost Developer pelo Telegram.</string>
+    <string name="guide_next">Próximo</string>
+    <string name="guide_finish">Concluir</string>
+    <string name="guide_skip">Pular</string>
+    <string name="guide_progress">Etapa %1$d de %2$d</string>
+    <string name="guide_replay_short">Guia</string>
+    <string name="settings_contact_only">Suporte do desenvolvedor somente pelo Telegram.</string>
 </resources>
