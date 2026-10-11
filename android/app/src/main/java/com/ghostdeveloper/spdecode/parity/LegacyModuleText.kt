@@ -20,6 +20,5 @@ internal object LegacyModuleText {
         return result.append('\n').toString()
     }
 
-    fun keys(context:Context):JSONObject=JSONObject(context.assets
-        .open("legacy_epro_npv2_keys.json").bufferedReader(Charsets.UTF_8).use {it.readText()})
+    fun keys(context:Context):JSONObject=JSONObject(SecureAssetVault.open(context,"legacy_epro_npv2_keys.json").bufferedReader(Charsets.UTF_8).use {it.readText()})
 }
