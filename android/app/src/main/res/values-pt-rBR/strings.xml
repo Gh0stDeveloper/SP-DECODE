@@ -121,7 +121,7 @@
     <string name="result_decoded_date">Data: %1$s</string>
     <string name="splash_powered_by">Powered by Ghost Developer</string>
     <string name="text_decode_title">Decodificar texto</string>
-    <string name="text_decode_description">Cole um link ou texto codificado. TLS, VMess, SSC, Dark Tunnel e outros protocolos compatíveis funcionam offline.</string>
+    <string name="text_decode_description">Cole um link de configuração ou texto codificado. TLS Tunnel 8.5.0, VMess, SSC e Dark Tunnel em Base64 (mesmo sem prefixo) funcionam offline.</string>
     <string name="text_decode_hint">Cole o link ou texto completo</string>
     <string name="text_decode_action">Decodificar texto</string>
     <string name="text_decode_private">Processamento local. Somente os resultados decodificados são salvos.</string>
