@@ -31,7 +31,7 @@ class ImportFeedbackInstrumentedTest {
                 onCancel=onCancel,onReveal={},onCopy={},onExport={},
                 selectedLanguage="system",hideCredentials=false,
                 onLanguage={},onMaskCredentials={},onExternalLink={},
-                onSelect={},onClear={},onDeleteSelected={},
+                onSelect={},onClear={},onClearResult={},onDeleteSelected={},
                 onFavorite={_,_->},retentionDays=0,onRetention={},
                 onDismissError=onDismiss,
             )
