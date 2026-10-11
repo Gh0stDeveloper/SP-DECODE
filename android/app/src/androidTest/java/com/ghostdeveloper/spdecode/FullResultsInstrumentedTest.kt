@@ -52,12 +52,12 @@ class FullResultsInstrumentedTest {
         val ordered=ResultPresentation.formatted(document,ResultExport.ORDERED)
         assertTrue(ordered.contains("Decodificado por: SP-DECODE"))
         assertTrue(ordered.contains("Desarrollado por: Ghost Developer"))
-        assertTrue(ordered.contains("Grupo: https://t.me/CodeBreakersHub"))
-        assertTrue(ordered.contains("Canal: https://t.me/GhostDeve"))
+        assertFalse(ordered.contains("Grupo: https://t.me/CodeBreakersHub"))
+        assertFalse(ordered.contains("Canal: https://t.me/GhostDeve"))
         assertTrue(ordered.indexOf("Desarrollado por: Ghost Developer") <
             ordered.indexOf("│[۞] Username: sample"))
-        assertTrue(ordered.indexOf("│[۞] Password: dummy") <
-            ordered.indexOf("Grupo: https://t.me/CodeBreakersHub"))
+        assertTrue(ordered.indexOf("│[۞] Username: sample") <
+            ordered.indexOf("│[۞] Password: dummy"))
         assertTrue(ordered.contains("│[۞] Enabled: true"))
         assertEquals(1,ordered.split("Desarrollado por: Ghost Developer").size-1)
         val json=ResultPresentation.formatted(document,ResultExport.JSON)
