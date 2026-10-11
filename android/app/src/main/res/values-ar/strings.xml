@@ -121,7 +121,7 @@
     <string name="result_decoded_date">التاريخ: %1$s</string>
     <string name="splash_powered_by">Powered by Ghost Developer</string>
     <string name="text_decode_title">فك ترميز النص</string>
-    <string name="text_decode_description">الصق رابط التهيئة أو النص المشفر. تعمل البروتوكولات المدعومة دون إنترنت.</string>
+    <string name="text_decode_description">الصق رابط إعدادات أو نصًا مشفرًا. تدعم الأداة TLS Tunnel 8.5.0 وVMess وSSC ونصوص Dark Tunnel بنظام Base64 حتى دون بادئة، دون إنترنت.</string>
     <string name="text_decode_hint">الصق الرابط أو النص الكامل هنا</string>
     <string name="text_decode_action">فك ترميز النص</string>
     <string name="text_decode_private">تتم المعالجة محليًا. تُحفظ النتائج المفككة بنجاح فقط.</string>

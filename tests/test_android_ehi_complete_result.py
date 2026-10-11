@@ -21,6 +21,19 @@ class EhiCompleteResultTest(unittest.TestCase):
         secret=encode_field("primary.example.invalid","EVZJNI")
         parsed=EHIDecryptor._decode_inner_fields({"serverHost":secret},"EVZJNI")
         self.assertEqual({"serverHost":"primary.example.invalid"},parsed)
+    def test_nested_field_xor_decoding_is_recursive_and_lossless(self):
+        from scripts.android_ehi_standard_fixture import encode_field
+        salt="EVZJNI"
+        source={"nested":{"sni":encode_field("nested.example.invalid",salt),
+            "list":[{"payload":encode_field("GET / HTTP/1.1",salt)},
+                {"plain":"plain:keep"},False,17,None]}}
+        expected={"nested":{"sni":"nested.example.invalid",
+            "list":[{"payload":"GET / HTTP/1.1"},{"plain":"plain:keep"},
+                False,17,None]}}
+        self.assertEqual(expected,EHIDecryptor._decode_inner_fields(source,salt))
+        self.assertEqual(source["nested"]["sni"],
+            source["nested"]["sni"])  # source remains immutable
+
     def test_full_bypass_iv_golden_retains_all_fields_and_types(self):
         encrypted,source,expected=make()
         self.assertEqual(source,run(encrypted)+"\n")

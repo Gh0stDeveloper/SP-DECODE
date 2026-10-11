@@ -1,6 +1,7 @@
 package com.ghostdeveloper.spdecode.parity
 
 import org.json.JSONObject
+import org.json.JSONArray
 import android.util.Base64
 import org.bouncycastle.crypto.generators.Argon2BytesGenerator
 import org.bouncycastle.crypto.modes.ChaCha20Poly1305
@@ -216,6 +217,30 @@ object EhiPort {
         }
     }
 
+    /** Python HTTPINJECTOR.py parity: known field wrappers can be nested
+     * inside objects or arrays. Keep all original keys, types and undecodable
+     * ciphertext. Never coerce unknown plaintext through another algorithm.
+     */
+    private fun decodeFields(value:Any?,salt:String,name:String="",depth:Int=0):Any? {
+        if(depth>32)return value
+        return when(value) {
+            is JSONObject -> JSONObject().also { out ->
+                for(key in p.keys(value))out.put(key,
+                    decodeFields(value.get(key),salt,key,depth+1))
+            }
+            is JSONArray -> JSONArray().also { out ->
+                for(i in 0 until value.length())
+                    out.put(decodeFields(value.get(i),salt,"",depth+1))
+            }
+            is String -> if(value.isBlank())value else {
+                val decrypted=if(name=="configMessage")configMessage(value)
+                    else field(value,salt)
+                decrypted?:value
+            }
+            else -> value
+        }
+    }
+
     fun decode(input:ByteArray):String?=p.safeDecode {
         val payload=unwrap(input)
         var profile:JSONObject?=null
@@ -236,19 +261,7 @@ object EhiPort {
         val config=profile?:error("Unknown EHI envelope")
         val salt=config.optString("configSalt","EVZJNI")
         val parsed=if(bypass) config else standard(config,salt)
-        val filtered=JSONObject()
-        for(key in p.keys(parsed)){
-            val v=parsed.get(key)
-            if(v is String&&v.isNotBlank()){
-                val decoded=if(key=="configMessage")configMessage(v) else field(v,salt)
-                // EHI exporters do not encrypt every textual field. Older ports
-                // silently dropped strings when the field-local XOR decoder
-                // rejected plaintext or a newer representation. Preserve the
-                // original value rather than emitting incomplete JSON; no
-                // unrelated cipher, fabricated plaintext or key guessing.
-                filtered.put(key,decoded ?: v)
-            }else filtered.put(key,v)
-        }
+        val filtered=decodeFields(parsed,salt) as JSONObject
         FinalJsonSurface.render(".ehi",FinalJsonSurface.body(filtered),
             trailingNewline=true)
     }

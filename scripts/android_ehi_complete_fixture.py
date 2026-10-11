@@ -35,6 +35,14 @@ def make() -> tuple[bytes, str, dict]:
         "serverPort":443,
         "enabled":False,
         "nullable":None,
+        "nestedFields":{
+            "server":encode_field("nested.example.invalid",salt),
+            "entries":[
+                {"payload":encode_field("GET / HTTP/1.1\\r\\nHost: nested.example.invalid",salt)},
+                {"plain":"plain:unencoded-content"},
+                {"flag":False,"port":443}
+            ]
+        },
         "finalField":"LAST_FIELD_MUST_SURVIVE"
     }
     raw=json.dumps(profile,separators=(",",":"),ensure_ascii=False).encode("utf-8")
@@ -61,6 +69,14 @@ def make() -> tuple[bytes, str, dict]:
         "serverPort":443,
         "enabled":False,
         "nullable":None,
+        "nestedFields":{
+            "server":"nested.example.invalid",
+            "entries":[
+                {"payload":"GET / HTTP/1.1\\r\\nHost: nested.example.invalid"},
+                {"plain":"plain:unencoded-content"},
+                {"flag":False,"port":443}
+            ]
+        },
         "finalField":profile["finalField"]
     }
     return output,text+"\n",expected

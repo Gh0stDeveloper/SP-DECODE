@@ -86,6 +86,33 @@ object TextProtocolDecoder {
         else Input("dark","Dark Tunnel","dark","$scheme://$body")
     }
 
+    /**
+     * Recognize unprefixed Dark Tunnel Base64 only after decoding the exact
+     * known JSON envelope; do not guess keys or route unrelated Base64 into
+     * the Dark decoder. A bare NetMod encrypted token remains NetMod.
+     */
+    private fun bareDarkEnvelope(text:String):Input? {
+        val encoded=text.filterNot { it.isWhitespace() || it=='\u200b' ||
+            it=='\ufeff' }
+        if(encoded.length !in 24..MAX_CHARS ||
+            !Regex("^[A-Za-z0-9+/_-]*={0,2}$").matches(encoded) ||
+            encoded.trimEnd('=').length%4==1)return null
+        return try {
+            val clear=b64(encoded)
+            if(clear.size<24 || clear.size>MAX_CLEAR)return null
+            val obj=JsonParser.parseString(utf8(clear))
+                .takeIf { it.isJsonObject }?.asJsonObject?:return null
+            val encrypted=obj.get("encryptedLockedConfig")
+            if(encrypted==null || !encrypted.isJsonPrimitive ||
+                !encrypted.asJsonPrimitive.isString)return null
+            val data=encrypted.asString
+            if(data.length<24 || data.length>MAX_CHARS ||
+                !Regex("^[A-Za-z0-9+/_-]*={0,2}$").matches(data))
+                return null
+            Input("dark","Dark Tunnel","dark",encoded)
+        } catch (_:Exception) { null }
+    }
+
     fun identify(raw:String):Input? {
         if(raw.length>MAX_CHARS)return null
         val clean=raw.trim().replace("\ufeff","").replace("\u200b","")
@@ -114,6 +141,9 @@ object TextProtocolDecoder {
                         "XrayPB","xraypb",body)
             }
         }
+        // Bare Base64 Dark Tunnel: a JSON envelope with the exact expected
+        // encryptedLockedConfig field is required, not just a Base64 alphabet.
+        bareDarkEnvelope(clean)?.let { return it }
         // The Telegram bot also accepts bare NetMod AES-ECB ciphertext in
         // its fallback handler. Only a valid Base64 token is offered to this
         // single known-key route; decryption must yield genuine JSON.
