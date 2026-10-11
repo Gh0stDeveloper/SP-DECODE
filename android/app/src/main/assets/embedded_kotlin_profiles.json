@@ -14,5 +14,35 @@
       "SecurePart1SecurePart2SecurePart3SecurePart4SecurePart5",
       "fubvx788b46v"
     ]
+  },
+  "tls": {
+    "hexProfiles": [
+      "2474763534327665643235345671c38b72775742627236c2b324254856232433",
+      "33cf82ceb7cf84e1baa135566ec6b0686e33d8b661d0bed0bdd0b12578745630",
+      "23e4bc9acf82ceb7cf84e1baa135676ec6b0686e3332d8b661d0bed0bdd0b125",
+      "23e4bc9ae685a246e1baa14235676ec6b0686e3332d8b661d0bed0bdd0b12534",
+      "234673486ee1baa14246355c3332d8b6612534407c666433653247462847c38b",
+      "6b303068c2acc2b9c2b221352473c2b0c2b725c2a824614b674433c2b0467856"
+    ]
+  },
+  "ehi": {
+    "firstKeyHex": "7e1210f7aab956f7a668bda6e57feddb7f84ad840aef8d27b1b969959be3ab6c",
+    "secondKeyHex": "b2bc617c32d8b9eb1943a5ffa8051eea",
+    "xxteaKeyText": "null=V5kU5+FFrY\u0000",
+    "bypassIvHex": [
+      "221d572349555f1d112133236b1f4a3f",
+      "5543494c53443e3f4a6a4539384e776a",
+      "374c2541575e4d531a3c327b75431e5f"
+    ],
+    "standardIvHex": [
+      "2c5d1147bbad422b3b334d4d235f1a53",
+      "522b01433a5e8b2fc7549e1ad368e541",
+      "337a1035aaedf3458ca167e92d74b839"
+    ]
+  },
+  "dark": {
+    "outerKeyText": "$B&E)H@McQfThWmZq4t7w!z%C*F-JaNd",
+    "nestedKeyText": "F)J@NcRfUjXn2r4u7x!A%D*G",
+    "ivHex": "232e39185523184a5723586242200e05"
   }
 }
