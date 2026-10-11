@@ -376,7 +376,7 @@ class MainActivity : ComponentActivity() {
                 if(name.endsWith(".hc",ignoreCase=true)){
                     preview=withContext(Dispatchers.IO){readBounded(uri)}
                     val requirements=HcHccfgPort.inspectRequirements(preview)
-                    if(requirements?.protected==true) {
+                    if(requirements?.requiresCredentials==true) {
                         val credentials=if(requirements.passwordRequired &&
                             !requirements.hwidRequired) withContext(Dispatchers.IO){
                                 privateCredentialVault.inventory().entries
@@ -640,7 +640,7 @@ class MainActivity : ComponentActivity() {
                         if(filename.endsWith(".npvs",ignoreCase=true))
                             failedNpvs=true
                         if((prepared?.filename?:filename).endsWith(".hc",ignoreCase=true) &&
-                            prepared?.requirements?.protected==true)failedProtectedHc=true
+                            prepared?.requirements?.requiresCredentials==true)failedProtectedHc=true
                     }
                 ){uri,index,total->
                     progressPosition=index
