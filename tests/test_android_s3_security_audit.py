@@ -49,6 +49,7 @@ class PhaseS3SecurityAuditTest(unittest.TestCase):
             self.assertEqual("tracked-private-file", findings[0]["rule"])
             self.assertEqual(".env.production", findings[0]["path"])
         self.assertFalse(private_filename(Path(".env.example")))
+        self.assertTrue(private_filename(Path("android/app/.env")))
         self.assertTrue(private_filename(Path("release-store.p12")))
         self.assertTrue(ANDROID_BAD_LOGGING["stacktrace-export"].search("failure.printStackTrace()"))
         self.assertTrue(ANDROID_BAD_LOGGING["android-logcat"].search('Log.e("x", content)'))
