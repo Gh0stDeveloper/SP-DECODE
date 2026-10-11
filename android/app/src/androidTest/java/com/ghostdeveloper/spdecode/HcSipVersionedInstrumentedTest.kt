@@ -3,6 +3,7 @@ package com.ghostdeveloper.spdecode
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.ghostdeveloper.spdecode.parity.AndroidOfflineDecoderRouter
+import com.ghostdeveloper.spdecode.parity.HcHccfgPort
 import org.json.JSONObject
 import org.junit.Assert.*
 import org.junit.Test
@@ -36,6 +37,39 @@ class HcSipVersionedInstrumentedTest {
         val data=decode("hc-hccfg-n7.hc")?:error("HCCFG n7 failed")
         assertEquals(443,JSONObject(data).getJSONArray("config")
             .getJSONObject(0).getInt("port"))
+    }
+
+    @Test fun lockedHccfgRequiresExplicitOneFileCredentialAndPreservesLegacy() {
+        val locked=sample("variant-hc-hccfg-password.hc")
+        assertTrue(HcHccfgPort.requiresExternalPassword(locked))
+        assertFalse(HcHccfgPort.requiresExternalPassword(sample("variant-hc-hccfg.hc")))
+        assertFalse(HcHccfgPort.requiresExternalPassword(sample("variant-hc-legacy.hc")))
+        assertNull(AndroidOfflineDecoderRouter.decode(app,"locked.hc",locked))
+
+        val vault=DevicePrivateCredentialVault(app)
+        val input="Synthetic-S4-HCCFG-Test-Only".toByteArray(Charsets.UTF_8)
+        val record=vault.provision("Synthetic locked HC",input)
+        input.fill(0)
+        try {
+            val decoded=vault.use(record.id){secret ->
+                AndroidOfflineDecoderRouter.decodeWithUserPassword(app,"locked.hc",locked,secret)
+            }
+            assertNotNull(decoded)
+            assertEquals("example.org",JSONObject(decoded!!).getJSONArray("config")
+                .getJSONObject(0).getString("host"))
+            val wrong="wrong-password".toByteArray()
+            try {
+                assertNull(AndroidOfflineDecoderRouter.decodeWithUserPassword(app,
+                    "locked.hc",locked,wrong))
+            }finally{wrong.fill(0)}
+            val fake="abc".toByteArray()
+            try {
+                assertNull(AndroidOfflineDecoderRouter.decodeWithUserPassword(app,
+                    "wrong.ehi",locked,fake))
+            }finally{fake.fill(0)}
+        }finally{vault.delete(record.id)}
+        assertNull(AndroidOfflineDecoderRouter.decode(app,"locked.hc",locked))
+        assertNotNull(decode("hc-legacy.hc"))
     }
 
     @Test fun originalHcAndSipStillDecode(){

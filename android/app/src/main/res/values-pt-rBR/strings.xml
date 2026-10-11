@@ -156,7 +156,7 @@
     <string name="guide_replay_short">Guia</string>
     <string name="settings_contact_only">Suporte do desenvolvedor somente pelo Telegram.</string>
     <string name="s4_vault_title">Chaves privadas deste dispositivo</string>
-    <string name="s4_vault_detail">Salve uma credencial pessoal no dispositivo. O Android Keystore protege seu registro criptografado. Os decodificadores integrados não a usam automaticamente.</string>
+    <string name="s4_vault_detail">Uma credencial pessoal fica criptografada neste dispositivo. Ela nunca é usada automaticamente; arquivos HCCFG .hc protegidos por senha podem solicitá-la para uma única importação.</string>
     <string name="s4_vault_empty">Nenhuma credencial privada salva.</string>
     <string name="s4_vault_stored">Armazenada com segurança neste dispositivo</string>
     <string name="s4_vault_unreadable">Não foi possível abrir %1$d registros criptografados. Eles não foram excluídos.</string>
@@ -165,8 +165,11 @@
     <string name="s4_vault_add">Adicionar credencial privada</string>
     <string name="s4_vault_label">Nome</string>
     <string name="s4_vault_secret">Segredo ou senha</string>
-    <string name="s4_vault_warning">Salve apenas credenciais que pertencem a você. Elas não desbloqueiam formatos até que um decodificador compatível com consentimento explícito seja adicionado. Chaves perdidas do Android Keystore não podem ser recuperadas.</string>
+    <string name="s4_vault_warning">Salve somente credenciais próprias. Arquivos HCCFG .hc com senha podem usá-las somente após seleção explícita. Outros formatos não usam essas credenciais. Chaves Keystore perdidas não podem ser recuperadas.</string>
     <string name="s4_vault_save">Salvar com segurança</string>
     <string name="s4_vault_delete">Excluir credencial</string>
     <string name="s4_vault_delete_confirm">Excluir permanentemente esta credencial privada do dispositivo?</string>
+    <string name="s4_import_title">Selecionar credencial privada</string>
+    <string name="s4_import_description">O arquivo HCCFG protegido %1$s precisa de uma senha externa. Selecione uma credencial apenas para este arquivo; ela não será reutilizada automaticamente.</string>
+    <string name="s4_import_without_password">Tentar sem senha</string>
 </resources>

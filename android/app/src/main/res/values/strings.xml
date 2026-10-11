@@ -156,7 +156,7 @@
     <string name="guide_replay_short">Guide</string>
     <string name="settings_contact_only">Developer support only via Telegram.</string>
     <string name="s4_vault_title">Private keys on this device</string>
-    <string name="s4_vault_detail">Add a personal credential locally. Android Keystore protects its encrypted record. Built-in decoders do not use it automatically.</string>
+    <string name="s4_vault_detail">A personal credential is encrypted on this device. It is never used automatically; password-protected HCCFG .hc files can request one for a single import.</string>
     <string name="s4_vault_empty">No private credentials saved.</string>
     <string name="s4_vault_stored">Stored securely on this device</string>
     <string name="s4_vault_unreadable">Could not open %1$d encrypted records. They have not been deleted.</string>
@@ -165,8 +165,11 @@
     <string name="s4_vault_add">Add private credential</string>
     <string name="s4_vault_label">Label</string>
     <string name="s4_vault_secret">Secret / password</string>
-    <string name="s4_vault_warning">Only provision credentials you own. They are not used to unlock supported formats until a compatible opt-in decoder is added. Lost Keystore keys cannot be recovered.</string>
+    <string name="s4_vault_warning">Only save credentials you own. Password-locked HCCFG .hc files can use one only after explicit selection. Other formats never use these credentials. Lost Keystore keys cannot be recovered.</string>
     <string name="s4_vault_save">Save securely</string>
     <string name="s4_vault_delete">Delete credential</string>
     <string name="s4_vault_delete_confirm">Permanently delete this private credential from this device?</string>
+    <string name="s4_import_title">Select a private credential</string>
+    <string name="s4_import_description">The password-protected HCCFG file %1$s needs an external password. Choose a credential for this file only; it will not be reused automatically.</string>
+    <string name="s4_import_without_password">Try without a password</string>
 </resources>

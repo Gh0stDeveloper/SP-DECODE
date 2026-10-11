@@ -20,6 +20,7 @@ NONCE_MAIN=bytes(range(24))
 NONCE_PROFILE=bytes(range(24,48))
 NONCE_OUTER=bytes(range(48,72))
 NONCE_SIP=b"spdecodev8!!"
+S4_SYNTHETIC_PASSWORD="Synthetic-S4-HCCFG-Test-Only"
 
 
 def aead(key: bytes, nonce: bytes, aad: bytes, plain: bytes) -> bytes:
@@ -40,16 +41,19 @@ def hpc1() -> bytes:
         struct.pack(">I",3)+struct.pack(">Q",1700000000000)+txt("ssh"))
 
 
-def hccfg_file(schema: int=1,schedule: str="n1") -> bytes:
+def hccfg_file(schema: int=1,schedule: str="n1",password: str | None=None) -> bytes:
     assert schema in (1,2,5,7)
     assert schedule in ("n1","n7")
     env={
         "a":"HCCFG","b":schema,
         "c":"XCHACHA20P1305" if schema==1 else "s1",
         "d":"NATIVE-HKDF-SHA256" if schema==1 else "h1",
-        "e":schedule,"f":["tcp"],"g":bytes(range(32)).hex(),"h":0,"n":864,
+        "e":schedule,"f":["tcp"],"g":bytes(range(32)).hex(),
+        "h":int(password is not None),"n":864,
     }
-    key,aad=hc._derive(env,None,None)
+    if password is not None:
+        env.update({"k":"ARGON2ID13","l":2,"m":8*1024*1024})
+    key,aad=hc._derive(env,password,None)
     env["i"]={
         "a":"m0","b":NONCE_MAIN.hex(),
         "c":aead(key,NONCE_MAIN,aad+b"\x00m0",
@@ -81,6 +85,7 @@ def export_android(output_dir):
     for filename,raw in {
         "variant-hc-hccfg.hc":hccfg_file(),
         "variant-hc-hccfg-n7.hc":hccfg_file(7,"n7"),
+        "variant-hc-hccfg-password.hc":hccfg_file(password=S4_SYNTHETIC_PASSWORD),
         "variant-hc-legacy.hc":httpcustom_bytes(),
         "variant-sip-ver8.sip":sip_ver8_file(),
         "variant-sip-legacy.sip":sip_file(),
