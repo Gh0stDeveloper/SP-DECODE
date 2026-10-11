@@ -16,6 +16,10 @@ ROOT=Path(__file__).resolve().parents[1]
 BASE=Path("android/app/src/main/java/com/ghostdeveloper/spdecode")
 STORE=BASE/"DevicePrivateCredentialVault.kt"
 UI=BASE/"DeviceCredentialSettingsSection.kt"
+IMPORT_DIALOG=BASE/"PrivateCredentialImportDialog.kt"
+ACTIVITY=BASE/"MainActivity.kt"
+HCCFG=BASE/"parity/HcHccfgPort.kt"
+ROUTER=BASE/"parity/AndroidOfflineDecoderRouter.kt"
 SETTINGS=BASE/"FunctionalSettingsPanel.kt"
 MANIFEST=Path("android/app/src/main/AndroidManifest.xml")
 STRINGS=Path("android/app/src/main/res")
@@ -26,6 +30,10 @@ def source(root:Path=ROOT)->dict:
     vault=(root/STORE).read_text("utf-8")
     ui=(root/UI).read_text("utf-8")
     settings=(root/SETTINGS).read_text("utf-8")
+    import_dialog=(root/IMPORT_DIALOG).read_text("utf-8")
+    activity=(root/ACTIVITY).read_text("utf-8")
+    hccfg=(root/HCCFG).read_text("utf-8")
+    router=(root/ROUTER).read_text("utf-8")
     manifest=(root/MANIFEST).read_text("utf-8")
     release=(root/RELEASE).read_text("utf-8")
     predicates={
@@ -54,6 +62,24 @@ def source(root:Path=ROOT)->dict:
             "vault.delete(id)" in ui,
        "not-used-by-legacy-decoders": "DeviceCredentialSettingsSection()" in settings and
             "AndroidOfflineDecoderRouter" not in vault,
+       "per-file-explicit-choice": "PrivateCredentialImportDialog(" in activity and
+            "choosePrivateCredential(id:String?)" in activity and
+            "onClick = { onChoose(entry.id) }" in import_dialog,
+       "no-secret-in-compose-import-ui": "DevicePrivateCredentialVault.Metadata" in import_dialog and
+            "onChoose: (String?) -> Unit" in import_dialog and
+            "secret:ByteArray" not in import_dialog and "password:ByteArray" not in import_dialog,
+       "credential-consumed-only-when-selected": "privateCredentialVault.use(privateCredentialId)" in activity and
+            "privateCredentialId!=null" in activity and
+            "privateCredentialVault.inventory().entries" in activity and
+            "inventory().entries.first" not in activity,
+       "protected-hccfg-only": "HcHccfgPort.requiresExternalPassword(input)" in router and
+            'format.suffix != "hc"' in router and
+            "decodeWithUserPassword(input,userPassword)" in router,
+       "password-arg-on-temporary-bytes": "generateBytes(passwordBytes,out)" in hccfg and
+            "decodeWithUserPassword(input:ByteArray,password:ByteArray)" in hccfg,
+       "encrypted-preview-buffers-cleared": "preview?.fill(0)" in activity and
+            "prepared?.bytes?.fill(0)" in activity and
+            "cancelPrivateCredentialSelection()" in activity,
        "signer-remains-external": "SPDECODE_SIGNING_KEYSTORE_BASE64" in release and
             'keytool' in release and 'storepass:env STORE_PASSWORD' in release,
        "no-secret-autofill-via-intent": "Intent(" not in ui and "ClipData" not in ui,
@@ -65,6 +91,7 @@ def source(root:Path=ROOT)->dict:
         translations[lang]=all('name="'+key+'"' in text for key in (
             "s4_vault_title","s4_vault_warning","s4_vault_unreadable",
             "s4_vault_delete_confirm","s4_vault_secret",
+            "s4_import_title","s4_import_description","s4_import_without_password",
         ))
     violations=[name for name,passed in predicates.items() if not passed]
     violations.extend("missing-translation-"+lang for lang,ok in translations.items() if not ok)
