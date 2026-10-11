@@ -444,3 +444,133 @@ Android y compilación de APK quedan para una instrucción posterior.
 Para otro chat, entregar este documento, el script vigente, APK nueva y exportado
 real nuevo. Con ellos se puede empezar por el primer fallo sin repetir la
 búsqueda completa ni depender del entorno temporal original.
+
+
+## Actualización 2026-10-11: muestra NPVS v6 en modo recipient
+
+**Estado: formato e importador analizados; contenido NO descifrado.** Este
+hallazgo no amplía el soporte confirmado del script. No confundir la versión
+del contenedor con el modo de protección, ni convertir un reconocimiento de
+cabecera en una prueba de descifrado.
+
+Se volvió a usar la APK 124.0.37 / 577 identificada arriba. La nueva muestra
+privada tiene 1482 bytes y SHA-256
+`40065659048a0604eb26511a92007c31fc9daef2f52b4653a844d5b903625246`.
+No se adjunta al repositorio ni se publican su identidad destinataria o sus
+credenciales.
+
+### Comprobaciones sobre el archivo real
+
+- Magic `NPVS`, versión binaria **6**, compact header versión 1.
+- Cabecera de 399 bytes desde offset 9; `header[50] == 0`: modo recipient.
+- Contador BE16 `header[51:53] == 1`; un registro de 125 bytes.
+- Registro: fingerprint destinatario de 32 bytes y wrapped key de 93 bytes.
+  El wrapped key contiene clave pública efímera P-256 comprimida (33),
+  nonce GCM (12) y ciphertext con tag (48).
+- Después de los registros hay un salt/binding de 16 bytes. **No** interpretar
+  esos bytes como un descriptor app-key ni buscar keyId 2 en ese offset.
+- Metadata cifrada: 201 bytes. Nonce exterior: 12 bytes. Cuerpo: 994 bytes,
+  magic `NPF\x01`. Firma final: 64 bytes.
+- Todas las longitudes cierran exactamente en 1482 bytes.
+- La firma ECDSA P-256 se verificó con la función `_signature` del decoder
+  vigente. La clave efímera también se importó como punto válido P-256.
+  Estas comprobaciones acreditan estructura y firma, **no plaintext**.
+- El script v5 rechaza la muestra explícitamente:
+  `Only NPVS version 5 is supported`. No se creó un JSON descifrado.
+- Los 13 tests del decoder NPV, incluidos los de la muestra real v5 y la
+  normalización `npvs1:`, siguen pasando.
+
+### Trayecto que demuestra la dependencia de una clave local
+
+DEX de esta APK, con nombres ofuscados específicos de este build:
+
+1. `Luh/t4;->w0` obtiene `Lah/e;->h()` y compara el fingerprint local
+   `Lah/j;->b` con los recipients del archivo. Solo después selecciona
+   modo 0 y obtiene el secreto mediante `Lah/t2;->a`.
+2. `Lah/t2;->a` selecciona la entrada cuyo fingerprint corresponde a una
+   identidad local y entrega su wrapped key a `Lah/g1;->e`.
+3. `Lah/j;->e` extrae los primeros 33 bytes del wrapped key, reconstruye
+   la pública efímera y calcula ECDH usando su backend local `Lah/h`.
+4. Backend `Lah/g;->b`: carga la clave privada mediante AndroidKeyStore,
+   alias **`npvtunnel.recipient.v1`**; usa KeyAgreement **ECDH** y
+   `generateSecret()`.
+5. Backend alternativo `Lah/i;->b`: obtiene una clave privada EC PKCS#8
+   con `Lah/i;->c` y realiza el mismo ECDH. El fichero privado
+   **`npvtunnel_recipient_v1.dat`** vive en `Context.getFilesDir()`;
+   está protegido con AES-GCM por otra clave de AndroidKeyStore, alias
+   **`npvtunnel.recipient.aes.v1`**. Su archivo `.pub` es público y
+   no sustituye a la clave privada ni al secreto ECDH.
+6. `Lah/b;->invoke` inicializa esa identidad: genera el par EC con
+   KeyPairGenerator/secp256r1; para el backend alternativo cifra el PKCS#8
+   antes de guardarlo. El fingerprint es SHA-256 de la pública comprimida.
+   No es una constante de la APK ni deriva del nombre del archivo.
+7. `Lah/m;->i` pasa al JNI `openCompactEnvelopeForImport` el envelope,
+   **sharedX**, **myFp**, passphrase, recipient público, modo y timestamp.
+   Sus propias cadenas de validación confirman los nombres de esos datos.
+
+Por tanto, APK + exportado no proporcionan la clave privada destinataria
+necesaria. Quitar la comparación del fingerprint o la validación de políticas
+no calcula el secreto ECDH ni permite superar el tag AES-GCM. No presentar
+ese cambio como solución de descifrado.
+
+### Funciones nativas para retomar el trabajo
+
+Direcciones virtuales ARM64 de `libgojni.so`, recuperadas mediante pclntab;
+verificar símbolos otra vez si cambia la APK:
+
+| Función Go, bajo libnpvtunnel | Dirección |
+| --- | --- |
+| parseCompactHeader | 0x1f1f090 |
+| compactRecipientPad | 0x1f1fe80 |
+| maskCompactRecipientKey | 0x1f20250 |
+| compactMetadataKey | 0x1f203e0 |
+| unwrapSealedDEK | 0x1f23f10 |
+| openSourceRecipientWithValidation | 0x1f4b4b0 |
+| openSourceDocumentKey | 0x1f4b1a0 |
+| sourceDocumentContext | 0x1f4e050 |
+
+`unwrapSealedDEK` recibe sharedX (32) y myFp (32), selecciona el
+recipient correspondiente y deriva:
+
+```text
+unwrapKey = HKDF-SHA256(sharedX, salt=myFp,
+                       info="NPVS-v1-wrap" || configId16, length=32)
+wrappedDocumentKey = AES-256-GCM.Open(unwrapKey,
+                        nonce=wrapped[33:45],
+                        ciphertextAndTag=wrapped[45:93],
+                        AAD=myFp)
+```
+
+**En v6 queda otra etapa:** `openSourceRecipientWithValidation` llama a
+`maskCompactRecipientKey` después del unwrap. Esta función XOR del key
+con el pad de 32 bytes producido por `compactRecipientPad`. Ese pad usa
+`appKeyGen2Kdk`, las mismas tablas white-box y HKDF; su domain separator es
+**`NPVS-v6/recipient-binding`**. Conocer el pad no recupera el key envuelto
+que todavía requiere ECDH.
+
+La metadata compacta mantiene el domain separator **`NPVS-v5/metadata`**
+incluso en la ruta común usada por v6: no reemplazarlo por v6 por intuición.
+`sourceDocumentContext`, en cambio, usa el formato
+**`NPVS-v%d/source-fields-v1/`** con la versión del header y una cabecera
+canónica que conserva recipients. En recipient no sirve copiar la cabecera
+v5 del script con `recipients:null`.
+
+Estas fórmulas están observadas en la APK. Su ejecución completa en esta
+muestra sigue **sin validar**, pues no se dispone de sharedX/clave privada.
+No implementar soporte declarado como funcional basándose solo en ellas.
+
+### Dato indispensable para continuar con esta misma configuración
+
+Confirmar si este archivo se importa en la instalación NPV Tunnel del usuario.
+Si se importa, esa instalación posee una identidad autorizada; una nueva
+exportación mediante app-key, sin vincular recipients, permite estudiar la
+misma configuración sin depender de una privada de teléfono. Si el creador
+puede generar esa exportación, también sirve. Validar el nuevo archivo real
+antes de declarar compatibilidad v6 app-key.
+
+Alternativamente, un secreto ECDH de 32 bytes calculado legítimamente en la
+instalación destinataria, o su clave privada destinataria correspondiente,
+permitiría probar la ruta recipient. Ni device ID, ni fingerprint, ni
+`.pub`, ni solo el `.dat` cifrado constituyen ese secreto.
+
+Mantener intacto el soporte v5 y todos los decodificadores anteriores.
