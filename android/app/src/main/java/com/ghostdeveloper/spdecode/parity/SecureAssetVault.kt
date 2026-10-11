@@ -21,6 +21,7 @@ import javax.crypto.spec.SecretKeySpec
  */
 internal object SecureAssetVault {
     internal val names = setOf(
+        "embedded_kotlin_profiles.json",
         "flex_f_profiles.json",
         "generic_b_profiles.json",
         "hc_source_keys.json",
