@@ -201,7 +201,8 @@ internal object HcHccfgPort {
     private fun key(env:JSONObject):ByteArray=p.hex(env.getString("g")).also {
         require(it.size==32)
     }
-    private fun derive(env:JSONObject,passwordBytes:ByteArray?,hwid:String?):Pair<ByteArray,ByteArray>{
+    private fun derive(env:JSONObject,passwordBytes:ByteArray?,hwid:String?,
+        wrappingProbe:((ByteArray)->Unit)?=null):Pair<ByteArray,ByteArray>{
         require(env.getString("a")=="HCCFG")
         val schema=env.getInt("b")
         require(schema in listOf(1,2,5,7))
@@ -258,6 +259,7 @@ internal object HcHccfgPort {
             if(hw!=null){write(utf("|hwid|"));write(hw)}
         }.toByteArray()
         val skey=hkdf(ikm,seedKey,info)
+        wrappingProbe?.invoke(skey)
         val aad=ByteArrayOutputStream().apply{
             write(utf("HCCFG|$schema|XCHACHA20P1305|NATIVE-HKDF-SHA256|$schedule|"))
             write(pkg);write(utf("|1|"));write(features);write(protectionAad)
@@ -480,7 +482,17 @@ internal object HcHccfgPort {
      */
     internal fun syntheticTestStage(input:ByteArray,password:ByteArray?,hwid:String?):String {
         val env=try{openOuter(input)}catch(_:Exception){return "outer"}
-        val keys=try{derive(env,password,hwid)}catch(_:Exception){return "derive"}
+        var wrapperCorrect=false
+        val keys=try{derive(env,password,hwid){key->
+            // Compare only with fixed synthetic vector fingerprints; no
+            // real-user key or digest is returned to diagnostics.
+            val expected=if(password==null)
+                "e665949ef268cdb8289998ae6309637c6db28e392dbe327f4465d8b00d833fa2"
+                else "8036ac0d39383abe8a54041c102379bb00d8d71656a7cc16caf57bddc476d354"
+            wrapperCorrect=MessageDigest.isEqual(sha(key),p.hex(expected))
+        }}catch(_:Exception){
+            return if(wrapperCorrect)"slot-auth" else "wrapped-key-mismatch"
+        }
         val main=try{section(env.getJSONObject("i"),keys.first,keys.second)}
             catch(_:Exception){return "main-aead"}
         if(runCatching{parseObject(main)}.isFailure)return "main-json"
