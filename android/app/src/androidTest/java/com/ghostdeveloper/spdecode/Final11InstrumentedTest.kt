@@ -73,7 +73,7 @@ class Final11InstrumentedTest {
     @Test fun sksMatchesExactGoldenAndRouter() {
         val raw=asset("batch4-sks.sks")
         val expected=asset("batch4-sks.txt")
-        assertArrayEquals(expected,SksPort.decode(raw)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,SksPort.decode(inst.targetContext,raw)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             inst.targetContext,"profile.SKS",raw)?.toByteArray(Charsets.UTF_8))
     }
@@ -89,7 +89,7 @@ class Final11InstrumentedTest {
     @Test fun tnlMatchesExactGoldenAndRouter() {
         val raw=asset("batch5-tnl.tnl")
         val expected=asset("batch5-tnl.txt")
-        assertArrayEquals(expected,TnlPort.decode(raw)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,TnlPort.decode(inst.targetContext,raw)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             inst.targetContext,"profile.TNL",raw)?.toByteArray(Charsets.UTF_8))
     }
@@ -97,7 +97,7 @@ class Final11InstrumentedTest {
     @Test fun sshMatchesExactGoldenAndRouter() {
         val raw=asset("batch8-ssh.ssh")
         val expected=asset("batch8-ssh.txt")
-        assertArrayEquals(expected,SshPort.decode(raw)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,SshPort.decode(inst.targetContext,raw)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             inst.targetContext,"profile.SSH",raw)?.toByteArray(Charsets.UTF_8))
     }
@@ -127,17 +127,17 @@ class Final11InstrumentedTest {
         assertNull("sksplus empty",SksplusPort.decode(byteArrayOf()))
         assertNull("sksplus bogus",SksplusPort.decode("bad profile".toByteArray()))
         assertNull("sksplus too large",SksplusPort.decode(ByteArray(1024*1024+1)))
-        assertNull("sks empty",SksPort.decode(byteArrayOf()))
-        assertNull("sks bogus",SksPort.decode("bad profile".toByteArray()))
-        assertNull("sks too large",SksPort.decode(ByteArray(1024*1024+1)))
+        assertNull("sks empty",SksPort.decode(inst.targetContext,byteArrayOf()))
+        assertNull("sks bogus",SksPort.decode(inst.targetContext,"bad profile".toByteArray()))
+        assertNull("sks too large",SksPort.decode(inst.targetContext,ByteArray(1024*1024+1)))
         assertNull("sut empty",SutPort.decode(byteArrayOf()))
         assertNull("sut bogus",SutPort.decode("bad profile".toByteArray()))
         assertNull("sut too large",SutPort.decode(ByteArray(1024*1024+1)))
-        assertNull("tnl empty",TnlPort.decode(byteArrayOf()))
-        assertNull("tnl bogus",TnlPort.decode("bad profile".toByteArray()))
-        assertNull("tnl too large",TnlPort.decode(ByteArray(1024*1024+1)))
-        assertNull("ssh empty",SshPort.decode(byteArrayOf()))
-        assertNull("ssh bogus",SshPort.decode("bad profile".toByteArray()))
-        assertNull("ssh too large",SshPort.decode(ByteArray(1024*1024+1)))
+        assertNull("tnl empty",TnlPort.decode(inst.targetContext,byteArrayOf()))
+        assertNull("tnl bogus",TnlPort.decode(inst.targetContext,"bad profile".toByteArray()))
+        assertNull("tnl too large",TnlPort.decode(inst.targetContext,ByteArray(1024*1024+1)))
+        assertNull("ssh empty",SshPort.decode(inst.targetContext,byteArrayOf()))
+        assertNull("ssh bogus",SshPort.decode(inst.targetContext,"bad profile".toByteArray()))
+        assertNull("ssh too large",SshPort.decode(inst.targetContext,ByteArray(1024*1024+1)))
     }
 }
