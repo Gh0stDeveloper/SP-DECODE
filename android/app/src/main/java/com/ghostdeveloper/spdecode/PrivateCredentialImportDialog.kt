@@ -10,6 +10,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.SecureFlagPolicy
 
 /**
  * S.4: an explicit one-file authorization gesture. Only public label/UUID
@@ -24,6 +26,7 @@ internal fun PrivateCredentialImportDialog(
 ) {
     AlertDialog(
         onDismissRequest = onCancel,
+        properties = DialogProperties(securePolicy = SecureFlagPolicy.SecureOn),
         title = { Text(stringResource(R.string.s4_import_title)) },
         text = {
             Column {
