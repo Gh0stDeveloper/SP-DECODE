@@ -20,6 +20,9 @@ IMPORT_DIALOG=BASE/"PrivateCredentialImportDialog.kt"
 ACTIVITY=BASE/"MainActivity.kt"
 HCCFG=BASE/"parity/HcHccfgPort.kt"
 ROUTER=BASE/"parity/AndroidOfflineDecoderRouter.kt"
+LIFECYCLE_TEST=Path("android/app/src/androidTest/java/com/ghostdeveloper/spdecode/DevicePrivateCredentialLifecycleInstrumentedTest.kt")
+PHYSICAL_RUNNER=Path("scripts/android_s4_physical_smoke.sh")
+PHYSICAL_GUIDE=Path("docs/android/PHASE_S4_PHYSICAL_DEVICE_VALIDATION.md")
 SETTINGS=BASE/"FunctionalSettingsPanel.kt"
 MANIFEST=Path("android/app/src/main/AndroidManifest.xml")
 STRINGS=Path("android/app/src/main/res")
@@ -34,6 +37,9 @@ def source(root:Path=ROOT)->dict:
     activity=(root/ACTIVITY).read_text("utf-8")
     hccfg=(root/HCCFG).read_text("utf-8")
     router=(root/ROUTER).read_text("utf-8")
+    lifecycle=(root/LIFECYCLE_TEST).read_text("utf-8")
+    physical_runner=(root/PHYSICAL_RUNNER).read_text("utf-8")
+    physical_guide=(root/PHYSICAL_GUIDE).read_text("utf-8")
     manifest=(root/MANIFEST).read_text("utf-8")
     release=(root/RELEASE).read_text("utf-8")
     predicates={
@@ -80,6 +86,19 @@ def source(root:Path=ROOT)->dict:
        "encrypted-preview-buffers-cleared": "preview?.fill(0)" in activity and
             "prepared?.bytes?.fill(0)" in activity and
             "cancelPrivateCredentialSelection()" in activity,
+       "isolated-debug-test-namespace": "BuildConfig.DEBUG" in vault and
+            "private-credentials-s4-tests/$testNamespace" in vault and
+            "spdecode.private-credentials.test.$testNamespace" in vault and
+            'testNamespace.matches(Regex("[a-z0-9-]{1,40}"))' in vault,
+       "safe-lifecycle-testing": "deleteEntry(alias(namespace))" in lifecycle and
+            "store.clearAll()" in lifecycle and
+            "DevicePrivateCredentialVault(context, namespace)" in lifecycle and
+            "DevicePrivateCredentialVault(context)" not in lifecycle,
+       "physical-runner-no-production-mutators": "shell run-as" in physical_runner and
+            "DevicePrivateCredentialLifecycleInstrumentedTest" in physical_runner and
+            not any(value in physical_runner for value in ("pm clear", "adb uninstall", "install -r app-debug.apk", "spdecode.private-credentials.v1")),
+       "physical-evidence-gated": "PENDIENTE DE EJECUCIÓN EN EQUIPO FÍSICO" in physical_guide and
+            "P1-P11" in physical_guide and "NO APLICABLE" in physical_guide,
        "signer-remains-external": "SPDECODE_SIGNING_KEYSTORE_BASE64" in release and
             'keytool' in release and 'storepass:env STORE_PASSWORD' in release,
        "no-secret-autofill-via-intent": "Intent(" not in ui and "ClipData" not in ui,
