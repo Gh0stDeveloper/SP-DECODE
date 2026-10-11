@@ -149,6 +149,16 @@ def load_decoder_registry(path: Path = DECODERS_PATH) -> dict[str, DecoderSpec]:
                 extension=extension, name=name, script=script, runtime="python"
             )
 
+
+    # NUR TUNNEL .solid profile; never route catalog URLs through the bot.
+    if path.resolve() == DECODERS_PATH.resolve():
+        if "solid" in registry:
+            raise ValueError("NUR Tunnel .solid decoder conflicts with an existing route")
+        registry["solid"] = DecoderSpec(
+            extension="solid", name="NUR TUNNEL VPN (.solid)",
+            script="decoders/Python/nur_tunnel_solid.py", runtime="python"
+        )
+
     return registry
 
 
