@@ -27,6 +27,7 @@ object BatchImportQueue {
             }catch(cancelled:CancellationException) {
                 throw cancelled
             }catch(_:Exception) {
+                SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.FILE_IMPORT_FAILURE)
                 failed++
             }
         }

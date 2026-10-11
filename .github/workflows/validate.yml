@@ -93,6 +93,11 @@ jobs:
           python scripts/android_s2_family_audit.py --report "$RUNNER_TEMP/spdecode-s/s2-family.json"
           PYTHONPATH=. python -m unittest tests.test_android_s2_family_audit -v
 
+      - name: Phase S.3 deny committed credentials, dangerous logs and CI secret dumps
+        run: |
+          python scripts/android_s3_security_audit.py --report "$RUNNER_TEMP/spdecode-s/s3-security.json"
+          PYTHONPATH=. python -m unittest tests.test_android_s3_security_audit -v
+
       - name: Upload sanitized Phase S audit report
         if: always()
         # Optional diagnostic upload: artifact quota must not invalidate passing tests.
@@ -295,6 +300,9 @@ jobs:
       - name: Block E1 E2 F2 source strings in debug APK multidex
         run: python scripts/android_s2_family_audit.py --apk android/app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Phase S.3 verify debug APK contains no private keys or service tokens
+        run: python scripts/android_s3_security_audit.py --apk android/app/build/outputs/apk/debug/app-debug.apk
+
       - name: Compile minified release with R8 (unsigned CI smoke, never published)
         working-directory: android
         run: |
@@ -311,6 +319,8 @@ jobs:
           python scripts/android_s2_legacy_audit.py \
             --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
           python scripts/android_s2_family_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
+          python scripts/android_s3_security_audit.py \
             --apk android/app/build/outputs/apk/release/app-release-unsigned.apk
 
       - name: Enable hardware acceleration for Android emulator
