@@ -22,7 +22,12 @@ class PhaseHProductionGateInstrumentedTest {
         val info=ctx.packageManager.getPackageInfo(
             ctx.packageName,PackageManager.GET_PERMISSIONS)
         val permissions=info.requestedPermissions?.toSet().orEmpty()
-        assertEquals(setOf("android.permission.INTERNET"),permissions)
+        // AndroidX declares this app-local signature permission for safe receivers.
+        // It grants neither network nor storage access.
+        assertEquals(setOf(
+            "android.permission.INTERNET",
+            "com.ghostdeveloper.spdecode.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        ),permissions)
         for(name in listOf("android.permission.ACCESS_NETWORK_STATE",
             "android.permission.MANAGE_EXTERNAL_STORAGE",
             "android.permission.READ_EXTERNAL_STORAGE",
