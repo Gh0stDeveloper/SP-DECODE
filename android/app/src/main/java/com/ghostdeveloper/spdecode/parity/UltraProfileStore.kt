@@ -31,7 +31,7 @@ internal object UltraProfileStore {
     }
 
     private fun parse(context: Context): Data {
-        val raw = context.assets.open("ultra_c_profiles.json")
+        val raw = SecureAssetVault.open(context,"ultra_c_profiles.json")
             .bufferedReader(Charsets.UTF_8).use { it.readText() }
         val root = JSONObject(raw)
         require(root.getInt("schemaVersion") == 1)
