@@ -30,7 +30,7 @@ class TelegramResultCopyInstrumentedTest {
         val pasted=TelegramResultCopy.clipboard(sample,ResultExport.JSON,"Oct 10, 2026")
         assertTrue(pasted.startsWith("// Decoded by SP-DECODE\n// Date: Oct 10, 2026\n"))
         assertTrue(pasted.contains("// Powered by Ghost Developer\n"))
-        assertTrue(pasted.contains("// Credits: @AES224 and @Gh0stDeveloper\n\n"))
+        assertTrue(pasted.contains("// Credits: Ghost Developer\n\n"))
         assertTrue(pasted.contains("\n```json\n"))
         assertTrue(pasted.endsWith("\n```"))
         val json=pasted.substringAfter("```json\n").substringBeforeLast("\n```")
@@ -48,7 +48,7 @@ class TelegramResultCopyInstrumentedTest {
     @Test fun originalClipboardHasCreditsWithoutChangingUnderlyingDecoderText() {
         val copied=TelegramResultCopy.clipboard(sample,ResultExport.ORIGINAL,"Oct 10")
         assertTrue(copied.startsWith("// Decoded by SP-DECODE\n"))
-        assertTrue(copied.contains("// Credits: @AES224 and @Gh0stDeveloper"))
+        assertTrue(copied.contains("// Credits: Ghost Developer"))
         assertTrue(copied.endsWith("\n\n"+sample.rawText))
         assertEquals(sample.rawText,ResultPresentation.formatted(sample.document,ResultExport.ORIGINAL))
         assertEquals(sample.rawText, sample.document.original)
