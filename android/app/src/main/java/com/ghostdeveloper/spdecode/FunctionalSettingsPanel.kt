@@ -23,7 +23,7 @@ private val MutedText=Color(0xFFABABAB)
 private val TitleText=Color(0xFFF7F7F7)
 private val SurfaceLine=Color(0xFF343434)
 
-/** Actual per-app locale choice, credited URLs are verified from README. */
+/** Offline preferences, release information and Telegram-only developer contact. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FunctionalSettingsPanel(
@@ -35,6 +35,7 @@ fun FunctionalSettingsPanel(
     onExternalLink:(String)->Unit,
     retentionDays:Int,
     onRetention:(Int)->Unit,
+    onShowGuide:()->Unit={},
 ){
     var clearDialog by remember { mutableStateOf(false) }
     var languageSheet by remember { mutableStateOf(false) }
@@ -127,18 +128,48 @@ fun FunctionalSettingsPanel(
                 Text(stringResource(R.string.delete_session))
             }
         }
+        SettingsCard {
+            Row(verticalAlignment=Alignment.CenterVertically) {
+                Icon(Icons.Outlined.HelpOutline,null,tint=TitleText)
+                Spacer(Modifier.width(10.dp))
+                Text(stringResource(R.string.guide_settings_title),
+                    color=TitleText,fontWeight=FontWeight.SemiBold,fontSize=17.sp)
+            }
+            Text(stringResource(R.string.guide_settings_detail),
+                color=MutedText,fontSize=13.sp,lineHeight=19.sp)
+            OutlinedButton(onClick=onShowGuide,modifier=Modifier.fillMaxWidth()) {
+                Icon(Icons.Outlined.PlayCircleOutline,null)
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.guide_replay))
+            }
+        }
+        SettingsCard {
+            Row(verticalAlignment=Alignment.CenterVertically) {
+                Icon(Icons.Outlined.Info,null,tint=TitleText)
+                Spacer(Modifier.width(10.dp))
+                Text(stringResource(R.string.about_title),color=TitleText,
+                    fontWeight=FontWeight.SemiBold,fontSize=17.sp)
+            }
+            Text(stringResource(R.string.settings_version,BuildConfig.VERSION_NAME),
+                color=TitleText,fontSize=15.sp)
+            Text(stringResource(R.string.settings_build_code,BuildConfig.VERSION_CODE),
+                color=MutedText,fontSize=12.sp)
+            Text(stringResource(R.string.settings_security_offline),
+                color=MutedText,fontSize=13.sp,lineHeight=19.sp)
+            Text(stringResource(R.string.about_text),color=MutedText,
+                fontSize=12.sp,lineHeight=18.sp)
+        }
         SettingsCard{
             Row(verticalAlignment=Alignment.CenterVertically){
-                Icon(Icons.Outlined.Terminal,null,tint=TitleText)
+                Icon(Icons.Outlined.PersonOutline,null,tint=TitleText)
                 Spacer(Modifier.width(10.dp))
                 Text(stringResource(R.string.developer_credits),color=TitleText,
                     fontWeight=FontWeight.SemiBold,fontSize=17.sp)
             }
-            Text("Ghost Developer · @Gh0stDeveloper",color=TitleText,fontSize=14.sp)
+            Text("Ghost Developer",color=TitleText,fontSize=16.sp,
+                fontWeight=FontWeight.SemiBold)
             Text(stringResource(R.string.contribute_invitation),
                 color=MutedText,fontSize=13.sp,lineHeight=19.sp)
-            LinkRow(Icons.Outlined.Code,stringResource(R.string.project_repo),
-                "https://github.com/Gh0stDeveloper/SP-DECODE",onExternalLink)
             LinkRow(Icons.Outlined.AccountCircle,
                 stringResource(R.string.contact_developer),
                 "https://t.me/Gh0stDeveloper",onExternalLink)
@@ -148,13 +179,7 @@ fun FunctionalSettingsPanel(
             LinkRow(Icons.Outlined.Campaign,
                 stringResource(R.string.telegram_channel),
                 "https://t.me/GhostDeve",onExternalLink)
-            LinkRow(Icons.Outlined.BugReport,
-                stringResource(R.string.report_issue),
-                "https://github.com/Gh0stDeveloper/SP-DECODE/issues",onExternalLink)
         }
-        Text(stringResource(R.string.about_text),color=MutedText,fontSize=12.sp)
-        Text("SP-DECODE · 1.0.4",color=MutedText,fontSize=12.sp,
-            modifier=Modifier.align(Alignment.CenterHorizontally))
         Spacer(Modifier.height(6.dp))
     }
     if(languageSheet) ModalBottomSheet(
