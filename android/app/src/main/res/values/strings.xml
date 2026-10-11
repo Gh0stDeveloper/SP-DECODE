@@ -138,7 +138,7 @@
     <string name="native_decoder_mixed_short">Mixed</string>
     <string name="clear_current_result">Clear displayed result</string>
     <string name="guide_settings_title">Interactive guide</string>
-    <string name="guide_settings_detail">Learn how to import files, decode text, review results and manage your history. You can restart the guide at any time.</string>
+    <string name="guide_settings_detail">Includes offline files, text, HTTP Injector Cloud (online), protected HTTP Custom .hc, results and history. Restart this tour at any time.</string>
     <string name="guide_replay">Start guided tour</string>
     <string name="settings_version">Version %1$s</string>
     <string name="settings_build_code">Build %1$d</string>
@@ -199,4 +199,6 @@
     <string name="hc_auth_enter_manually">Enter password manually</string>
     <string name="hc_auth_input_invalid">Enter the required password and/or a valid 32-character HWID.</string>
     <string name="hc_auth_failed">This protected HTTP Custom file could not be authenticated. Check the password and/or HWID; the file may also be damaged or use an unsupported variant.</string>
+    <string name="guide_step_six">HTTP Injector Cloud (online): on Home, open Cloud, paste an ehi.link URL, cloud key or 💉…🚀 emoji code, then tap Import. This sends the reference to the HTTP Injector server only after you tap; Internet is required. Local files and texts stay offline.</string>
+    <string name="guide_step_seven">Protected HTTP Custom (.hc): import the file as usual. If the file requests an export password, HWID (32 characters) or both, enter exactly the required credentials. Wrong values or tampered files cannot be decrypted; ordinary .hc files still use the original method.</string>
 </resources>
