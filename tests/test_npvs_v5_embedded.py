@@ -76,5 +76,31 @@ class NPVSCompleteJSONTests(unittest.TestCase):
                 npvs.run(bytes(altered))
 
 
+    def test_signed_android_embedded_fixture_matches_python_complete_json(self):
+        from scripts.android_npvs_fixture_export import export
+
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            export(folder)
+            raw = (folder / "npvs-v5-appkey-embedded.npvs").read_bytes()
+            expected = json.loads((folder / "npvs-v5-appkey-embedded.json")
+                                  .read_text(encoding="utf-8"))
+            raw_document = npvs.decode_npvs(raw)
+            self.assertTrue(raw_document["document"]["configs"][0]
+                            ["sshConfig"]["sshHost"].startswith("npvs1:"))
+            self.assertEqual(npvs.decode_npvs_complete(raw), expected)
+            self.assertEqual(json.loads(npvs.run(raw)), expected)
+            self.assertNotIn("npvs1:", npvs.run(raw))
+            fields = expected["document"]["configs"][0]["sshConfig"]
+            self.assertEqual(fields["sshUsername"], "cybertunnel-fidelson015")
+            self.assertEqual(fields["opaque"], "dGVzdA==")
+            self.assertEqual(fields["extra"]["region"], "El Salvador")
+            self.assertIn("\\n", fields["payload"])
+            corrupted = bytearray(raw)
+            corrupted[-1] ^= 1
+            with self.assertRaises(npvs.DecodeError):
+                npvs.run(bytes(corrupted))
+
+
 if __name__ == "__main__":
     unittest.main()
