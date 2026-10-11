@@ -62,7 +62,7 @@ def decode_flex(text: str) -> str | None:
 
 
 def decode_npvs(text: str) -> str | None:
-    from decoders.Python.npvs import decode_npvs as decode_file, DecodeError
+    from decoders.Python.npvs import decode_npvs_complete as decode_file, DecodeError
     if not isinstance(text, str) or len(text) > MAX_TEXT_SIZE:
         return None
     lower = text.lower()
