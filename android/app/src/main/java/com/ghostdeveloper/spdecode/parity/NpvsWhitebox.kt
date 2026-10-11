@@ -36,7 +36,7 @@ internal object NpvsWhitebox {
         return out.toByteArray()
     }
     private fun bytes(context: Context): ByteArray {
-        val encoded = context.assets.open(ASSET).bufferedReader(Charsets.US_ASCII)
+        val encoded = SecureAssetVault.open(context,ASSET).bufferedReader(Charsets.US_ASCII)
             .use { it.readText().trim() }
         val zlib = decode85(encoded)
         val inflater = Inflater()
