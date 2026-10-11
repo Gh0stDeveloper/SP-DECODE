@@ -202,7 +202,10 @@ class MainActivity : ComponentActivity() {
                 val existingIds=recent.map{it.id}.toSet()
                 saved.filterNot{it.id in existingIds}.forEach{recent.add(it)}
             }catch(_:CancellationException){throw CancellationException()}
-            catch(_:Exception){toast(R.string.history_storage_error)}
+            catch(_:Exception){
+                SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.HISTORY_READ_FAILURE)
+                toast(R.string.history_storage_error)
+            }
         }
         scope.launch {
             // The splash never blocks the user indefinitely if file I/O stalls.
