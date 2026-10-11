@@ -269,15 +269,20 @@ internal object HcHccfgPort {
         if(!hwidRequired)return skey to aad
         val slots=env.getJSONArray("o")
         require(slots.length() in 1..256)
+        var lastFailure:Exception?=null
         for(i in 0 until slots.length()){
             val sec=slots.optJSONObject(i)?:continue
             try{
                 val sk=verifiedSlotDecrypt(skey,p.hex(sec.getString("a")),
                     bytes(aad,zero,utf("w")),p.hex(sec.getString("b")))
                 if(sk.size==32)return sk to aad
-            }catch(_:Exception){}
+            }catch(e:Exception){
+                // Never return unauthenticated plaintext. Keep the cause only
+                // for local diagnostics; p.safeDecode still returns null.
+                lastFailure=e
+            }
         }
-        error("AUTH_FAILED")
+        throw IllegalStateException("AUTH_FAILED",lastFailure)
     }
     /**
      * Android's BigInteger-based Poly1305 fallback had a slot-only parity
@@ -513,8 +518,21 @@ internal object HcHccfgPort {
     /** Test-only stage report, never contains plaintext, keys or credentials. */
     internal fun syntheticTestStage(input:ByteArray,password:ByteArray?,hwid:String?):String {
         val env=try{openOuter(input)}catch(_:Exception){return "outer"}
+        val nonceDigest="41a75976a0fa2a53055e6ce1b5fe7263e6b2b6aff7ab3771b62f2fbb5d159e61"
+        val ciphertextDigest=if(password==null)
+            "831c8e175cb79d7ca26368bc89281822538bd455cf74ab75f55e85198365f147"
+            else "a45dd406c95be0b0f962b412c52e84983bc796494022d986654c4eb8b8c58411"
+        try {
+            val slot=env.getJSONArray("o").getJSONObject(0)
+            if(!MessageDigest.isEqual(sha(p.hex(slot.getString("a"))),
+                p.hex(nonceDigest)))return "slot-nonce-mismatch"
+            if(!MessageDigest.isEqual(sha(p.hex(slot.getString("b"))),
+                p.hex(ciphertextDigest)))return "slot-ciphertext-mismatch"
+        }catch(_:Exception){return "slot-envelope-invalid"}
         val (contentKey,aad)=try{derive(env,password,hwid)}
-            catch(_:Exception){return "slot-derive"}
+            catch(e:Exception){
+                return "slot-derive-"+(e.cause?.javaClass?.simpleName ?: e.javaClass.simpleName)
+            }
         val main=try{section(env.getJSONObject("i"),contentKey,aad)}
             catch(_:Exception){return "main-aead"}
         if(runCatching{parseObject(main)}.isFailure)return "main-json"
