@@ -68,6 +68,60 @@ def hccfg_file(schema: int=1,schedule: str="n1",password: str | None=None) -> by
              json.dumps(env,separators=(",",":")).encode("utf-8")))
 
 
+# All values below are artificial, never derived from real files or device IDs.
+SYNTHETIC_HWID = "A" * 32
+NONCE_SLOT = bytes(range(72,96))
+NONCE_HPR = bytes(range(96,120))
+
+
+def hccfg_hwid_file(password: str | None = None) -> bytes:
+    """Synthetic HTTP Custom 7.11.19 stream-v3 with HWID or dual lock.
+
+    Builds the wrapping key independently from _derive(), then verifies it
+    using the reference decoder; no production export is embedded.
+    """
+    import hashlib
+    import hmac
+    env = {
+        "a":"HCCFG", "b":7, "c":"s1", "d":"h1", "e":"n8",
+        "f":["ssh","profiles"], "g":bytes(range(32)).hex(),
+        "h":int(password is not None), "n":885,
+    }
+    if password is not None:
+        env.update({"k":"ARGON2ID13","l":2,"m":8*1024*1024})
+    seed=bytes.fromhex(env["g"])
+    hw=SYNTHETIC_HWID.encode("utf-8")
+    transcript=(b"HCCFG\\0"+hc.PKG+b"\\0"+b"1\\0"+b"ssh,profiles\\0"+
+                b"885\\0"+b"hwid\\0"+hw+b"\\0"+seed)
+    intermediate=hmac.new(hc.N7_HMAC_KEY,
+        b"\\xd3"+hc.C0_PREFIX[:32]+transcript,hashlib.sha256).digest()
+    protection=b"|0"
+    if password is not None:
+        from argon2.low_level import Type, hash_secret_raw
+        intermediate+=hash_secret_raw(password.encode(),seed[:16],time_cost=2,
+            memory_cost=8192,parallelism=1,hash_len=32,type=Type.ID,version=19)
+        protection=b"|1|ARGON2ID13|2|8388608"
+    info=b"app-config|n8|"+hc.PKG+b"|1|ssh,profiles|885|hwid|"+hw
+    wrapped_key=hc._hkdf(intermediate,seed,info)
+    aad=(b"HCCFG|7|XCHACHA20P1305|NATIVE-HKDF-SHA256|n8|"+
+         hc.PKG+b"|1|ssh,profiles"+protection+b"|885")
+    section_key=bytes(reversed(range(32)))
+    env["o"]=[{
+        "a":NONCE_SLOT.hex(),
+        "b":aead(wrapped_key,NONCE_SLOT,aad+b"\\x00w",section_key).hex(),
+    }]
+    env["i"]={"a":"m0","b":NONCE_MAIN.hex(),
+        "c":aead(section_key,NONCE_MAIN,aad+b"\\x00m0",
+            b'{"g":{"a":"free","m":false}}').hex()}
+    payload=b"HPR1"+NONCE_HPR+aead(section_key,NONCE_HPR,
+        aad+b"\\x00s0:r",hpc1())
+    env["j"]=[{"a":"s0","b":NONCE_PROFILE.hex(),
+        "c":aead(section_key,NONCE_PROFILE,aad+b"\\x00s0",payload).hex()}]
+    body=json.dumps(env,separators=(",",":")).encode("utf-8")
+    logical=NONCE_OUTER+hc._stream_xor(body,hc.OUTER_KEY_V3,NONCE_OUTER)+bytes(16)
+    return logical.decode("latin-1").encode("utf-8")
+
+
 def sip_ver8_file() -> bytes:
     # Reuse the historically supported Java Object Serialization baseline.
     enc=base64.b64decode(sip_file())
@@ -86,6 +140,8 @@ def export_android(output_dir):
         "variant-hc-hccfg.hc":hccfg_file(),
         "variant-hc-hccfg-n7.hc":hccfg_file(7,"n7"),
         "variant-hc-hccfg-password.hc":hccfg_file(password=S4_SYNTHETIC_PASSWORD),
+        "variant-hc-hccfg-hwid.hc":hccfg_hwid_file(),
+        "variant-hc-hccfg-dual.hc":hccfg_hwid_file(password=S4_SYNTHETIC_PASSWORD),
         "variant-hc-legacy.hc":httpcustom_bytes(),
         "variant-sip-ver8.sip":sip_ver8_file(),
         "variant-sip-legacy.sip":sip_file(),
