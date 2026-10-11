@@ -61,7 +61,7 @@ object AndroidOfflineDecoderRouter {
                 "decoders/Python/vn7.py" -> { IndependentF1Port.decode(context,format.suffix,input) }
                 "decoders/Python/crev.py", "decoders/Python/zoba.py",
                 "decoders/Python/n4.py", "decoders/Python/dev.py",
-                "decoders/Python/ktr.py" -> { IndependentF2Port.decode(format.suffix,input) }
+                "decoders/Python/ktr.py" -> { IndependentF2Port.decode(context,format.suffix,input) }
                 else -> null
             }
         }
