@@ -474,6 +474,32 @@ internal object HcHccfgPort {
         return false
     }
 
+    /**
+     * Temporary synthetic-fixture probe for emulator parity validation.
+     * Reports only a stage identifier, never keys, credentials or plaintext.
+     */
+    internal fun syntheticTestStage(input:ByteArray,password:ByteArray?,hwid:String?):String {
+        val env=try{openOuter(input)}catch(_:Exception){return "outer"}
+        val keys=try{derive(env,password,hwid)}catch(_:Exception){return "derive"}
+        val main=try{section(env.getJSONObject("i"),keys.first,keys.second)}
+            catch(_:Exception){return "main-aead"}
+        if(runCatching{parseObject(main)}.isFailure)return "main-json"
+        val items=try{sections(env.opt("j")?:JSONArray())}
+            catch(_:Exception){return "inventory"}
+        for(sec in items){
+            val label=sec.optString("a")
+            val plain=try{section(sec,keys.first,keys.second)}
+                catch(_:Exception){return "profile-aead"}
+            val unwrapped=try{hpr1(plain,keys.first,keys.second,label,true)}
+                catch(_:Exception){return "hpr1-aead"}
+            if(unwrapped.size>=4 && unwrapped.copyOfRange(0,4)
+                .contentEquals(utf("HPC1"))) {
+                try{HPC1(unwrapped).parse(label)}catch(_:Exception){return "hpc1"}
+            }
+        }
+        return "complete"
+    }
+
     /** Original S.4 password detector retained for existing security gates. */
     fun requiresExternalPassword(input:ByteArray):Boolean =
         inspectRequirements(input)?.passwordRequired==true
