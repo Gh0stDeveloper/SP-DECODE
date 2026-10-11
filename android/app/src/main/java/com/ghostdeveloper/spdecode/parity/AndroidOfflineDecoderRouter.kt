@@ -10,7 +10,20 @@ import android.content.Context
  * Not exposed to users until the SAF/import UI and vendor validation gates.
  */
 object AndroidOfflineDecoderRouter {
-    fun decode(context: Context, filename: String, input: ByteArray): String? {
+    fun decode(context: Context, filename: String, input: ByteArray): String? =
+        decodeInternal(context,filename,input,null)
+
+    /**
+     * Only .hc HCCFG supports S.4 opt-in passwords. Never offer a generic
+     * secret fallback to any of the other 238 file routes.
+     */
+    fun decodeWithUserPassword(context:Context,filename:String,input:ByteArray,password:ByteArray):String? {
+        if(password.isEmpty() || password.size>4096)return null
+        return decodeInternal(context,filename,input,password)
+    }
+
+    private fun decodeInternal(context: Context, filename: String, input: ByteArray,
+        userPassword:ByteArray?): String? {
         if (input.isEmpty()) return null
         val format = AndroidDecoderCatalog.detect(filename, AndroidDecoderCatalog.read(context))
             ?: return null
@@ -29,6 +42,7 @@ object AndroidOfflineDecoderRouter {
             else -> LegacyPortPrimitives.MAX_INPUT
         }
         if (input.size > maxInput) return null
+        if (userPassword != null && format.suffix != "hc") return null
         // Phase A: 178 bot-only suffixes are catalogued but have no native port.
         // Keep a hard gate before the old 61-case dispatcher to prevent
         // accidental treatment as a supported decoder or unrelated fallback.
@@ -126,7 +140,8 @@ object AndroidOfflineDecoderRouter {
             "sip" -> SipPort.decode(context,input)
             "lnk" -> LinkLayerPort.decode(input)
             "ssc" -> SscPort.decode(input)
-            "hc" -> HcPort.decode(context,input) ?: HcHccfgPort.decode(input)
+            "hc" -> HcPort.decode(context,input) ?: if(userPassword == null)
+                HcHccfgPort.decode(input) else HcHccfgPort.decodeWithUserPassword(input,userPassword)
             else -> null
         }
     }
