@@ -1,9 +1,9 @@
-# NPV Tunnel — memoria de investigación del descifrado NPVS v5
+# NPV Tunnel — memoria de investigación del descifrado NPVS v5 y v6
 
 Documento para retomar esta investigación en otro chat o tras una actualización.
 Conserva los descubrimientos, el bloqueo resuelto y las comprobaciones que
 permiten distinguir un cambio de formato de un error de implementación.
-Investigación y documentación: 10 de octubre de 2026 UTC.
+Investigación inicial: 10 de octubre de 2026 UTC. Validación recipient v6: 11 de octubre de 2026 UTC.
 
 ## Retomar en dos minutos
 
@@ -427,7 +427,7 @@ reales.
 | AEAD válidas pero estructura rechazada | Nuevo formato de layout, id reservado, referencias o tipos escalares |
 | Script correcto pero fallo en SP-DECODE | Transporte de bytes, JSON metadata/document y paridad del motor integrado |
 
-## Alcance que no debe perderse entre chats
+## Alcance inicial comprobado el 2026-10-10
 
 Está comprobado **NPVS v5 app-key keyId 2 de 124.0.37 con cero destinatarios**.
 No se validaron v6, recipient, passphrase ni exportados de versiones futuras.
@@ -448,7 +448,7 @@ búsqueda completa ni depender del entorno temporal original.
 
 ## Actualización 2026-10-11: muestra NPVS v6 en modo recipient
 
-**Estado: formato e importador analizados; contenido NO descifrado.** Este
+**Estado de esta muestra de 1482 bytes: formato e importador analizados; contenido NO descifrado.** Este
 hallazgo no amplía el soporte confirmado del script. No confundir la versión
 del contenedor con el modo de protección, ni convertir un reconocimiento de
 cabecera en una prueba de descifrado.
@@ -552,8 +552,10 @@ La metadata compacta mantiene el domain separator **`NPVS-v5/metadata`**
 incluso en la ruta común usada por v6: no reemplazarlo por v6 por intuición.
 `sourceDocumentContext`, en cambio, usa el formato
 **`NPVS-v%d/source-fields-v1/`** con la versión del header y una cabecera
-canónica que conserva recipients. En recipient no sirve copiar la cabecera
-v5 del script con `recipients:null`.
+canónica. **Corrección tras la prueba real siguiente:** la función borra
+appKey, passphrase y recipients antes de canonicalizar; recipients debe ser
+`null` también en v6. BindingSalt lleva `json:"-"` y queda fuera de ese JSON.
+La diferencia respecto de v5 es la versión del prefijo y del campo `v`.
 
 Estas fórmulas están observadas en la APK. Su ejecución completa en esta
 muestra sigue **sin validar**, pues no se dispone de sharedX/clave privada.
@@ -574,3 +576,199 @@ permitiría probar la ruta recipient. Ni device ID, ni fingerprint, ni
 `.pub`, ni solo el `.dat` cifrado constituyen ese secreto.
 
 Mantener intacto el soporte v5 y todos los decodificadores anteriores.
+
+
+## Validación completa 2026-10-11: recipient v6 con privada correspondiente
+
+**Estado actual del Python: NPVS v5 app-key keyId 2 y NPVS v6 recipient
+comprobados con archivos reales.** Se conserva la normalización recursiva de
+valores `npvs1:`. Esta actualización no declara soporte passphrase,
+v6 app-key ni versiones futuras. Las muestras anteriores de terceros
+continúan sin descifrar cuando falta su privada destinataria.
+
+### Cómo se consiguió una prueba que sí permite resolver recipient
+
+La privada de NPV Tunnel es una identidad EC generada en cada instalación;
+no una contraseña fija contenida en la APK. Las cadenas públicas y HWID
+proporcionadas antes no permitían calcular el ECDH correspondiente.
+
+Se generó un par independiente **P-256/secp256r1**, conservando su privada
+PKCS#8 en un JSON privado. Se entregó solamente esta pública comprimida
+SEC1, codificada Base64URL sin padding:
+
+`Asdg2di20QoPOswmh3UPSY4f7UqJWoJXE09Ou302QkiN`
+
+SHA-256 de sus 33 bytes, identidad usada para seleccionar recipient:
+
+`d5026b18ba623cabeeb79d46a9c7392d0c30112386994d8e33cb0724165ec6b9`
+
+El usuario pegó esta pública en la exportación de la aplicación y envió
+el archivo real resultante. **La exportación la realizó el usuario en la app.**
+No se ejecutó ni modificó Android; no se compiló APK. Se usó la APK suministrada
+para seguir DEX/JNI/Go y reproducir su protocolo en Python.
+
+Muestra autorizada de regresión, nombre local `test v2.npvs`:
+
+- 1084 bytes; SHA-256
+  `53736090f3b86b465be39793257f664b6af0a155027e804cfb671c6f06931fae`.
+- NPVS v6, compact header 1, modo 0, cabecera de 532 bytes.
+- Dos recipients de 125 bytes; uno coincide con el fingerprint calculado
+  desde nuestra privada. No es necesario descifrar la entrada del otro.
+- Metadata cifrada de 209 bytes, cuerpo NPF de 463 bytes, firma final de 64.
+- Firma, AES-GCM recipient, metadata AEAD, contexto de documento,
+  HMAC de inventario y AEAD de **los ocho registros** pasan.
+- JSON reconstruido: un config SSH, siete valores escalares y un layout.
+  El digest del documento normalizado, ordenando claves y usando JSON compacto
+  UTF-8 sin espacios, es
+  `1eb7c5628bb64fb8fc2f04c18db20967baa8aa33816f6972af6e318cfff73d9f`.
+- La salida contiene valores legibles y tipos conservados. No se publican
+  el archivo, su contraseña, el JSON privado ni ninguna privada/DEK en GitHub.
+
+### Fórmula exacta, validada sobre este exportado
+
+Todos los saltos de offset se calculan desde el inicio de `header`, situado
+en el archivo en offset 9. Enteros de la envoltura y NPF son big endian.
+
+```text
+configId = header[1:17]
+creatorPk = header[17:50]                         # SEC1 comprimida, 33
+count = BE16(header[51:53])
+recipient[i].fp = header[53+125*i : 85+125*i]     # 32
+recipient[i].wrap = header[85+125*i : 178+125*i]  # 93
+bindingSalt = header[53+125*count : 69+125*count] # 16
+
+myPublic = SEC1_compressed(privateKey.publicKey)
+myFp = SHA256(myPublic)
+wrap = entrada cuyo fp == myFp
+
+ephemeral = P256_import(wrap[0:33])
+sharedX = x(ephemeral * privateScalar)            # 32, big endian
+unwrapKey = HKDF-SHA256(sharedX, salt=myFp,
+                       info="NPVS-v1-wrap" || configId, length=32)
+maskedKey = AES-256-GCM.Open(unwrapKey,
+                            nonce=wrap[33:45],
+                            ciphertext=wrap[45:77],
+                            tag=wrap[77:93], AAD=myFp)
+
+kdk = SHA256("npvtunnel/appkey/v2 " || WB(bindingSalt) || configId)
+pad = HKDF-SHA256(kdk, salt=bindingSalt,
+                 info="NPVS-v6/recipient-binding" || configId, length=32)
+DEK = maskedKey XOR pad
+```
+
+El espacio final en `"npvtunnel/appkey/v2 "` es significativo. `WB` es
+la transformación white-box comprobada por los vectores del apartado v5,
+con las mismas tablas embebidas. El orden es WB y luego configId.
+
+Metadata sigue usando:
+
+```text
+metadataKey = HKDF-SHA256(DEK, salt=wireNonce12,
+                         info="NPVS-v5/metadata", length=32)
+metadata = ChaCha20-Poly1305.Open(metadataKey,
+                                nonce=wireNonce12,
+                                ciphertextAndTag=metadataCipher,
+                                AAD=header[:69+125*count])
+```
+
+El BE32 de longitud de metadata está inmediatamente después del prefix;
+queda fuera de AAD. El nonce exterior viene después de la cabecera completa.
+Cambiar el label a `NPVS-v6/metadata` o utilizar maskedKey como DEK
+produce fallo de autenticación.
+
+### Contexto de campos: detalle que faltaba en la lectura inicial
+
+Después de abrir metadata, reconstruir SourceHeader con `v:6`, configId
+Base64URL sin padding, issuedAt, creator fp/pk y la política. Aplicar los
+mismos defaults y omitempty de la ruta v5. El contexto correcto es:
+
+```text
+sourceHeader = {
+  "v": 6,
+  "configId": RawURL(configId),
+  "issuedAt": metadata.issuedAt,
+  "creator": {"fp": RawURL(SHA256(creatorPk)), "pk": RawURL(creatorPk)},
+  "policy": policy_con_defaults_y_omitempty,
+  "recipients": null
+}
+context = SHA256("NPVS-v6/source-fields-v1/" ||
+                 canonicalGoJSON(sourceHeader) || wireNonce12)
+```
+
+**No incluir las entradas recipient en este JSON.** La función nativa
+`sourceDocumentContext` recibe SourceHeader pero pone a cero AppKey,
+Passphrase y Recipients antes de `canonicalSealedJSON`.
+En esta APK se vio en las escrituras a sp+0x128, sp+0x1c8 y sp+0x1d8.
+Se recuperaron además los nombres y tags JSON del tipo Go SourceHeader
+(VA 0x23d3368, tamaño 200) para comprobar la correspondencia:
+
+| Offset en SourceHeader | Campo / tag |
+| --- | --- |
+| 0 | AppKey / appKey,omitempty |
+| 8 | Passphrase / passphrase,omitempty |
+| 16 | V / v |
+| 24 | ConfigID / configId |
+| 40 | IssuedAt / issuedAt |
+| 56 | Creator / creator |
+| 88 | Policy / policy |
+| 160 | Recipients / recipients |
+| 184 | BindingSalt / json:"-" |
+
+Incluir recipients dio un digest diferente del contexto almacenado en NPF.
+Usar `recipients:null` y el label v6 dio coincidencia exacta, seguida de
+HMAC de inventario y las ocho AEAD válidas. Esta es evidencia directa del
+archivo real, además de la lectura nativa.
+
+La apertura NPF, los HKDF inventory/field, AAD de registro y layout id 65535
+son los mismos descritos para v5. No duplicar ni cambiar esa implementación.
+
+### Uso del Python y reproducción rápida en otro chat
+
+Dependencia: `pycryptodome`. El archivo único
+`decoders/Python/npvs.py` lleva las tablas; no necesita APK, DEX, ELF,
+`tables.bin` ni las claves derivadas durante análisis.
+
+```bash
+python -m pip install pycryptodome
+python decoders/Python/npvs.py "test v2.npvs" \
+  --private-key NPV_Recipient_Test_Key.json -o decoded.json
+```
+
+La opción acepta fichero PKCS#8 PEM/DER o el JSON privado que contiene
+`private_key_pkcs8_pem`. API: `decode_npvs(data, private_key=None)`
+y `run(data, private_key=None)`. El argumento admite bytes PEM/DER,
+texto PEM, diccionario JSON o EccKey privado P-256. Las llamadas anteriores
+`run(data)` y `decode_npvs(data)` siguen funcionando para v5 app-key.
+
+El decoder rechaza una pública, un HWID, una privada de otra curva o una
+privada cuyo fingerprint no está en la lista. No intenta deducir privadas.
+No confundir `private key` de otro protocolo en un campo del config
+con la identidad recipient de NPV Tunnel.
+
+Pruebas: `tests/test_npvs_v5.py` conserva sus 13 casos, incluidos archivo
+real previo y npvs1. `tests/test_npvs_v6_recipient.py` agrega ocho casos:
+importación de privada, archivo real completo, API/CLI, ausencia/pública/
+privada incorrecta, todos los prefijos truncados, firma, tag GCM/configId
+y necesidad del binding pad. Los **21 tests NPV pasaron**, usando ambas
+muestras reales; los fixtures y la privada se mantienen externos al repo.
+
+Para ejecutar recipient real, definir `SPDECODE_NPVS_V6_REAL_FILE`
+y `SPDECODE_NPVS_V6_PRIVATE_KEY`; para v5 definir
+`SPDECODE_NPVS_REAL_FILE`. Los tests cotejan SHA-256 de fixtures y salida,
+sin imprimir credenciales ni secretos.
+
+### Si NPV Tunnel se actualiza
+
+Primero probar el Python con exportado nuevo dirigido a una pública para
+la que se conserve la privada. Una pública visible en la app solo identifica
+destinatario; si no se tiene la privada, no hay una prueba recipient completa.
+
+Comprobar en orden: versión/modo/longitudes → firma → coincidencia fp →
+ECDH/GCM unwrap → pad v6 → metadata → canonicalización del contexto →
+inventario → cada registro/layout → npvs1. Concentrarse en la primera
+validación que falla. Recalcular las VA si cambia APK; utilizar como anclas
+los nombres Go y labels literales del protocolo.
+
+Mantener sin cambios los decodificadores anteriores y no declarar otras
+versiones o modos como funcionales hasta validar otro archivo real.
+

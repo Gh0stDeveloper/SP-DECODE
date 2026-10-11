@@ -4,6 +4,7 @@ SPDECODE_NPVS_REAL_FILE points to the private fixture; its contents are not
 included in the repository or printed by these tests.
 """
 import hashlib
+import base64
 import hmac
 import importlib.util
 import json
@@ -24,6 +25,39 @@ spec.loader.exec_module(decoder)
 
 
 class PrimitiveTests(unittest.TestCase):
+    def test_secret_strings_in_nested_objects_and_lists(self):
+        def wrapped(text):
+            return "npvs1:" + base64.b64encode(text.encode("utf-8")).decode("ascii")
+
+        original = {"configs": [{"sshConfig": {
+            "sshConfigType": "npvs1:U1NILVRMUw==", "sshHost": wrapped("example.invalid"),
+            "sshPort": 443, "sshUsername": wrapped("synthetic-user"),
+            "sshPassword": wrapped("synthetic-password"), "sni": wrapped("sni.invalid"),
+        }, "others": [wrapped("Prueba 日本語\r\n"), True, 0, None, "U1NILVRMUw=="]}],
+                    "npvs1:a2V5": "plain"}
+        result = decoder.decode_secret_strings(original)
+        self.assertEqual(result["configs"][0]["sshConfig"], {
+            "sshConfigType": "SSH-TLS", "sshHost": "example.invalid", "sshPort": 443,
+            "sshUsername": "synthetic-user", "sshPassword": "synthetic-password",
+            "sni": "sni.invalid"})
+        self.assertEqual(result["configs"][0]["others"],
+                         ["Prueba 日本語\r\n", True, 0, None, "U1NILVRMUw=="])
+        self.assertEqual(result["npvs1:a2V5"], "plain")
+        self.assertTrue(original["configs"][0]["sshConfig"]["sshHost"].startswith("npvs1:"))
+
+    def test_secret_strings_one_layer_empty_and_base64_newlines(self):
+        self.assertEqual(decoder.decode_secret_strings("npvs1:"), "")
+        self.assertEqual(decoder.decode_secret_strings("npvs1:U1NI\r\nLVRMUw=="), "SSH-TLS")
+        self.assertEqual(decoder.decode_secret_strings("npvs1:bnB2czE6WTI5dWRHVnVkQT09"),
+                         "npvs1:Y29udGVudA==")
+        for plain in ("", "not npvs1:U1NILVRMUw==", "NPVS1:U1NILVRMUw=="):
+            self.assertEqual(decoder.decode_secret_strings(plain), plain)
+
+    def test_secret_strings_reject_invalid_encoding(self):
+        for text in ("npvs1:%%%", "npvs1:YQ", "npvs1:/w==", "npvs1:é"):
+            with self.subTest(text=text), self.assertRaisesRegex(decoder.DecodeError, "npvs1"):
+                decoder.decode_secret_strings(text)
+
     def test_native_whitebox_vectors(self):
         # Independently obtained by running the APK's ARM64 white-box routine.
         vectors = {
@@ -83,6 +117,22 @@ class RealFileTests(unittest.TestCase):
         canonical = json.dumps(doc, ensure_ascii=False, sort_keys=True,
                                separators=(",", ":")).encode("utf-8")
         self.assertEqual(hashlib.sha256(canonical).hexdigest(), REAL_DOCUMENT_SHA256)
+        # Keep the authenticated wire representation as a separate regression anchor.
+        raw = decoder._document(self.body, self.dek, self.context)
+        raw_canonical = json.dumps(raw, ensure_ascii=False, sort_keys=True,
+                                   separators=(",", ":")).encode("utf-8")
+        self.assertEqual(hashlib.sha256(raw_canonical).hexdigest(), REAL_RAW_DOCUMENT_SHA256)
+        self.assertEqual(decoder.decode_secret_strings(raw), doc)
+
+        def markers(value):
+            if isinstance(value, dict):
+                return sum(markers(v) for v in value.values())
+            if isinstance(value, list):
+                return sum(markers(v) for v in value)
+            return int(isinstance(value, str) and value.startswith("npvs1:"))
+
+        self.assertEqual(markers(raw), 3)
+        self.assertEqual(markers(doc), 0)
         self.assertEqual(len(doc["configs"]), 1)
 
         def leaves(value):
@@ -163,7 +213,8 @@ class RealFileTests(unittest.TestCase):
 
 # Digests only; no private fixture, plaintext credentials, or per-file keys.
 REAL_FILE_SHA256 = "2e321bb8c506dbac8a1b2848ff8a05fb4f811df34536853b2a965d6dfd197867"
-REAL_DOCUMENT_SHA256 = "eaa7e033fa9c5677d605628a4bbc32961c1b61c44e0e329393fe8776eaa47bfb"
+REAL_RAW_DOCUMENT_SHA256 = "eaa7e033fa9c5677d605628a4bbc32961c1b61c44e0e329393fe8776eaa47bfb"
+REAL_DOCUMENT_SHA256 = "efd51583558b21c2683a242fa0583f45afc0c2044108d50b549247755883bbde"
 
 if __name__ == "__main__":
     unittest.main()

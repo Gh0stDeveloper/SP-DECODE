@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""Decode authenticated NPV Tunnel NPVS v5 app-key files (124.0.37).
+"""Decode authenticated NPV Tunnel NPVS v5 app-key and v6 recipient files.
 
 Dependency: python -m pip install pycryptodome
 Usage: python npvs.py INPUT.npvs -o decoded.json
+Recipient: python npvs.py INPUT.npvs --private-key KEY.json -o decoded.json
+KEY may be a PKCS8 PEM/DER or a JSON containing private_key_pkcs8_pem.
 The embedded white-box tables are application data, not sample-specific keys.
 """
 from __future__ import annotations
 
 import argparse
 import base64
+import binascii
 import hashlib
 import hmac
 import json
@@ -18,7 +21,7 @@ import zlib
 from functools import lru_cache
 from pathlib import Path
 
-from Crypto.Cipher import ChaCha20_Poly1305
+from Crypto.Cipher import AES, ChaCha20_Poly1305
 from Crypto.Hash import SHA256
 from Crypto.Protocol.KDF import HKDF
 from Crypto.PublicKey import ECC
@@ -187,29 +190,107 @@ def _document(body: bytes, dek: bytes, context: bytes):
     return document
 
 
-def decode_npvs(data: bytes) -> dict:
-    """Authenticate and decode a v5 app-key envelope; retain its policy metadata."""
+def decode_secret_strings(value):
+    """Reveal one npvs1/Base64 layer in JSON values, preserving keys and types.
+
+    Matches SecretString.WithJSONPlaintext in the APK. Apply only after the
+    authenticated document has been reconstructed, never to policy metadata.
+    """
+    if isinstance(value, dict):
+        return {key: decode_secret_strings(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [decode_secret_strings(item) for item in value]
+    if isinstance(value, str) and value.startswith("npvs1:"):
+        try:
+            # Go's standard Base64 decoder permits CR/LF, not arbitrary text.
+            encoded = value[6:].replace("\r", "").replace("\n", "")
+            return base64.b64decode(encoded, validate=True).decode("utf-8")
+        except (ValueError, binascii.Error, UnicodeError) as exc:
+            raise DecodeError("Invalid npvs1 Base64/UTF-8 field") from exc
+    return value
+
+
+def _private_key(value) -> ECC.EccKey:
+    if value is None:
+        raise DecodeError("This recipient file requires its matching P-256 private key")
+    try:
+        if isinstance(value, (bytes, str)) and value.lstrip().startswith(
+                b"{" if isinstance(value, bytes) else "{"):
+            value = _json_load(value.encode("utf-8") if isinstance(value, str) else value)
+        if isinstance(value, dict):
+            value = value.get("private_key_pkcs8_pem")
+        key = value if isinstance(value, ECC.EccKey) else ECC.import_key(value)
+        if key.curve != "NIST P-256" or not key.has_private():
+            raise ValueError("Expected a P-256 private key")
+        return key
+    except (ValueError, TypeError, KeyError, IndexError, AttributeError) as exc:
+        raise DecodeError("Expected a P-256 private key in PEM/DER or key JSON; "
+                          "a public key or HWID is not a private key") from exc
+
+
+def _unwrap_recipient(config_id: bytes, recipients: list[tuple[bytes, bytes]],
+                      private_key) -> bytes:
+    key = _private_key(private_key)
+    public = key.public_key().export_key(format="SEC1", compress=True)
+    fingerprint = hashlib.sha256(public).digest()
+    wrapped = next((wrap for fp, wrap in recipients if hmac.compare_digest(fp, fingerprint)), None)
+    if wrapped is None:
+        raise DecodeError("Private key does not match any recipient in this file")
+    try:
+        ephemeral = ECC.import_key(wrapped[:33], curve_name="P-256")
+        shared = int((ephemeral.pointQ * key.d).x).to_bytes(32, "big")
+        unwrap_key = HKDF(shared, 32, fingerprint, SHA256,
+                          context=b"NPVS-v1-wrap" + config_id)
+        cipher = AES.new(unwrap_key, AES.MODE_GCM, nonce=wrapped[33:45])
+        cipher.update(fingerprint)
+        return cipher.decrypt_and_verify(wrapped[45:-16], wrapped[-16:])
+    except (ValueError, TypeError, IndexError) as exc:
+        raise DecodeError("Authentication failed: recipient document key") from exc
+
+
+def decode_npvs(data: bytes, private_key=None) -> dict:
+    """Authenticate v5 app-key or v6 recipient input; retain policy metadata.
+
+    private_key accepts PEM/DER bytes, PEM text, the key JSON, or an EccKey.
+    The v5 app-key path and existing one-argument callers remain supported.
+    """
     if not isinstance(data, bytes) or not 89 <= len(data) <= _MAX_FILE:
         raise DecodeError("Invalid NPVS file size")
     if data[:4] != b"NPVS":
         raise DecodeError("Expected binary NPVS input")
-    if data[4] != 5:
-        raise DecodeError("Only NPVS version 5 is supported")
+    version = data[4]
+    if version not in (5, 6):
+        raise DecodeError("Only NPVS versions 5 and 6 are supported")
     hlen = int.from_bytes(data[5:9], "big")
-    if not 135 <= hlen <= 262144 or 9 + hlen + 80 > len(data):
+    if not 73 <= hlen <= 262144 or 9 + hlen + 80 > len(data):
         raise DecodeError("Invalid compact header length")
     header = data[9:9 + hlen]
-    if header[0] != 1 or header[50] != 2:
-        raise DecodeError("Only compact app-key configurations are supported")
-    recipients = int.from_bytes(header[51:53], "big")
-    if recipients > 1024:
-        raise DecodeError("Too many recipients")
-    offset = 53 + recipients * 125
-    if offset + 82 > len(header) or header[offset:offset + 2] != b"\x00\x02":
-        raise DecodeError("Invalid app-key descriptor")
-    salt = header[offset + 2:offset + 18]
-    wrapped = header[offset + 18:offset + 78]
-    prefix_end = offset + 78
+    mode = header[50]
+    if header[0] != 1:
+        raise DecodeError("Unsupported compact header version")
+    if (version, mode) not in ((5, 2), (6, 0)):
+        raise DecodeError("Supported modes: NPVS v5 app-key and v6 recipient")
+    count = int.from_bytes(header[51:53], "big")
+    if count > 1024 or (mode == 0 and not count):
+        raise DecodeError("Invalid recipient count")
+    offset = 53 + count * 125
+    if offset > len(header):
+        raise DecodeError("Truncated recipient list")
+    recipients = [(header[53 + i * 125:85 + i * 125],
+                   header[85 + i * 125:178 + i * 125]) for i in range(count)]
+    if len({fp for fp, _ in recipients}) != count:
+        raise DecodeError("Duplicate recipient fingerprint")
+    if mode == 2:
+        if offset + 82 > len(header) or header[offset:offset + 2] != b"\x00\x02":
+            raise DecodeError("Invalid app-key descriptor")
+        salt = header[offset + 2:offset + 18]
+        wrapped = header[offset + 18:offset + 78]
+        prefix_end = offset + 78
+    else:
+        if offset + 20 > len(header):
+            raise DecodeError("Truncated recipient binding salt")
+        salt = header[offset:offset + 16]
+        prefix_end = offset + 16
     mlen = int.from_bytes(header[prefix_end:prefix_end + 4], "big")
     if mlen < 16 or prefix_end + 4 + mlen != hlen:
         raise DecodeError("Invalid metadata length")
@@ -222,7 +303,13 @@ def decode_npvs(data: bytes) -> dict:
     _signature(data, public_key)
     config_id = header[1:17]
     kdk = hashlib.sha256(b"npvtunnel/appkey/v2 " + _whitebox_block(salt) + config_id).digest()
-    dek = _open(kdk, wrapped[:12], wrapped[12:], salt, "document key")
+    if mode == 2:
+        dek = _open(kdk, wrapped[:12], wrapped[12:], salt, "document key")
+    else:
+        masked = _unwrap_recipient(config_id, recipients, private_key)
+        pad = HKDF(kdk, 32, salt, SHA256,
+                   context=b"NPVS-v6/recipient-binding" + config_id)
+        dek = bytes(a ^ b for a, b in zip(masked, pad))
     if len(dek) != 32:
         raise DecodeError("Invalid document key length")
     mkey = HKDF(dek, 32, nonce, SHA256, context=b"NPVS-v5/metadata")
@@ -242,73 +329,35 @@ def decode_npvs(data: bytes) -> dict:
         source_policy["configVersion"] = policy["configVersion"]
     encode = lambda b: base64.urlsafe_b64encode(b).decode("ascii").rstrip("=")
     source_header = {
-        "v": 5, "configId": encode(config_id), "issuedAt": metadata.get("issuedAt", ""),
+        "v": version, "configId": encode(config_id), "issuedAt": metadata.get("issuedAt", ""),
         "creator": {"fp": encode(hashlib.sha256(public_key).digest()), "pk": encode(public_key)},
         "policy": source_policy, "recipients": None,
     }
-    context = hashlib.sha256(b"NPVS-v5/source-fields-v1/" + _canonical(source_header) + nonce).digest()
+    # Native sourceDocumentContext clears appKey, passphrase, and recipients.
+    # BindingSalt has json:"-" and must also stay outside this context.
+    label = f"NPVS-v{version}/source-fields-v1/".encode("ascii")
+    context = hashlib.sha256(label + _canonical(source_header) + nonce).digest()
     document = _document(data[end + 16:-64], dek, context)
-    return {"metadata": metadata, "document": document}
+    return {"metadata": metadata, "document": decode_secret_strings(document)}
 
 
-def _decode_embedded_npvs1(value, depth: int = 0):
-    """Unwrap authenticated JSON's explicit npvs1: Base64 string layers.
-
-    Opaque fields (for example SSH passwords) are never guessed to be Base64:
-    only strings with the NPV legacy encoding marker are transformed.
-    """
-    if depth > 64:
-        raise DecodeError("Nested NPVS field encoding exceeds maximum depth")
-    if isinstance(value, dict):
-        return {key: _decode_embedded_npvs1(item, depth + 1)
-                for key, item in value.items()}
-    if isinstance(value, list):
-        return [_decode_embedded_npvs1(item, depth + 1) for item in value]
-    if not isinstance(value, str) or not value.startswith("npvs1:"):
-        return value
-
-    encoded = "".join(value[6:].split())
-    if not encoded or len(encoded) > 2 * _MAX_FILE:
-        raise DecodeError("Invalid NPVS embedded Base64 field size")
-    try:
-        normalized = encoded + "=" * (-len(encoded) % 4)
-        decoded = base64.b64decode(normalized, altchars=b"-_", validate=True)
-        text = decoded.decode("utf-8")
-    except (ValueError, UnicodeError) as exc:
-        raise DecodeError("Invalid NPVS embedded Base64/UTF-8 field") from exc
-
-    if text.startswith("npvs1:"):
-        return _decode_embedded_npvs1(text, depth + 1)
-    if text.lstrip().startswith(("{", "[")):
-        try:
-            nested = _json_load(decoded)
-        except DecodeError:
-            # A legitimate plaintext string can begin with a brace.
-            return text
-        return _decode_embedded_npvs1(nested, depth + 1)
-    return text
-
-
-def decode_npvs_complete(file_bytes: bytes) -> dict:
-    """Decrypt NPVS v5 and fully unwrap documented npvs1: embedded values."""
-    return _decode_embedded_npvs1(decode_npvs(file_bytes))
-
-
-def run(file_bytes: bytes) -> str:
-    """SP-DECODE-compatible complete JSON export; failures raise DecodeError."""
-    return json.dumps(decode_npvs_complete(file_bytes), ensure_ascii=False,
-                      indent=2, allow_nan=False)
+def run(file_bytes: bytes, private_key=None) -> str:
+    """SP-DECODE-compatible entry point; failures raise DecodeError."""
+    return json.dumps(decode_npvs(file_bytes, private_key), ensure_ascii=False, indent=2, allow_nan=False)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Descifra archivos NPVS v5 de NPV Tunnel.")
+    parser = argparse.ArgumentParser(description="Descifra NPVS v5 app-key y v6 recipient de NPV Tunnel.")
     parser.add_argument("input", type=Path)
     parser.add_argument("-o", "--output", type=Path, help="Guarda el JSON descifrado")
+    parser.add_argument("--private-key", type=Path,
+                        help="Clave privada P-256 PEM/DER o JSON (archivos recipient)")
     args = parser.parse_args()
     try:
         if args.input.stat().st_size > _MAX_FILE:
             raise DecodeError("Input exceeds 4 MiB")
-        result = run(args.input.read_bytes()) + "\n"
+        key = args.private_key.read_bytes() if args.private_key else None
+        result = run(args.input.read_bytes(), key) + "\n"
         if args.output:
             args.output.write_text(result, encoding="utf-8")
         else:
