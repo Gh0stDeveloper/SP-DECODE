@@ -40,7 +40,14 @@ class PhaseS2AdvancedMaterialsInstrumentedTest {
         expect(fixture,"darkOuter",dark.outerKey)
         expect(fixture,"darkNested",dark.nestedKey)
         expect(fixture,"darkIv",dark.iv)
-        assertEquals(18,fixture.length())
+        val ehil=AdditionalDecoderMaterials.ehil(target)
+        assertEquals(3,ehil.firstKeys.size)
+        assertEquals(2,ehil.secondKeys.size)
+        assertEquals(7,ehil.ivs.size)
+        ehil.firstKeys.forEachIndexed{ i,key->expect(fixture,"ehilFirst${i+1}",key)}
+        ehil.secondKeys.forEachIndexed{ i,key->expect(fixture,"ehilSecond${i+1}",key)}
+        ehil.ivs.forEachIndexed{ i,key->expect(fixture,"ehilIv${i+1}",key)}
+        assertEquals(30,fixture.length())
         assertFalse(target.assets.list("")?.contains("embedded_kotlin_profiles.json") == true)
     }
 }
