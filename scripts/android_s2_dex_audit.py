@@ -17,7 +17,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MATERIAL = Path("android/app/src/main/assets/embedded_kotlin_profiles.json")
 KOTLIN = Path("android/app/src/main/java/com/ghostdeveloper/spdecode/parity")
-MIGRATED = ("HatPort.kt", "HcPort.kt", "IndependentF1Port.kt")
+MIGRATED = ("HatPort.kt", "HcPort.kt", "IndependentF1Port.kt", "ZivPort.kt", "PhcPort.kt")
 HEX_LITERAL = re.compile(r'"[a-fA-F0-9]{32,}"')
 BASE64_LITERAL = re.compile(r'"[A-Za-z0-9+/]{24,}={0,2}"')
 IDENTIFIER = re.compile(r"\b(?:private\s+)?(?:const\s+)?val\s+(?:key|iv|password|secret|seed|salt|nonce)\w*\b", re.I)
@@ -63,6 +63,8 @@ def forbidden_literals(root: Path = ROOT) -> dict[str, list[str]]:
         "HatPort.kt": [hat["aesKeyB64"], hat["profileV5XorPassword"]],
         "HcPort.kt": [hc["outerXorKeyHex"]],
         "IndependentF1Port.kt": [*pieces, *f1["vn7Passwords"]],
+        "ZivPort.kt": [*f1["vn7Passwords"]],
+        "PhcPort.kt": [f1["vn7Passwords"][1]],
     }
 
 
