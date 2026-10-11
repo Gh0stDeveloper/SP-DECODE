@@ -36,7 +36,7 @@ internal object GenericProfileStore {
     }
 
     private fun load(context: Context): Map<String, Profile> {
-        val root = JSONObject(context.assets.open("generic_b_profiles.json")
+        val root = JSONObject(SecureAssetVault.open(context,"generic_b_profiles.json")
             .bufferedReader(Charsets.UTF_8).use { it.readText() })
         require(root.getInt("schemaVersion") == 1)
         require(root.getInt("formatCount") == 81)

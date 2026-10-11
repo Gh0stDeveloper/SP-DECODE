@@ -27,7 +27,7 @@ internal object RenzProfileStore {
     }
 
     private fun load(context: Context): Data {
-        val root = JSONObject(context.assets.open("renz_d_profiles.json")
+        val root = JSONObject(SecureAssetVault.open(context,"renz_d_profiles.json")
             .bufferedReader(Charsets.UTF_8).use { it.readText() })
         require(root.getInt("schemaVersion") == 1)
         require(root.getInt("suffixCount") == 16 && root.getInt("profileCount") == 14)

@@ -20,7 +20,7 @@ internal object NpvWhiteboxReferencePort {
         val p5=IntArray(16*256)
         val p4=ByteArray(16*256)
         init {
-            val bytes=context.assets.open("npv_whitebox.bin").use{it.readBytes()}
+            val bytes=SecureAssetVault.open(context,"npv_whitebox.bin").use{it.readBytes()}
             require(bytes.size==8+24576+32768+4096)
             val bb=ByteBuffer.wrap(bytes).order(ByteOrder.BIG_ENDIAN)
             val header=ByteArray(8).also{bb.get(it)}

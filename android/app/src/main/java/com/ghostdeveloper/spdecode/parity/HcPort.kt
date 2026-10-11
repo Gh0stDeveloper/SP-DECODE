@@ -49,7 +49,7 @@ object HcPort {
     }
     fun decode(context:Context,input:ByteArray):String?=p.safeDecode {
         p.bounded(input)
-        val cfg=JSONObject(context.assets.open("hc_source_keys.json")
+        val cfg=JSONObject(SecureAssetVault.open(context,"hc_source_keys.json")
             .bufferedReader(Charsets.UTF_8).use{it.readText()})
         val keys=(0 until cfg.getJSONArray("chaChaKeys").length()).map{
             p.hex(cfg.getJSONArray("chaChaKeys").getString(it))}

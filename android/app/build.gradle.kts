@@ -1,3 +1,9 @@
+import java.io.File
+import java.security.SecureRandom
+import javax.crypto.Cipher
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.SecretKeySpec
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -5,8 +11,105 @@ plugins {
     id("org.jetbrains.kotlin.kapt")
 }
 
+// Phase S: isolate source-controlled decoder material from packaged assets.
+// A random build-local AES-GCM wrapper prevents plaintext JSON extraction by
+// unzipping the APK. Its runtime key is compiled into the APK and is recoverable
+// by reverse engineering: this is hardening, NOT absolute confidentiality.
+val vaultNames = setOf(
+    "flex_f_profiles.json",
+    "generic_b_profiles.json",
+    "hc_source_keys.json",
+    "http_tweak_source_tables.json",
+    "legacy_epro_npv2_keys.json",
+    "npvs_v5_tables.b85",
+    "npv_whitebox.bin", // generated before Gradle when available
+    "renz_d_profiles.json",
+    "ultra_c_profiles.json",
+)
+val vaultOriginalAssets = layout.projectDirectory.dir("src/main/assets")
+val vaultPackagedAssets = layout.buildDirectory.dir("generated/spdecode-vault/assets")
+val vaultGeneratedKotlin = layout.buildDirectory.dir("generated/spdecode-vault/kotlin")
+val prepareSecureAssetVault = tasks.register("prepareSecureAssetVault") {
+    inputs.dir(vaultOriginalAssets)
+    outputs.dir(vaultPackagedAssets)
+    outputs.dir(vaultGeneratedKotlin)
+    doLast {
+        val source = vaultOriginalAssets.asFile
+        val destination = vaultPackagedAssets.get().asFile
+        val codeRoot = vaultGeneratedKotlin.get().asFile
+        require(source.isDirectory) { "Decoder asset sources missing" }
+        destination.deleteRecursively()
+        codeRoot.deleteRecursively()
+        destination.mkdirs()
+        val random = SecureRandom()
+        val key = ByteArray(32).also(random::nextBytes)
+        val share = ByteArray(32).also(random::nextBytes)
+        val other = ByteArray(32) { i -> (key[i].toInt() xor share[i].toInt()).toByte() }
+        try {
+            source.walkTopDown().filter { it.isFile }.forEach { input ->
+                val relative = input.relativeTo(source).invariantSeparatorsPath
+                val isProtected = relative in vaultNames
+                val output = File(destination, if (isProtected) "$relative.spv" else relative)
+                output.parentFile.mkdirs()
+                if (!isProtected) {
+                    input.copyTo(output, overwrite = true)
+                } else {
+                    val nonce = ByteArray(12).also(random::nextBytes)
+                    val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+                    cipher.init(
+                        Cipher.ENCRYPT_MODE,
+                        SecretKeySpec(key, "AES"),
+                        GCMParameterSpec(128, nonce),
+                    )
+                    cipher.updateAAD("spdecode:s1:$relative".toByteArray(Charsets.UTF_8))
+                    output.writeBytes(
+                        "SPV1".toByteArray(Charsets.US_ASCII) +
+                            nonce + cipher.doFinal(input.readBytes())
+                    )
+                }
+            }
+            val required = vaultNames - "npv_whitebox.bin"
+            require(required.all { File(destination, "$it.spv").isFile }) {
+                "Missing secure vault source material"
+            }
+            require(vaultNames.none { File(destination, it).exists() }) {
+                "Plaintext protected asset was packaged"
+            }
+            val keyFile = File(
+                codeRoot,
+                "com/ghostdeveloper/spdecode/parity/VaultBuildKey.kt",
+            )
+            keyFile.parentFile.mkdirs()
+            val first = share.joinToString(",") { (it.toInt() and 255).toString() }
+            val second = other.joinToString(",") { (it.toInt() and 255).toString() }
+            keyFile.writeText(
+                """package com.ghostdeveloper.spdecode.parity
+
+internal object VaultBuildKey {
+    // Generated per build; these bytes are still extractable from the APK.
+    internal fun material(): ByteArray {
+        val a = intArrayOf($first)
+        val b = intArrayOf($second)
+        return ByteArray(32) { i -> (a[i] xor b[i]).toByte() }
+    }
+}
+""",
+                Charsets.UTF_8,
+            )
+        } finally {
+            key.fill(0)
+            share.fill(0)
+            other.fill(0)
+        }
+    }
+}
+
 android {
     namespace = "com.ghostdeveloper.spdecode"
+    // Only transformed assets are merged into the APK; canonical JSON inputs
+    // stay available to offline source generators and Python parity checks.
+    sourceSets.getByName("main").assets.setSrcDirs(listOf(vaultPackagedAssets))
+    sourceSets.getByName("main").java.srcDir(vaultGeneratedKotlin)
     compileSdk = 35
     defaultConfig {
         applicationId = "com.ghostdeveloper.spdecode"
@@ -100,4 +203,15 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
+}
+
+// The generated Kotlin key and transformed assets must exist before each
+// asset merge and Kotlin compilation, including unsigned CI and signed builds.
+tasks.configureEach {
+    if (name == "preBuild" ||
+        (name.startsWith("merge") && name.endsWith("Assets")) ||
+        (name.startsWith("compile") && name.endsWith("Kotlin")) ||
+        name.startsWith("kaptGenerateStubs")) {
+        dependsOn(prepareSecureAssetVault)
+    }
 }
