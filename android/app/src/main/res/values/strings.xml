@@ -121,7 +121,7 @@
     <string name="result_decoded_date">Date: %1$s</string>
     <string name="splash_powered_by">Powered by Ghost Developer</string>
     <string name="text_decode_title">Decode text</string>
-    <string name="text_decode_description">Paste a configuration link or encoded text. TLS, VMess, SSC, Dark Tunnel and other supported schemes work fully offline.</string>
+    <string name="text_decode_description">Paste a full configuration link or encoded text. TLS Tunnel 8.5.0, VMess, SSC, and Dark Tunnel Base64 (even without a prefix) work offline.</string>
     <string name="text_decode_hint">Paste the full link or encoded text</string>
     <string name="text_decode_action">Decode text</string>
     <string name="text_decode_private">Processed offline. Only successfully decoded results are saved.</string>
