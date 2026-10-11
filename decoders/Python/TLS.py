@@ -14,21 +14,36 @@ except ImportError:  # pragma: no cover - se prueba la ruta alternativa localmen
 
 sys.dont_write_bytecode = True
 
-# Clave AES-256 obtenida del método actual de TLS Tunnel.
+# Compatibilidad: esta constante mantiene la clave del decodificador anterior.
 AES_KEY = bytes.fromhex(
     "6b303068c2acc2b9c2b221352473c2b0c2b725c2a824614b674433c2b0467856"
 )
+# Orden literal de Ldd.<init>(B), APK 8.5.0 (516), después de
+# StringBuilder.reverse() y String.getBytes(UTF-8). No invertir bytes UTF-8.
+CONFIG_KEYS = tuple(bytes.fromhex(value) for value in (
+    "2474763534327665643235345671c38b72775742627236c2b324254856232433",
+    "33cf82ceb7cf84e1baa135566ec6b0686e33d8b661d0bed0bdd0b12578745630",
+    "23e4bc9acf82ceb7cf84e1baa135676ec6b0686e3332d8b661d0bed0bdd0b125",
+    "23e4bc9ae685a246e1baa14235676ec6b0686e3332d8b661d0bed0bdd0b12534",
+    "234673486ee1baa14246355c3332d8b6612534407c666433653247462847c38b",
+    AES_KEY.hex(),
+))
 
 
-def _decrypt_aes_gcm(ciphertext: bytes, tag: bytes, nonce: bytes) -> bytes:
+def _decrypt_aes_gcm(ciphertext: bytes, tag: bytes, nonce: bytes,
+                     key: bytes = AES_KEY) -> bytes:
     """Descifra AES-GCM con PyCryptodome o con cryptography como respaldo."""
     if _CryptoAES is not None:
-        cipher = _CryptoAES.new(AES_KEY, _CryptoAES.MODE_GCM, nonce=nonce)
+        cipher = _CryptoAES.new(key, _CryptoAES.MODE_GCM, nonce=nonce)
         return cipher.decrypt_and_verify(ciphertext, tag)
 
+    from cryptography.exceptions import InvalidTag
     from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-    return AESGCM(AES_KEY).decrypt(nonce, ciphertext + tag, None)
+    try:
+        return AESGCM(key).decrypt(nonce, ciphertext + tag, None)
+    except InvalidTag as exc:
+        raise ValueError("Etiqueta GCM inválida") from exc
 
 
 def fix_b64_padding(b64_str: str) -> str:
@@ -43,11 +58,9 @@ def decode_internal_b64(b64_str: str) -> str:
     if not b64_str:
         return ""
     try:
-        return base64.b64decode(fix_b64_padding(b64_str)).decode(
-            "utf-8", errors="ignore"
-        )
+        return base64.b64decode(fix_b64_padding(b64_str), validate=True).decode("utf-8")
     except Exception:
-        return ""
+        return b64_str
 
 
 def safe_int(val: str) -> int:
@@ -59,9 +72,9 @@ def safe_int(val: str) -> int:
 
 
 def decrypt_tls_payload(encrypted_b64: str) -> dict:
-    """Descifra el contenedor actual de TLS Tunnel.
+    """Descifra y autentica el contenedor, incluidos los seis perfiles de 8.5.0.
 
-    Flujo reproducido del método suministrado:
+    Flujo observado en Ldd.o([B)[B de la APK 8.5.0:
     1. elimina un sufijo separado por ``:`` si existe;
     2. invierte el Base64 exterior;
     3. reconstruye los dos fragmentos del ciphertext y del nonce;
@@ -69,13 +82,19 @@ def decrypt_tls_payload(encrypted_b64: str) -> dict:
     5. verifica y descifra AES-256-GCM;
     6. convierte la cadena delimitada por ``:`` a un diccionario.
     """
-    encrypted_b64 = encrypted_b64.split(":", 1)[0].strip()
+    encrypted_b64 = encrypted_b64.strip()
+    if encrypted_b64.startswith("tls://"):
+        encrypted_b64 = encrypted_b64[6:]
+    encrypted_b64 = "".join(encrypted_b64.split(":", 1)[0].split())
     if not encrypted_b64:
         raise ValueError("Payload TLS vacío")
 
     reversed_b64 = encrypted_b64[::-1]
     padded_b64 = fix_b64_padding(reversed_b64)
-    raw_bytes = base64.b64decode(padded_b64)
+    try:
+        raw_bytes = base64.b64decode(padded_b64, validate=True)
+    except (ValueError, base64.binascii.Error) as exc:
+        raise ValueError("Base64 TLS inválido") from exc
 
     i4_len = len(raw_bytes)
     # El contenedor reserva 132 bytes fuera del ciphertext reconstruido:
@@ -109,7 +128,19 @@ def decrypt_tls_payload(encrypted_b64: str) -> dict:
     actual_ciphertext = stitched_ciphertext[:-16]
     mac_tag = stitched_ciphertext[-16:]
 
-    decrypted_bytes = _decrypt_aes_gcm(actual_ciphertext, mac_tag, stitched_iv)
+    decrypted_bytes = None
+    key_index = None
+    # Como la app, probar perfiles conocidos. Solo aceptar autenticación GCM.
+    # Nunca entregar plaintext de una clave cuya etiqueta no se verifica.
+    for index, key in enumerate(CONFIG_KEYS):
+        try:
+            decrypted_bytes = _decrypt_aes_gcm(actual_ciphertext, mac_tag, stitched_iv, key)
+        except ValueError:
+            continue
+        key_index = index
+        break
+    if decrypted_bytes is None:
+        raise ValueError("Ninguna clave TLS conocida autentica el archivo")
 
     decrypted_str = decrypted_bytes.decode("utf-8")
     parts = decrypted_str.split(":")
@@ -145,6 +176,25 @@ def decrypt_tls_payload(encrypted_b64: str) -> dict:
         .replace("ѻ", "\r"),
     }
 
+    # En la muestra 516, los campos 20..23 son booleanos, no los valores DNS
+    # del esquema antiguo. No asignar nombres antiguos a valores nuevos.
+    if key_index != len(CONFIG_KEYS) - 1:
+        for name in ("legacy_dns_mode", "dnsP", "dns_port", "nameserver", "public_key"):
+            config.pop(name, None)
+    # Registro completo: conserva posiciones desconocidas y valores originales.
+    # Los nombres heredados ayudan a consumidores existentes; la lista permite
+    # integrar el esquema nuevo sin perder ningún campo ni inventar su función.
+    config["_tls"] = {
+        "authenticated": True,
+        "key_profile": key_index + 1,
+        "field_count": len(parts),
+        "fields": [
+            {"index": index, "raw": value,
+             "value": (decode_internal_b64(value) if index in
+                       (4, 5, 6, 7, 9, 12, 14, 16, 18, 19, 24, 27) else value)}
+            for index, value in enumerate(parts)
+        ],
+    }
     # Se conserva el comportamiento del método original: solo se eliminan
     # cadenas vacías. Los valores 0 y False son datos válidos del formato.
     return {key: value for key, value in config.items() if value != ""}
@@ -153,12 +203,12 @@ def decrypt_tls_payload(encrypted_b64: str) -> dict:
 def run(file_bytes: bytes) -> str | None:
     """Punto de entrada compartido para archivos .tls y mensajes tls://."""
     try:
-        raw_input = file_bytes.decode("utf-8", errors="ignore").strip()
+        raw_input = file_bytes.decode("utf-8-sig").strip()
         if not raw_input:
             return None
 
-        if "://" in raw_input:
-            raw_input = raw_input.split("://", 1)[1]
+        if raw_input.startswith("tls://"):
+            raw_input = raw_input[6:]
 
         raw_input = "".join(raw_input.split())
         config_dict = decrypt_tls_payload(raw_input)
@@ -178,6 +228,7 @@ def run(file_bytes: bytes) -> str | None:
 def main() -> int:
     parser = ArgumentParser(description="Decodificador de configuraciones TLS Tunnel")
     parser.add_argument("file", help="Archivo .tls a descifrar")
+    parser.add_argument("-o", "--output", help="Guardar el JSON descifrado")
     args = parser.parse_args()
 
     try:
@@ -186,14 +237,23 @@ def main() -> int:
         print(f"No se pudo leer el archivo: {exc}", file=sys.stderr)
         return 2
 
-    result = run(file_bytes)
-    if not result:
-        print("No se pudo descifrar la configuración TLS Tunnel.", file=sys.stderr)
+    try:
+        config = decrypt_tls_payload(file_bytes.decode("utf-8-sig"))
+    except (ValueError, UnicodeError, ImportError) as exc:
+        print(f"No se pudo descifrar TLS Tunnel: {exc}", file=sys.stderr)
         return 1
-
-    print(result)
+    result = json.dumps(config, indent=4, ensure_ascii=False)
+    if args.output:
+        try:
+            Path(args.output).write_text(result + "\n", encoding="utf-8")
+        except OSError as exc:
+            print(f"No se pudo guardar el JSON: {exc}", file=sys.stderr)
+            return 2
+    else:
+        print("TLS Tunnel\n" + "=" * 30 + "\n\n" + result + "\n\n" + "=" * 30)
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
