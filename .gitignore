@@ -34,3 +34,16 @@ crafternexora-release.jks
 crafternexora-release.jks.base64.txt
 
 rep.py
+
+# Phase S.3: private signing material and machine-local identity files.
+# Public signing certificates/fingerprints remain safe to publish.
+*.jks
+*.keystore
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+service-account.json
+service_account.json
+credentials-private.json
+secrets.json
