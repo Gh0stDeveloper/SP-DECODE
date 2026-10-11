@@ -10,10 +10,10 @@ from scripts.android_s2_extra_audit import check_apk, check_sources, fixture, li
 class S2ExtraTest(unittest.TestCase):
     def test_materials_sha_provenance_and_no_embedded_source_keys(self):
         report = check_sources()
-        self.assertEqual(3, len(report["migratedPorts"]))
-        self.assertEqual(18, report["validatedMaterialCount"])
+        self.assertEqual(4, len(report["migratedPorts"]))
+        self.assertEqual(30, report["validatedMaterialCount"])
         expected = fixture()["materials"]
-        self.assertEqual(18, len(expected))
+        self.assertEqual(30, len(expected))
         for label, record in expected.items():
             self.assertEqual(64, len(record["sha256"]), label)
             self.assertGreater(record["bytes"], 0)
