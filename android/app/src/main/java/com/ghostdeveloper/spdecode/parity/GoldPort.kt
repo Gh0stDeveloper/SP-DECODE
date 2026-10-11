@@ -5,7 +5,7 @@ import android.content.Context
 import org.json.JSONObject
 import org.json.JSONArray
 
-/** Gold Tunnel: SHA256("goldtunnel") AES-CBC/IV=0 with field-local decrypt. */
+/** Gold Tunnel: source-derived SHA-256 key, AES-CBC/IV=0 and nested decrypt. */
 object GoldPort {
     private val p=LegacyPortPrimitives
     private const val OBF="主tt畫s://u畫땬둣t二日s的为.xyz/u畫就的둣땬s/日s的为/小듌둣딨들둣中二天大듌く天中女大天땬둣듽.日s的为与没딸当国땀山"
