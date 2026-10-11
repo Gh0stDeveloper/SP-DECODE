@@ -52,6 +52,20 @@ internal fun JsonTreeViewer(
     maskCredentials: Boolean,
     identity: String,
 ) {
+    // Keyed content prevents a frame of *unmasked* JSON from surviving
+    // when the user switches the sensitive-values toggle.
+    key(identity, maskCredentials, raw, suffix) {
+        JsonTreeViewerContent(raw, suffix, maskCredentials, identity)
+    }
+}
+
+@Composable
+private fun JsonTreeViewerContent(
+    raw: String,
+    suffix: String,
+    maskCredentials: Boolean,
+    identity: String,
+) {
     val document by produceState<JsonElement?>(
         initialValue = null, raw, suffix, maskCredentials, identity
     ) {
