@@ -42,7 +42,8 @@ object AndroidOfflineDecoderRouter {
             else -> LegacyPortPrimitives.MAX_INPUT
         }
         if (input.size > maxInput) return null
-        if (userPassword != null && format.suffix != "hc") return null
+        if (userPassword != null && (format.suffix != "hc" ||
+            !HcHccfgPort.requiresExternalPassword(input))) return null
         // Phase A: 178 bot-only suffixes are catalogued but have no native port.
         // Keep a hard gate before the old 61-case dispatcher to prevent
         // accidental treatment as a supported decoder or unrelated fallback.
