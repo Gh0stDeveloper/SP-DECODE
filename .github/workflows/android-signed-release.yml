@@ -36,6 +36,7 @@ jobs:
     outputs:
       eligible: ${{ steps.verify.outputs.eligible }}
       version: ${{ steps.verify.outputs.version }}
+      code: ${{ steps.verify.outputs.code }}
       source_sha: ${{ steps.verify.outputs.source_sha }}
     steps:
       - uses: actions/checkout@v4
@@ -72,6 +73,12 @@ jobs:
             echo "::error::Production APK requires a stable versionName, not an alpha"
             exit 1
           }
+          CODE="$(sed -nE 's/.*versionCode = ([0-9]+).*/\1/p' android/app/build.gradle.kts)"
+          [[ "$CODE" =~ ^[1-9][0-9]*$ ]] || {
+            echo "::error::Invalid production Android versionCode"
+            exit 1
+          }
+          echo "code=$CODE" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "source_sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
           echo "eligible=true" >> "$GITHUB_OUTPUT"
@@ -172,6 +179,7 @@ jobs:
       - name: Verify release signature schemes, package, version and 16 KiB alignment
         env:
           VERSION: ${{ needs.preflight.outputs.version }}
+          VERSION_CODE: ${{ needs.preflight.outputs.code }}
           SOURCE_SHA: ${{ needs.preflight.outputs.source_sha }}
         run: |
           set -euo pipefail
@@ -216,6 +224,7 @@ jobs:
           "$TOOLS/aapt" dump badging "$APK" > "$RUNNER_TEMP/badging.txt"
           grep -F "package: name='com.ghostdeveloper.spdecode'" "$RUNNER_TEMP/badging.txt"
           grep -F "versionName='$VERSION'" "$RUNNER_TEMP/badging.txt"
+          grep -F "versionCode='$VERSION_CODE'" "$RUNNER_TEMP/badging.txt"
           mkdir -p dist
           cp "$APK" "dist/SP-DECODE-v$VERSION-production-signed.apk"
           (cd dist && sha256sum *.apk > SHA256SUMS.txt)
@@ -311,6 +320,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ needs.preflight.outputs.version }}
+          VERSION_CODE: ${{ needs.preflight.outputs.code }}
           SOURCE_SHA: ${{ needs.preflight.outputs.source_sha }}
         run: |
           set -euo pipefail
@@ -325,7 +335,7 @@ jobs:
             "dist/SHA256SUMS.txt" "dist/SIGNATURE_VERIFICATION.txt" \
             --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" \
             --title "SP-DECODE Android v$VERSION" --latest \
-            --notes "SP-DECODE Android v$VERSION — STABLE production APK (versionCode 21). Settings now provides developer contact exclusively via Ghost Developer Telegram profile, group and channel, removes repository and GitHub Issues links, and shows the installed app version/build. First launch includes a replayable five-step guided tour with Spanish, English, Brazilian Portuguese and Arabic translations. Release-only R8 shrink/obfuscation/resource optimization and stronger local installed-signer, debuggable and debugger checks add defense in depth; do not guarantee absolute protection of locally bundled decryption algorithms or static secrets. The app remains fully offline with encrypted history; no advertising SDK, Internet permission or Play Store requirement was added. Existing NPVS v5 full-JSON, Ultra nested AES-GCM salt AAD, HTTP Injector JSON and credited Telegram copy fixes remain unchanged. Built and SHA-256 verified from the exact successful main SHA, permanently signed with GitHub Secrets keystore (V1/V2/V3); 16 KiB alignment and previous certificate parity verified. Owner specifically approves stable v1.1.0 with noted limits. CI/emulator and R8 release compilation checks PASS; independently reproduced current vendor corpus, installed signed APK physical-device/upgrade, accessibility and 16 KiB ARM64 device test evidence remain pending. Evidence: docs/android/RELEASE_1_1_0_SETTINGS_SECURITY.md; release/android-readiness.json."
+            --notes "SP-DECODE Android v$VERSION — STABLE production APK (versionCode $VERSION_CODE). This release includes TLS Tunnel 8.5.0 AES-GCM key profiles (six profiles in Python and Android), additional nested HTTP Injector (.ehi) field processing, and Dark Tunnel Base64-only text detection. The five-step localized guide is now centered on screen with scroll handling for smaller devices. The APK remains offline with encrypted history and R8 optimizations. It is built from the exact validated main commit using the permanent GitHub Secrets keystore with V1/V2/V3 signature verification, previous certificate parity, 16 KiB alignment and SHA-256 checks. Remaining limits: rare .ehi exporter layouts with concatenated/encoded names still require reproduction with an original file; current vendor corpus, physical-device upgrade and accessibility/performance evidence remain pending. Owner approves stable v1.1.1 with these documented limits. Evidence: docs/android/RELEASE_1_1_1_TLS_EHI_GUIDE.md; release/android-readiness.json."
 
   publish-signed-preview:
     name: Publish public production-signed prerelease (stable GO remains separate)
