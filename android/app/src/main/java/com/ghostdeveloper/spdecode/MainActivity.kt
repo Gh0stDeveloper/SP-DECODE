@@ -157,6 +157,11 @@ class MainActivity : ComponentActivity() {
         val splashStarted=SystemClock.elapsedRealtime()
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        // Fail closed for a release APK re-signed with an unknown certificate.
+        if (!ReleaseIntegrity.isTrusted(this)) {
+            finishAndRemoveTask()
+            return
+        }
         // A new launch starts with an empty Home result. Rotation keeps the
         // existing ViewModel result; neither case deletes encrypted history.
         if(savedInstanceState==null) {
