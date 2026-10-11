@@ -52,7 +52,10 @@ def samples():
         else:
             assert decoded["legacy_dns_mode"] == 2
         text = TLS.run(raw)
-        assert text and '"_tls": {' in text
+        assert text
+        # Profile 6 preserves the frozen historical result text, while the
+        # 8.5.0 keys include all positional metadata for new schema fields.
+        assert ('"_tls": {' in text) == (profile != 6)
         yield f"tls850-profile-{profile}", raw, text + "\n"
 
 
