@@ -200,6 +200,12 @@ jobs:
           python scripts/android_s2_legacy_audit.py \
             --apk android/app/build/outputs/apk/release/app-release.apk
 
+      - name: Reject source E1 E2 F2 decoder constants from signed APK DEX
+        run: |
+          set -euo pipefail
+          python scripts/android_s2_family_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release.apk
+
       - name: Verify release signature schemes, package, version and 16 KiB alignment
         env:
           VERSION: ${{ needs.preflight.outputs.version }}
