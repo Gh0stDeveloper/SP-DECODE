@@ -17,13 +17,13 @@ class EhiCompleteResultInstrumentedTest {
     @Test fun originalPythonAndAndroidEhiTextStillMatchExactly(){
         val encrypted=file("ehi-complete-fields.ehi")
         val expected=file("ehi-complete-fields.txt")
-        assertArrayEquals(expected,EhiPort.decode(encrypted)?.toByteArray(Charsets.UTF_8))
+        assertArrayEquals(expected,EhiPort.decode(inst.targetContext,encrypted)?.toByteArray(Charsets.UTF_8))
         assertArrayEquals(expected,AndroidOfflineDecoderRouter.decode(
             inst.targetContext,"mixed.EHI",encrypted)?.toByteArray(Charsets.UTF_8))
     }
     @Test fun UIResultContainsCompleteTypedJSONFromEhiFile(){
         val encrypted=file("ehi-complete-fields.ehi")
-        val raw=EhiPort.decode(encrypted)
+        val raw=EhiPort.decode(inst.targetContext,encrypted)
         assertNotNull(raw)
         val expected=JsonParser.parseString(String(file("ehi-complete-fields.json"),Charsets.UTF_8))
         val presentation=DecodeView("mixed.ehi","ehi",raw!!,encrypted.size)
