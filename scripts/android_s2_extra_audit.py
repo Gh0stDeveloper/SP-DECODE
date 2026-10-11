@@ -20,6 +20,7 @@ PORTS = {
     "TlsReferencePort.kt": "tls",
     "EhiPort.kt": "ehi",
     "DarkPort.kt": "dark",
+    "EhilPort.kt": "ehil",
 }
 
 
@@ -43,7 +44,22 @@ def materials(root: Path = ROOT) -> dict[str, bytes]:
     div = bytes.fromhex(dark["ivHex"])
     if len(one) != 32 or len(two) != 16 or len(div) != 16:
         raise ValueError("Invalid EHI keys or Dark IV")
+    ehil = source["ehil"]
+    ehil_first = [bytes.fromhex(s) for s in ehil["firstLayerKeyHex"]]
+    ehil_second = [bytes.fromhex(s) for s in ehil["secondLayerKeyHex"]]
+    ehil_ivs = [s.encode("ascii") for s in ehil["ivAscii"]]
+    if len(ehil_first) != 3 or any(len(x) != 32 for x in ehil_first):
+        raise ValueError("Unexpected EHIL first-layer keys")
+    if len(ehil_second) != 2 or any(len(x) != 16 for x in ehil_second):
+        raise ValueError("Unexpected EHIL second-layer keys")
+    if len(ehil_ivs) != 7 or any(len(x) != 16 for x in ehil_ivs):
+        raise ValueError("Unexpected EHIL IV family")
+    if ehil_first[0] != one:
+        raise ValueError("Shared EHI/EHIL key does not match original source")
     return {
+        **{f"ehilFirst{i+1}": value for i,value in enumerate(ehil_first)},
+        **{f"ehilSecond{i+1}": value for i,value in enumerate(ehil_second)},
+        **{f"ehilIv{i+1}": value for i,value in enumerate(ehil_ivs)},
         **{f"tlsProfile{i+1}": k for i,k in enumerate(tlskeys)},
         "ehiFirst": one, "ehiSecond": two, "ehiXxtea": xxtea,
         **{f"ehiBypassIv{i+1}": k for i,k in enumerate(bypass)},
@@ -64,6 +80,11 @@ def literals(root: Path = ROOT) -> dict[str, list[str]]:
         "DarkPort.kt": [
             source["dark"]["outerKeyText"][1:],
             source["dark"]["nestedKeyText"], source["dark"]["ivHex"],
+        ],
+        "EhilPort.kt": [
+            *source["ehil"]["firstLayerKeyHex"],
+            *source["ehil"]["secondLayerKeyHex"],
+            *source["ehil"]["ivAscii"],
         ],
     }
 
@@ -97,7 +118,7 @@ def check_apk(apk: Path, root: Path = ROOT) -> dict:
         for name in dex:
             data = zf.read(name)
             if any(fragment.encode("utf-8") in data for fragment in candidates):
-                raise ValueError(f"S.2 TLS/EHI/Dark literal present in DEX: {name}")
+                raise ValueError(f"S.2 TLS/EHI/Dark/EHIL literal present in DEX: {name}")
         if "assets/embedded_kotlin_profiles.json" in names:
             raise ValueError("Plaintext material source is packaged")
         if "assets/embedded_kotlin_profiles.json.spv" not in names:
@@ -121,7 +142,7 @@ def main() -> int:
     parser.add_argument("--fixtures", type=Path)
     parser.add_argument("--report", type=Path)
     args = parser.parse_args()
-    result = {"phase":"S.2 TLS/EHI/Dark","status":"PASS", **check_sources()}
+    result = {"phase":"S.2 TLS/EHI/Dark/EHIL","status":"PASS", **check_sources()}
     if args.apk:
         result["apk"] = check_apk(args.apk)
     if args.fixtures:
