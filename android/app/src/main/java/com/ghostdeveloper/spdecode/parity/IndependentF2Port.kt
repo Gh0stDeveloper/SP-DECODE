@@ -23,9 +23,6 @@ internal object IndependentF2Port {
     private val javaB64=Regex("[A-Za-z0-9+/]{20,}={0,2}")
     private val skipPrefix=listOf("java.","com.","org.","sun.","javax.","Ljava.","[L","Lsc.","Lcom/")
     private val skipExact=setOf("key","value","next","hash","this\$0","serialVersionUID")
-    private val devSky="demondevs".toByteArray()
-    private val devPassword="❤️🧑‍💻Bøbõ⁰⁰!!"
-    private val devChars="           ​‌‍‎‏"
 
     fun decode(context:Context,suffix:String,input:ByteArray):String? {
         if(input.isEmpty() || input.size>IndependentCrypto.MAX)return null
@@ -73,7 +70,7 @@ internal object IndependentF2Port {
 
     private fun zoba(input:ByteArray,keys:PhaseS2FamilyMaterials.F2):String? {
         val raw=try{crypto.b64(crypto.utf8Ignore(input))}catch(_:Exception){input}
-        val clear=crypto.xxteaDecrypt(raw,"technore_008515\u0000".toByteArray(),-1704280)
+        val clear=crypto.xxteaDecrypt(raw,keys.zobaPassword,-1704280)
             ?:return null
         val text=crypto.utf8Ignore(clear)
         val json=sc.parseDocument(text)
@@ -81,26 +78,26 @@ internal object IndependentF2Port {
         else text.takeIf{it.length>3 && it.all{ch->!ch.isISOControl()}}
     }
 
-    private fun devKey():ByteArray {
-        val input=devPassword.toByteArray(Charsets.UTF_8)
+    private fun devKey(keys:PhaseS2FamilyMaterials.F2):ByteArray {
+        val input=keys.devPassword.toByteArray(Charsets.UTF_8)
         val hex=input.joinToString(""){"%02X".format(it.toInt() and 255)}
         return sc.sha(hex.toByteArray(Charsets.UTF_8))
     }
-    private fun devDecodeChars(raw:String):String{
+    private fun devDecodeChars(raw:String,keys:PhaseS2FamilyMaterials.F2):String{
         if(raw.length%2!=0)return raw
         return try{
             val bytes=ByteArray(raw.length/2) { i->
-                val first=devChars.indexOf(raw[2*i])
-                val second=devChars.indexOf(raw[2*i+1])
+                val first=keys.devChars.indexOf(raw[2*i])
+                val second=keys.devChars.indexOf(raw[2*i+1])
                 require(first>=0&&second>=0)
                 ((first shl 4) or second).toByte()
             }
             crypto.utf8(bytes)
         }catch(_:Exception){raw}
     }
-    private fun devInner(raw:String,key:ByteArray):String{
+    private fun devInner(raw:String,key:ByteArray,keys:PhaseS2FamilyMaterials.F2):String{
         return try{
-            val encoded=devDecodeChars(raw)
+            val encoded=devDecodeChars(raw,keys)
             val encrypted=crypto.b64(encoded)
             val cipher=Cipher.getInstance("AES/CBC/NoPadding")
             require(encrypted.isNotEmpty()&&encrypted.size%16==0)
@@ -113,15 +110,15 @@ internal object IndependentF2Port {
     }
     private fun dev(input:ByteArray,keys:PhaseS2FamilyMaterials.F2):String?{
         val encoded=crypto.utf8Ignore(input).trim()
-        val clear=crypto.xxteaDecrypt(crypto.b64(encoded),devSky,0x9a7393b4.toInt())
+        val clear=crypto.xxteaDecrypt(crypto.b64(encoded),keys.devSky,0x9a7393b4.toInt())
             ?:return null
         val doc=sc.parseDocument(crypto.utf8(clear))?.takeIf{it.isJsonObject}?:return null
         val obj=doc.asJsonObject
-        val key=devKey()
+        val key=devKey(keys)
         for((name,value) in obj.entrySet().toList()){
             if(value.isJsonPrimitive && value.asJsonPrimitive.isString &&
                 value.asString.isNotEmpty()){
-                obj.addProperty(name,devInner(value.asString,key))
+                obj.addProperty(name,devInner(value.asString,key,keys))
             }
         }
         return sc.gson.toJson(obj)
