@@ -118,7 +118,9 @@ def hccfg_hwid_file(password: str | None = None) -> bytes:
     env["j"]=[{"a":"s0","b":NONCE_PROFILE.hex(),
         "c":aead(section_key,NONCE_PROFILE,aad+b"\\x00s0",payload).hex()}]
     body=json.dumps(env,separators=(",",":")).encode("utf-8")
-    logical=NONCE_OUTER+hc._stream_xor(body,hc.OUTER_KEY_V3,NONCE_OUTER)+bytes(16)
+    sub=hc._hchacha20(hc.OUTER_KEY_V3,NONCE_OUTER[:16])
+    n12=bytes(4)+NONCE_OUTER[16:]
+    logical=NONCE_OUTER+hc._stream_xor(body,sub,n12)+bytes(16)
     return logical.decode("latin-1").encode("utf-8")
 
 
