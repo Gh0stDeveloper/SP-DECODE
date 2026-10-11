@@ -30,9 +30,10 @@ internal object IndependentF2Port {
     private val devPassword="❤️🧑‍💻Bøbõ⁰⁰!!"
     private val devChars="           ​‌‍‎‏"
 
-    fun decode(suffix:String,input:ByteArray):String? {
+    fun decode(context:Context,suffix:String,input:ByteArray):String? {
         if(input.isEmpty() || input.size>IndependentCrypto.MAX)return null
-        return try { when(suffix){
+        return try { val keys=PhaseS2FamilyMaterials.f2(context)
+            when(suffix){
             "crev","cer","cerv"->crev(input)
             "zoba"->zoba(input)
             "dev"->dev(input)
