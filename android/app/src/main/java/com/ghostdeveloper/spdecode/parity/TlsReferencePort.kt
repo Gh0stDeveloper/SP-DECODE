@@ -125,7 +125,7 @@ object TlsReferencePort {
         }
         fields["bloqmc"]=boolValue(25)
         keep("mensagem",decoded(27).replace("Ѻ","\n").replace("ѻ","\r"))
-        fields["_tls"]=linkedMapOf<String,Any?>(
+        if(profile!=6)fields["_tls"]=linkedMapOf<String,Any?>(
             "authenticated" to true,
             "key_profile" to profile,
             "field_count" to parts.size,
