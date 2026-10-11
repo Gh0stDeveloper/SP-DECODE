@@ -116,6 +116,9 @@ jobs:
           python -m pip install -r requirements.txt
           PYTHONPATH=. python scripts/android_a24_whitebox_export.py \
             --output android/app/src/main/assets/npv_whitebox.bin
+      - name: Phase S.3 prohibit tracked secrets and dangerous diagnostics before signing
+        run: python scripts/android_s3_security_audit.py
+
       - name: Load permanent signing keystore exclusively from GitHub Secrets
         env:
           STORE_BASE64: ${{ secrets.SPDECODE_SIGNING_KEYSTORE_BASE64 }}
@@ -134,11 +137,11 @@ jobs:
           printf '%s' "$STORE_BASE64" | base64 --decode > "$RUNNER_TEMP/spdecode-production.p12"
           test "$(stat -c %s "$RUNNER_TEMP/spdecode-production.p12")" -gt 1000
           keytool -list -keystore "$RUNNER_TEMP/spdecode-production.p12" \
-            -storetype PKCS12 -storepass "$STORE_PASSWORD" -alias "$KEY_ALIAS" >/dev/null
+            -storetype PKCS12 -storepass:env STORE_PASSWORD -alias "$KEY_ALIAS" >/dev/null
           # Public certificate digest only. Never include private key material.
           SIGNER_SHA256="$(keytool -exportcert \
             -keystore "$RUNNER_TEMP/spdecode-production.p12" \
-            -storetype PKCS12 -storepass "$STORE_PASSWORD" \
+            -storetype PKCS12 -storepass:env STORE_PASSWORD \
             -alias "$KEY_ALIAS" | sha256sum | awk '{print $1}')"
           [[ "$SIGNER_SHA256" =~ ^[0-9a-f]{64}$ ]] || exit 1
           echo "SPDECODE_TRUSTED_SIGNER_SHA256=$SIGNER_SHA256" >> "$GITHUB_ENV"
@@ -204,6 +207,12 @@ jobs:
         run: |
           set -euo pipefail
           python scripts/android_s2_family_audit.py \
+            --apk android/app/build/outputs/apk/release/app-release.apk
+
+      - name: Phase S.3 prohibit private keys and access tokens in signed APK
+        run: |
+          set -euo pipefail
+          python scripts/android_s3_security_audit.py \
             --apk android/app/build/outputs/apk/release/app-release.apk
 
       - name: Verify release signature schemes, package, version and 16 KiB alignment
