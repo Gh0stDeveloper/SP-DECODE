@@ -185,7 +185,8 @@ private fun jsonLine(row: JsonTreeProjection.Row, stringChars: Int = INITIAL_STR
                     if (!row.expanded && row.comma) append(',')
                 }
                 if (!row.expanded) withStyle(SpanStyle(color = JsonSecondary)) {
-                    append("  // ").append(row.total.toString())
+                    append("  // ")
+                    append(row.total.toString())
                 }
             }
             JsonTreeProjection.Kind.END -> {
