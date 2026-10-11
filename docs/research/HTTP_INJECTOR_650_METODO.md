@@ -69,9 +69,9 @@ Se recuperaron ELF válidos de `libDexHelper.so` y `libdexjniehi.so`: el cargado
 
 Anclas verificadas en ARM64 `libdexjniehi.so` empaquetado: KSA RC4 en `0x2780..0x27b4`, PRGA de la cabecera de 64 bytes en `0x27b8..0x2814`, XOR del resto en `0xcec`. El bloque de parámetros está en offset de archivo `0x4000`; carga ELF en `0x5000`; clave RC4 y byte XOR en `0x1762e0`. En `libDexHelper.so`: parámetros `0xc000`, carga `0x18000`, clave y XOR `0x114ead`. Estas claves son del empaquetador, **no de EHI ni del dispositivo**.
 
-La biblioteca interior `libdexjniehi` registra `com/fort/andjni/JniLib`. Su `.data` contiene LZ4 y MessagePack: se recuperó parcialmente un pool de referencias y constantes y un flujo con 783 métodos virtualizados. Las instrucciones siguen ofuscadas; no se ha reconstruido un ejecutor completo ni certificado los métodos de cloud/emoji.
+La biblioteca interior `libdexjniehi` registra `com/fort/andjni/JniLib`. Su `.data` contiene LZ4 y MessagePack: se recuperó parcialmente un pool de referencias y constantes y un flujo con 783 métodos virtualizados. No se reconstruyó un ejecutor completo. La continuación cloud/emoji se resolvió mediante métodos Dalvik directos y cadenas recuperadas, sin necesitar ese ejecutor; ver sus documentos independientes.
 
-`libdatajar` tiene un bloque en `0x4018`, metadatos DEX y un frame Zstandard en `0xe89018`. El frame de `0x4de074` bytes se descomprime a `0x1e00000` bytes. Se reconstruyeron metadatos de 9 103 clases a partir del mapa y las cadenas, omitiendo anotaciones/valores estáticos no recuperados. **Ese DEX es sólo para análisis: no está completo ni es ejecutable.** Los wrappers de `ConfigActivity` remiten a `JniLib`; el resto usa un descodificador de cadenas con constantes `long`. Ni los wrappers ni los pools parciales bastan para afirmar un algoritmo de emojis.
+`libdatajar` tiene un bloque en `0x4018`, metadatos DEX y un frame Zstandard en `0xe89018`. El frame de `0x4de074` bytes se descomprime a `0x1e00000` bytes. Se reconstruyeron metadatos de 9 103 clases a partir del mapa y las cadenas, omitiendo anotaciones/valores estáticos no recuperados. **Ese DEX es sólo para análisis: no está completo ni es ejecutable.** Después se recuperaron otros dos DEX parciales del frame y se reprodujo el descodificador de cadenas con constantes `long`; los offsets y las limitaciones están en el documento cloud. Los wrappers de `ConfigActivity` remiten a `JniLib`.
 
 ## Pruebas realizadas
 
@@ -80,7 +80,7 @@ python -m unittest discover -s tests -p test_httpinjector_diagnostics.py -v
 EHI_REAL_FILE=/ruta/privada/muestra.ehi python -m unittest discover -s tests -p test_httpinjector_diagnostics.py -v
 ```
 
-9 pruebas pasaron con el archivo privado habilitado: seis IV, ambos backends, tag modificado, cabecera/truncamiento, límites antes de Argon2, bypass sin Argon2, preservación de desconocidos/tipos/CRLF, CLI JSON y prohibición de sobreescribir entrada, y la muestra real. El caso privado sólo compara SHA, perfil y cuentas; no publica valores. En CI sin muestra se omite ese único caso. No se ejecutó Android ni se probó una exportación nueva cloud/emoji.
+Las 9 pruebas EHI pasaron con el archivo privado habilitado: seis IV, ambos backends, tag modificado, cabecera/truncamiento, límites antes de Argon2, bypass sin Argon2, preservación de desconocidos/tipos/CRLF, CLI JSON y prohibición de sobreescribir entrada, y la muestra real. El caso privado sólo compara SHA, perfil y cuentas; no publica valores. En CI sin muestra se omite ese único caso. La continuación añade 11 pruebas cloud/emoji: 20 en total pasaron con las dos entradas privadas habilitadas. También se importó el enlace cloud real por las dos CLI; el caso emoji positivo es derivado de ese enlace, mientras que la secuencia original del usuario es inválida. No se ejecutó Android.
 
 ## Próxima sesión / actualización
 
@@ -88,4 +88,4 @@ Primero reproducir la muestra mediante su SHA y comparar el JSON tipado, no sól
 
 Para cadenas conservadas, obtener un ejemplo mínimo cuyo valor original se conozca y cuyo campo activo se confirme en el exportador. Aislar su representación con `configSalt` y revisar la función de lectura de ese campo. No convertir una hipótesis de relleno en compatibilidad publicada.
 
-Para cloud y emojis continuar desde sus documentos independientes. Hacen falta un enlace/exportación reales, una respuesta cloud guardada si está disponible y texto emoji sin normalizaciones. Mantener esos ejemplos fuera de Git. No declarar cerrados esos dos formatos con sólo fixtures fabricados.
+Para cloud y emojis continuar desde [HTTP_INJECTOR_CLOUD_METODO.md](HTTP_INJECTOR_CLOUD_METODO.md) y [HTTP_INJECTOR_EMOJI_METODO.md](HTTP_INJECTOR_EMOJI_METODO.md). Ya se conserva una respuesta cloud real y se verificó el algoritmo emoji de la APK. Hace falta volver a copiar la exportación emoji original inválida para certificar ese ejemplo concreto. Mantener los ejemplos fuera de Git y distinguir pruebas reales de vectores sintéticos o derivados.
