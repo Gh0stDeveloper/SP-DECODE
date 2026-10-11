@@ -65,8 +65,10 @@ object TlsReferencePort {
                     plaintext=cipher.doFinal(encrypted)
                     profile=index+1
                     break
-                } catch (_: javax.crypto.AEADBadTagException) {
-                    // A failed authenticated profile is never exposed.
+                } catch (_: java.security.GeneralSecurityException) {
+                    // Different Android JCA providers may report an invalid
+                    // tag as AEADBadTagException or BadPaddingException.
+                    // Try the next known profile; expose none until verified.
                 }
             }
             val clear=plaintext?:return null
