@@ -72,8 +72,12 @@ class Tls850AndDarkBase64InstrumentedTest {
         }
         assertEquals("dark",TextProtocolDecoder.identify(
             token.chunked(50).joinToString("\n"))?.protocol)
-        assertNull(TextProtocolDecoder.identify(
+        // Unrelated bare Base64 may still be offered to the existing NetMod
+        // route, but must NEVER be misreported as a Dark Tunnel config.
+        val unrelated=TextProtocolDecoder.identify(
             java.util.Base64.getEncoder().encodeToString(
-                "{\"hello\":\"world\"}".toByteArray())))
+                "{\"hello\":\"world\"}".toByteArray()))
+        assertNotEquals("dark",unrelated?.protocol)
+        if(unrelated!=null)assertNull(TextProtocolDecoder.decode(ctx,unrelated))
     }
 }
