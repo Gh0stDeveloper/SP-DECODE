@@ -97,12 +97,13 @@ class ParityInstrumentedTest {
     }
 
     @Test
-    fun mergedManifestHasNoInternetAndNoStoragePermissions() {
+    fun mergedManifestAllowsOnlyExplicitCloudInternetAndNoStoragePermissions() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val info = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
         val requested = info.requestedPermissions.orEmpty().toSet()
+        assertEquals(setOf("android.permission.INTERNET"),requested)
         for (forbidden in listOf(
-            "android.permission.INTERNET", "android.permission.ACCESS_NETWORK_STATE",
+            "android.permission.ACCESS_NETWORK_STATE",
             "android.permission.READ_EXTERNAL_STORAGE", "android.permission.WRITE_EXTERNAL_STORAGE",
             "android.permission.MANAGE_EXTERNAL_STORAGE",
         )) {
