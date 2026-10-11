@@ -130,9 +130,9 @@
     <string name="text_decode_invalid">Unrecognized text protocol, invalid input or size limit exceeded.</string>
     <string name="text_decode_unsupported">Could not decode this text. It may be incomplete, corrupted or a different cipher version.</string>
     <string name="whats_new_title">What\'s new in SP-DECODE</string>
-    <string name="whats_new_description">Version 1.0.7 · Full HTTP Injector JSON results</string>
-    <string name="whats_new_linklayer">HTTP Injector (.ehi): retain all decrypted profile fields, even when a field uses plaintext or an unknown encoding.</string>
-    <string name="whats_new_fields">HTTP payloads: preserve multiple lines and blank lines in the JSON result without cutting off the last fields.</string>
+    <string name="whats_new_description">Version 1.0.8 · Complete NPVS v5 JSON</string>
+    <string name="whats_new_linklayer">NPVS (.npvs) v5: decode nested npvs1: Base64 values after signed-field verification.</string>
+    <string name="whats_new_fields">SSH addresses, usernames, passwords and multiline HTTP payloads are restored to readable JSON fields; unmarked text remains intact.</string>
     <string name="whats_new_offline">All 239 native file routes and text decoders remain offline. Previous results stay encrypted on this device.</string>
     <string name="whats_new_continue">Got it</string>
     <string name="native_decoder_pending">Native decoder not yet integrated for this format.</string>
