@@ -189,4 +189,14 @@
     <string name="cloud_http_injector_integrity_error">No se pudo verificar o descifrar la respuesta del servidor cloud.</string>
     <string name="cloud_http_injector_decoder_error">Se recuperó la configuración cloud, pero el motor EHI actual no pudo descifrar su contenido.</string>
     <string name="npvs_private_key_unsupported">Lo sentimos, no se pudo descifrar este archivo NPVS. Es posible que esté protegido mediante una clave privada (private key), un tipo de protección que todavía no es compatible con la aplicación.</string>
+    <string name="hc_auth_title">Configuración HTTP Custom protegida</string>
+    <string name="hc_auth_description">El archivo %1$s requiere credenciales adicionales para descifrarse. Introduce únicamente los datos solicitados por su protección.</string>
+    <string name="hc_auth_password">Contraseña de exportación</string>
+    <string name="hc_auth_hwid">HWID de HTTP Custom</string>
+    <string name="hc_auth_hwid_hint">Introduce el HWID de 32 caracteres asociado a este archivo.</string>
+    <string name="hc_auth_privacy">Las credenciales se utilizan localmente solo para esta importación. Una contraseña o HWID incorrectos, o un archivo alterado, impiden el descifrado.</string>
+    <string name="hc_auth_unlock">Descifrar archivo</string>
+    <string name="hc_auth_enter_manually">Introducir contraseña manualmente</string>
+    <string name="hc_auth_input_invalid">Introduce la contraseña requerida y/o un HWID válido de 32 caracteres.</string>
+    <string name="hc_auth_failed">No se pudo autenticar este archivo HTTP Custom protegido. Comprueba la contraseña y/o el HWID; también es posible que el archivo esté dañado o utilice una variante no compatible.</string>
 </resources>

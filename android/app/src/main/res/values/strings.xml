@@ -189,4 +189,14 @@
     <string name="cloud_http_injector_integrity_error">Cloud response could not be verified or decrypted.</string>
     <string name="cloud_http_injector_decoder_error">The cloud configuration was retrieved, but its EHI content could not be decoded by the current engine.</string>
     <string name="npvs_private_key_unsupported">Sorry, this NPVS file could not be decoded. It may use private-key protection, which is not supported by the application at this time.</string>
+    <string name="hc_auth_title">Protected HTTP Custom configuration</string>
+    <string name="hc_auth_description">The file %1$s requires additional credentials to decrypt. Provide only the fields requested by its protection.</string>
+    <string name="hc_auth_password">Export password</string>
+    <string name="hc_auth_hwid">HTTP Custom HWID</string>
+    <string name="hc_auth_hwid_hint">Enter the 32-character HWID associated with this file.</string>
+    <string name="hc_auth_privacy">Credentials are used locally for this import only. A wrong password or HWID, or a modified file, cannot be decrypted.</string>
+    <string name="hc_auth_unlock">Decrypt file</string>
+    <string name="hc_auth_enter_manually">Enter password manually</string>
+    <string name="hc_auth_input_invalid">Enter the required password and/or a valid 32-character HWID.</string>
+    <string name="hc_auth_failed">This protected HTTP Custom file could not be authenticated. Check the password and/or HWID; the file may also be damaged or use an unsupported variant.</string>
 </resources>

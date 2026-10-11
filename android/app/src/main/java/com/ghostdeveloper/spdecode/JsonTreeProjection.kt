@@ -2,20 +2,12 @@ package com.ghostdeveloper.spdecode
 
 import com.google.gson.JsonElement
 
-/**
- * Read-only, bounded projection of decoded JSON for the Compose result viewer.
- *
- * Never rewrites the stored decoded result or JSON/clipboard exports. Large
- * containers are paged at every level, and only open branches are traversed.
- * Paths use sibling indices rather than field names, so duplicate labels,
- * unusual Unicode, dots and slash characters cannot collide.
+/** Read-only JSON rows. All branches open by default; no fields are paged or cut.
+ * Paths use sibling indices so unusual field names cannot collide.
+ * Iterative traversal preserves deeply nested data without recursive projection.
  */
 internal object JsonTreeProjection {
-    const val PAGE_SIZE = 80
-    const val MAX_VISIBLE_ROWS = 5000
-    private const val MAX_TREE_DEPTH = 64
-
-    enum class Kind { NODE, VALUE, END, MORE, LIMIT }
+    enum class Kind { NODE, VALUE, END }
 
     data class Row(
         val path: String,
@@ -26,75 +18,58 @@ internal object JsonTreeProjection {
         val bracket: Char = ' ',
         val expanded: Boolean = false,
         val total: Int = 0,
-        val remaining: Int = 0,
         val comma: Boolean = false,
     )
 
-    /** A small first nested object opens by default, preserving useful context. */
-    fun defaultExpanded(depth: Int, children: Int): Boolean =
-        depth == 0 || (depth == 1 && children <= 12)
+    private data class Pending(
+        val element: JsonElement?, val key: String?, val path: String,
+        val depth: Int, val comma: Boolean, val closing: Char = ' ',
+    )
 
     fun project(
         root: JsonElement,
         expandedOverrides: Map<String, Boolean> = emptyMap(),
-        pageLimits: Map<String, Int> = emptyMap(),
     ): List<Row> {
         val result = ArrayList<Row>()
-        var stopped = false
-
-        fun append(row: Row): Boolean {
-            if (stopped) return false
-            if (result.size >= MAX_VISIBLE_ROWS - 1) {
-                result.add(Row("limit", 0, Kind.LIMIT))
-                stopped = true
-                return false
+        val pending = ArrayDeque<Pending>()
+        pending.addLast(Pending(root, null, "root", 0, false))
+        while (pending.isNotEmpty()) {
+            val item = pending.removeLast()
+            val element = item.element
+            if (element == null) {
+                result.add(Row(item.path, item.depth, Kind.END,
+                    bracket = item.closing, comma = item.comma))
+                continue
             }
-            result.add(row)
-            return true
-        }
-
-        fun visit(element: JsonElement, key: String?, path: String,
-                  depth: Int, comma: Boolean) {
-            if (stopped) return
+            if (!element.isJsonObject && !element.isJsonArray) {
+                result.add(Row(item.path, item.depth, Kind.VALUE, item.key,
+                    element, comma = item.comma))
+                continue
+            }
             val obj = if (element.isJsonObject) element.asJsonObject else null
             val arr = if (element.isJsonArray) element.asJsonArray else null
-            if (obj == null && arr == null) {
-                append(Row(path, depth, Kind.VALUE, key, element, comma = comma))
-                return
-            }
-
             val total = obj?.size() ?: arr!!.size()
-            val opening = if (obj != null) '{' else '['
-            val closing = if (obj != null) '}' else ']'
-            val isExpanded = (expandedOverrides[path] ?: defaultExpanded(depth, total)) &&
-                depth < MAX_TREE_DEPTH
-            if (!append(Row(path, depth, Kind.NODE, key, bracket = opening,
-                    expanded = isExpanded, total = total, comma = comma))) return
-            if (!isExpanded) return
-
-            val count = (pageLimits[path] ?: PAGE_SIZE).coerceIn(1, total.coerceAtLeast(1))
+            val isExpanded = expandedOverrides[item.path] ?: true
+            result.add(Row(item.path, item.depth, Kind.NODE, item.key,
+                bracket = if (obj != null) '{' else '[', expanded = isExpanded,
+                total = total, comma = item.comma))
+            if (!isExpanded) continue
+            pending.addLast(Pending(null, null, "${item.path}/end", item.depth,
+                item.comma, if (obj != null) '}' else ']'))
             if (obj != null) {
-                val iterator = obj.entrySet().iterator()
-                var index = 0
-                while (index < count && iterator.hasNext() && !stopped) {
-                    val entry = iterator.next()
-                    visit(entry.value, entry.key, "$path/$index", depth + 1, index < total - 1)
-                    index++
+                val entries = obj.entrySet().toList()
+                for (index in entries.indices.reversed()) {
+                    val entry = entries[index]
+                    pending.addLast(Pending(entry.value, entry.key,
+                        "${item.path}/$index", item.depth + 1, index < total - 1))
                 }
             } else {
-                for (index in 0 until count) {
-                    if (stopped) break
-                    visit(arr!![index], null, "$path/$index", depth + 1, index < total - 1)
+                for (index in (0 until total).reversed()) {
+                    pending.addLast(Pending(arr!![index], null, "${item.path}/$index",
+                        item.depth + 1, index < total - 1))
                 }
             }
-            if (count < total && !stopped) {
-                append(Row(path, depth + 1, Kind.MORE, remaining = total - count))
-            }
-            if (!stopped) append(Row("$path/end", depth, Kind.END,
-                bracket = closing, comma = comma))
         }
-
-        visit(root, null, "root", 0, false)
         return result
     }
 }

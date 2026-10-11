@@ -21,16 +21,14 @@ navegación. El diseño aprobado de SP-DECODE permanece intacto.
 - La presentación usa `AnnotatedString` con resaltado de sintaxis estilo
   Markdown con bloque `json`, **sin inyectar Markdown en el documento** y
   sin contaminar lo que el usuario copia/exporta.
-- Objetos y listas se pueden expandir/contraer. Los objetos pequeños de
-  primer nivel se abren por defecto para conservar campos importantes.
-- Proyección de filas con carga progresiva: hasta 80 hijos inicialmente por
-  colección, 80 adicionales por toque; las ramas cerradas no se recorren.
-- `LazyColumn` compone las filas visibles dentro de un área con altura
-  máxima de 480 dp; no intenta crear miles de `Text` a la vez.
-- Cadenas largas muestran inicialmente 512 caracteres y permiten revelar
-  1024 adicionales por toque. No se corta el texto original ni la exportación.
-- Se limita el máximo de filas proyectadas y la profundidad de expansión
-  para evitar ciclos descontrolados al explorar JSON patológicos.
+- Objetos y listas se abren completos por defecto. Los controles de
+  contracción manual y los colores existentes se conservan.
+- Todas las entradas y cadenas se muestran completas, sin paginación,
+  recortes de 512 caracteres ni límite de 5000 filas.
+- La tarjeta usa un `Column` sin altura fija ni scroll propio: solo se
+  desplaza la pantalla exterior de `HomeScreen`.
+- La proyección recorre el árbol de forma iterativa, conservando rutas únicas
+  y todas las ramas anidadas sin un corte artificial de profundidad.
 - El análisis inicial del JSON se ejecuta en `Dispatchers.Default`,
   evitando bloquear el hilo de composición.
 - Se reutiliza la lógica `ResultJsonDisplay` para respetar la redacción de
@@ -52,8 +50,8 @@ navegación. El diseño aprobado de SP-DECODE permanece intacto.
 ## Pruebas
 
 `JsonTreeViewerInstrumentedTest` comprueba la expansión/contracción,
-el enmascaramiento, rutas únicas para campos especiales, paginación de
-12 500 entradas y visualización en `CompleteResultCard` sin perder
+el enmascaramiento, rutas únicas para campos especiales, las 12 500 entradas
+completas, valores largos y un único scroll exterior en `CompleteResultCard` sin perder
 Copiar/Exportar. Se mantiene la suite de paridad existente.
 
 CI: `validate`, Android API35 instrumentado, `assembleDebug`,

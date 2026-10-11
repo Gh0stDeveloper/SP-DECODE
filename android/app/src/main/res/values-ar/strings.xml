@@ -189,4 +189,14 @@
     <string name="cloud_http_injector_integrity_error">تعذر التحقق من استجابة السحابة أو فك تشفيرها.</string>
     <string name="cloud_http_injector_decoder_error">تم استرجاع إعدادات السحابة، ولكن تعذر فك ترميز محتوى EHI باستخدام المحرك الحالي.</string>
     <string name="npvs_private_key_unsupported">نعتذر، تعذر فك ترميز ملف NPVS هذا. قد يكون محميًا بمفتاح خاص (private key)، وهذا النوع من الحماية غير مدعوم في التطبيق حاليًا.</string>
+    <string name="hc_auth_title">إعدادات HTTP Custom المحمية</string>
+    <string name="hc_auth_description">يتطلب الملف %1$s بيانات اعتماد إضافية لفك تشفيره. أدخل المعلومات التي يطلبها نوع الحماية فقط.</string>
+    <string name="hc_auth_password">كلمة مرور التصدير</string>
+    <string name="hc_auth_hwid">معرّف جهاز HTTP Custom ‏(HWID)</string>
+    <string name="hc_auth_hwid_hint">أدخل معرّف HWID المكوّن من 32 حرفًا والمرتبط بهذا الملف.</string>
+    <string name="hc_auth_privacy">تُستخدم بيانات الاعتماد محليًا لهذا الاستيراد فقط. لا يمكن فك تشفير الملف عند إدخال كلمة مرور أو HWID غير صحيحين أو إذا تم تعديله.</string>
+    <string name="hc_auth_unlock">فك تشفير الملف</string>
+    <string name="hc_auth_enter_manually">إدخال كلمة المرور يدويًا</string>
+    <string name="hc_auth_input_invalid">أدخل كلمة المرور المطلوبة و/أو معرّف HWID صالحًا مكوّنًا من 32 حرفًا.</string>
+    <string name="hc_auth_failed">تعذرت مصادقة ملف HTTP Custom المحمي. تحقق من كلمة المرور و/أو HWID؛ فقد يكون الملف تالفًا أو يستخدم صيغة غير مدعومة.</string>
 </resources>

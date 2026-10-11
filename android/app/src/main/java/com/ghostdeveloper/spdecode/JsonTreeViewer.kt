@@ -2,14 +2,11 @@ package com.ghostdeveloper.spdecode
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,13 +34,10 @@ private val JsonNull = Color(0xFFE7A5B4)
 private val JsonPunctuation = Color(0xFFF7F7F7)
 private val JsonSecondary = Color(0xFFABABAB)
 
-private const val INITIAL_STRING_CHARS = 512
-private const val STRING_STEP = 1024
-
 /**
- * Only the result preview changes: lazy, expandable, paginated syntax-highlighted
- * JSON with parsing off the UI thread. The raw data, encrypted history, native
- * decoders, copy and export paths are completely separate.
+ * Complete syntax-highlighted JSON with parsing off the UI thread. Only the
+ * surrounding screen scrolls; branches remain optionally collapsible. Raw data,
+ * encrypted history, decoders, copy and export paths stay unchanged.
  */
 @Composable
 internal fun JsonTreeViewer(
@@ -75,8 +69,6 @@ private fun JsonTreeViewerContent(
     }
 
     val expanded = remember(identity, maskCredentials) { mutableStateMapOf<String, Boolean>() }
-    val pageLimits = remember(identity, maskCredentials) { mutableStateMapOf<String, Int>() }
-    val stringLimits = remember(identity, maskCredentials) { mutableStateMapOf<String, Int>() }
     val root = document
 
     if (root == null) {
@@ -87,26 +79,20 @@ private fun JsonTreeViewerContent(
     }
 
     val rows by remember(root, identity, maskCredentials) {
-        derivedStateOf { JsonTreeProjection.project(root, expanded, pageLimits) }
+        derivedStateOf { JsonTreeProjection.project(root, expanded) }
     }
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth().heightIn(max = 480.dp),
-        contentPadding = PaddingValues(vertical = 2.dp),
-    ) {
-        items(rows, key = { "${it.path}:${it.kind}" }, contentType = { it.kind }) { row ->
-            val indent = (row.depth.coerceAtMost(32) * 12).dp
-            when (row.kind) {
-                JsonTreeProjection.Kind.NODE -> {
-                    val canExpand = row.depth < 64
-                    Row(
-                        modifier = Modifier.fillMaxWidth().then(
-                            if (canExpand) Modifier.clickable {
+    Column(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+        rows.forEach { row ->
+            key("${row.path}:${row.kind}") {
+                val indent = (row.depth.coerceAtMost(32) * 12).dp
+                when (row.kind) {
+                    JsonTreeProjection.Kind.NODE -> {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().clickable {
                                 expanded[row.path] = !row.expanded
-                            } else Modifier
-                        ).padding(start = indent, top = 2.dp, bottom = 2.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        if (canExpand) {
+                            }.padding(start = indent, top = 2.dp, bottom = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
                             androidx.compose.material3.Icon(
                                 if (row.expanded) Icons.Outlined.ExpandMore
                                 else Icons.Outlined.ChevronRight,
@@ -115,64 +101,28 @@ private fun JsonTreeViewerContent(
                                 tint = JsonSecondary,
                                 modifier = Modifier.size(16.dp)
                             )
-                        } else Spacer(Modifier.width(16.dp))
-                        Text(
-                            jsonLine(row),
-                            modifier = Modifier.weight(1f),
-                            fontSize = 13.sp, lineHeight = 19.sp,
-                            style = TextStyle(textDirection = TextDirection.Ltr)
-                        )
+                            Text(
+                                jsonLine(row),
+                                modifier = Modifier.weight(1f),
+                                fontSize = 13.sp, lineHeight = 19.sp,
+                                style = TextStyle(textDirection = TextDirection.Ltr)
+                            )
+                        }
                     }
-                }
-                JsonTreeProjection.Kind.VALUE -> {
-                    val value = row.value
-                    val length = if (value != null && value.isJsonPrimitive &&
-                        value.asJsonPrimitive.isString) value.asString.length else 0
-                    val limit = stringLimits[row.path] ?: INITIAL_STRING_CHARS
-                    Column(modifier = Modifier.fillMaxWidth()
-                        .padding(start = indent + 16.dp, top = 2.dp, bottom = 2.dp)) {
+                    JsonTreeProjection.Kind.VALUE -> {
                         SelectionContainer {
-                            Text(jsonLine(row, limit), fontSize = 13.sp, lineHeight = 19.sp,
+                            Text(jsonLine(row), modifier = Modifier.fillMaxWidth()
+                                .padding(start = indent + 16.dp, top = 2.dp, bottom = 2.dp),
+                                fontSize = 13.sp, lineHeight = 19.sp,
                                 style = TextStyle(textDirection = TextDirection.Ltr))
                         }
-                        if (length > limit) {
-                            TextButton(
-                                onClick = {
-                                    stringLimits[row.path] =
-                                        (limit + STRING_STEP).coerceAtMost(length)
-                                },
-                                contentPadding = PaddingValues(0.dp)
-                            ) {
-                                Text(stringResource(R.string.json_more_chars,
-                                    (length - limit).coerceAtMost(STRING_STEP)),
-                                    color = JsonSecondary, fontSize = 12.sp)
-                            }
-                        }
                     }
-                }
-                JsonTreeProjection.Kind.END -> {
-                    Text(jsonLine(row), modifier = Modifier.fillMaxWidth()
-                        .padding(start = indent + 16.dp, top = 2.dp, bottom = 2.dp),
-                        fontSize = 13.sp, lineHeight = 19.sp,
-                        style = TextStyle(textDirection = TextDirection.Ltr))
-                }
-                JsonTreeProjection.Kind.MORE -> {
-                    TextButton(
-                        modifier = Modifier.padding(start = indent + 16.dp),
-                        onClick = {
-                            val current = pageLimits[row.path] ?: JsonTreeProjection.PAGE_SIZE
-                            pageLimits[row.path] = current + JsonTreeProjection.PAGE_SIZE
-                        },
-                        contentPadding = PaddingValues(0.dp),
-                    ) {
-                        Text(stringResource(R.string.json_more_items,
-                            row.remaining.coerceAtMost(JsonTreeProjection.PAGE_SIZE)),
-                            color = JsonSecondary, fontSize = 12.sp)
+                    JsonTreeProjection.Kind.END -> {
+                        Text(jsonLine(row), modifier = Modifier.fillMaxWidth()
+                            .padding(start = indent + 16.dp, top = 2.dp, bottom = 2.dp),
+                            fontSize = 13.sp, lineHeight = 19.sp,
+                            style = TextStyle(textDirection = TextDirection.Ltr))
                     }
-                }
-                JsonTreeProjection.Kind.LIMIT -> {
-                    Text(stringResource(R.string.json_visible_limit),color = JsonSecondary,
-                        fontSize = 12.sp)
                 }
             }
         }
@@ -180,7 +130,7 @@ private fun JsonTreeViewerContent(
 }
 
 /** AnnotatedString gives semantic token colors without changing the Android theme. */
-private fun jsonLine(row: JsonTreeProjection.Row, stringChars: Int = INITIAL_STRING_CHARS) =
+private fun jsonLine(row: JsonTreeProjection.Row) =
     buildAnnotatedString {
         row.key?.let { name ->
             withStyle(SpanStyle(color = JsonKey)) {
@@ -215,15 +165,8 @@ private fun jsonLine(row: JsonTreeProjection.Row, stringChars: Int = INITIAL_STR
                     value == null || value.isJsonNull ->
                         withStyle(SpanStyle(color = JsonNull)) { append("null") }
                     value.isJsonPrimitive && value.asJsonPrimitive.isString -> {
-                        val original = value.asString
-                        val shortened = original.length > stringChars
-                        val text = original.take(stringChars)
                         withStyle(SpanStyle(color = JsonString)) {
-                            val quoted = JsonPrimitive(text).toString()
-                            if (shortened) {
-                                append(quoted.dropLast(1))
-                                append("…\"")
-                            } else append(quoted)
+                            append(JsonPrimitive(value.asString).toString())
                         }
                     }
                     value.isJsonPrimitive && value.asJsonPrimitive.isBoolean ->
@@ -232,6 +175,5 @@ private fun jsonLine(row: JsonTreeProjection.Row, stringChars: Int = INITIAL_STR
                 }
                 if (row.comma) withStyle(SpanStyle(color = JsonPunctuation)) { append(',') }
             }
-            else -> Unit
         }
     }

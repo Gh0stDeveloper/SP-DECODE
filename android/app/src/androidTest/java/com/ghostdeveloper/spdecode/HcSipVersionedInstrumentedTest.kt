@@ -72,10 +72,86 @@ class HcSipVersionedInstrumentedTest {
         assertNotNull(decode("hc-legacy.hc"))
     }
 
+    @Test fun hcHwidLockRequiresExplicitUserInputAndPreservesFullProfile() {
+        val input=sample("variant-hc-hccfg-hwid.hc")
+        val requirements=HcHccfgPort.inspectRequirements(input)!!
+        assertTrue(requirements.hwidRequired)
+        assertFalse(requirements.passwordRequired)
+        assertFalse(requirements.headerAuthenticated) // stream-v3 metadata is advisory
+        assertFalse(HcHccfgPort.requiresExternalPassword(input))
+        assertNull(AndroidOfflineDecoderRouter.decode(app,"locked.hc",input))
+        val document=AndroidOfflineDecoderRouter.decodeWithCredentials(
+            app,"locked.hc",input,null,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+        assertNotNull("Authenticated HWID fixture must decode",document)
+        val root=JSONObject(document!!)
+        assertEquals("7.11.19 (885)",root.getString("app_version"))
+        assertEquals(false,root.getJSONObject("requirements").getBoolean("password_required"))
+        assertTrue(root.getJSONObject("requirements").getBoolean("hwid_required"))
+        assertEquals("free",root.getJSONObject("protections").getString("accessMode"))
+        assertTrue(root.has("main_config"))
+        val profile=root.getJSONArray("config").getJSONObject(0)
+        assertEquals("example.org",profile.getString("host"))
+        assertEquals(4294967295L,profile.getLong("flags"))
+        assertEquals("s0",profile.getString("label"))
+        assertEquals("example.org",profile.getJSONObject("options").getString("sni"))
+        assertEquals(1700000000000L,profile.getLong("updated_at_ms"))
+        assertEquals("Synthetic authenticated sidecar",profile.getString("custom_payload_sidecar"))
+        assertNull(AndroidOfflineDecoderRouter.decodeWithCredentials(
+            app,"locked.hc",input,null,"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"))
+        assertNull(AndroidOfflineDecoderRouter.decodeWithCredentials(
+            app,"locked.hc",input,null,null))
+        assertNull(AndroidOfflineDecoderRouter.decodeWithCredentials(
+            app,"wrong.ehi",input,null,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"))
+    }
+
+    @Test fun hcDualLockRequiresBothCredentialsAndRejectsWrongValues() {
+        val input=sample("variant-hc-hccfg-dual.hc")
+        val requirements=HcHccfgPort.inspectRequirements(input)!!
+        assertTrue(requirements.passwordRequired)
+        assertTrue(requirements.hwidRequired)
+        assertFalse(requirements.headerAuthenticated)
+        assertNull(AndroidOfflineDecoderRouter.decode(app,"dual.hc",input))
+        val right="Synthetic-S4-HCCFG-Test-Only".toByteArray(Charsets.UTF_8)
+        val wrong="Synthetic-Wrong-Password".toByteArray(Charsets.UTF_8)
+        try {
+            assertNull(AndroidOfflineDecoderRouter.decodeWithCredentials(
+                app,"dual.hc",input,right,null))
+            assertNull(AndroidOfflineDecoderRouter.decodeWithCredentials(
+                app,"dual.hc",input,null,"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))
+            assertNull(AndroidOfflineDecoderRouter.decodeWithCredentials(
+                app,"dual.hc",input,wrong,"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))
+            assertNull(AndroidOfflineDecoderRouter.decodeWithCredentials(
+                app,"dual.hc",input,right,"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"))
+            val result=AndroidOfflineDecoderRouter.decodeWithCredentials(
+                app,"dual.hc",input,right,"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+            assertNotNull("Authenticated dual-lock fixture must decode",result)
+            val root=JSONObject(result!!)
+            assertEquals(443,root.getJSONArray("config").getJSONObject(0).getInt("port"))
+            assertTrue(root.getJSONObject("requirements").getBoolean("password_required"))
+            assertTrue(root.getJSONObject("requirements").getBoolean("hwid_required"))
+            assertTrue(root.has("main_config"))
+        }finally{
+            right.fill(0);wrong.fill(0)
+        }
+    }
+
     @Test fun originalHcAndSipStillDecode(){
         assertNotNull(decode("hc-legacy.hc"))
         assertEquals("example.org",JSONObject(decode("sip-legacy.sip")!!)
             .getString("server"))
+    }
+
+    @Test fun protectedHcRejectsEveryTamperedAuthenticatedLayer() {
+        val password="Synthetic-S4-HCCFG-Test-Only".toByteArray(Charsets.UTF_8)
+        try {
+            for(layer in listOf("slot","main","profile","hpr1","sidecar")) {
+                val input=sample("variant-hc-hccfg-dual-bad-$layer.hc")
+                assertNotNull(HcHccfgPort.inspectRequirements(input))
+                assertNull("Tampered $layer must not yield partial JSON",
+                    AndroidOfflineDecoderRouter.decodeWithCredentials(
+                        app,"dual.hc",input,password,"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"))
+            }
+        }finally{password.fill(0)}
     }
 
     @Test fun sipVer8AuthenticatesAndReadsJavaObject(){
