@@ -18,12 +18,12 @@ class PhaseHProductionGateInstrumentedTest {
     private val ctx get()=InstrumentationRegistry.getInstrumentation().targetContext
 
     @Suppress("DEPRECATION")
-    @Test fun installedManifestHasNoNetworkOrUnsafeStoragePermissions(){
+    @Test fun installedManifestAllowsOnlyCloudInternetAndNoUnsafeStoragePermissions(){
         val info=ctx.packageManager.getPackageInfo(
             ctx.packageName,PackageManager.GET_PERMISSIONS)
         val permissions=info.requestedPermissions?.toSet().orEmpty()
-        for(name in listOf("android.permission.INTERNET",
-            "android.permission.ACCESS_NETWORK_STATE",
+        assertEquals(setOf("android.permission.INTERNET"),permissions)
+        for(name in listOf("android.permission.ACCESS_NETWORK_STATE",
             "android.permission.MANAGE_EXTERNAL_STORAGE",
             "android.permission.READ_EXTERNAL_STORAGE",
             "android.permission.WRITE_EXTERNAL_STORAGE",
