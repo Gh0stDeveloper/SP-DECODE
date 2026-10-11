@@ -30,10 +30,10 @@ class PhaseHProductionGateInstrumentedTest {
             "android.permission.QUERY_ALL_PACKAGES"))
             assertFalse("Production app must never request "+name,name in permissions)
         assertEquals("com.ghostdeveloper.spdecode",ctx.packageName)
-        assertEquals("1.0.7",info.versionName)
+        assertEquals("1.0.8",info.versionName)
         val code=if(android.os.Build.VERSION.SDK_INT>=28) info.longVersionCode
             else info.versionCode.toLong()
-        assertEquals(18L,code)
+        assertEquals(19L,code)
     }
     @Test fun appBackupDisabledInInstalledPackage(){
         val info=ctx.applicationInfo
