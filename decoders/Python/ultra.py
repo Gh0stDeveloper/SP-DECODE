@@ -268,8 +268,19 @@ def decrypt_ultra_field(value, password=b"NurChickenPowder", mem=8192):
         key = ultra_derive_key(data[:16], password, mem)
         if not key:
             return value
-        cipher = AES.new(key, AES.MODE_GCM, nonce=data[16:28])
-        return cipher.decrypt_and_verify(data[28:-16], data[-16:]).decode('utf-8', errors='ignore')
+        # The newer Ultra Tunnel exporter authenticates nested fields with
+        # AAD=salt, while historical exports use no AAD. Authenticate both
+        # variants; do not silently strip bytes or accept invalid GCM tags.
+        for aad in (data[:16], None):
+            try:
+                cipher = AES.new(key, AES.MODE_GCM, nonce=data[16:28])
+                if aad is not None:
+                    cipher.update(aad)
+                clear = cipher.decrypt_and_verify(data[28:-16], data[-16:])
+                return clear.decode('utf-8')
+            except (ValueError, UnicodeDecodeError):
+                continue
+        return value
     except Exception:
         return value
 
