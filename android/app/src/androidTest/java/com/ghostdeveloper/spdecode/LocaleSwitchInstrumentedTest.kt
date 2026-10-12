@@ -36,7 +36,7 @@ class LocaleSwitchInstrumentedTest {
                 val vm=ViewModelProvider(ui.activity)[DecodeSessionViewModel::class.java]
                 vm.current=sample
                 vm.recent.add(0,sample)
-                vm.tab=3
+                vm.tab=4
             }
             ui.waitForIdle()
             ui.onNodeWithText(ctx.getString(R.string.language_title)).performClick()
