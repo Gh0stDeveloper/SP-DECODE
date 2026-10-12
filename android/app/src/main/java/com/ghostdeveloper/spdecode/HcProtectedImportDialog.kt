@@ -3,7 +3,7 @@ package com.ghostdeveloper.spdecode
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.LockOutline
+import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.rememberScrollState
@@ -45,7 +45,7 @@ internal fun HcProtectedImportDialog(
     AlertDialog(
         onDismissRequest={dismiss()},
         properties=DialogProperties(securePolicy=SecureFlagPolicy.SecureOn),
-        icon={Icon(Icons.Outlined.LockOutline,null,tint=Color(0xFFF7F7F7))},
+        icon={Icon(Icons.Outlined.Lock,null,tint=Color(0xFFF7F7F7))},
         title={Text(stringResource(R.string.hc_auth_title),
             color=Color(0xFFF7F7F7),fontWeight=FontWeight.SemiBold)},
         text={
