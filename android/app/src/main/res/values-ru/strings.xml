@@ -128,9 +128,9 @@
     <string name="text_decode_invalid">Неизвестный текстовый протокол, неверные данные или превышен лимит размера.</string>
     <string name="text_decode_unsupported">Не удалось декодировать текст. Он может быть неполным, повреждённым или использовать другую версию шифрования.</string>
     <string name="whats_new_title">Что нового в SP-DECODE</string>
-    <string name="whats_new_description">Версия 1.1.3 · Декодирование .solid NUR Tunnel и каталог серверов</string>
-    <string name="whats_new_linklayer">NUR Tunnel VPN: аутентифицированное декодирование профилей .solid и каталог HTTPS-серверов по запросу.</string>
-    <string name="whats_new_fields">Добавлены персидский, французский, индонезийский и русский языки, а также расширенное руководство по Cloud и защищённому HTTP Custom.</string>
+    <string name="whats_new_description">Версия 1.1.4 · URL каталога NUR Tunnel скрыт, а текст HTTP Custom стал читаемее</string>
+    <string name="whats_new_linklayer">URL каталога NUR Tunnel больше не отображается. Адрес хранится в зашифрованном ресурсе, а серверы загружаются только после нажатия кнопки декодирования.</string>
+    <string name="whats_new_fields">Введённый текст в полях пароля и HWID HTTP Custom теперь отображается белым цветом для лучшей читаемости.</string>
     <string name="whats_new_offline">HTTP Custom с паролем/HWID, просмотр JSON, TLS и Dark Tunnel сохранены; локальное декодирование работает офлайн.</string>
     <string name="whats_new_continue">Понятно</string>
     <string name="native_decoder_pending">Встроенный декодер для этого формата пока не добавлен.</string>
