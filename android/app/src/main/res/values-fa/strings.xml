@@ -27,7 +27,7 @@
     <string name="session_only">ذخیره محلی · تاریخچه رمزگذاری‌شده</string>
     <string name="search_formats">جستجوی برنامه یا پسوند</string>
     <string name="experimental">آزمایشی</string>
-    <string name="catalog_note">برای 239 قالب فایل مسیر رمزگشایی بومی وجود دارد (61 قدیمی و 178 جدید). سازگاری به نسخه صادرکننده بستگی دارد و هنوز کاملاً تأیید نشده است.</string>
+    <string name="catalog_note">۲۳۹ قالب فایل بومی پیشین به‌علاوه NUR Tunnel .solid. سازگاری به نسخه برنامه صادرکننده فایل بستگی دارد.</string>
     <string name="settings_title">تنظیمات</string>
     <string name="privacy_title">حریم خصوصی</string>
     <string name="privacy_text">فایل‌های اصلی واردشده کپی نمی‌شوند. نتایج رمزگشایی‌شده رمزگذاری می‌شوند و تا زمان حذف فقط در همین دستگاه می‌مانند.</string>
