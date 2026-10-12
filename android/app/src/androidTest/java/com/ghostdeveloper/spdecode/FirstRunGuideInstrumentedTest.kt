@@ -51,7 +51,7 @@ class FirstRunGuideInstrumentedTest {
             assertEquals(0,FirstRunGuide.targetTab(1))
             assertEquals(1,FirstRunGuide.targetTab(2))
             assertEquals(2,FirstRunGuide.targetTab(3))
-            assertEquals(3,FirstRunGuide.targetTab(4))
+            assertEquals(4,FirstRunGuide.targetTab(4))
             assertEquals(0,FirstRunGuide.targetTab(5))
             assertEquals(0,FirstRunGuide.targetTab(6))
         }
