@@ -201,4 +201,13 @@
     <string name="hc_auth_failed">تعذرت مصادقة ملف HTTP Custom المحمي. تحقق من كلمة المرور و/أو HWID؛ فقد يكون الملف تالفًا أو يستخدم صيغة غير مدعومة.</string>
     <string name="guide_step_six">HTTP Injector Cloud (عبر الإنترنت): من الرئيسية، افتح السحابة والصق رابط ehi.link أو مفتاح السحابة أو رمز الرموز التعبيرية 💉…🚀، ثم اضغط استيراد. عندها فقط يُرسل المرجع إلى خادم HTTP Injector، ويلزم الاتصال بالإنترنت. تظل الملفات والنصوص المحلية دون اتصال.</string>
     <string name="guide_step_seven">HTTP Custom ‏(.hc) المحمي: استورد الملف كالمعتاد. إذا طلب كلمة مرور التصدير أو HWID من 32 حرفًا أو كليهما، أدخل البيانات المطلوبة بدقة. لا يمكن فك التشفير ببيانات خاطئة أو بملف معدل، وتستمر ملفات .hc العادية بالطريقة السابقة.</string>
+    <string name="server_vpn">خوادم VPN</string>
+    <string name="server_vpn_description">تصفح قوائم خوادم VPN المدعومة. اختر تطبيقًا لفك تشفير قائمة خوادمه.</string>
+    <string name="nur_tunnel_name">NUR TUNNEL VPN</string>
+    <string name="nur_servers_description">فك تشفير قائمة الخوادم الخاصة بتطبيق NUR Tunnel VPN 1.0.8.8.</string>
+    <string name="nur_servers_catalog_url">رابط قائمة الخوادم المشفرة</string>
+    <string name="nur_servers_privacy">يتم الاتصال فقط عند الضغط على فك التشفير. يلزم استخدام HTTPS. يتم التحقق من سلامة النتيجة قبل عرضها وتخزينها في سجل محلي مشفر.</string>
+    <string name="nur_servers_decode">فك تشفير الخوادم</string>
+    <string name="nur_servers_invalid_url">أدخل رابط HTTPS صالحًا لقائمة الخوادم.</string>
+    <string name="nur_servers_failed">تعذر تنزيل قائمة الخوادم أو التحقق منها أو فك تشفيرها.</string>
 </resources>
