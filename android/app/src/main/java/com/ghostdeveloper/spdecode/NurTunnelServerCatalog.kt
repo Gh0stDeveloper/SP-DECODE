@@ -1,5 +1,6 @@
 package com.ghostdeveloper.spdecode
 
+import android.content.Context
 import com.ghostdeveloper.spdecode.parity.NurTunnelPort
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -47,7 +48,7 @@ internal object NurTunnelServerCatalog {
         }
     }
 
-    fun decodeDownloaded(data:ByteArray):String =
-        NurTunnelPort.decodeCatalog(data)
+    fun decodeDownloaded(context:Context,data:ByteArray):String =
+        NurTunnelPort.decodeCatalog(context,data)
             ?: throw IOException("NUR catalog authentication or format failed")
 }
