@@ -36,23 +36,23 @@ class NurTunnelInstrumentedTest {
     }
 
     @Test fun downloadedCatalogHasDifferentDocumentSchema() {
-        val result=NurTunnelPort.decodeCatalog(catalog.toByteArray())
+        val result=NurTunnelPort.decodeCatalog(InstrumentationRegistry.getInstrumentation().targetContext,catalog.toByteArray())
         assertNotNull(result)
         val document=JSONObject(result!!)
         assertEquals("1.0",document.getString("Version"))
         assertEquals(clearPayload,document.getJSONArray("Servers")
             .getJSONObject(0).getString("Payload"))
         assertEquals(1,document.getJSONArray("Networks").length())
-        assertNull(NurTunnelPort.decodeSolid(catalog.toByteArray()))
-        assertNull(NurTunnelPort.decodeCatalog(solid.toByteArray()))
+        assertNull(NurTunnelPort.decodeSolid(InstrumentationRegistry.getInstrumentation().targetContext,catalog.toByteArray()))
+        assertNull(NurTunnelPort.decodeCatalog(InstrumentationRegistry.getInstrumentation().targetContext,solid.toByteArray()))
     }
 
     @Test fun corruptedAuthenticationNeverReturnsPartialJson() {
         val altered=solid.toCharArray()
         altered[10]=if(altered[10]=='A')'B' else 'A'
-        assertNull(NurTunnelPort.decodeSolid(String(altered).toByteArray()))
-        assertNull(NurTunnelPort.decodeSolid(byteArrayOf(1,2,3,4)))
-        assertNull(NurTunnelPort.decodeCatalog(byteArrayOf(1,2,3,4)))
+        assertNull(NurTunnelPort.decodeSolid(InstrumentationRegistry.getInstrumentation().targetContext,String(altered).toByteArray()))
+        assertNull(NurTunnelPort.decodeSolid(InstrumentationRegistry.getInstrumentation().targetContext,byteArrayOf(1,2,3,4)))
+        assertNull(NurTunnelPort.decodeCatalog(InstrumentationRegistry.getInstrumentation().targetContext,byteArrayOf(1,2,3,4)))
     }
 
     @Test fun originalAuditedCatalogStillContainsExactly239Formats() {
