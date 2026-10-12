@@ -15,11 +15,10 @@ import javax.net.ssl.HttpsURLConnection
  * No scheduled update, no server API, no fallback to plaintext or to .solid.
  */
 internal object NurTunnelServerCatalog {
-    private const val ENDPOINT_ASSET = "nur_tunnel_server_endpoint.json"
     private const val TIMEOUT_MS = 15000
 
     fun defaultUrl(context:Context):String {
-        val document=JSONObject(SecureAssetVault.readText(context, ENDPOINT_ASSET))
+        val document=JSONObject(SecureAssetVault.readText(context, "nur_tunnel_server_endpoint.json"))
         val endpoint=document.getString("catalogUrl")
         val url=URL(endpoint)
         require(url.protocol=="https" && url.host.isNotBlank() &&
