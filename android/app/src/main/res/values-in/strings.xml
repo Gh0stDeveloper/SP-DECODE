@@ -201,4 +201,13 @@
     <string name="hc_auth_failed">Berkas HTTP Custom terlindungi ini tidak dapat diautentikasi. Periksa kata sandi dan/atau HWID; berkas juga mungkin rusak atau memakai varian yang tidak didukung.</string>
     <string name="guide_step_six">HTTP Injector Cloud (online): di Beranda, buka Cloud, tempel URL ehi.link, kunci Cloud, atau kode emoji 💉…🚀, lalu ketuk Impor. Hanya setelah itu referensi dikirim ke server HTTP Injector; Internet diperlukan. Berkas dan teks lokal tetap offline.</string>
     <string name="guide_step_seven">HTTP Custom (.hc) terlindungi: impor berkas seperti biasa. Jika diminta kata sandi ekspor, HWID (32 karakter), atau keduanya, masukkan kredensial yang benar. Nilai yang salah atau berkas yang diubah tidak dapat didekode; berkas .hc biasa tetap memakai metode sebelumnya.</string>
+    <string name="server_vpn">Server VPN</string>
+    <string name="server_vpn_description">Jelajahi katalog server VPN yang didukung. Pilih aplikasi untuk mendekode daftar servernya.</string>
+    <string name="nur_tunnel_name">NUR TUNNEL VPN</string>
+    <string name="nur_servers_description">Dekode katalog server terenkripsi NUR Tunnel VPN 1.0.8.8.</string>
+    <string name="nur_servers_catalog_url">URL daftar server terenkripsi</string>
+    <string name="nur_servers_privacy">Koneksi hanya berlangsung saat Anda menekan Dekode. HTTPS diperlukan. Hasil diautentikasi sebelum ditampilkan dan disimpan dalam riwayat lokal terenkripsi.</string>
+    <string name="nur_servers_decode">Dekode server</string>
+    <string name="nur_servers_invalid_url">Masukkan URL HTTPS yang valid untuk daftar server.</string>
+    <string name="nur_servers_failed">Gagal mengunduh, mengautentikasi, atau mendekode katalog server.</string>
 </resources>
