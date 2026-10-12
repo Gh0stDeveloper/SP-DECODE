@@ -27,7 +27,7 @@
     <string name="session_only">Salvo no dispositivo · Histórico criptografado</string>
     <string name="search_formats">Buscar aplicativo ou extensão</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">239 formatos de arquivo têm rotas nativas de decodificação (61 anteriores e 178 novas). A compatibilidade real depende da versão exportadora e ainda não foi totalmente certificada.</string>
+    <string name="catalog_note">239 formatos nativos anteriores e NUR Tunnel .solid. A compatibilidade depende da versão do aplicativo que exportou cada arquivo.</string>
     <string name="settings_title">Configurações</string>
     <string name="privacy_title">Privacidade</string>
     <string name="privacy_text">Os arquivos originais não são copiados. Resultados decodificados ficam criptografados neste dispositivo até serem excluídos.</string>
