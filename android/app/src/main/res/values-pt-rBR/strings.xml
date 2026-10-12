@@ -27,7 +27,7 @@
     <string name="session_only">Salvo no dispositivo · Histórico criptografado</string>
     <string name="search_formats">Buscar aplicativo ou extensão</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">239 formatos de arquivo têm rotas nativas de decodificação (61 anteriores e 178 novas). A compatibilidade real depende da versão exportadora e ainda não foi totalmente certificada.</string>
+    <string name="catalog_note">239 formatos nativos anteriores e NUR Tunnel .solid. A compatibilidade depende da versão do aplicativo que exportou cada arquivo.</string>
     <string name="settings_title">Configurações</string>
     <string name="privacy_title">Privacidade</string>
     <string name="privacy_text">Os arquivos originais não são copiados. Resultados decodificados ficam criptografados neste dispositivo até serem excluídos.</string>
@@ -128,17 +128,17 @@
     <string name="text_decode_invalid">Protocolo desconhecido, texto inválido ou limite de tamanho excedido.</string>
     <string name="text_decode_unsupported">Não foi possível decodificar o texto. Pode estar incompleto, danificado ou usar outra versão de criptografia.</string>
     <string name="whats_new_title">Novidades do SP-DECODE</string>
-    <string name="whats_new_description">Versão 1.1.2 · HTTP Custom com senha/HWID, nuvem e visualizador JSON</string>
-    <string name="whats_new_linklayer">TLS Tunnel 8.5.0: seis perfis de chaves AES-GCM no Android; métodos anteriores preservados.</string>
-    <string name="whats_new_fields">HTTP Injector: análise mais profunda de campos aninhados e codificados. Variantes raras de .ehi exigem amostras reais.</string>
-    <string name="whats_new_offline">Dark Tunnel: decodificação de textos somente em Base64. Guia centralizado. As 239 rotas seguem offline.</string>
+    <string name="whats_new_description">Versão 1.1.3 · NUR Tunnel: decodificação .solid e catálogo de servidores</string>
+    <string name="whats_new_linklayer">NUR Tunnel VPN: decodificação autenticada de perfis .solid e catálogo HTTPS de servidores sob demanda.</string>
+    <string name="whats_new_fields">Adiciona persa, francês, indonésio e russo, com guia ampliado para Cloud e HTTP Custom protegido.</string>
+    <string name="whats_new_offline">HTTP Custom com senha/HWID, visualizador JSON, TLS e Dark Tunnel continuam disponíveis; a decodificação local segue offline.</string>
     <string name="whats_new_continue">Entendi</string>
     <string name="native_decoder_pending">O decodificador nativo deste formato ainda não foi integrado.</string>
     <string name="native_decoder_pending_short">Pendente</string>
     <string name="native_decoder_mixed_short">Misto</string>
     <string name="clear_current_result">Limpar resultado exibido</string>
     <string name="guide_settings_title">Guia interativo</string>
-    <string name="guide_settings_detail">Aprenda a importar arquivos, decodificar textos, visualizar resultados e usar o histórico. Reinicie o guia quando quiser.</string>
+    <string name="guide_settings_detail">Inclui arquivos e textos locais, HTTP Injector Cloud (online), HTTP Custom .hc protegido, resultados e histórico. Reinicie o guia a qualquer momento.</string>
     <string name="guide_replay">Iniciar apresentação guiada</string>
     <string name="settings_version">Versão %1$s</string>
     <string name="settings_build_code">Compilação %1$d</string>
@@ -199,4 +199,15 @@
     <string name="hc_auth_enter_manually">Digitar senha manualmente</string>
     <string name="hc_auth_input_invalid">Informe a senha exigida e/ou um HWID válido de 32 caracteres.</string>
     <string name="hc_auth_failed">Não foi possível autenticar este arquivo HTTP Custom protegido. Verifique a senha e/ou o HWID; o arquivo também pode estar danificado ou usar uma variante não compatível.</string>
+    <string name="guide_step_six">HTTP Injector Cloud (online): na página inicial, abra Nuvem, cole um link ehi.link, uma chave cloud ou um código de emojis 💉…🚀 e toque em Importar. Só então a referência será enviada ao servidor HTTP Injector; é necessária Internet. Arquivos e textos locais continuam offline.</string>
+    <string name="guide_step_seven">HTTP Custom (.hc) protegido: importe o arquivo normalmente. Se solicitar senha de exportação, HWID (32 caracteres) ou ambos, digite exatamente as credenciais exigidas. Valores incorretos ou arquivos alterados não podem ser descriptografados; arquivos .hc normais mantêm o método anterior.</string>
+    <string name="server_vpn">Servidores VPN</string>
+    <string name="server_vpn_description">Explore catálogos de servidores VPN compatíveis. Selecione um aplicativo para decodificar sua lista.</string>
+    <string name="nur_tunnel_name">NUR TUNNEL VPN</string>
+    <string name="nur_servers_description">Decodifique o catálogo criptografado do NUR Tunnel VPN 1.0.8.8.</string>
+    <string name="nur_servers_catalog_url">URL da lista criptografada</string>
+    <string name="nur_servers_privacy">A conexão ocorre somente ao tocar em Decodificar. HTTPS é obrigatório. O resultado é autenticado antes da exibição e salvo no histórico local criptografado.</string>
+    <string name="nur_servers_decode">Decodificar servidores</string>
+    <string name="nur_servers_invalid_url">Insira uma URL HTTPS válida para a lista de servidores.</string>
+    <string name="nur_servers_failed">Não foi possível baixar, autenticar ou decodificar o catálogo de servidores.</string>
 </resources>

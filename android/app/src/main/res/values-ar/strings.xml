@@ -27,7 +27,7 @@
     <string name="session_only">محفوظ محليًا · سجل مشفر</string>
     <string name="search_formats">البحث عن تطبيق أو امتداد</string>
     <string name="experimental">تجريبي</string>
-    <string name="catalog_note">تتضمن 239 صيغة ملف مسارات فك تشفير أصلية (61 سابقة و178 جديدة). يعتمد التوافق الفعلي على إصدار التطبيق المصدّر ولم يتم اعتماده بالكامل.</string>
+    <string name="catalog_note">239 تنسيق ملف أصلي سابقًا بالإضافة إلى NUR Tunnel .solid. يعتمد التوافق على إصدار التطبيق الذي صدّر الملف.</string>
     <string name="settings_title">الإعدادات</string>
     <string name="privacy_title">الخصوصية</string>
     <string name="privacy_text">لا يتم نسخ الملفات الأصلية. تحفظ نتائج فك الترميز مشفرة على هذا الجهاز حتى تحذفها.</string>
@@ -128,17 +128,17 @@
     <string name="text_decode_invalid">بروتوكول غير معروف أو نص غير صالح أو تجاوز حد الحجم.</string>
     <string name="text_decode_unsupported">تعذر فك ترميز النص. ربما يكون غير مكتمل أو تالفًا أو يستخدم تشفيرًا مختلفًا.</string>
     <string name="whats_new_title">الجديد في SP-DECODE</string>
-    <string name="whats_new_description">الإصدار 1.1.2 · HTTP Custom بكلمة مرور/HWID واستيراد سحابي وعرض JSON</string>
-    <string name="whats_new_linklayer">TLS Tunnel 8.5.0: ستة ملفات مفاتيح AES-GCM على أندرويد مع الحفاظ على الطرق السابقة.</string>
-    <string name="whats_new_fields">HTTP Injector: معالجة أعمق للحقول المتداخلة والمشفرة. بعض ملفات .ehi النادرة تحتاج إلى عينة حقيقية.</string>
-    <string name="whats_new_offline">Dark Tunnel: فك نصوص Base64 دون بادئة. الدليل في منتصف الشاشة. تظل مسارات الملفات الـ239 تعمل دون إنترنت.</string>
+    <string name="whats_new_description">الإصدار 1.1.3 · NUR Tunnel: فك ملفات .solid وفهرس الخوادم</string>
+    <string name="whats_new_linklayer">NUR Tunnel VPN: فك موثّق لملفات .solid وفهرس خوادم HTTPS عند الطلب.</string>
+    <string name="whats_new_fields">إضافة الفارسية والفرنسية والإندونيسية والروسية، مع دليل موسع لـ Cloud وHTTP Custom المحمي.</string>
+    <string name="whats_new_offline">تظل ميزات HTTP Custom بكلمة مرور/HWID وعارض JSON وTLS وDark Tunnel متاحة؛ فك الملفات المحلي دون إنترنت.</string>
     <string name="whats_new_continue">فهمت</string>
     <string name="native_decoder_pending">لم تتم إضافة أداة فك التشفير المحلية لهذه الصيغة بعد.</string>
     <string name="native_decoder_pending_short">قيد الانتظار</string>
     <string name="native_decoder_mixed_short">مختلط</string>
     <string name="clear_current_result">مسح النتيجة المعروضة</string>
     <string name="guide_settings_title">دليل تفاعلي</string>
-    <string name="guide_settings_detail">تعرّف على استيراد الملفات وفك النصوص وعرض النتائج وإدارة السجل. يمكنك إعادة الدليل في أي وقت.</string>
+    <string name="guide_settings_detail">يشمل الدليل الملفات والنصوص المحلية وHTTP Injector Cloud عبر الإنترنت وملفات HTTP Custom المحمية والنتائج والسجل. يمكن إعادة تشغيل الدليل في أي وقت.</string>
     <string name="guide_replay">بدء الجولة الإرشادية</string>
     <string name="settings_version">الإصدار %1$s</string>
     <string name="settings_build_code">رقم البناء %1$d</string>
@@ -199,4 +199,15 @@
     <string name="hc_auth_enter_manually">إدخال كلمة المرور يدويًا</string>
     <string name="hc_auth_input_invalid">أدخل كلمة المرور المطلوبة و/أو معرّف HWID صالحًا مكوّنًا من 32 حرفًا.</string>
     <string name="hc_auth_failed">تعذرت مصادقة ملف HTTP Custom المحمي. تحقق من كلمة المرور و/أو HWID؛ فقد يكون الملف تالفًا أو يستخدم صيغة غير مدعومة.</string>
+    <string name="guide_step_six">HTTP Injector Cloud (عبر الإنترنت): من الرئيسية، افتح السحابة والصق رابط ehi.link أو مفتاح السحابة أو رمز الرموز التعبيرية 💉…🚀، ثم اضغط استيراد. عندها فقط يُرسل المرجع إلى خادم HTTP Injector، ويلزم الاتصال بالإنترنت. تظل الملفات والنصوص المحلية دون اتصال.</string>
+    <string name="guide_step_seven">HTTP Custom ‏(.hc) المحمي: استورد الملف كالمعتاد. إذا طلب كلمة مرور التصدير أو HWID من 32 حرفًا أو كليهما، أدخل البيانات المطلوبة بدقة. لا يمكن فك التشفير ببيانات خاطئة أو بملف معدل، وتستمر ملفات .hc العادية بالطريقة السابقة.</string>
+    <string name="server_vpn">خوادم VPN</string>
+    <string name="server_vpn_description">تصفح قوائم خوادم VPN المدعومة. اختر تطبيقًا لفك تشفير قائمة خوادمه.</string>
+    <string name="nur_tunnel_name">NUR TUNNEL VPN</string>
+    <string name="nur_servers_description">فك تشفير قائمة الخوادم الخاصة بتطبيق NUR Tunnel VPN 1.0.8.8.</string>
+    <string name="nur_servers_catalog_url">رابط قائمة الخوادم المشفرة</string>
+    <string name="nur_servers_privacy">يتم الاتصال فقط عند الضغط على فك التشفير. يلزم استخدام HTTPS. يتم التحقق من سلامة النتيجة قبل عرضها وتخزينها في سجل محلي مشفر.</string>
+    <string name="nur_servers_decode">فك تشفير الخوادم</string>
+    <string name="nur_servers_invalid_url">أدخل رابط HTTPS صالحًا لقائمة الخوادم.</string>
+    <string name="nur_servers_failed">تعذر تنزيل قائمة الخوادم أو التحقق منها أو فك تشفيرها.</string>
 </resources>

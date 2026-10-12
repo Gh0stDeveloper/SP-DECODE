@@ -82,10 +82,24 @@ def legacy_status(suffix: str) -> str:
 def generate() -> dict:
     from spdecode.registry import DECODER_REGISTRY
 
+    # The 239-route legacy catalog is pinned. NUR .solid is independently
+    # supported by Android and the bot, and must never be misclassified as a
+    # migrated legacy profile or silently alter their parity hashes.
+    solid = DECODER_REGISTRY.get("solid")
+    if solid is not None and (
+        solid.script != "decoders/Python/nur_tunnel_solid.py"
+        or solid.runtime != "python"
+        or solid.name != "NUR TUNNEL VPN (.solid)"
+    ):
+        raise ValueError("NUR .solid registry route changed unexpectedly")
+    baseline_registry = {
+        suffix: spec for suffix, spec in DECODER_REGISTRY.items()
+        if suffix != "solid"
+    }
     legacy = json.loads((ROOT / "decoders.json").read_text("utf-8"))["decoders"]
-    if len(legacy) != 61 or len(DECODER_REGISTRY) != 239:
-        raise ValueError("Expected 61 original formats and 239 bot formats")
-    if set(legacy) - set(DECODER_REGISTRY):
+    if len(legacy) != 61 or len(baseline_registry) != 239:
+        raise ValueError("Expected 61 original and 239 existing migration formats")
+    if set(legacy) - set(baseline_registry):
         raise ValueError("Android original formats are missing from bot registry")
     if len(PROTO) != 61 or set(PROTO) != set(legacy):
         raise ValueError("Original 61 native Android routes changed")
@@ -96,7 +110,7 @@ def generate() -> dict:
     enabled_renz = 0
     enabled_special = 0
     enabled_independent = 0
-    for suffix, spec in DECODER_REGISTRY.items():
+    for suffix, spec in baseline_registry.items():
         old = legacy.get(suffix)
         if old is not None:
             if (spec.name, spec.script, spec.runtime) != (

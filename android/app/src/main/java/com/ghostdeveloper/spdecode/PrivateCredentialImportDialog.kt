@@ -1,6 +1,9 @@
 package com.ghostdeveloper.spdecode
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -53,5 +56,9 @@ internal fun PrivateCredentialImportDialog(
         dismissButton = {
             TextButton(onClick = onCancel) { Text(stringResource(R.string.cancel)) }
         },
+        containerColor = Color(0xFF242424),
+        titleContentColor = Color(0xFFF7F7F7),
+        textContentColor = Color(0xFFABABAB),
+        shape = RoundedCornerShape(17.dp),
     )
 }

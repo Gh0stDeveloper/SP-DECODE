@@ -1,6 +1,7 @@
 package com.ghostdeveloper.spdecode
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -79,6 +81,7 @@ fun SpDecodeApp(
     onDismissError:()->Unit,
     onDecodeText:(String)->Unit={},
     onDecodeCloud:(String)->Unit={},
+    onDecodeServerCatalog:(String)->Unit={},
     whatsNew:Boolean=false,
     onDismissWhatsNew:()->Unit={},
     guideStep:Int?=null,
@@ -99,7 +102,7 @@ fun SpDecodeApp(
         Column(
             modifier=Modifier.fillMaxSize().background(Background).safeDrawingPadding()
         ) {
-            BrandHeader(onSettings={onTab(3)})
+            BrandHeader(onSettings={onTab(4)})
             Box(Modifier.weight(1f)) {
                 when(activeTab) {
                     0->HomeScreen(current,session,busy,reveal,hideCredentials,onImport,onCancel,onReveal,
@@ -109,6 +112,7 @@ fun SpDecodeApp(
                         highlightGuide=if(!whatsNew && !busy)guideStep else null)
                     1->HistoryScreen(session,onSelect,onDeleteSelected,onClear,onImportMultiple,onFavorite)
                     2->FormatsScreen()
+                    3->ServerVpnScreen(busy,onDecodeServerCatalog)
                     else->FunctionalSettingsPanel(selectedLanguage,hideCredentials,
                         onLanguage,onMaskCredentials,onClear,onExternalLink,
                         retentionDays,onRetention,onShowGuide=onGuideRestart)
@@ -335,7 +339,7 @@ private fun HomeScreen(
                 enabled=!busy,
                 modifier=Modifier.weight(1f).heightIn(min=52.dp),
                 shape=RoundedCornerShape(14.dp),
-                border=if(highlightGuide==0)BorderStroke(2.dp,White)else null,
+                border=if(highlightGuide==0 || highlightGuide==6)BorderStroke(2.dp,White)else null,
                 contentPadding=PaddingValues(horizontal=8.dp,vertical=12.dp),
                 colors=ButtonDefaults.buttonColors(
                     containerColor=Panel,contentColor=White,
@@ -382,7 +386,8 @@ private fun HomeScreen(
             shape=RoundedCornerShape(14.dp),
             colors=ButtonDefaults.outlinedButtonColors(
                 contentColor=White,disabledContentColor=Secondary),
-            border=BorderStroke(1.dp,Outline),
+            border=BorderStroke(if(highlightGuide==5)2.dp else 1.dp,
+                if(highlightGuide==5)White else Outline),
         ) {
             Icon(Icons.Outlined.Cloud,null,modifier=Modifier.size(19.dp))
             Spacer(Modifier.width(8.dp))
@@ -665,7 +670,8 @@ private fun FormatsScreen() {
     val formats = remember(context) { AndroidDecoderCatalog.read(context) }
     var query by rememberSaveable { mutableStateOf("") }
     val groups = remember(query, formats) {
-        formats.groupBy { it.appName }.toList()
+        (formats + listOfNotNull(AndroidDecoderCatalog.detect("preview.solid",formats)))
+            .groupBy { it.appName }.toList()
             .filter { (name, entries) ->
                 query.isBlank() || name.contains(query.trim(), ignoreCase = true) ||
                     entries.any { it.suffix.contains(query.trim(), ignoreCase = true) }
@@ -729,6 +735,81 @@ private fun FormatsScreen() {
         }
     }
 }
+/**
+ * Server VPN is an opt-in catalog reader, not another file decoding shortcut.
+ * The NUR logo slot will use the supplied app artwork when available.
+ */
+@Composable
+private fun ServerVpnScreen(busy:Boolean,onDecodeCatalog:(String)->Unit) {
+    var selected by rememberSaveable { mutableStateOf(false) }
+    var url by rememberSaveable { mutableStateOf(NurTunnelServerCatalog.DEFAULT_URL) }
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+        .padding(horizontal=20.dp,vertical=12.dp),
+        verticalArrangement=Arrangement.spacedBy(14.dp)) {
+        Text(stringResource(R.string.server_vpn),fontSize=24.sp,
+            fontWeight=FontWeight.Bold,color=White)
+        Text(stringResource(R.string.server_vpn_description),fontSize=13.sp,
+            lineHeight=20.sp,color=Secondary)
+        Surface(
+            modifier=Modifier.fillMaxWidth().clickable { selected=!selected },
+            shape=RoundedCornerShape(15.dp),color=Panel,
+            border=BorderStroke(1.dp,Outline),
+        ) {
+            Row(Modifier.padding(15.dp),verticalAlignment=Alignment.CenterVertically) {
+                Surface(color=Raised,shape=RoundedCornerShape(13.dp),
+                    modifier=Modifier.size(52.dp)) {
+                    Box(contentAlignment=Alignment.Center) {
+                        Image(
+                            painter=painterResource(id=R.drawable.nur_tunnel_icon),
+                            contentDescription=stringResource(R.string.nur_tunnel_name),
+                            modifier=Modifier.size(36.dp)
+                        )
+                    }
+                }
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(5.dp)) {
+                    Text(stringResource(R.string.nur_tunnel_name),color=White,
+                        fontSize=16.sp,fontWeight=FontWeight.SemiBold)
+                    Text(stringResource(R.string.nur_servers_description),color=Secondary,
+                        fontSize=12.sp,lineHeight=17.sp)
+                }
+                Icon(if(selected)Icons.Outlined.ExpandLess else Icons.Outlined.ChevronRight,
+                    null,tint=Secondary)
+            }
+        }
+        if(selected) {
+            Surface(color=Panel,shape=RoundedCornerShape(15.dp),
+                modifier=Modifier.fillMaxWidth()) {
+                Column(Modifier.padding(15.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+                    Row(verticalAlignment=Alignment.CenterVertically) {
+                        Icon(Icons.Outlined.Link,null,tint=Secondary)
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.nur_servers_catalog_url),
+                            color=White,fontWeight=FontWeight.Medium)
+                    }
+                    OutlinedTextField(value=url,onValueChange={if(it.length<=2048)url=it},
+                        modifier=Modifier.fillMaxWidth(),singleLine=false,maxLines=3,
+                        label={Text(stringResource(R.string.nur_servers_catalog_url))},
+                        shape=RoundedCornerShape(13.dp))
+                    Text(stringResource(R.string.nur_servers_privacy),
+                        fontSize=12.sp,lineHeight=18.sp,color=Secondary)
+                    Button(onClick={onDecodeCatalog(url.trim())},
+                        enabled=!busy && url.trim().startsWith("https://",ignoreCase=true),
+                        modifier=Modifier.fillMaxWidth().heightIn(min=50.dp),
+                        shape=RoundedCornerShape(13.dp),
+                        colors=ButtonDefaults.buttonColors(containerColor=Raised,
+                            contentColor=White,disabledContainerColor=Raised,
+                            disabledContentColor=Secondary)) {
+                        Icon(Icons.Outlined.CloudDownload,null,modifier=Modifier.size(19.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.nur_servers_decode))
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun CardText(value:String) {
     Surface(color=Panel,shape=RoundedCornerShape(15.dp),modifier=Modifier.fillMaxWidth()){
@@ -742,7 +823,8 @@ private fun BottomTabs(active:Int,onTab:(Int)->Unit,spotlight:Int?=null) {
         Triple(R.string.home,Icons.Outlined.Home,0),
         Triple(R.string.history,Icons.Outlined.History,1),
         Triple(R.string.formats,Icons.Outlined.Code,2),
-        Triple(R.string.settings,Icons.Outlined.Settings,3)
+        Triple(R.string.server_vpn,Icons.Outlined.Dns,3),
+        Triple(R.string.settings,Icons.Outlined.Settings,4)
     )
     HorizontalDivider(color=Outline)
     Row(Modifier.fillMaxWidth().heightIn(min=65.dp).padding(bottom=2.dp),

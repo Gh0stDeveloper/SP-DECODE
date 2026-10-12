@@ -25,13 +25,14 @@ import androidx.compose.ui.unit.sp
  * The Activity records completion in private SharedPreferences.
  */
 internal object FirstRunGuide {
-    const val STEPS = 5
+    const val STEPS = 7
 
     fun targetTab(step: Int): Int = when (step) {
-        0, 1 -> 0
+        0, 1, 5, 6 -> 0
         2 -> 1
         3 -> 2
-        else -> 3
+        4 -> 4
+        else -> 0
     }
 
     fun stepTextId(step: Int): Int = when (step) {
@@ -39,7 +40,9 @@ internal object FirstRunGuide {
         1 -> R.string.guide_step_two
         2 -> R.string.guide_step_three
         3 -> R.string.guide_step_four
-        else -> R.string.guide_step_five
+        4 -> R.string.guide_step_five
+        5 -> R.string.guide_step_six
+        else -> R.string.guide_step_seven
     }
 }
 

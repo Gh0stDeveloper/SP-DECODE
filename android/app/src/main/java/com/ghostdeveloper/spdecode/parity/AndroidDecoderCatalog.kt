@@ -50,7 +50,8 @@ object AndroidDecoderCatalog {
                 (migrationPhase == "C" && portStatus == ULTRA_STATUS) ||
                 (migrationPhase == "D" && portStatus == RENZ_STATUS) ||
                 (migrationPhase == "E" && portStatus == SPECIAL_STATUS) ||
-                (migrationPhase == "F" && portStatus == INDEPENDENT_STATUS)
+                (migrationPhase == "F" && portStatus == INDEPENDENT_STATUS) ||
+                (migrationPhase == "NUR" && suffix == "solid")
         val isPending: Boolean get() = !hasNativeDecoder
     }
 
@@ -112,6 +113,12 @@ object AndroidDecoderCatalog {
         val candidate = filename.substringAfterLast('/').substringAfterLast('\\')
             .lowercase(Locale.ROOT)
         if (candidate.isBlank()) return null
+        // The existing 239 audited suffixes remain frozen; NUR is independently routed.
+        if (candidate.endsWith(".solid")) return Format(
+            "solid", "NUR TUNNEL VPN", "experimental_nur_solid_native",
+            false, "decoders/Python/nur_tunnel_solid.py", "python",
+            "NUR", "nur-tunnel-v1.0.8.8"
+        )
         return formats.filter {
             candidate.endsWith("." + it.suffix.lowercase(Locale.ROOT))
         }.maxByOrNull { it.suffix.length }

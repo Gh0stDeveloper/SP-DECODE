@@ -30,6 +30,7 @@ import com.ghostdeveloper.spdecode.parity.UltraSandokPort
 import com.ghostdeveloper.spdecode.parity.RenzPort
 import com.ghostdeveloper.spdecode.parity.LinkLayerPort
 import com.ghostdeveloper.spdecode.parity.NpvsPort
+import com.ghostdeveloper.spdecode.parity.NurTunnelPort
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
@@ -277,6 +278,7 @@ class MainActivity : ComponentActivity() {
                 onDismissError={message=null},
                 onDecodeText={input->decodeText(input)},
                 onDecodeCloud={reference->decodeCloud(reference)},
+                onDecodeServerCatalog={url->decodeNurServers(url)},
                 whatsNew=showWhatsNew,
                 onDismissWhatsNew={
                     settings.edit().putLong("last_seen_whats_new_version",runningVersionCode).apply()
@@ -584,6 +586,66 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    /** User-triggered NUR catalog fetch; completely separate from offline .solid. */
+    private fun decodeNurServers(url:String) {
+        if(busy)return
+        if(url.isBlank() || url.length>2048 || !url.startsWith("https://",ignoreCase=true)) {
+            message=getString(R.string.nur_servers_invalid_url)
+            return
+        }
+        val generation=++importGeneration
+        job?.cancel()
+        job=scope.launch {
+            busy=true
+            progressStage=1
+            progressPosition=1
+            progressTotal=1
+            progressFilename=getString(R.string.nur_tunnel_name)
+            message=null
+            reveal=false
+            try {
+                historyLoad?.await()
+                val pair=withContext(Dispatchers.IO) {
+                    val encrypted=NurTunnelServerCatalog.download(url)
+                    try {
+                        val decoded=NurTunnelServerCatalog.decodeDownloaded(this@MainActivity,encrypted)
+                        Pair(decoded,encrypted.size)
+                    } finally { encrypted.fill(0) }
+                }
+                progressStage=2
+                val record=DecodeView("nur-tunnel-servers.json","nurservers",
+                    pair.first,pair.second)
+                val saved=try {
+                    withContext(Dispatchers.IO){historyStore.save(record)}
+                    true
+                }catch(e:CancellationException){throw e}
+                catch(_:Exception) {
+                    SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.HISTORY_WRITE_FAILURE)
+                    false
+                }
+                result=record
+                recent.add(0,record)
+                if(!saved)toast(R.string.history_storage_error)
+                try {historyPreferences.setSelectedId(record.id)}
+                catch(e:CancellationException){throw e}
+                catch(_:Exception){toast(R.string.history_storage_error)}
+                tab=0
+            }catch(e:CancellationException){throw e}
+            catch(_:Exception) {
+                if(generation==importGeneration) {
+                    SafeDecodeDiagnostics.record(SafeDecodeDiagnostics.Event.FILE_IMPORT_FAILURE)
+                    message=getString(R.string.nur_servers_failed)
+                }
+            }finally {
+                if(generation==importGeneration) {
+                    busy=false
+                    progressStage=0
+                    progressFilename=null
+                }
+            }
+        }
+    }
+
     private fun clearVisibleResult() {
         if(busy)return
         result=null
@@ -659,6 +721,7 @@ class MainActivity : ComponentActivity() {
                     }
                     val input=prepared?.bytes?:withContext(Dispatchers.IO){readBounded(uri,
                         when {
+                            supported.suffix=="solid" -> NurTunnelPort.MAX_INPUT
                             supported.suffix=="lnk" -> LinkLayerPort.MAX_INPUT
                             supported.suffix=="npvs" -> NpvsPort.MAX_INPUT
                             supported.migrationPhase=="B" -> GenericVpnPort.MAX_INPUT_BYTES

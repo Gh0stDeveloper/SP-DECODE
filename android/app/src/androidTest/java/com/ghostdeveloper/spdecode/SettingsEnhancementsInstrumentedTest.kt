@@ -33,6 +33,11 @@ class SettingsEnhancementsInstrumentedTest {
         ui.onNodeWithText("English").assertExists()
         ui.onNodeWithText("Português (Brasil)").assertExists()
         ui.onNodeWithText("العربية").assertExists()
+        ui.onNodeWithText("فارسی").assertExists()
+        ui.onNodeWithText("Français").assertExists()
+        ui.onNodeWithText("Bahasa Indonesia").assertExists()
+        ui.onNodeWithText("Русский").assertExists()
+        ui.onNodeWithText("Deutsch").assertExists()
         ui.onNodeWithText(ctx.getString(R.string.mask_passwords_title)).assertExists()
         // Telegram is the sole contact surface. No repository/source links.
         ui.onNodeWithText(ctx.getString(R.string.contact_developer)).assertExists()
