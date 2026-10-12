@@ -201,4 +201,13 @@
     <string name="hc_auth_failed">This protected HTTP Custom file could not be authenticated. Check the password and/or HWID; the file may also be damaged or use an unsupported variant.</string>
     <string name="guide_step_six">HTTP Injector Cloud (online): on Home, open Cloud, paste an ehi.link URL, cloud key or 💉…🚀 emoji code, then tap Import. This sends the reference to the HTTP Injector server only after you tap; Internet is required. Local files and texts stay offline.</string>
     <string name="guide_step_seven">Protected HTTP Custom (.hc): import the file as usual. If the file requests an export password, HWID (32 characters) or both, enter exactly the required credentials. Wrong values or tampered files cannot be decrypted; ordinary .hc files still use the original method.</string>
+    <string name="server_vpn">Server VPN</string>
+    <string name="server_vpn_description">Browse supported VPN server catalogs. Select an app to decode its authenticated server list.</string>
+    <string name="nur_tunnel_name">NUR TUNNEL VPN</string>
+    <string name="nur_servers_description">Decode the encrypted server catalog for NUR Tunnel VPN 1.0.8.8.</string>
+    <string name="nur_servers_catalog_url">Encrypted server list URL</string>
+    <string name="nur_servers_privacy">Online only when you tap Decode. HTTPS is required. Results are authenticated before display and saved in encrypted local history.</string>
+    <string name="nur_servers_decode">Decode servers</string>
+    <string name="nur_servers_invalid_url">Enter a valid HTTPS URL for the server list.</string>
+    <string name="nur_servers_failed">Unable to download, authenticate or decode the server catalog.</string>
 </resources>
