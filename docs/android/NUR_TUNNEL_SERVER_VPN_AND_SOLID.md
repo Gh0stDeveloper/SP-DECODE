@@ -1,6 +1,6 @@
 # Server VPN / NUR TUNNEL VPN (.solid)
 
-Scope: PR #83, branch `feat/android-multilingual-guide-cloud-hc`. Not a production release.
+Scope: PR #84, branch `fix/nur-url-private-hc-text-v1.1.4`, planned app version 1.1.4 (versionCode 25).
 
 ## Distinct integrations
 
@@ -29,12 +29,13 @@ The already-public, legacy app-wide cipher material is obtained from the existin
 
 - The fifth bottom tab is **Server VPN**, alongside Home, History, Formats and Settings, using the app's existing black/charcoal visual system.
 - Initial supported catalog application: **NUR TUNNEL VPN**. Its logo surface currently has a generic placeholder icon until the user provides the actual artwork.
-- The URL field starts with the reference URL from the supplied server decoder: `https://strongteam.co/api/ultrasystem/ultrav3.txt`.
+- The catalog URL is not displayed in the Android interface. The endpoint is a source asset registered in the existing AES-GCM vault and is packaged as authenticated ciphertext; the app validates it and resolves it only after the user taps **Decode servers**.
 - Network access occurs **only on tapping Decode servers**. The downloader requires HTTPS, disallows redirects, sets connect/read timeouts, and limits the response to 16 MiB. No automatic polling or silent fetching is added.
+- This protects the packaged asset against casual plaintext extraction, not a determined APK reverse engineer: the runtime unwrap key is recoverable from app code. It should not be described as absolute URL secrecy.
 - Authenticated decoded catalog is displayed using the existing **Home** JSON/result viewer and saved in encrypted local history. Download/authentication failures do not create records.
 - `.solid` is visible in Formats and routed through the normal offline import flow (including batch imports).
 - The original frozen 239-format Android catalog remains unchanged. The additive `.solid` route is counted and tested separately to preserve its golden audit contract.
-- The HTTP Custom password/HWID secure dialog was re-styled using the same panel, foreground and corner treatment as the rest of SP-DECODE; no auth/KDF changes.
+- The HTTP Custom password/HWID secure dialog keeps the existing authentication/KDF flow and forces entered password/HWID text to white for contrast.
 
 ## Validation
 
