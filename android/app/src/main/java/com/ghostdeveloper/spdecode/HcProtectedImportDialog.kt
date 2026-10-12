@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -62,6 +63,7 @@ internal fun HcProtectedImportDialog(
                         singleLine=true,
                         shape=RoundedCornerShape(13.dp),
                         modifier=Modifier.fillMaxWidth(),
+                        textStyle=TextStyle(color=Color(0xFFF7F7F7)),
                         label={Text(stringResource(R.string.hc_auth_password))},
                         visualTransformation=PasswordVisualTransformation(),
                         keyboardOptions=KeyboardOptions(
@@ -75,6 +77,7 @@ internal fun HcProtectedImportDialog(
                         onValueChange={if(it.length<=32)hwid=it},
                         singleLine=true,
                         modifier=Modifier.fillMaxWidth(),
+                        textStyle=TextStyle(color=Color(0xFFF7F7F7)),
                         label={Text(stringResource(R.string.hc_auth_hwid))},
                         supportingText={Text(stringResource(R.string.hc_auth_hwid_hint))},
                         keyboardOptions=KeyboardOptions(
