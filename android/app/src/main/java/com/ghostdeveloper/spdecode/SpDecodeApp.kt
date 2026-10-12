@@ -81,7 +81,7 @@ fun SpDecodeApp(
     onDismissError:()->Unit,
     onDecodeText:(String)->Unit={},
     onDecodeCloud:(String)->Unit={},
-    onDecodeServerCatalog:(String)->Unit={},
+    onDecodeServerCatalog:()->Unit={},
     whatsNew:Boolean=false,
     onDismissWhatsNew:()->Unit={},
     guideStep:Int?=null,
@@ -740,9 +740,8 @@ private fun FormatsScreen() {
  * The NUR logo slot will use the supplied app artwork when available.
  */
 @Composable
-private fun ServerVpnScreen(busy:Boolean,onDecodeCatalog:(String)->Unit) {
+private fun ServerVpnScreen(busy:Boolean,onDecodeCatalog:()->Unit) {
     var selected by rememberSaveable { mutableStateOf(false) }
-    var url by rememberSaveable { mutableStateOf(NurTunnelServerCatalog.DEFAULT_URL) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
         .padding(horizontal=20.dp,vertical=12.dp),
         verticalArrangement=Arrangement.spacedBy(14.dp)) {
@@ -781,20 +780,10 @@ private fun ServerVpnScreen(busy:Boolean,onDecodeCatalog:(String)->Unit) {
             Surface(color=Panel,shape=RoundedCornerShape(15.dp),
                 modifier=Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(15.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-                    Row(verticalAlignment=Alignment.CenterVertically) {
-                        Icon(Icons.Outlined.Link,null,tint=Secondary)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.nur_servers_catalog_url),
-                            color=White,fontWeight=FontWeight.Medium)
-                    }
-                    OutlinedTextField(value=url,onValueChange={if(it.length<=2048)url=it},
-                        modifier=Modifier.fillMaxWidth(),singleLine=false,maxLines=3,
-                        label={Text(stringResource(R.string.nur_servers_catalog_url))},
-                        shape=RoundedCornerShape(13.dp))
                     Text(stringResource(R.string.nur_servers_privacy),
                         fontSize=12.sp,lineHeight=18.sp,color=Secondary)
-                    Button(onClick={onDecodeCatalog(url.trim())},
-                        enabled=!busy && url.trim().startsWith("https://",ignoreCase=true),
+                    Button(onClick=onDecodeCatalog,
+                        enabled=!busy,
                         modifier=Modifier.fillMaxWidth().heightIn(min=50.dp),
                         shape=RoundedCornerShape(13.dp),
                         colors=ButtonDefaults.buttonColors(containerColor=Raised,

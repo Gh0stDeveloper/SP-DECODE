@@ -23,6 +23,7 @@ REQUIRED = (
     "http_tweak_source_tables.json",
     "legacy_epro_npv2_keys.json",
     "npvs_v5_tables.b85",
+    "nur_tunnel_server_endpoint.json",
     "renz_d_profiles.json",
     "ultra_c_profiles.json",
 )
@@ -40,6 +41,9 @@ LOADERS = {
     "IndependentF1Port.kt": "flex_f_profiles.json",
     "NpvsWhitebox.kt": "npvs_v5_tables.b85",
     "NpvWhiteboxReferencePort.kt": "npv_whitebox.bin",
+}
+LOADERS_OUTSIDE_PARITY = {
+    "NurTunnelServerCatalog.kt": "nur_tunnel_server_endpoint.json",
 }
 MAGIC = b"SPV1"
 
@@ -86,6 +90,10 @@ def check_source(root: Path = ROOT) -> None:
             f'SecureAssetVault.open(context,ASSET)' not in text and
             f'SecureAssetVault.readText(ctx, ASSET)' not in text
         ):
+            raise ValueError("Unprotected Android resource loader: " + file)
+    for file, name in LOADERS_OUTSIDE_PARITY.items():
+        text = (root / "android/app/src/main/java/com/ghostdeveloper/spdecode" / file).read_text("utf-8")
+        if f'SecureAssetVault.readText(context, "{name}")' not in text:
             raise ValueError("Unprotected Android resource loader: " + file)
     # These are different security classes. Do not put signing secrets,
     # backend credentials or AndroidKeyStore-generated history keys in assets.

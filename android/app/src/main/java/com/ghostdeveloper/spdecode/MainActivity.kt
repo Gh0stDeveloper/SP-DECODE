@@ -278,7 +278,7 @@ class MainActivity : ComponentActivity() {
                 onDismissError={message=null},
                 onDecodeText={input->decodeText(input)},
                 onDecodeCloud={reference->decodeCloud(reference)},
-                onDecodeServerCatalog={url->decodeNurServers(url)},
+                onDecodeServerCatalog={decodeNurServers()},
                 whatsNew=showWhatsNew,
                 onDismissWhatsNew={
                     settings.edit().putLong("last_seen_whats_new_version",runningVersionCode).apply()
@@ -586,13 +586,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    /** User-triggered NUR catalog fetch; completely separate from offline .solid. */
-    private fun decodeNurServers(url:String) {
+    /** User-triggered NUR catalog fetch; endpoint is read from the encrypted asset vault. */
+    private fun decodeNurServers() {
         if(busy)return
-        if(url.isBlank() || url.length>2048 || !url.startsWith("https://",ignoreCase=true)) {
-            message=getString(R.string.nur_servers_invalid_url)
-            return
-        }
         val generation=++importGeneration
         job?.cancel()
         job=scope.launch {
@@ -606,6 +602,7 @@ class MainActivity : ComponentActivity() {
             try {
                 historyLoad?.await()
                 val pair=withContext(Dispatchers.IO) {
+                    val url=NurTunnelServerCatalog.defaultUrl(this@MainActivity)
                     val encrypted=NurTunnelServerCatalog.download(url)
                     try {
                         val decoded=NurTunnelServerCatalog.decodeDownloaded(this@MainActivity,encrypted)
