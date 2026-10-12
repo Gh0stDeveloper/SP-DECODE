@@ -128,9 +128,9 @@
     <string name="text_decode_invalid">بروتوكول غير معروف أو نص غير صالح أو تجاوز حد الحجم.</string>
     <string name="text_decode_unsupported">تعذر فك ترميز النص. ربما يكون غير مكتمل أو تالفًا أو يستخدم تشفيرًا مختلفًا.</string>
     <string name="whats_new_title">الجديد في SP-DECODE</string>
-    <string name="whats_new_description">الإصدار 1.1.3 · NUR Tunnel: فك ملفات .solid وفهرس الخوادم</string>
-    <string name="whats_new_linklayer">NUR Tunnel VPN: فك موثّق لملفات .solid وفهرس خوادم HTTPS عند الطلب.</string>
-    <string name="whats_new_fields">إضافة الفارسية والفرنسية والإندونيسية والروسية، مع دليل موسع لـ Cloud وHTTP Custom المحمي.</string>
+    <string name="whats_new_description">الإصدار 1.1.4 · إخفاء رابط كتالوج NUR Tunnel وتحسين وضوح النص في HTTP Custom</string>
+    <string name="whats_new_linklayer">لم يعد رابط كتالوج NUR Tunnel يظهر على الشاشة. يُخزَّن المورد مشفرًا ولا تُنزَّل الخوادم إلا عند الضغط على فك التشفير.</string>
+    <string name="whats_new_fields">تظهر الكتابة المدخلة في حقلي كلمة المرور وHWID في HTTP Custom باللون الأبيض لسهولة القراءة.</string>
     <string name="whats_new_offline">تظل ميزات HTTP Custom بكلمة مرور/HWID وعارض JSON وTLS وDark Tunnel متاحة؛ فك الملفات المحلي دون إنترنت.</string>
     <string name="whats_new_continue">فهمت</string>
     <string name="native_decoder_pending">لم تتم إضافة أداة فك التشفير المحلية لهذه الصيغة بعد.</string>
