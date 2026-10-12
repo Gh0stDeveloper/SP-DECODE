@@ -27,7 +27,7 @@
     <string name="session_only">Saved locally · Encrypted history</string>
     <string name="search_formats">Search app or extension</string>
     <string name="experimental">Experimental</string>
-    <string name="catalog_note">239 file formats have native decoder routes (61 legacy and 178 new). Real-world compatibility depends on the exporter version and is not fully certified.</string>
+    <string name="catalog_note">239 established native file formats plus NUR Tunnel .solid. Compatibility depends on the app version that exported each file.</string>
     <string name="settings_title">Settings</string>
     <string name="privacy_title">Privacy</string>
     <string name="privacy_text">Original imported files are not copied. Decoded results are encrypted and stored only on this device until you delete them.</string>
