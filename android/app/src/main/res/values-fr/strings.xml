@@ -27,7 +27,7 @@
     <string name="session_only">Enregistré localement · Historique chiffré</string>
     <string name="search_formats">Rechercher une application ou une extension</string>
     <string name="experimental">Expérimental</string>
-    <string name="catalog_note">239 formats de fichiers disposent de décodeurs natifs (61 anciens et 178 nouveaux). La compatibilité dépend de la version d’exportation et n’est pas entièrement certifiée.</string>
+    <string name="catalog_note">239 formats de fichiers natifs existants et NUR Tunnel .solid. La compatibilité dépend de la version de l’application qui a exporté chaque fichier.</string>
     <string name="settings_title">Paramètres</string>
     <string name="privacy_title">Confidentialité</string>
     <string name="privacy_text">Les fichiers originaux importés ne sont pas copiés. Les résultats décodés sont chiffrés et conservés uniquement sur cet appareil jusqu’à leur suppression.</string>
