@@ -668,7 +668,8 @@ private fun FormatsScreen() {
     val formats = remember(context) { AndroidDecoderCatalog.read(context) }
     var query by rememberSaveable { mutableStateOf("") }
     val groups = remember(query, formats) {
-        formats.groupBy { it.appName }.toList()
+        (formats + listOfNotNull(AndroidDecoderCatalog.detect("preview.solid",formats)))
+            .groupBy { it.appName }.toList()
             .filter { (name, entries) ->
                 query.isBlank() || name.contains(query.trim(), ignoreCase = true) ||
                     entries.any { it.suffix.contains(query.trim(), ignoreCase = true) }
