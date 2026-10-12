@@ -608,7 +608,7 @@ class MainActivity : ComponentActivity() {
                 val pair=withContext(Dispatchers.IO) {
                     val encrypted=NurTunnelServerCatalog.download(url)
                     try {
-                        val decoded=NurTunnelServerCatalog.decodeDownloaded(encrypted)
+                        val decoded=NurTunnelServerCatalog.decodeDownloaded(this@MainActivity,encrypted)
                         Pair(decoded,encrypted.size)
                     } finally { encrypted.fill(0) }
                 }
