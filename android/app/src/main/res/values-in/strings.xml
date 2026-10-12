@@ -27,7 +27,7 @@
     <string name="session_only">Disimpan lokal · Riwayat terenkripsi</string>
     <string name="search_formats">Cari aplikasi atau ekstensi</string>
     <string name="experimental">Eksperimental</string>
-    <string name="catalog_note">239 format berkas memiliki jalur dekoder native (61 lama dan 178 baru). Kompatibilitas bergantung pada versi pengekspor dan belum sepenuhnya terverifikasi.</string>
+    <string name="catalog_note">239 format file asli sebelumnya ditambah NUR Tunnel .solid. Kompatibilitas bergantung pada versi aplikasi yang mengekspor file.</string>
     <string name="settings_title">Pengaturan</string>
     <string name="privacy_title">Privasi</string>
     <string name="privacy_text">Berkas asli yang diimpor tidak disalin. Hasil dekode dienkripsi dan disimpan hanya di perangkat ini sampai Anda menghapusnya.</string>
