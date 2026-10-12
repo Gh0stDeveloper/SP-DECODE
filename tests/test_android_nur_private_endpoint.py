@@ -21,7 +21,7 @@ class NurEndpointPrivacyTest(unittest.TestCase):
         audit = (ROOT / "scripts/android_s_vault_audit.py").read_text("utf-8")
         for source in (vault, gradle, audit):
             self.assertIn("nur_tunnel_server_endpoint.json", source)
-        self.assertIn('SecureAssetVault.readText(context, ENDPOINT_ASSET)', catalog)
+        self.assertIn('SecureAssetVault.readText(context, "nur_tunnel_server_endpoint.json")', catalog)
         self.assertNotIn('const val DEFAULT_URL = "https://', catalog)
 
     def test_server_vpn_screen_only_exposes_decode_action(self):
