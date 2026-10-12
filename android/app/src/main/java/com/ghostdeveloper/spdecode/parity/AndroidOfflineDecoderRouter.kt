@@ -59,7 +59,7 @@ object AndroidOfflineDecoderRouter {
         if (!format.hasNativeDecoder) return null
         // The 81 generic suffixes are explicitly selected by catalog phase,
         // never inserted into the old 61-case switch or treated as fallback.
-        if (format.suffix == "solid") return NurTunnelPort.decodeSolid(input)
+        if (format.suffix == "solid") return NurTunnelPort.decodeSolid(context,input)
         if (format.migrationPhase == "B") {
             return GenericVpnPort.decode(context, format.suffix, input)
         }
