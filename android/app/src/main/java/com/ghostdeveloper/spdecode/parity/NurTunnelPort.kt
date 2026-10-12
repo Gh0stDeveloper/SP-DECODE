@@ -1,5 +1,6 @@
 package com.ghostdeveloper.spdecode.parity
 
+import android.content.Context
 import android.util.Base64
 import org.bouncycastle.crypto.generators.Argon2BytesGenerator
 import org.bouncycastle.crypto.params.Argon2Parameters
@@ -25,8 +26,16 @@ internal object NurTunnelPort {
     private const val MAX_FIELDS = 100000
     private const val MAX_DEPTH = 64
 
-    private val exportSecret = "/4ssU0OjjtKH8AheiAxnc3DwSGDzsy+8".toByteArray(Charsets.US_ASCII)
-    private val internalSecret = "NurChickenPowder".toByteArray(Charsets.US_ASCII)
+    // Historical public decoding constants ship only in the encrypted build asset.
+    // The vault reduces casual DEX exposure, not recoverability under reverse engineering.
+    private fun secrets(context:Context):Pair<ByteArray,ByteArray> {
+        val profile=JSONObject(SecureAssetVault.readText(context,
+            "embedded_kotlin_profiles.json")).getJSONObject("nurTunnel")
+        return Pair(
+            Base64.decode(profile.getString("exportSecretB64"),Base64.NO_WRAP),
+            Base64.decode(profile.getString("internalSecretB64"),Base64.NO_WRAP)
+        )
+    }
     private val carrierPattern = Regex("[A-Za-z0-9+/]*={0,2}")
     private val hexPattern = Regex("[0-9a-fA-F]+")
     private val encryptedFields = setOf(
@@ -48,7 +57,7 @@ internal object NurTunnelPort {
         return input
     }
 
-    private fun open(text:String):String {
+    private fun open(text:String,secrets:Pair<ByteArray,ByteArray>):String {
         val exported = text.length%4==1 && text.length>=61
         val internal = text.length%4==0 && text.length>=60
         require(exported || internal) { "Unsupported NUR envelope" }
@@ -63,7 +72,7 @@ internal object NurTunnelPort {
             .withParallelism(1).withVersion(Argon2Parameters.ARGON2_VERSION_13)
             .build()
         val key=ByteArray(32)
-        val secret=if(exported)exportSecret else internalSecret
+        val secret=if(exported)secrets.first else secrets.second
         try {
             Argon2BytesGenerator().apply { init(params) }.generateBytes(secret,key)
             val cipher=Cipher.getInstance("AES/GCM/NoPadding")
@@ -92,7 +101,7 @@ internal object NurTunnelPort {
         return carrierPattern.matches(carrier)
     }
 
-    private fun fields(root:JSONObject) {
+    private fun fields(root:JSONObject,secrets:Pair<ByteArray,ByteArray>) {
         var count=0
         fun visit(node:Any?,depth:Int,field:String):Any? {
             count++
@@ -107,29 +116,35 @@ internal object NurTunnelPort {
                     for(i in 0 until node.length())node.put(i,visit(node.opt(i),depth+1,field))
                     node
                 }
-                is String -> if(field in encryptedFields && candidate(node))open(node.trim().replace("\r","").replace("\n","")) else node
+                is String -> if(field in encryptedFields && candidate(node))open(node.trim().replace("\r","").replace("\n",""),secrets) else node
                 else -> node
             }
         }
         visit(root,0,"")
     }
 
-    private fun document(input:ByteArray):JSONObject {
-        val root=JSONObject(open(normalize(input)))
-        fields(root)
-        return root
+    private fun document(context:Context,input:ByteArray):JSONObject {
+        val material=secrets(context)
+        try {
+            val root=JSONObject(open(normalize(input),material))
+            fields(root,material)
+            return root
+        } finally {
+            material.first.fill(0)
+            material.second.fill(0)
+        }
     }
 
-    fun decodeSolid(input:ByteArray):String?=try {
-        val doc=document(input)
+    fun decodeSolid(context:Context,input:ByteArray):String?=try {
+        val doc=document(context,input)
         require(doc.opt("Name") is String && doc.opt("TunnelType") is String) {
             "Not a NUR .solid profile"
         }
         LegacyPortPrimitives.prettyJson(doc)+"\n"
     }catch(_:Exception){null}
 
-    fun decodeCatalog(input:ByteArray):String?=try {
-        val doc=document(input)
+    fun decodeCatalog(context:Context,input:ByteArray):String?=try {
+        val doc=document(context,input)
         require(doc.opt("Version") is String)
         val servers=doc.getJSONArray("Servers")
         val networks=doc.getJSONArray("Networks")
