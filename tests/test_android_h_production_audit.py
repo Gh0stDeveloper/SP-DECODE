@@ -66,7 +66,7 @@ class PhaseHProductionAuditTests(unittest.TestCase):
             with self.subTest(locale=folder):
                 path=ROOT/"android/app/src/main/res"/folder/"strings.xml"
                 content=path.read_text("utf-8")
-                self.assertIn("1.1.3",content)
+                self.assertIn("1.1.4",content)
                 self.assertIn("239",content)
                 self.assertNotIn("183 native",content)
                 self.assertNotIn("56 pending",content)
