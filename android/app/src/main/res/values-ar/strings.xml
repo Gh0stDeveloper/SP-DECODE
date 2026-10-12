@@ -27,7 +27,7 @@
     <string name="session_only">محفوظ محليًا · سجل مشفر</string>
     <string name="search_formats">البحث عن تطبيق أو امتداد</string>
     <string name="experimental">تجريبي</string>
-    <string name="catalog_note">تتضمن 239 صيغة ملف مسارات فك تشفير أصلية (61 سابقة و178 جديدة). يعتمد التوافق الفعلي على إصدار التطبيق المصدّر ولم يتم اعتماده بالكامل.</string>
+    <string name="catalog_note">239 تنسيق ملف أصلي سابقًا بالإضافة إلى NUR Tunnel .solid. يعتمد التوافق على إصدار التطبيق الذي صدّر الملف.</string>
     <string name="settings_title">الإعدادات</string>
     <string name="privacy_title">الخصوصية</string>
     <string name="privacy_text">لا يتم نسخ الملفات الأصلية. تحفظ نتائج فك الترميز مشفرة على هذا الجهاز حتى تحذفها.</string>
