@@ -201,4 +201,13 @@
     <string name="hc_auth_failed">احراز اصالت این فایل محافظت‌شده HTTP Custom ممکن نشد. رمز عبور یا HWID را بررسی کنید؛ فایل ممکن است خراب باشد یا از گونه‌ای پشتیبانی‌نشده استفاده کند.</string>
     <string name="guide_step_six">HTTP Injector Cloud (آنلاین): در خانه، فضای ابری را باز کنید؛ پیوند ehi.link، کلید Cloud یا کد ایموجی 💉…🚀 را بچسبانید و وارد کردن را بزنید. فقط پس از این کار مرجع به سرور HTTP Injector فرستاده می‌شود و اینترنت لازم است. فایل‌ها و متن‌های محلی آفلاین می‌مانند.</string>
     <string name="guide_step_seven">HTTP Custom محافظت‌شده (.hc): فایل را مانند همیشه وارد کنید. اگر رمز عبور خروجی، HWID (32 نویسه) یا هر دو خواسته شد، اطلاعات درست را وارد کنید. اطلاعات نادرست یا فایل تغییر‌یافته رمزگشایی نمی‌شود؛ فایل‌های .hc عادی همچنان از روش قدیمی استفاده می‌کنند.</string>
+    <string name="server_vpn">سرورهای VPN</string>
+    <string name="server_vpn_description">فهرست سرورهای VPN پشتیبانی‌شده را مرور کنید. برای رمزگشایی فهرست، برنامه را انتخاب کنید.</string>
+    <string name="nur_tunnel_name">NUR TUNNEL VPN</string>
+    <string name="nur_servers_description">رمزگشایی فهرست سرورهای NUR Tunnel VPN نسخه 1.0.8.8.</string>
+    <string name="nur_servers_catalog_url">نشانی فهرست سرورهای رمزگذاری‌شده</string>
+    <string name="nur_servers_privacy">اتصال فقط با لمس رمزگشایی انجام می‌شود. HTTPS الزامی است. نتیجه پیش از نمایش احراز اصالت شده و در تاریخچه محلی رمزگذاری‌شده ذخیره می‌شود.</string>
+    <string name="nur_servers_decode">رمزگشایی سرورها</string>
+    <string name="nur_servers_invalid_url">نشانی HTTPS معتبر برای فهرست سرورها وارد کنید.</string>
+    <string name="nur_servers_failed">دریافت، تأیید اصالت یا رمزگشایی فهرست سرورها انجام نشد.</string>
 </resources>
