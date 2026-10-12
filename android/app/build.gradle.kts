@@ -23,6 +23,7 @@ val vaultNames = setOf(
     "http_tweak_source_tables.json",
     "legacy_epro_npv2_keys.json",
     "npvs_v5_tables.b85",
+    "nur_tunnel_server_endpoint.json",
     "npv_whitebox.bin", // generated before Gradle when available
     "renz_d_profiles.json",
     "ultra_c_profiles.json",
@@ -116,8 +117,8 @@ android {
         applicationId = "com.ghostdeveloper.spdecode"
         minSdk = 24
         targetSdk = 35
-        versionCode = 24
-        versionName = "1.1.3"
+        versionCode = 25
+        versionName = "1.1.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("en", "es", "pt-rBR", "ar", "fa", "fr", "in", "ru", "de")
     }
