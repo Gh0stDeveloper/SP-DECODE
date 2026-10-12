@@ -2,6 +2,8 @@ package com.ghostdeveloper.spdecode
 
 import android.content.Context
 import com.ghostdeveloper.spdecode.parity.NurTunnelPort
+import com.ghostdeveloper.spdecode.parity.SecureAssetVault
+import org.json.JSONObject
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.net.URL
@@ -13,8 +15,19 @@ import javax.net.ssl.HttpsURLConnection
  * No scheduled update, no server API, no fallback to plaintext or to .solid.
  */
 internal object NurTunnelServerCatalog {
-    const val DEFAULT_URL = "https://strongteam.co/api/ultrasystem/ultrav3.txt"
+    private const val ENDPOINT_ASSET = "nur_tunnel_server_endpoint.json"
     private const val TIMEOUT_MS = 15000
+
+    fun defaultUrl(context:Context):String {
+        val document=JSONObject(SecureAssetVault.readText(context, ENDPOINT_ASSET))
+        val endpoint=document.getString("catalogUrl")
+        val url=URL(endpoint)
+        require(url.protocol=="https" && url.host.isNotBlank() &&
+            url.userInfo==null && url.port in -1..65535) {
+            "Invalid protected NUR catalog endpoint"
+        }
+        return endpoint
+    }
 
     fun download(urlText:String):ByteArray {
         require(urlText.length in 8..2048) { "Invalid URL length" }
