@@ -1,6 +1,11 @@
 package com.ghostdeveloper.spdecode
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.LockOutline
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -40,18 +45,22 @@ internal fun HcProtectedImportDialog(
     AlertDialog(
         onDismissRequest={dismiss()},
         properties=DialogProperties(securePolicy=SecureFlagPolicy.SecureOn),
-        title={Text(stringResource(R.string.hc_auth_title))},
+        icon={Icon(Icons.Outlined.LockOutline,null,tint=Color(0xFFF7F7F7))},
+        title={Text(stringResource(R.string.hc_auth_title),
+            color=Color(0xFFF7F7F7),fontWeight=FontWeight.SemiBold)},
         text={
             Column(
                 Modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
                 verticalArrangement=Arrangement.spacedBy(12.dp),
             ){
-                Text(stringResource(R.string.hc_auth_description,filename))
+                Text(stringResource(R.string.hc_auth_description,filename),
+                    color=Color(0xFFABABAB))
                 if(requirements.passwordRequired) {
                     OutlinedTextField(
                         value=password,
                         onValueChange={ if(it.toByteArray(Charsets.UTF_8).size<=4096)password=it },
                         singleLine=true,
+                        shape=RoundedCornerShape(13.dp),
                         modifier=Modifier.fillMaxWidth(),
                         label={Text(stringResource(R.string.hc_auth_password))},
                         visualTransformation=PasswordVisualTransformation(),
@@ -73,7 +82,8 @@ internal fun HcProtectedImportDialog(
                             autoCorrectEnabled=false),
                     )
                 }
-                Text(stringResource(R.string.hc_auth_privacy),style=MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.hc_auth_privacy),
+                    style=MaterialTheme.typography.bodySmall,color=Color(0xFFABABAB))
             }
         },
         confirmButton={
@@ -84,10 +94,15 @@ internal fun HcProtectedImportDialog(
                     password="";hwid=""
                     onSubmit(pw,hw)
                 }
-            }){Text(stringResource(R.string.hc_auth_unlock))}
+            }){Text(stringResource(R.string.hc_auth_unlock),color=Color(0xFFF7F7F7))}
         },
         dismissButton={
-            TextButton(onClick={dismiss()}){Text(stringResource(R.string.cancel))}
-        }
+            TextButton(onClick={dismiss()}){Text(stringResource(R.string.cancel),
+                color=Color(0xFFABABAB))}
+        },
+        containerColor=Color(0xFF242424),
+        titleContentColor=Color(0xFFF7F7F7),
+        textContentColor=Color(0xFFABABAB),
+        shape=RoundedCornerShape(17.dp),
     )
 }
