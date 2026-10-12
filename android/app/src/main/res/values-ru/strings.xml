@@ -27,7 +27,7 @@
     <string name="session_only">Сохранено локально · Зашифрованная история</string>
     <string name="search_formats">Поиск приложения или расширения</string>
     <string name="experimental">Экспериментально</string>
-    <string name="catalog_note">Для 239 форматов есть встроенные маршруты декодирования (61 старый и 178 новых). Совместимость зависит от версии экспортера и ещё не полностью подтверждена.</string>
+    <string name="catalog_note">239 существующих нативных форматов файлов и NUR Tunnel .solid. Совместимость зависит от версии приложения, экспортировавшего файл.</string>
     <string name="settings_title">Настройки</string>
     <string name="privacy_title">Конфиденциальность</string>
     <string name="privacy_text">Исходные импортированные файлы не копируются. Декодированные результаты шифруются и хранятся только на этом устройстве до удаления.</string>
