@@ -201,4 +201,13 @@
     <string name="hc_auth_failed">Не удалось проверить подлинность защищённого файла HTTP Custom. Проверьте пароль и/или HWID; файл также может быть повреждён или использовать неподдерживаемый вариант.</string>
     <string name="guide_step_six">HTTP Injector Cloud (онлайн): на главной откройте Облако, вставьте ссылку ehi.link, ключ Cloud или код эмодзи 💉…🚀, затем нажмите «Импорт». Только тогда ссылка отправляется на сервер HTTP Injector; нужен Интернет. Локальные файлы и тексты остаются офлайн.</string>
     <string name="guide_step_seven">Защищённый HTTP Custom (.hc): импортируйте файл как обычно. Если запрошены пароль экспорта, HWID (32 символа) или оба, введите правильные данные. Неверные данные или изменённый файл не декодируются; обычные .hc продолжат использовать прежний метод.</string>
+    <string name="server_vpn">VPN-серверы</string>
+    <string name="server_vpn_description">Просматривайте поддерживаемые каталоги VPN-серверов. Выберите приложение для расшифровки списка.</string>
+    <string name="nur_tunnel_name">NUR TUNNEL VPN</string>
+    <string name="nur_servers_description">Расшифруйте каталог серверов NUR Tunnel VPN 1.0.8.8.</string>
+    <string name="nur_servers_catalog_url">URL зашифрованного списка</string>
+    <string name="nur_servers_privacy">Соединение выполняется только после нажатия кнопки. Требуется HTTPS. Данные проверяются перед показом и сохраняются в зашифрованной локальной истории.</string>
+    <string name="nur_servers_decode">Расшифровать серверы</string>
+    <string name="nur_servers_invalid_url">Введите корректный HTTPS-адрес списка серверов.</string>
+    <string name="nur_servers_failed">Не удалось загрузить, проверить или расшифровать каталог серверов.</string>
 </resources>
