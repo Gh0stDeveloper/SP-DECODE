@@ -201,4 +201,13 @@
     <string name="hc_auth_failed">Não foi possível autenticar este arquivo HTTP Custom protegido. Verifique a senha e/ou o HWID; o arquivo também pode estar danificado ou usar uma variante não compatível.</string>
     <string name="guide_step_six">HTTP Injector Cloud (online): na página inicial, abra Nuvem, cole um link ehi.link, uma chave cloud ou um código de emojis 💉…🚀 e toque em Importar. Só então a referência será enviada ao servidor HTTP Injector; é necessária Internet. Arquivos e textos locais continuam offline.</string>
     <string name="guide_step_seven">HTTP Custom (.hc) protegido: importe o arquivo normalmente. Se solicitar senha de exportação, HWID (32 caracteres) ou ambos, digite exatamente as credenciais exigidas. Valores incorretos ou arquivos alterados não podem ser descriptografados; arquivos .hc normais mantêm o método anterior.</string>
+    <string name="server_vpn">Servidores VPN</string>
+    <string name="server_vpn_description">Explore catálogos de servidores VPN compatíveis. Selecione um aplicativo para decodificar sua lista.</string>
+    <string name="nur_tunnel_name">NUR TUNNEL VPN</string>
+    <string name="nur_servers_description">Decodifique o catálogo criptografado do NUR Tunnel VPN 1.0.8.8.</string>
+    <string name="nur_servers_catalog_url">URL da lista criptografada</string>
+    <string name="nur_servers_privacy">A conexão ocorre somente ao tocar em Decodificar. HTTPS é obrigatório. O resultado é autenticado antes da exibição e salvo no histórico local criptografado.</string>
+    <string name="nur_servers_decode">Decodificar servidores</string>
+    <string name="nur_servers_invalid_url">Insira uma URL HTTPS válida para a lista de servidores.</string>
+    <string name="nur_servers_failed">Não foi possível baixar, autenticar ou decodificar o catálogo de servidores.</string>
 </resources>
