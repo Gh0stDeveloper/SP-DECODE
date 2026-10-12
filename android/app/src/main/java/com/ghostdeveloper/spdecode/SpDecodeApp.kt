@@ -81,7 +81,7 @@ fun SpDecodeApp(
     onDismissError:()->Unit,
     onDecodeText:(String)->Unit={},
     onDecodeCloud:(String)->Unit={},
-    onDecodeServerCatalog:()->Unit={}
+    onDecodeServerCatalog:()->Unit={},
     whatsNew:Boolean=false,
     onDismissWhatsNew:()->Unit={},
     guideStep:Int?=null,
