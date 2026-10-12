@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="192dp"
+    android:height="192dp"
+    android:viewportWidth="192"
+    android:viewportHeight="192">
+    <!-- Soft rounded tile -->
+    <path
+        android:fillColor="#F5F5F7"
+        android:pathData="M36,8h120c15.5,0 28,12.5 28,28v120c0,15.5 -12.5,28 -28,28h-120c-15.5,0 -28,-12.5 -28,-28v-120c0,-15.5 12.5,-28 28,-28z"/>
+    <!-- Blue 3D shield body -->
+    <path
+        android:fillColor="#1A3A9C"
+        android:pathData="M96,28c-2,0 -38,10 -48,16v52c0,34 28,54 48,66 20,-12 48,-32 48,-66V44c-10,-6 -46,-16 -48,-16z"/>
+    <!-- Blue side panel (depth) -->
+    <path
+        android:fillColor="#152E7A"
+        android:pathData="M136,44v52c0,28 -18,46 -40,58 22,-12 48,-32 48,-66V48c-2,-1 -6,-3 -8,-4z"/>
+    <!-- Yellow face -->
+    <path
+        android:fillColor="#F5D100"
+        android:pathData="M96,40c-1.5,0 -30,8 -38,12.5v42c0,26 22,42 38,52 16,-10 38,-26 38,-52v-42C126,48 97.5,40 96,40z"/>
+    <!-- Wi-Fi arcs -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#1A3A9C"
+        android:strokeWidth="7"
+        android:strokeLineCap="round"
+        android:pathData="M72,78c14,-14 34,-14 48,0"/>
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#1A3A9C"
+        android:strokeWidth="7"
+        android:strokeLineCap="round"
+        android:pathData="M80,90c9,-9 23,-9 32,0"/>
+    <path
+        android:fillColor="#1A3A9C"
+        android:pathData="M96,102m-5.5,0a5.5,5.5 0,1 1,11 0a5.5,5.5 0,1 1,-11 0"/>
+    <!-- VPN label -->
+    <path
+        android:fillColor="#1A3A9C"
+        android:pathData="M70,118h8l4,14 4,-14h8l-7,22h-10z"/>
+    <path
+        android:fillColor="#1A3A9C"
+        android:pathData="M98,118h9c8,0 13,4 13,11 0,7 -5,11 -13,11h-9z M106,125v10c3,0 5,-1.5 5,-5 0,-3.5 -2,-5 -5,-5z"/>
+    <path
+        android:fillColor="#1A3A9C"
+        android:pathData="M124,118h8v15h12v7h-20z"/>
+    <!-- Antenna nub -->
+    <path
+        android:fillColor="#1A3A9C"
+        android:pathData="M148,88h10v8h-10z"/>
+    <path
+        android:fillColor="#1A3A9C"
+        android:pathData="M156,84m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0"/>
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#1A3A9C"
+        android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M162,78c6,4 6,16 0,20"/>
+</vector>
