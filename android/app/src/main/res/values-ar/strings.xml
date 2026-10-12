@@ -128,10 +128,10 @@
     <string name="text_decode_invalid">بروتوكول غير معروف أو نص غير صالح أو تجاوز حد الحجم.</string>
     <string name="text_decode_unsupported">تعذر فك ترميز النص. ربما يكون غير مكتمل أو تالفًا أو يستخدم تشفيرًا مختلفًا.</string>
     <string name="whats_new_title">الجديد في SP-DECODE</string>
-    <string name="whats_new_description">الإصدار 1.1.2 · HTTP Custom بكلمة مرور/HWID واستيراد سحابي وعرض JSON</string>
-    <string name="whats_new_linklayer">TLS Tunnel 8.5.0: ستة ملفات مفاتيح AES-GCM على أندرويد مع الحفاظ على الطرق السابقة.</string>
-    <string name="whats_new_fields">HTTP Injector: معالجة أعمق للحقول المتداخلة والمشفرة. بعض ملفات .ehi النادرة تحتاج إلى عينة حقيقية.</string>
-    <string name="whats_new_offline">Dark Tunnel: فك نصوص Base64 دون بادئة. الدليل في منتصف الشاشة. تظل مسارات الملفات الـ239 تعمل دون إنترنت.</string>
+    <string name="whats_new_description">الإصدار 1.1.3 · NUR Tunnel: فك ملفات .solid وفهرس الخوادم</string>
+    <string name="whats_new_linklayer">NUR Tunnel VPN: فك موثّق لملفات .solid وفهرس خوادم HTTPS عند الطلب.</string>
+    <string name="whats_new_fields">إضافة الفارسية والفرنسية والإندونيسية والروسية، مع دليل موسع لـ Cloud وHTTP Custom المحمي.</string>
+    <string name="whats_new_offline">تظل ميزات HTTP Custom بكلمة مرور/HWID وعارض JSON وTLS وDark Tunnel متاحة؛ فك الملفات المحلي دون إنترنت.</string>
     <string name="whats_new_continue">فهمت</string>
     <string name="native_decoder_pending">لم تتم إضافة أداة فك التشفير المحلية لهذه الصيغة بعد.</string>
     <string name="native_decoder_pending_short">قيد الانتظار</string>

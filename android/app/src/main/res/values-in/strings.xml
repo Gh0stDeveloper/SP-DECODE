@@ -128,10 +128,10 @@
     <string name="text_decode_invalid">Protokol teks tidak dikenali, masukan tidak valid, atau batas ukuran terlampaui.</string>
     <string name="text_decode_unsupported">Teks ini tidak dapat didekode. Mungkin tidak lengkap, rusak, atau memakai versi sandi yang berbeda.</string>
     <string name="whats_new_title">Yang baru di SP-DECODE</string>
-    <string name="whats_new_description">Versi 1.1.2 · Kata sandi/HWID HTTP Custom, impor Cloud, dan penampil JSON</string>
-    <string name="whats_new_linklayer">TLS Tunnel 8.5.0: enam profil kunci AES-GCM di Android; metode TLS sebelumnya tetap didukung.</string>
-    <string name="whats_new_fields">HTTP Injector: pemrosesan lebih mendalam atas bidang bertingkat dan terenkode. Varian .ehi langka masih perlu diuji dengan berkas nyata.</string>
-    <string name="whats_new_offline">Dark Tunnel: dekode konfigurasi teks khusus Base64. Panduan berada di tengah. Semua 239 jalur berkas tetap offline.</string>
+    <string name="whats_new_description">Versi 1.1.3 · Dekode .solid NUR Tunnel dan katalog server</string>
+    <string name="whats_new_linklayer">NUR Tunnel VPN: dekode profil .solid terautentikasi dan katalog server HTTPS sesuai permintaan.</string>
+    <string name="whats_new_fields">Menambahkan bahasa Persia, Prancis, Indonesia, dan Rusia, serta panduan Cloud dan HTTP Custom terlindungi yang diperluas.</string>
+    <string name="whats_new_offline">HTTP Custom dengan kata sandi/HWID, penampil JSON, TLS, dan Dark Tunnel tetap tersedia; dekode lokal tetap offline.</string>
     <string name="whats_new_continue">Mengerti</string>
     <string name="native_decoder_pending">Dekoder native untuk format ini belum terintegrasi.</string>
     <string name="native_decoder_pending_short">Tertunda</string>

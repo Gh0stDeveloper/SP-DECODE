@@ -128,10 +128,10 @@
     <string name="text_decode_invalid">Protocole texte inconnu, entrée invalide ou limite de taille dépassée.</string>
     <string name="text_decode_unsupported">Impossible de décoder ce texte. Il peut être incomplet, corrompu ou utiliser une autre version de chiffrement.</string>
     <string name="whats_new_title">Nouveautés de SP-DECODE</string>
-    <string name="whats_new_description">Version 1.1.2 · HTTP Custom avec mot de passe/HWID, import Cloud et visualiseur JSON</string>
-    <string name="whats_new_linklayer">TLS Tunnel 8.5.0 : six profils de clés AES-GCM sur Android ; les anciennes méthodes TLS restent compatibles.</string>
-    <string name="whats_new_fields">HTTP Injector : décodage approfondi des champs imbriqués et encodés. Certaines variantes .ehi nécessitent encore une vérification réelle.</string>
-    <string name="whats_new_offline">Dark Tunnel : décodage de configurations texte en Base64 uniquement. Le guide est centré. Les 239 formats de fichiers restent hors ligne.</string>
+    <string name="whats_new_description">Version 1.1.3 · Décodage .solid de NUR Tunnel et catalogue de serveurs</string>
+    <string name="whats_new_linklayer">NUR Tunnel VPN : décodage authentifié des profils .solid et catalogue HTTPS des serveurs à la demande.</string>
+    <string name="whats_new_fields">Ajout du persan, du français, de l’indonésien et du russe, avec un guide étendu pour Cloud et HTTP Custom protégé.</string>
+    <string name="whats_new_offline">HTTP Custom avec mot de passe/HWID, l’affichage JSON, TLS et Dark Tunnel restent disponibles ; le décodage local reste hors ligne.</string>
     <string name="whats_new_continue">Compris</string>
     <string name="native_decoder_pending">Décodeur natif pas encore intégré pour ce format.</string>
     <string name="native_decoder_pending_short">En attente</string>

@@ -128,10 +128,10 @@
     <string name="text_decode_invalid">Unrecognized text protocol, invalid input or size limit exceeded.</string>
     <string name="text_decode_unsupported">Could not decode this text. It may be incomplete, corrupted or a different cipher version.</string>
     <string name="whats_new_title">What\'s new in SP-DECODE</string>
-    <string name="whats_new_description">Version 1.1.2 · HTTP Custom password/HWID, cloud import and JSON viewer</string>
-    <string name="whats_new_linklayer">TLS Tunnel 8.5.0: six AES-GCM key profiles in Android; previous TLS methods remain supported.</string>
-    <string name="whats_new_fields">HTTP Injector: deeper processing of nested and encoded fields. Rare .ehi variants still need verification with a real file.</string>
-    <string name="whats_new_offline">Dark Tunnel: decode Base64-only text configurations. The guide is centered. All 239 file routes remain offline.</string>
+    <string name="whats_new_description">Version 1.1.3 · NUR Tunnel .solid decoding and server catalog</string>
+    <string name="whats_new_linklayer">NUR Tunnel VPN: authenticated .solid profile decoding and an opt-in HTTPS server catalog.</string>
+    <string name="whats_new_fields">Adds Persian, French, Indonesian and Russian, with expanded Cloud and protected HTTP Custom guidance.</string>
+    <string name="whats_new_offline">HTTP Custom password/HWID, the JSON viewer, TLS and Dark Tunnel remain available; local decoding stays offline.</string>
     <string name="whats_new_continue">Got it</string>
     <string name="native_decoder_pending">Native decoder not yet integrated for this format.</string>
     <string name="native_decoder_pending_short">Pending</string>

@@ -128,10 +128,10 @@
     <string name="text_decode_invalid">پروتکل متن شناخته نشد، ورودی نامعتبر است یا محدودیت اندازه رد شده است.</string>
     <string name="text_decode_unsupported">رمزگشایی این متن ممکن نشد. شاید ناقص، خراب یا مربوط به نسخه دیگری از رمزنگاری باشد.</string>
     <string name="whats_new_title">تازه‌های SP-DECODE</string>
-    <string name="whats_new_description">نسخه 1.1.2 · رمز عبور/HWID در HTTP Custom، وارد کردن ابری و نمایشگر JSON</string>
-    <string name="whats_new_linklayer">TLS Tunnel 8.5.0: شش نمایه کلید AES-GCM در اندروید؛ روش‌های قبلی TLS همچنان پشتیبانی می‌شوند.</string>
-    <string name="whats_new_fields">HTTP Injector: پردازش عمیق‌تر فیلدهای تو‌در‌تو و کدگذاری‌شده. برخی گونه‌های نادر .ehi هنوز به بررسی با فایل واقعی نیاز دارند.</string>
-    <string name="whats_new_offline">Dark Tunnel: رمزگشایی پیکربندی‌های متنی فقط Base64. راهنما در مرکز قرار دارد. هر 239 مسیر فایل آفلاین هستند.</string>
+    <string name="whats_new_description">نسخه 1.1.3 · رمزگشایی .solid در NUR Tunnel و فهرست سرورها</string>
+    <string name="whats_new_linklayer">NUR Tunnel VPN: رمزگشایی احراز هویت‌شده پروفایل‌های .solid و فهرست سرور HTTPS با درخواست کاربر.</string>
+    <string name="whats_new_fields">افزودن زبان‌های فارسی، فرانسوی، اندونزیایی و روسی، همراه با راهنمای کامل‌تر Cloud و HTTP Custom محافظت‌شده.</string>
+    <string name="whats_new_offline">HTTP Custom با گذرواژه/HWID، نمایشگر JSON، TLS و Dark Tunnel حفظ شده‌اند؛ رمزگشایی محلی آفلاین است.</string>
     <string name="whats_new_continue">متوجه شدم</string>
     <string name="native_decoder_pending">رمزگشای بومی این قالب هنوز اضافه نشده است.</string>
     <string name="native_decoder_pending_short">در انتظار</string>
