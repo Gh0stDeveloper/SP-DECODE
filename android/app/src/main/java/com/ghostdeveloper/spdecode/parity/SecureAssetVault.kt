@@ -28,6 +28,7 @@ internal object SecureAssetVault {
         "http_tweak_source_tables.json",
         "legacy_epro_npv2_keys.json",
         "npvs_v5_tables.b85",
+        "nur_tunnel_server_endpoint.json",
         "npv_whitebox.bin",
         "renz_d_profiles.json",
         "ultra_c_profiles.json",
