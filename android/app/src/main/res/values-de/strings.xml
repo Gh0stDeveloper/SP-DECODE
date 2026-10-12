@@ -201,4 +201,13 @@
     <string name="hc_auth_failed">Diese geschützte HTTP Custom-Datei konnte nicht authentifiziert werden. Prüfe Passwort und/oder HWID; die Datei könnte beschädigt sein oder eine nicht unterstützte Variante verwenden.</string>
     <string name="guide_step_six">HTTP Injector Cloud (online): Öffne auf der Startseite Cloud, füge einen ehi.link-Link, Cloud-Schlüssel oder Emoji-Code 💉…🚀 ein und tippe auf Importieren. Erst dann wird die Referenz an den HTTP Injector-Server gesendet; Internet ist erforderlich. Lokale Dateien und Texte bleiben offline.</string>
     <string name="guide_step_seven">Geschütztes HTTP Custom (.hc): Importiere die Datei wie gewohnt. Falls Exportpasswort, HWID (32 Zeichen) oder beides verlangt werden, gib die korrekten Daten ein. Falsche Werte oder manipulierte Dateien können nicht decodiert werden; normale .hc-Dateien verwenden weiterhin die frühere Methode.</string>
+    <string name="server_vpn">VPN-Server</string>
+    <string name="server_vpn_description">Unterstützte VPN-Serverlisten durchsuchen. Wähle eine App zum Entschlüsseln ihrer Liste.</string>
+    <string name="nur_tunnel_name">NUR TUNNEL VPN</string>
+    <string name="nur_servers_description">Entschlüssele den Serverkatalog von NUR Tunnel VPN 1.0.8.8.</string>
+    <string name="nur_servers_catalog_url">URL der verschlüsselten Serverliste</string>
+    <string name="nur_servers_privacy">Eine Verbindung erfolgt nur nach Tippen auf Entschlüsseln. HTTPS ist erforderlich. Ergebnisse werden vor der Anzeige authentifiziert und lokal verschlüsselt gespeichert.</string>
+    <string name="nur_servers_decode">Server entschlüsseln</string>
+    <string name="nur_servers_invalid_url">Gib eine gültige HTTPS-URL für die Serverliste ein.</string>
+    <string name="nur_servers_failed">Serverliste konnte nicht heruntergeladen, authentifiziert oder entschlüsselt werden.</string>
 </resources>
