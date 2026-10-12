@@ -72,8 +72,8 @@ class AndroidProductionWorkflowTest(unittest.TestCase):
         self.assertIn("finishAndRemoveTask()", activity)
 
     def test_stable_identity_and_publication_are_separate(self):
-        self.assertRegex(self.gradle, r'versionName\s*=\s*"1\.1\.2"')
-        self.assertRegex(self.gradle, r'versionCode\s*=\s*23\b')
+        self.assertRegex(self.gradle, r'versionName\s*=\s*"1\.1\.3"')
+        self.assertRegex(self.gradle, r'versionCode\s*=\s*24\b')
         w = self.workflow
         self.assertIn("Previous public signer: v1.0.5-rc.1", w)
         self.assertIn("Same permanent SHA-256 signer certificate: yes", w)
