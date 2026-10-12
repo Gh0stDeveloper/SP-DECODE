@@ -27,7 +27,7 @@
     <string name="session_only">Lokal gespeichert · Verschlüsselter Verlauf</string>
     <string name="search_formats">App oder Dateiendung suchen</string>
     <string name="experimental">Experimentell</string>
-    <string name="catalog_note">239 Dateiformate verfügen über native Decoderpfade (61 ältere und 178 neue). Die Kompatibilität hängt von der Exporterversion ab und ist nicht vollständig bestätigt.</string>
+    <string name="catalog_note">239 bisherige native Dateiformate plus NUR Tunnel .solid. Die Kompatibilität hängt von der exportierenden App-Version ab.</string>
     <string name="settings_title">Einstellungen</string>
     <string name="privacy_title">Datenschutz</string>
     <string name="privacy_text">Importierte Originaldateien werden nicht kopiert. Decodierte Ergebnisse werden verschlüsselt und nur auf diesem Gerät gespeichert, bis du sie löschst.</string>
