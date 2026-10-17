@@ -145,7 +145,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // A public API origin is not a secret; all server secrets stay in the VPS.
         buildConfigField("boolean", "SPDECODE_CLOUD_ENABLED", enableCloud.toString())
-        buildConfigField("String", "SPDECODE_CLOUD_API_BASE_URL", "\"$cloudOrigin\"")
+        externalNativeBuild {
+            cmake {
+                arguments += "-DSPDECODE_CLOUD_ORIGIN=$cloudOrigin"
+            }
+        }
         resourceConfigurations += listOf("en", "es", "pt-rBR", "ar", "fa", "fr", "in", "ru", "de")
     }
     buildFeatures { compose = true; buildConfig = true }
