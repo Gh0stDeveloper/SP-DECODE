@@ -53,7 +53,30 @@ def vectors() -> dict:
             "rawText":text,
             "inputSha256":digest,
             "referenceSha256":hashlib.sha256(direct.stdout).hexdigest()})
-    return {"license":"synthetic-test-input-only","cases":result}
+    # C2 protected-format reference cases: synthetic only; all secrets are fake.
+    from tests.golden.hc_sip_new_variants import S4_SYNTHETIC_PASSWORD, hccfg_file
+    from tests.test_nur_tunnel_solid import CATALOG
+    from scripts.android_g_text_fixtures import build
+    from cloud.workers.python.engine import decode_file, decode_catalog, decode_text
+    password_encrypted=hccfg_file(password=S4_SYNTHETIC_PASSWORD)
+    hc=decode_file("hc",password_encrypted,
+                   credentials={"password":S4_SYNTHETIC_PASSWORD})
+    text_case=next(row for row in build()["vectors"]
+                   if row["scheme"]=="falcontunnel://import/")
+    text_result=decode_text(text_case["input"])
+    catalog_data=CATALOG.encode("ascii")
+    catalog_result=decode_catalog(catalog_data)
+    extras={
+        "hc":{"dataBase64":base64.b64encode(password_encrypted).decode("ascii"),
+              "credentials":{"password":S4_SYNTHETIC_PASSWORD},
+              "rawText":hc["rawText"],"structuredJson":hc["structuredJson"]},
+        "text":{"input":text_case["input"],"rawText":text_result["rawText"],
+                "structuredJson":text_result["structuredJson"]},
+        "catalog":{"dataBase64":base64.b64encode(catalog_data).decode("ascii"),
+                   "rawText":catalog_result["rawText"],
+                   "structuredJson":catalog_result["structuredJson"]},
+    }
+    return {"license":"synthetic-test-input-only","cases":result,"extras":extras}
 
 if __name__=="__main__":
     print(json.dumps(vectors(),ensure_ascii=False,separators=(",",":")))
