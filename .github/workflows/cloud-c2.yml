@@ -57,7 +57,18 @@ jobs:
         run: |
           docker compose -f cloud/compose.yaml up -d --no-deps decoder-worker
           docker compose -f cloud/compose.yaml ps
-          docker compose -f cloud/compose.yaml exec -T decoder-worker python -c "import urllib.request,urllib.error; base='http://127.0.0.1:8787'; assert urllib.request.urlopen(base+'/health',timeout=5).status==200; code=503; exec('try:\\n urllib.request.urlopen(base+\\'/ready\\',timeout=5)\\nexcept urllib.error.HTTPError as e:\\n code=e.code'); assert code==503,code"
+          docker compose -f cloud/compose.yaml exec -T decoder-worker python - <<'PY'
+          import urllib.error
+          import urllib.request
+          base = "http://127.0.0.1:8787"
+          assert urllib.request.urlopen(base + "/health", timeout=5).status == 200
+          try:
+              urllib.request.urlopen(base + "/ready", timeout=5)
+          except urllib.error.HTTPError as error:
+              assert error.code == 503
+          else:
+              raise AssertionError("Worker must not be ready without token")
+          PY
       - name: Tear down
         if: always()
         run: docker compose -f cloud/compose.yaml down --remove-orphans
