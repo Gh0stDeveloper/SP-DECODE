@@ -60,3 +60,7 @@ Relevant checks: `.github/workflows/cloud-c6.yml` plus C3, C2, C1, C4 and C5 che
 - C7 and C8 cover device-to-server parity validation, integration stress, operations, release controls and rollback. C6 alone is **not** approval for production.
 
 Architecture history and detailed implementation: `docs/cloud/C0_BASELINE.md` through `docs/cloud/C6_IMPLEMENTATION.md`.
+
+## C7 integration and release gate
+
+`cloud/tests/c7-e2e.test.mjs` runs synthetic Play/Redis admission through the **real C2 private HTTP worker** and compares raw output to independently executed original source scripts. `cloud/tests/c7_vectors.py` also covers protected HC, text and NUR catalog inputs; C2's 60-case baseline remains separate. `.github/workflows/cloud-c7.yml` builds the Android Cloud APK and audits the binary. The production gate `python scripts/cloud_c7_release_gate.py --production` must **refuse** approval until real Play Integrity/device, VPS, provider samples, privacy and C8 operations are independently verified. See [C7 documentation](../docs/cloud/C7_IMPLEMENTATION.md).
