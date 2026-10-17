@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { EventEmitter } from "node:events";
+import { readFileSync } from "node:fs";
 import { generateKeyPairSync, createCipheriv, createHmac } from "node:crypto";
 import { deflateSync } from "node:zlib";
 import {
@@ -166,6 +167,17 @@ test("signed HTTP Injector request cannot be redirected to arbitrary URLs",()=>{
   assert.match(result.headers["x-signature"],/^[A-Za-z0-9%]+$/);
   assert.throws(()=>buildEhiRequest("../../../etc/passwd",{signKey:SIGN_KEY}),
     {code:"INVALID_REFERENCE"});
+});
+test("C3.5 signed request is byte-compatible with the existing Android synthetic vector",()=>{
+  const android=readFileSync(new URL("../../../android/app/src/main/java/com/ghostdeveloper/spdecode/HttpInjectorCloudPort.kt",import.meta.url),"utf8");
+  const match=/private const val SIGN_KEY = "([^"]+)"/.exec(android);
+  assert.ok(match,"Existing authorized Android protocol reference unavailable");
+  const signed=buildEhiRequest("TEST1234",{
+    signKey:match[1],now:1700000000,
+    nonce:"00000000-0000-4000-8000-000000000000",
+    identity:"identity-synthetic",
+  });
+  assert.equal(signed.headers["x-signature"],"03p7UQBNZXTELXW82PMwoNeyta0%3D");
 });
 test("HTTP Injector response MAC and AES/zlib integrity precede EHI processing",()=>{
   const valid=syntheticResponse();
