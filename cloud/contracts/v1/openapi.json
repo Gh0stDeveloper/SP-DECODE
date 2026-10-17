@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "SP-DECODE Cloud API — C3 gated security contract",
-    "version": "0.3.0",
-    "description": "Gated by CLOUD_API_ENABLED plus server-side Google Play Integrity/Redis and private worker credentials. Without complete configuration all decoding and session operations return 503; Android transport libspdecode.so follows in C4."
+    "version": "0.3.5",
+    "description": "Security-gated C3.5: remote imports only from fixed HTTPS provider origins; authentication, explicit consent, and private worker are required. No Android changes. Native library libspdecode.so is planned for C4."
   },
   "servers": [
     {
@@ -289,15 +289,114 @@
     },
     "/api/v1/decode/import/cloud": {
       "post": {
-        "summary": "Import HTTP Injector Cloud reference",
-        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "summary": "HTTP Injector Cloud reference import using allowlisted fixed provider",
+        "description": "Accepted body: {reference:string, consent:true}. Server extracts a key; it NEVER accepts a remote destination. 503 if C3 or CLOUD_EHI_IMPORT_ENABLED is disabled. Requires server-owned signing and response keys.",
         "responses": {
-          "503": {
-            "description": "Endpoint disabled in C1",
+          "200": {
+            "description": "Successful authenticated remote decode preserving rawText and JSON."
+          },
+          "400": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "reference",
+                  "consent"
+                ],
+                "properties": {
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1024
+                  },
+                  "consent": {
+                    "type": "boolean",
+                    "const": true
+                  }
                 }
               }
             }
@@ -539,6 +638,117 @@
           },
           "503": {
             "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/decode/import/catalog/remote": {
+      "post": {
+        "summary": "Download and authenticate the configured NUR server catalog, never an arbitrary URL",
+        "description": "Accepted body: {consent:true}. Backend has one exact configured HTTPS catalog URL on the approved host. Response decoded by the private NUR worker. 503 if C3/NUR remote disabled.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "consent"
+                ],
+                "properties": {
+                  "consent": {
+                    "type": "boolean",
+                    "const": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful authenticated remote decode preserving rawText and JSON."
+          },
+          "400": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Sanitized request, session, remote-network, integrity, size or decoder error.",
             "content": {
               "application/json": {
                 "schema": {

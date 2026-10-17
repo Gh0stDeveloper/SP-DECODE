@@ -35,7 +35,7 @@ Las rutas no exponen stderr, excepciones, contraseñas, rutas de sistemas de arc
 
 ## C3.5: integraciones externas pendientes de activar
 
-**HTTP Injector Cloud / `POST /api/v1/decode/import/cloud` permanece intencionalmente deshabilitado.** Aceptar una URL arbitraria y hacer `fetch` desde el servidor generaría riesgo de SSRF, credenciales filtradas y accesos a la red interna. Antes de habilitarlo es obligatorio un broker de descarga con allowlist de hosts del proveedor real, resolución DNS vinculada a IP pública, denegación de IP privadas/reservadas, prohibición de redirecciones y limitaciones de contenido/tiempo.
+**HTTP Injector Cloud / `POST /api/v1/decode/import/cloud` está implementado en C3.5 pero permanece deshabilitado por configuración, a falta de provisión de claves del servidor y pruebas reales.** Aceptar una URL arbitraria y hacer `fetch` desde el servidor generaría riesgo de SSRF, credenciales filtradas y accesos a la red interna. Antes de habilitarlo es obligatorio un broker de descarga con allowlist de hosts del proveedor real, resolución DNS vinculada a IP pública, denegación de IP privadas/reservadas, prohibición de redirecciones y limitaciones de contenido/tiempo.
 
 Los catálogos NUR ya descargados se pueden procesar como bytes protegidos, pero el servidor aún no descarga sus enlaces. La subida de muestras reales, la certificación de todas las versiones Android y las pruebas con Play Console siguen pendientes. **C3 no modifica ni adelanta la publicación del APK**.
 
@@ -62,3 +62,31 @@ Las pruebas de `.github/workflows/cloud-c3.yml` verifican configuración fail-cl
 - [ ] Retirar motores/secreto del APK (C4/C5) **solo** después de paridad.
 
 **Rama:** `feat/cloud-c3-api-security`, PR apilado sobre C2 → C1 → C0. **No fusionar con `main` ni activar producción antes de validar los requisitos pendientes.**
+
+## C3.5 — Importaciones remotas seguras (añadido)
+
+**Implementación:** `cloud/web/lib/c35-provider.mjs`, `c35-gateway.mjs` y rutas /api/v1/decode/import/cloud y /api/v1/decode/import/catalog/remote. **Los motores originales y la UI Android no se modificaron.**
+
+### HTTP Injector Cloud
+
+Se admite el formato histórico de la aplicación Android: clave alfanumérica, `https://ehi.link/CLAVE`, `ehi://ehi.link/CLAVE` o emoji codificado. El backend extrae **solo la clave**, nunca usa el enlace como destino HTTP. Construye exclusivamente un POST a `https://www.ehi.tools/httpinjector/import_config` reproduciendo el HMAC de protocolo y el flujo AES-CBC/HMAC-SHA256/zlib de Android, con el resultado EHI enviado al worker `/internal/v1/decode/file` con formato `ehi`. No existen bypass de cifrado, modificaciones a motores originales ni fallbacks cruzados.
+
+El servidor necesita `CLOUD_EHI_IMPORT_ENABLED=true`, `CLOUD_EHI_SIGN_KEY` y `CLOUD_EHI_RESPONSE_KEY` **provisionadas fuera de Git/Android/C++**. La opción está desactivada por defecto. Las claves existentes embebidas en APK siguen siendo un riesgo **hasta la fase C5**; añadirlas al servidor no las retira automáticamente del cliente. Las claves y destinos se toman de configuración del servidor, nunca del usuario.
+
+### NUR Tunnel — Server VPN
+
+`POST /api/v1/decode/import/catalog/remote` acepta solamente `{"consent":true}`, lee del servidor `CLOUD_NUR_CATALOG_URL` y requiere `CLOUD_NUR_FETCH_ENABLED=true`. El hostname exacto permitido es `strongteam.co`, basado en el origen actual del proyecto; no se acepta `url` en el cuerpo HTTP. Una vez descargado el sobre cifrado, el contenido se entrega exclusivamente a `/internal/v1/decode/import/catalog`, que comprueba la autenticación y esquema NUR `Version/Servers/Networks`. La operación local de subir bytes cifrados continúa disponible y es independiente.
+
+### Política común SSRF y fallos
+
+- El cliente **nunca controla destinos**, puertos, credenciales de URL, cabeceras del proveedor, métodos remotos ni redirecciones.
+- HTTPS estricto, nombre de servidor/certificado verificado por TLS y **IPv4 público comprobado y fijado en la conexión**. Respuesta DNS mixta con cualquier IPv4 privado o reservado: rechazo; solo IPv6: falla de forma cerrada. Esto impide cambios de resolución entre la comprobación y la conexión real (DNS rebinding).
+- Se rechazan IPs de loopback, redes privadas, link-local, CGNAT, metadatos de nube, documentación, benchmark y multidifusión, además de puertos no 443.
+- **Redirecciones 3xx prohibidas**, sin seguir `Location`. `Accept-Encoding: identity` y rechazo explícito de cuerpos comprimidos para evitar descompresión implícita no acotada. Límite **8 MiB** en HTTP remoto, incluso si el proveedor omite o falsea `Content-Length`; timeout global 15 segundos (más 10 segundos por socket).
+- En HTTP Injector, la respuesta se verifica por HMAC en tiempo constante **antes** de descifrar o inflar; la salida zlib está acotada a 8 MiB, y los datos se autentican antes de alimentar el worker EHI.
+- **Play Integrity + bearer temporal + autorización + cuota y semáforo Redis + `consent=true`** preceden a toda llamada de red externa. Las respuestas no incluyen tokens del proveedor, URLs privadas, encabezados de autenticación ni el sobre cifrado bruto.
+- La API devuelve errores seguros `INVALID_REFERENCE`, `USER_CONSENT_REQUIRED`, `REMOTE_NOT_CONFIGURED`, `REMOTE_NETWORK_DENIED`, `REMOTE_PROVIDER_UNAVAILABLE`, `REMOTE_RESPONSE_INVALID`, `REMOTE_INTEGRITY_FAILED`, `REMOTE_TOO_LARGE` y `REMOTE_DECODER_FAILED`.
+
+**Pruebas:** `cloud/web/tests/c35-import-security.test.mjs` incluye URL/emoji, firma idéntica al vector sintético Android, DNS/SSRF, solicitud HTTPS con IP fijada, denegación 3xx, límites, HMAC/tampering, consentimiento/sesión, contrato y despacho privado. Las pruebas simulan proveedores; **no** constituyen confirmación de disponibilidad real, aprobación contractual del servicio externo ni paridad de un archivo cloud real. Requiere pruebas manuales con cuenta/servidor legítimos y permiso del proveedor antes de activar producción.
+
+**Operación:** habilitar únicamente tras provisionar secretos reales, completar C4/C5/C7 y configurar HTTPS/Play Integrity/privacidad. `CLOUD_API_ENABLED=false` y los dos flags externos en `false` por defecto. No publicar el endpoint remoto antes de certificar con el proveedor.

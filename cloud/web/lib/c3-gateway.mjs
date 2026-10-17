@@ -3,6 +3,7 @@ import { settings, limits } from "./c3-config.mjs";
 import { store, reserveSlot, releaseSlot } from "./c3-store.mjs";
 import { createChallenge, issueSession, requireSession } from "./c3-session.mjs";
 import { jsonReply, unavailable } from "./responses.mjs";
+import { ehiConfigured, nurConfigured } from "./c35-provider.mjs";
 
 const ERROR_MESSAGES = Object.freeze({
   INVALID_REQUEST:"Solicitud inválida.",
@@ -192,7 +193,8 @@ export async function capabilitiesRequest(options={}) {
       enabledFormats:value.fileRoutes,
       fileDecoderCatalog:{catalogRoutes:239,additionalSolidRoute:1,exporterVersionsCertified:0},
       textDecodingEnabled:Boolean(value.textDecodingEnabled),
-      cloudImportsEnabled:false,nurCatalogEnabled:Boolean(value.nurCatalogEnabled),
+      cloudImportsEnabled:ehiConfigured(),nurCatalogEnabled:Boolean(value.nurCatalogEnabled),
+      nurRemoteEnabled:nurConfigured(),
       note:"Rutas de ejecución disponibles; certificación de versiones reales pendiente.",
     });
   }catch{return failure("SERVICE_UNAVAILABLE",503);}

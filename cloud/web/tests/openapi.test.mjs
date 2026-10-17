@@ -9,7 +9,7 @@ const document = JSON.parse(readFileSync(path.resolve(directory, "../../contract
 
 test("all v1 OpenAPI contract paths are backed by Next.js route handlers", () => {
   assert.equal(document.openapi, "3.1.0");
-  assert.equal(Object.keys(document.paths).length, 12);
+  assert.equal(Object.keys(document.paths).length, 13);
   for (const [pathname, methods] of Object.entries(document.paths)) {
     const relative = pathname.replace(/^\/api\/v1\//, "").replace("{id}", "[id]");
     const routeFile = path.resolve(directory, "../app/api/v1", relative, "route.js");
@@ -34,6 +34,11 @@ test("C3 contract documents success only where an authenticated service exists",
     assert.ok(document.paths[pathname].post.responses["200"], pathname);
     assert.ok(document.paths[pathname].post.responses["401"], pathname);
   }
-  assert.deepEqual(Object.keys(document.paths["/api/v1/decode/import/cloud"].post.responses), ["503"]);
+  for (const p of ["/api/v1/decode/import/cloud","/api/v1/decode/import/catalog/remote"]) {
+    assert.ok(document.paths[p].post.responses["200"],p);
+    assert.ok(document.paths[p].post.responses["401"],p);
+    assert.ok(document.paths[p].post.responses["502"],p);
+    assert.equal(document.paths[p].post.requestBody.required,true);
+  }
   assert.deepEqual(Object.keys(document.paths["/api/v1/jobs"].post.responses), ["503"]);
 });
