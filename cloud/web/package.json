@@ -1,6 +1,6 @@
 {
   "name": "spdecode-cloud-web",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -15,6 +15,7 @@
   "dependencies": {
     "next": "^16.0.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "redis": "^5.0.0"
   }
 }
