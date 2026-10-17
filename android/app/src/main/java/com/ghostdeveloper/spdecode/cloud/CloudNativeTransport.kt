@@ -12,7 +12,6 @@ internal object CloudNativeTransport {
     init { System.loadLibrary("spdecode") }
 
     @JvmStatic private external fun postNative(
-        baseUrl: String,
         endpoint: String,
         json: String,
         bearer: String,
@@ -30,7 +29,7 @@ internal object CloudNativeTransport {
             "/api/v1/decode/import/catalog/remote",
         )) { "CLOUD_ROUTE_DENIED" }
         val returned = postNative(
-            BuildConfig.SPDECODE_CLOUD_API_BASE_URL, endpoint, payload.toString(), bearer
+            endpoint, payload.toString(), bearer
         )
         val newline = returned.indexOf('\n')
         if (newline !in 3..4) throw IOException("CLOUD_INVALID_HTTP_ENVELOPE")
