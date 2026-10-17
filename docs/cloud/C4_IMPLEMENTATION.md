@@ -8,7 +8,7 @@ Se incorpora **`libspdecode.so`** mediante NDK/CMake en `android/app/src/main/cp
 
 El código C++ controla los endpoints públicos permitidos, construye los POST HTTPS, maneja timeouts, TLS de Android (certificado y nombre verificados por `HttpsURLConnection`), desactiva redirecciones, limita el tamaño de solicitudes/respuestas y retorna el cuerpo JSON y estado HTTP a Kotlin. La implementación invoca la API de red de Android desde JNI **sin introducir claves maestras ni algoritmos de descifrado dentro del binario**.
 
-La biblioteca jamás recibe URLs arbitrarias de HTTP Injector ni de NUR; son operaciones del **servidor C3.5**. El origen público de la API es un host HTTPS verificado al compilar, inyectado por `SPDECODE_CLOUD_API_BASE_URL`. Es una configuración pública, no un secreto. Las rutas nativas permitidas son challenge, session, decode/file, decode/text, decode/import/cloud y decode/import/catalog/remote. No existen ni rutas de claves internas ni acceso directo al worker.
+La biblioteca jamás recibe URLs arbitrarias de HTTP Injector ni de NUR; son operaciones del **servidor C3.5**. El origen público de la API se valida al compilar con `SPDECODE_CLOUD_API_BASE_URL` y se **incrusta como constante en C++** de `libspdecode.so` mediante CMake; no se pasa como parámetro desde Kotlin. Es una configuración pública, no un secreto. Las rutas nativas permitidas son challenge, session, decode/file, decode/text, decode/import/cloud y decode/import/catalog/remote. No existen ni rutas de claves internas ni acceso directo al worker.
 
 ## C4.2 — Play Integrity y sesiones temporales
 
