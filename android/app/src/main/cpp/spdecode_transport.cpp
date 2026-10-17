@@ -3,6 +3,10 @@
 #include <cctype>
 #include <string>
 
+#ifndef SPDECODE_CLOUD_ORIGIN
+#define SPDECODE_CLOUD_ORIGIN ""
+#endif
+
 namespace {
 constexpr size_t kMaxRequestBytes = 12 * 1024 * 1024;
 constexpr size_t kMaxReplyBytes = 6 * 1024 * 1024;
@@ -80,8 +84,8 @@ bool setHeader(JNIEnv* env,jobject conn,jclass cls,jmethodID method,
 // C++ owns network initiation, route verification, HTTP method, request headers,
 // size limits and reading. Android's HttpsURLConnection provides platform TLS
 // certificate/hostname verification; certificate validation is never disabled.
-jstring post(JNIEnv* env,jstring baseArg,jstring pathArg,jstring bodyArg,jstring bearerArg) {
-    const std::string base=utf(env,baseArg);
+jstring post(JNIEnv* env,jstring pathArg,jstring bodyArg,jstring bearerArg) {
+    const std::string base=SPDECODE_CLOUD_ORIGIN;
     const std::string path=utf(env,pathArg);
     const std::string body=utf(env,bodyArg);
     const std::string bearer=utf(env,bearerArg);
@@ -233,6 +237,6 @@ jstring post(JNIEnv* env,jstring baseArg,jstring pathArg,jstring bodyArg,jstring
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_ghostdeveloper_spdecode_cloud_CloudNativeTransport_postNative(
-    JNIEnv* env,jobject,jstring base,jstring endpoint,jstring body,jstring bearer) {
-    return post(env,base,endpoint,body,bearer);
+    JNIEnv* env,jobject,jstring endpoint,jstring body,jstring bearer) {
+    return post(env,endpoint,body,bearer);
 }
