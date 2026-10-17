@@ -60,11 +60,11 @@ export default function AdminDashboard(){
       <section className="admin-card" style={{gridColumn:"1/-1"}}>
         <h2>Modo mantenimiento</h2>
         <div className="admin-controls"><div>
-          <strong>{data.maintenance?"Mantenimiento activado":"Mantenimiento desactivado"}</strong>
+          <strong>{data.maintenanceLocked?"Mantenimiento impuesto por despliegue":data.maintenance?"Mantenimiento activado":"Mantenimiento desactivado"}</strong>
           <p>Al activarlo, nuevas solicitudes de descifrado y sesiones se rechazarán. Las ya iniciadas pueden finalizar.</p>
           </div><button type="button" className={"button "+(data.maintenance?"primary":"danger")}
-            onClick={changeMaintenance} disabled={busy}>
-              {data.maintenance?"Reanudar nuevas solicitudes":"Activar mantenimiento"}
+            onClick={changeMaintenance} disabled={busy||data.maintenanceLocked}>
+              {data.maintenanceLocked?"Controlado desde el VPS":data.maintenance?"Reanudar nuevas solicitudes":"Activar mantenimiento"}
             </button>
         </div>
       </section>
