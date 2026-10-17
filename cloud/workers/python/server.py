@@ -9,7 +9,7 @@ import os
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from engine import DecodeFailure, MAX_INPUT_BYTES, decode_file, load_file_engines
+from engine import DecodeFailure, MAX_INPUT_BYTES, decode_file, decode_text, load_file_engines
 
 # Input is JSON + base64; accept at most bounded overhead. C3 owns public upload parsing.
 MAX_JSON_BYTES = (MAX_INPUT_BYTES * 4 // 3) + 65536
@@ -59,13 +59,13 @@ class WorkerHandler(BaseHTTPRequestHandler):
                 "fileRoutes": sorted(load_file_engines()),
                 "fileRouteCount": 240,
                 "exporterCertified": False,
-                "textDecodingEnabled": False,
+                "textDecodingEnabled": True,
                 "cloudImportsEnabled": False,
             })
         return self._json(404, {"error": {"code": "NOT_FOUND"}})
 
     def do_POST(self) -> None:
-        if self.path != "/internal/v1/decode/file":
+        if self.path not in ("/internal/v1/decode/file", "/internal/v1/decode/text"):
             return self._json(503, {"error": {"code": "DECODERS_DISABLED"}})
         if not self._authorized():
             return self._json(403, {"error": {"code": "FORBIDDEN"}})
@@ -74,13 +74,20 @@ class WorkerHandler(BaseHTTPRequestHandler):
             return self._json(413, {"error": {"code": "INPUT_TOO_LARGE"}})
         try:
             request = json.loads(self.rfile.read(int(declared)))
-            if not isinstance(request, dict) or set(request) != {"format", "dataBase64"}:
+            if not isinstance(request, dict):
                 raise ValueError("schema")
-            encoded = request["dataBase64"]
-            if not isinstance(encoded, str) or len(encoded) > (MAX_INPUT_BYTES * 4 // 3 + 8):
-                raise DecodeFailure("INPUT_TOO_LARGE")
-            contents = base64.b64decode(encoded, validate=True)
-            result = decode_file(request["format"], contents)
+            if self.path == "/internal/v1/decode/text":
+                if set(request) != {"text"} or not isinstance(request["text"], str):
+                    raise ValueError("text schema")
+                result = decode_text(request["text"])
+            else:
+                if set(request) != {"format", "dataBase64"}:
+                    raise ValueError("file schema")
+                encoded = request["dataBase64"]
+                if not isinstance(encoded, str) or len(encoded) > (MAX_INPUT_BYTES * 4 // 3 + 8):
+                    raise DecodeFailure("INPUT_TOO_LARGE")
+                contents = base64.b64decode(encoded, validate=True)
+                result = decode_file(request["format"], contents)
         except (ValueError, TypeError, base64.binascii.Error):
             return self._json(400, {"error": {"code": "INVALID_REQUEST"}})
         except DecodeFailure as error:
