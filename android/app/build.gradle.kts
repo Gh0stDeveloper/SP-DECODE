@@ -135,6 +135,7 @@ android {
     sourceSets.getByName("main").assets.setSrcDirs(listOf(vaultPackagedAssets))
     sourceSets.getByName("main").java.srcDir(vaultGeneratedKotlin)
     compileSdk = 35
+    ndkVersion = "27.2.12479018"
     defaultConfig {
         applicationId = "com.ghostdeveloper.spdecode"
         minSdk = 24
@@ -149,7 +150,10 @@ android {
     }
     buildFeatures { compose = true; buildConfig = true }
     externalNativeBuild {
-        cmake { path = file("src/main/cpp/CMakeLists.txt") }
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
     }
     packaging {
         resources {
