@@ -1,0 +1,35 @@
+name: SP-DECODE Cloud C8 VPS Installer
+on:
+  push:
+    branches: ["feat/cloud-c8-vps-installer-updater"]
+  pull_request:
+    paths:
+      - "cloud/infra/vps/**"
+      - "cloud/compose.yaml"
+      - "docs/cloud/C8_VPS_INSTALLER.md"
+      - ".github/workflows/cloud-c8-vps-installer.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scripts:
+    name: VPS installation and updater security
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test bash syntax
+        run: |
+          bash -n cloud/infra/vps/install.sh
+          bash -n cloud/infra/vps/spdecodectl
+          bash -n cloud/infra/vps/android-build.sh
+      - name: Test nginx and install gates
+        run: python3 -m unittest discover -s cloud/infra/vps/tests -p 'test_*.py' -v
+      - name: Verify actual Docker Compose config
+        run: docker compose -f cloud/compose.yaml config --quiet
+      - name: Verify production gate stays blocked
+        run: |
+          if python3 scripts/cloud_c7_release_gate.py --production; then
+            echo "ERROR: production release cannot be auto-approved" >&2
+            exit 1
+          fi
