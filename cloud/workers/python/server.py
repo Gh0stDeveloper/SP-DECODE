@@ -81,18 +81,20 @@ class WorkerHandler(BaseHTTPRequestHandler):
                     raise ValueError("text schema")
                 result = decode_text(request["text"])
             else:
-                if set(request) != {"format", "dataBase64"}:
+                if not {"format", "dataBase64"} <= set(request) or set(request) - {"format", "dataBase64", "credentials"}:
                     raise ValueError("file schema")
                 encoded = request["dataBase64"]
                 if not isinstance(encoded, str) or len(encoded) > (MAX_INPUT_BYTES * 4 // 3 + 8):
                     raise DecodeFailure("INPUT_TOO_LARGE")
                 contents = base64.b64decode(encoded, validate=True)
-                result = decode_file(request["format"], contents)
+                result = decode_file(request["format"], contents, credentials=request.get("credentials"))
         except (ValueError, TypeError, base64.binascii.Error):
             return self._json(400, {"error": {"code": "INVALID_REQUEST"}})
         except DecodeFailure as error:
             status = {"INPUT_TOO_LARGE": 413, "UNSUPPORTED_FORMAT": 422, "ENGINE_TIMEOUT": 504,
-                      "ENGINE_UNAVAILABLE": 503, "OUTPUT_TOO_LARGE": 413}.get(error.code, 422)
+                      "ENGINE_UNAVAILABLE": 503, "OUTPUT_TOO_LARGE": 413, "CREDENTIALS_NOT_ALLOWED": 400, "INVALID_CREDENTIALS": 400,
+                      "PASSWORD_REQUIRED": 422, "HWID_REQUIRED": 422, "HWID_PASSWORD_REQUIRED": 422,
+                      "AUTH_FAILED": 422}.get(error.code, 422)
             return self._json(status, {"error": {"code": error.code}})
         return self._json(200, result)
 
