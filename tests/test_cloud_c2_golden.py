@@ -69,7 +69,7 @@ class CloudC2SourceParityTests(unittest.TestCase):
                     # decorative emoji. Do not change product output; compare
                     # substantive lines while ignoring ONLY the status glyph.
                     def ignore_glyph(data: bytes) -> str:
-                        return re.sub(r"│\\[(?:💠|🔵|💀|🤖|😈|🔥|🚀|🔐)\\]", "│[DECORATION]", data.decode("utf-8"))
+                        return re.sub(r"│\[(?:💠|🔵|💀|🤖|😈|🔥|🚀|🔐)\]", "│[DECORATION]", data.decode("utf-8"))
                     self.assertEqual(ignore_glyph(current), ignore_glyph(reference))
                 else:
                     self.assertEqual(current, reference)
