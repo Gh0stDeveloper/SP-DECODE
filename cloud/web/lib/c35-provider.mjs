@@ -225,7 +225,7 @@ export function buildEhiRequest(key,{signKey,now=Math.floor(Date.now()/1000),non
     .sort(([a],[b])=>a<b?-1:a>b?1:0);
   const canonical=entries.map(([k,v])=>k+"="+v).join("&");
   const message=["POST",EHI_ENDPOINT,canonical].map(formEncode).join("&");
-  headers["x-signature"]=formEncode(createHmac("sha1",Buffer.from(signKey,"utf8"))
+  headers["x-signature"]=formEncode(createHmac("sha1",Buffer.from(formEncode("-1")+"&"+formEncode(signKey),"utf8"))
     .update(message,"utf8").digest("base64"));
   return {
     url:EHI_ENDPOINT,method:"POST",
