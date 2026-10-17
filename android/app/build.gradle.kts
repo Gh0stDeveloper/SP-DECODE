@@ -251,6 +251,8 @@ dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2025.04.01")
     implementation(composeBom)
     implementation("androidx.activity:activity-compose:1.10.1")
+    // Release lint: ActivityResultContracts requires Fragment >=1.3.0.
+    implementation("androidx.fragment:fragment:1.8.9")
     implementation("com.google.code.gson:gson:2.13.1")
     // Classic Play Integrity nonce flow; the verdict is verified in C3 server-side.
     implementation("com.google.android.play:integrity:1.6.0")

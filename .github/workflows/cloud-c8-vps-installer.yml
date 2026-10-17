@@ -1,0 +1,117 @@
+name: SP-DECODE Cloud C8 VPS Installer
+on:
+  push:
+    branches: ["feat/cloud-c8-vps-installer-updater"]
+  pull_request:
+    paths:
+      - "cloud/infra/vps/**"
+      - "cloud/compose.yaml"
+      - "docs/cloud/C8_VPS_INSTALLER.md"
+      - ".github/workflows/cloud-c8-vps-installer.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  scripts:
+    name: VPS installation and updater security
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test bash syntax
+        run: |
+          bash -n cloud/infra/vps/install.sh
+          bash -n cloud/infra/vps/spdecodectl
+          bash -n cloud/infra/vps/android-build.sh
+      - name: Test nginx and install gates
+        run: python3 -m unittest discover -s cloud/infra/vps/tests -p 'test_*.py' -v
+      - name: Verify release APK audit allowlist and legacy-engine rejection
+        run: python3 -m unittest tests.test_cloud_c8_apk_audit -v
+      - name: Verify actual Docker Compose config
+        run: docker compose -f cloud/compose.yaml config --quiet
+      - name: Verify production gate stays blocked
+        run: |
+          if python3 scripts/cloud_c7_release_gate.py --production; then
+            echo "ERROR: production release cannot be auto-approved" >&2
+            exit 1
+          fi
+
+  android-signed-packages:
+    name: C8 build and validate signed Cloud APK and Play AAB with CI-only key
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.11.1"
+      - name: Install Android SDK NDK and CMake
+        run: |
+          SDKMANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | sort -V | tail -n 1)"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platforms;android-35" "build-tools;35.0.0" "cmake;3.22.1" "ndk;27.2.12479018"
+      - name: Generate strictly temporary CI signing key (NEVER usable for Play)
+        run: |
+          keytool -genkeypair -storetype PKCS12             -keystore "$RUNNER_TEMP/ci-test-only.p12"             -alias ci-test -keyalg RSA -keysize 2048 -validity 1             -dname "CN=SP-DECODE CI Test Key"             -storepass ci-test-password-123 -keypass ci-test-password-123
+          echo "SPDECODE_RELEASE_STORE_FILE=$RUNNER_TEMP/ci-test-only.p12" >> "$GITHUB_ENV"
+          echo "SPDECODE_RELEASE_STORE_PASSWORD=ci-test-password-123" >> "$GITHUB_ENV"
+          echo "SPDECODE_RELEASE_KEY_ALIAS=ci-test" >> "$GITHUB_ENV"
+          echo "SPDECODE_RELEASE_KEY_PASSWORD=ci-test-password-123" >> "$GITHUB_ENV"
+      - name: Compile APK and AAB using production signing Gradle contract and synthetic HTTPS origin
+        working-directory: android
+        env:
+          SPDECODE_CLOUD_API_BASE_URL: https://api.spdecode.example
+          SPDECODE_CLOUD_RELEASE: "true"
+        run: gradle --no-daemon :app:assembleRelease :app:bundleRelease
+      - name: Audit exact APK + AAB output, signatures and Cloud-only content
+        run: |
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          AAB=android/app/build/outputs/bundle/release/app-release.aab
+          test -s "$APK"
+          test -s "$AAB"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" > /tmp/apk-signature.txt
+          "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -P 16 -v 4 "$APK"
+          jarsigner -verify -certs "$AAB" | grep 'jar verified'
+          python tests/cloud_c5_apk_audit.py "$APK"
+          python - <<'PY'
+          from zipfile import ZipFile
+          path="android/app/build/outputs/bundle/release/app-release.aab"
+          with ZipFile(path) as z:
+              assert "base/manifest/AndroidManifest.xml" in z.namelist()
+              assert any(n.startswith("base/lib/") and n.endswith("/libspdecode.so") for n in z.namelist())
+              assert not any(n.endswith(".spv") for n in z.namelist())
+          print("C8 CI-only AAB contains native Cloud library, no legacy vault")
+          PY
+      - name: Destroy ephemeral upload key; never persist artifacts
+        if: always()
+        run: rm -f "$RUNNER_TEMP/ci-test-only.p12"
+
+  docker-boot:
+    name: C8 fresh-stack Docker Compose smoke (no real secrets)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose builds isolated worker and website
+        run: docker compose -f cloud/compose.yaml up -d --build
+      - name: Validate web, admin default deny and private worker topology
+        run: |
+          for i in $(seq 1 24); do
+            if curl --fail --silent http://127.0.0.1:3000/api/v1/health >/dev/null; then break; fi
+            sleep 3
+          done
+          curl --fail --silent http://127.0.0.1:3000/api/v1/health > /tmp/cloud-health.json
+          curl --fail --silent http://127.0.0.1:3000/ > /dev/null
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:3000/api/admin/session)" = 503
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:3000/api/v1/ready)" = 503
+          docker compose -f cloud/compose.yaml ps
+      - name: Always tear down containers
+        if: always()
+        run: docker compose -f cloud/compose.yaml down --remove-orphans

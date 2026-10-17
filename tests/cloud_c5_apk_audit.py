@@ -11,7 +11,16 @@ with zipfile.ZipFile(sys.argv[1]) as z:
     native=[p for p in names if re.fullmatch(r"lib/[^/]+/libspdecode\.so",p)]
     assert native,"libspdecode.so not present"
     assets=[p for p in names if p.startswith("assets/")]
-    assert assets==["assets/decoder_catalog.json"],"Unexpected bundled assets: "+str(assets)
+    # Release builds can add Android Gradle Plugin's generated ART/dexopt
+    # baseline profiles. They contain optimization data, not decoder secrets.
+    # Reject every other unknown asset, including vault/legacy material.
+    permitted={
+        "assets/decoder_catalog.json",
+        "assets/dexopt/baseline.prof",
+        "assets/dexopt/baseline.profm",
+    }
+    assert "assets/decoder_catalog.json" in assets,"Missing public decoder catalog"
+    assert set(assets) <= permitted,"Unexpected bundled assets: "+str(sorted(set(assets)-permitted))
     assert not any(p.endswith(".spv") for p in names),"Vaulted decoder material bundled"
     dex=[p for p in names if re.fullmatch(r"classes[0-9]*\.dex",p)]
     assert dex,"No dex"

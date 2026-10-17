@@ -24,6 +24,13 @@ services:
       CLOUD_ADMIN_PUBLIC_ORIGIN: ${CLOUD_ADMIN_PUBLIC_ORIGIN:-}
       CLOUD_FORCE_MAINTENANCE: ${CLOUD_FORCE_MAINTENANCE:-false}
       CLOUD_PUBLIC_SITE_INDEX: ${CLOUD_PUBLIC_SITE_INDEX:-false}
+      CLOUD_SITE_PUBLIC_ORIGIN: ${CLOUD_SITE_PUBLIC_ORIGIN:-}
+      # C3.5 provider secrets are strictly backend-only; never NEXT_PUBLIC_*.
+      CLOUD_EHI_IMPORT_ENABLED: ${CLOUD_EHI_IMPORT_ENABLED:-false}
+      CLOUD_EHI_SIGN_KEY: ${CLOUD_EHI_SIGN_KEY:-}
+      CLOUD_EHI_RESPONSE_KEY: ${CLOUD_EHI_RESPONSE_KEY:-}
+      CLOUD_NUR_FETCH_ENABLED: ${CLOUD_NUR_FETCH_ENABLED:-false}
+      CLOUD_NUR_CATALOG_URL: ${CLOUD_NUR_CATALOG_URL:-}
     ports:
       # Bound to host loopback only; public HTTPS reverse proxy is a later phase.
       - "127.0.0.1:3000:3000"
