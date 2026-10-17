@@ -16,7 +16,7 @@ COPY decoders/ ./decoders/
 COPY spdecode/ ./spdecode/
 COPY decoders.json ./decoders.json
 COPY docs/cloud/C0_FORMAT_MATRIX.csv ./docs/cloud/C0_FORMAT_MATRIX.csv
-COPY cloud/workers/python/engine.py cloud/workers/python/server.py cloud/workers/python/text_bridge.py cloud/workers/python/hc_bridge.py ./cloud/workers/python/
+COPY cloud/workers/python/engine.py cloud/workers/python/server.py cloud/workers/python/text_bridge.py cloud/workers/python/hc_bridge.py cloud/workers/python/catalog_bridge.py ./cloud/workers/python/
 # Package and local import work from the original repository tree.
 USER 65532:65532
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 WORKER_BIND_HOST=0.0.0.0 WORKER_PORT=8787
