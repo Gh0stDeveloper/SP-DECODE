@@ -2,8 +2,8 @@
 set -Eeuo pipefail
 umask 077
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ROOT="\${SPDECODE_HOME:-/opt/spdecode}"
-CFG="\${SPDECODE_CONFIG_DIR:-/etc/spdecode}"
+ROOT="${SPDECODE_HOME:-/opt/spdecode}"
+CFG="${SPDECODE_CONFIG_DIR:-/etc/spdecode}"
 REPO="$ROOT/repo"; ENVFILE="$CFG/cloud.env"; CONF="$CFG/install.conf"
 die(){ echo "ERROR: $*" >&2; exit 1; }
 log(){ echo "[spdecode] $*"; }
@@ -109,22 +109,22 @@ out.chmod(0o600)
 print("Service account stored privately (not printed)")
 PY
 }
-case "\${1:-help}" in
+case "${1:-help}" in
  status)
    preflight; log "Source $(git -C "$REPO" rev-parse --short HEAD)"
    compose ps
    health && log "HTTP health OK" || log "HTTP health DOWN"
    ;;
  logs)
-   case "\${2:-}" in api|web|panel) compose logs --no-color --tail 120 web;;
+   case "${2:-}" in api|web|panel) compose logs --no-color --tail 120 web;;
      worker|engines) compose logs --no-color --tail 120 decoder-worker;;
      all) compose logs --no-color --tail 120 web decoder-worker;;
      *) die "spdecode logs api|web|panel|worker|all";; esac;;
  update)
    [[ $# -ge 2 ]] || die "spdecode update api|web|panel|worker|all [ref]"
-   update "$2" "\${3:-$SPDECODE_REF}";;
+   update "$2" "${3:-$SPDECODE_REF}";;
  restart)
-   case "\${2:-}" in
+   case "${2:-}" in
      api|web|panel) compose up -d --no-deps --force-recreate web;health;;
      worker|engines) compose up -d --no-deps --force-recreate decoder-worker;;
      all) compose up -d --force-recreate;health;;
@@ -145,7 +145,7 @@ case "\${1:-help}" in
    git -C "$REPO" reset --hard "$old"
    deploy all;;
  config)
-   case "\${2:-}" in
+   case "${2:-}" in
      set) [[ $# -eq 4 ]] || die "spdecode config set KEY VALUE";set_env "$3" "$4";;
      google-service-account) [[ $# -eq 3 ]] || die "spdecode config google-service-account /root/key.json";google_account "$3";;
      *) die "spdecode config set KEY VALUE | google-service-account FILE";; esac;;
