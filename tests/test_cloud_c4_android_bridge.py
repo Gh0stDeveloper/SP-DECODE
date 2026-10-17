@@ -68,6 +68,9 @@ class CloudC4Tests(unittest.TestCase):
     def test_cloud_build_is_explicit_and_https_only(self):
         source=GRADLE.read_text("utf-8")
         self.assertIn("SPDECODE_CLOUD_API_BASE_URL",source)
+        self.assertIn("SPDECODE_CLOUD_ORIGIN",source)
+        self.assertNotIn("SPDECODE_CLOUD_API_BASE_URL",JNI.read_text("utf-8"))
+        self.assertIn("SPDECODE_CLOUD_ORIGIN",NATIVE.read_text("utf-8"))
         self.assertIn("SPDECODE_CLOUD_RELEASE",source)
         self.assertIn('parsed.scheme=="https"',source)
         self.assertIn('buildConfigField("boolean", "SPDECODE_CLOUD_ENABLED"',source)
