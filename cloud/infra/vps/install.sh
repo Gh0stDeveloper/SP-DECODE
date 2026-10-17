@@ -90,6 +90,11 @@ else
 fi
 nginx -t && systemctl reload nginx
 systemctl enable --now certbot.timer 2>/dev/null || true
+# Reload Nginx when Let's Encrypt renews a certificate.
+install -d -m 0755 /etc/letsencrypt/renewal-hooks/deploy
+printf '#!/bin/sh\n/usr/sbin/nginx -t && /bin/systemctl reload nginx\n' \
+ > /etc/letsencrypt/renewal-hooks/deploy/spdecode-nginx
+chmod 0755 /etc/letsencrypt/renewal-hooks/deploy/spdecode-nginx
 # Keep session and admin disabled; enabling requires actual Play configuration.
 cd /opt/spdecode/repo
 docker compose --project-name spdecode --env-file /etc/spdecode/cloud.env \

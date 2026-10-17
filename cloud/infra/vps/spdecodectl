@@ -93,6 +93,24 @@ file.chmod(0o600)
 PY
   log "Updated $key. Apply using: spdecode restart web"
 }
+admin_password(){
+  # Python scrypt parameters exactly match Next.js C6 settings.
+  python3 - "$ENVFILE" <<'PY'
+import getpass, hashlib, pathlib, secrets, sys
+file=pathlib.Path(sys.argv[1])
+password=getpass.getpass("New admin password (>=16 characters): ")
+confirm=getpass.getpass("Confirm admin password: ")
+if len(password)<16 or len(password)>512 or password!=confirm:
+    raise SystemExit("Password invalid, too short, or confirmation differs")
+salt=secrets.token_bytes(16)
+digest=hashlib.scrypt(password.encode(),salt=salt,n=16384,r=8,p=1,dklen=64,maxmem=32*1024*1024)
+hashed="scrypt$16384$8$1$"+salt.hex()+"$"+digest.hex()
+rows=[x for x in file.read_text().splitlines() if not x.startswith("CLOUD_ADMIN_PASSWORD_SCRYPT=")]
+file.write_text("\n".join(rows+["CLOUD_ADMIN_PASSWORD_SCRYPT='"+hashed+"'"])+"\n")
+file.chmod(0o600)
+print("Admin password hash stored (password not printed)")
+PY
+}
 google_account(){
   [[ -f "$1" && $(stat -c %a "$1") =~ ^(400|600)$ ]] || die "Service account must be a file with chmod 600"
   python3 - "$ENVFILE" "$1" <<'PY'
@@ -122,6 +140,13 @@ case "${1:-help}" in
      *) die "spdecode logs api|web|panel|worker|all";; esac;;
  update)
    [[ $# -ge 2 ]] || die "spdecode update api|web|panel|worker|all [ref]"
+   if [[ "$2" == app ]]; then
+     ref="$SPDECODE_REF"
+     shift 2
+     if (($#)) && [[ "$1" != --* ]]; then ref="$1";shift;fi
+     sync_ref "$ref"
+     exec bash "$REPO/cloud/infra/vps/android-build.sh" build "$@"
+   fi
    update "$2" "${3:-$SPDECODE_REF}";;
  restart)
    case "${2:-}" in
@@ -148,7 +173,8 @@ case "${1:-help}" in
    case "${2:-}" in
      set) [[ $# -eq 4 ]] || die "spdecode config set KEY VALUE";set_env "$3" "$4";;
      google-service-account) [[ $# -eq 3 ]] || die "spdecode config google-service-account /root/key.json";google_account "$3";;
-     *) die "spdecode config set KEY VALUE | google-service-account FILE";; esac;;
+     admin-password) [[ $# -eq 2 ]] || die "spdecode config admin-password";admin_password;;
+     *) die "spdecode config set KEY VALUE | google-service-account FILE | admin-password";; esac;;
  android) shift;exec bash "$REPO/cloud/infra/vps/android-build.sh" "$@";;
  help|-h|--help)
    cat <<'USAGE'
@@ -156,6 +182,7 @@ SP-DECODE VPS commands:
   spdecode status
   spdecode logs api|web|panel|worker|all
   spdecode update api|web|panel|worker|all [branch/tag/SHA]
+  spdecode update app [branch] --version-name X.Y.Z --version-code N --testing-only
   spdecode restart api|web|panel|worker|all
   spdecode rollback
   spdecode backup
@@ -163,6 +190,7 @@ SP-DECODE VPS commands:
   spdecode config set CLOUD_API_ENABLED true|false
   spdecode config set CLOUD_ADMIN_ENABLED true|false
   spdecode config google-service-account /root/play-service.json
+  spdecode config admin-password
   spdecode android setup
   spdecode android signing configure /root/upload-key.p12 alias
   spdecode android build --version-name 1.2.0 --version-code 26 --testing-only
