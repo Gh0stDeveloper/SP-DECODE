@@ -72,6 +72,8 @@ update(){
     (deploy "$kind") || log "ALERT: rollback failed, manual inspection required"
     return 1
   fi
+  # Atomic deployment of the control CLI when its own source changes.
+  install -m 0755 "$REPO/cloud/infra/vps/spdecodectl" /usr/local/bin/spdecode
   compose ps
 }
 set_env(){
@@ -168,7 +170,8 @@ case "${1:-help}" in
    [[ "$old" =~ ^[0-9a-f]{40}$ ]] || die "Bad rollback SHA"
    clean_repo;git -C "$REPO" cat-file -e "$old^{commit}"
    git -C "$REPO" reset --hard "$old"
-   deploy all;;
+   deploy all
+   install -m 0755 "$REPO/cloud/infra/vps/spdecodectl" /usr/local/bin/spdecode;;
  config)
    case "${2:-}" in
      set) [[ $# -eq 4 ]] || die "spdecode config set KEY VALUE";set_env "$3" "$4";;

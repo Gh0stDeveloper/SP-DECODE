@@ -19,6 +19,11 @@ class VPSInstallerTests(unittest.TestCase):
         for value in ("bad;inject","http://host.test","host.test/path","localhost","host.test\nserver {"):
             p=subprocess.run(["python3",str(VPS/"nginx-config.py"),value],capture_output=True)
             self.assertNotEqual(p.returncode,0,value)
+    def test_admin_rejects_worldwide_allowlist(self):
+        for cidr in ("0.0.0.0/0","::/0","198.51.100.0/24"):
+            p=subprocess.run(["python3",str(VPS/"nginx-config.py"),
+              "ghost.duckdns.org",cidr],capture_output=True)
+            self.assertNotEqual(p.returncode,0,cidr)
     def test_installer_fail_closed(self):
         data=(VPS/"install.sh").read_text()
         for text in ("CLOUD_API_ENABLED=false","CLOUD_ADMIN_ENABLED=false","CLOUD_FORCE_MAINTENANCE=true","certbot certonly","nginx -t && systemctl reload nginx"):
