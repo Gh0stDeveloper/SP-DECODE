@@ -35,7 +35,7 @@ bool safeBase(const std::string& value) {
     const auto host = value.substr(scheme.size());
     if (host.front()=='.' || host.back()=='.' || host.find('.')==std::string::npos ||
         host.find("..")!=std::string::npos) return false;
-    if (host == "localhost" || host.size() >= 6 && host.compare(host.size()-6,6,".local")==0)
+    if (host == "localhost" || (host.size() >= 6 && host.compare(host.size()-6,6,".local")==0))
         return false;
     if (!std::all_of(host.begin(),host.end(),[](unsigned char c){
         return std::isalnum(c) || c == '.' || c == '-';
@@ -62,6 +62,7 @@ bool safeBearer(const std::string& token) {
 jstring jstr(JNIEnv* env,const char* s) {return env->NewStringUTF(s);}
 bool setHeader(JNIEnv* env,jobject conn,jclass cls,jmethodID method,
                const char* name,const std::string& value) {
+    (void)cls;
     jstring key = jstr(env,name);
     jstring val = env->NewStringUTF(value.c_str());
     if (key==nullptr || val==nullptr)return false;
@@ -107,7 +108,7 @@ jstring post(JNIEnv* env,jstring baseArg,jstring pathArg,jstring bodyArg,jstring
     const jmethodID setRead=env->GetMethodID(connectionClass,"setReadTimeout","(I)V");
     const jmethodID setOutput=env->GetMethodID(connectionClass,"setDoOutput","(Z)V");
     const jmethodID setProperty=env->GetMethodID(connectionClass,"setRequestProperty","(Ljava/lang/String;Ljava/lang/String;)V");
-    const jmethodID setLength=env->GetMethodID(httpClass,"setFixedLengthStreamingMode","(I)V");
+    const jmethodID setLength=env->GetMethodID(httpClass,"setChunkedStreamingMode","(I)V");
     const jmethodID getOutput=env->GetMethodID(connectionClass,"getOutputStream","()Ljava/io/OutputStream;");
     const jmethodID getInput=env->GetMethodID(connectionClass,"getInputStream","()Ljava/io/InputStream;");
     const jmethodID getError=env->GetMethodID(httpClass,"getErrorStream","()Ljava/io/InputStream;");
@@ -147,7 +148,7 @@ jstring post(JNIEnv* env,jstring baseArg,jstring pathArg,jstring bodyArg,jstring
     env->CallVoidMethod(conn,setConnect,kConnectTimeoutMs);
     env->CallVoidMethod(conn,setRead,kReadTimeoutMs);
     env->CallVoidMethod(conn,setOutput,JNI_TRUE);
-    env->CallVoidMethod(conn,setLength,static_cast<jint>(body.size()));
+    env->CallVoidMethod(conn,setLength,8192);
     bool ok=!env->ExceptionCheck();
     if(ok)ok=setHeader(env,conn,connectionClass,setProperty,"Content-Type","application/json");
     if(ok)ok=setHeader(env,conn,connectionClass,setProperty,"Accept","application/json");
@@ -213,7 +214,20 @@ jstring post(JNIEnv* env,jstring baseArg,jstring pathArg,jstring bodyArg,jstring
     }
     // The response body is a complete JSON document; Kotlin validates it.
     const std::string envelope=std::to_string(status)+"\n"+result;
-    return env->NewStringUTF(envelope.c_str());
+    jbyteArray raw=env->NewByteArray(static_cast<jsize>(envelope.size()));
+    if(raw==nullptr){fail(env,"CLOUD_NATIVE_RESPONSE_MEMORY");return nullptr;}
+    env->SetByteArrayRegion(raw,0,static_cast<jsize>(envelope.size()),
+                            reinterpret_cast<const jbyte*>(envelope.data()));
+    const jmethodID stringUtf8Ctor=env->GetMethodID(stringClass,"<init>",
+                                                   "([BLjava/lang/String;)V");
+    jstring encoding=jstr(env,"UTF-8");
+    jstring decoded=static_cast<jstring>(env->NewObject(stringClass,stringUtf8Ctor,raw,encoding));
+    env->DeleteLocalRef(raw);
+    env->DeleteLocalRef(encoding);
+    if(decoded==nullptr || clearException(env)){
+        fail(env,"CLOUD_NATIVE_RESPONSE_ENCODING");return nullptr;
+    }
+    return decoded;
 }
 }
 
