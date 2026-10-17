@@ -78,7 +78,7 @@ function validatePayload(kind,payload) {
   if (!isRecord(payload))throw Object.assign(new Error("schema"),{code:"INVALID_REQUEST"});
   if(kind==="file"){
     if (Object.keys(payload).some(x=>!["format","dataBase64","credentials"].includes(x)) ||
-        typeof payload.format!=="string" || !/^[a-z0-9][a-z0-9._-]{0,63}$/.test(payload.format))
+        typeof payload.format!=="string" || (!/^[a-z0-9][a-z0-9._-]{0,63}$/.test(payload.format) && payload.format!=="fɴ"))
       throw Object.assign(new Error("format"),{code:"INVALID_REQUEST"});
     if (payload.credentials!==undefined){
       if (payload.format!=="hc" || !isRecord(payload.credentials) ||

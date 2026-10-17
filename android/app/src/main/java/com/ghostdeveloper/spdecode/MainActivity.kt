@@ -22,6 +22,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.ghostdeveloper.spdecode.cloud.CloudDecodeClient
 import com.ghostdeveloper.spdecode.parity.AndroidDecoderCatalog
 import com.ghostdeveloper.spdecode.parity.AndroidOfflineDecoderRouter
 import com.ghostdeveloper.spdecode.parity.HcHccfgPort
@@ -52,13 +53,14 @@ import java.text.DateFormat
 import java.util.Date
 
 /**
- * First functional offline Android alpha.
- * No app-specific file paths, INTERNET permission, backend or original script
- * subprocess. Decoded history persists in app-private encrypted storage.
+ * C4: Cloud transport replaces decoding behind the existing UI, history
+ * and progress flows in enabled builds. Legacy mode is retained only for
+ * regression checks until C5 removes client-side decoder material.
  */
 class MainActivity : ComponentActivity() {
     private companion object { const val MAX_BYTES=1024*1024 }
     private val scope=CoroutineScope(SupervisorJob()+Dispatchers.Main.immediate)
+    private val cloudClient by lazy { CloudDecodeClient(this) }
     private val privateCredentialVault by lazy { DevicePrivateCredentialVault(this) }
     private data class PendingCredentialImport(
         val uri:Uri,
@@ -468,7 +470,9 @@ class MainActivity : ComponentActivity() {
             reveal=false
             try {
                 historyLoad?.await()
-                val decoded=withContext(Dispatchers.Default) {
+                val decoded=if(BuildConfig.SPDECODE_CLOUD_ENABLED) {
+                    cloudClient.decodeText(userText)
+                } else withContext(Dispatchers.Default) {
                     TextProtocolDecoder.decode(this@MainActivity,candidate)
                 }
                 if(decoded==null) {
@@ -539,7 +543,9 @@ class MainActivity : ComponentActivity() {
             reveal=false
             try {
                 historyLoad?.await()
-                val decoded=withContext(Dispatchers.IO) {
+                val decoded=if(BuildConfig.SPDECODE_CLOUD_ENABLED) {
+                    cloudClient.decodeHttpInjectorCloud(parsed)
+                } else withContext(Dispatchers.IO) {
                     HttpInjectorCloudPort.decodeOnline(this@MainActivity,parsed)
                 }
                 progressStage=2
@@ -563,7 +569,18 @@ class MainActivity : ComponentActivity() {
                 catch(_:Exception){toast(R.string.history_storage_error)}
                 tab=0
             }catch(e:CancellationException){throw e}
-            catch(e:HttpInjectorCloudPort.CloudException) {
+            catch(e:CloudDecodeClient.Failure) {
+                if(generation==importGeneration) {
+                    message=getString(when(e.code) {
+                        "INVALID_REFERENCE", "INVALID_REQUEST" -> R.string.cloud_http_injector_invalid
+                        "REMOTE_INTEGRITY_FAILED" -> R.string.cloud_http_injector_integrity_error
+                        "REMOTE_DECODER_FAILED", "DECODE_FAILED" -> R.string.cloud_http_injector_decoder_error
+                        "REMOTE_PROVIDER_UNAVAILABLE", "REMOTE_NOT_CONFIGURED" ->
+                            R.string.cloud_http_injector_server_error
+                        else -> R.string.cloud_http_injector_network_error
+                    })
+                }
+            }catch(e:HttpInjectorCloudPort.CloudException) {
                 if(generation==importGeneration) {
                     message=getString(when(e.reason) {
                         HttpInjectorCloudPort.Reason.REFERENCE->R.string.cloud_http_injector_invalid
@@ -601,7 +618,10 @@ class MainActivity : ComponentActivity() {
             reveal=false
             try {
                 historyLoad?.await()
-                val pair=withContext(Dispatchers.IO) {
+                val pair=if(BuildConfig.SPDECODE_CLOUD_ENABLED) {
+                    val decoded=cloudClient.decodeNurCatalog()
+                    Pair(decoded.rawText,decoded.sourceBytes ?: 0)
+                } else withContext(Dispatchers.IO) {
                     val url=NurTunnelServerCatalog.defaultUrl(this@MainActivity)
                     val encrypted=NurTunnelServerCatalog.download(url)
                     try {
@@ -731,7 +751,16 @@ class MainActivity : ComponentActivity() {
                     progressStage=1
                     val inputSize=input.size
                     val text=try {
-                        withContext(Dispatchers.Default) {
+                        if(BuildConfig.SPDECODE_CLOUD_ENABLED) {
+                            // Never fall back to local decoders after a Cloud error.
+                            if(privateCredentialId!=null) {
+                                val secret=withContext(Dispatchers.IO) {
+                                    privateCredentialVault.use(privateCredentialId){it.copyOf()}
+                                }
+                                try { cloudClient.decodeFile(supported.suffix,input,password=secret) }
+                                finally { secret.fill(0) }
+                            }else cloudClient.decodeFile(supported.suffix,input,hcPassword,hcHwid)
+                        } else withContext(Dispatchers.Default) {
                             if(privateCredentialId!=null){
                                 privateCredentialVault.use(privateCredentialId){secret->
                                     AndroidOfflineDecoderRouter.decodeWithUserPassword(

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- INTERNET is used solely by the explicitly selected HTTP Injector Cloud importer.
-         All 239 file decoders, text decoders, local history and credentials remain offline.
-         No background requests, analytics or cleartext networking. -->
+    <!-- In C4 Cloud-enabled builds, file/text/EHI/NUR decode requests use
+         the native HTTPS libspdecode.so client. Encrypted history remains
+         local. C4 never enables cleartext, analytics, or background requests.
+         Legacy builds are retained for migration regression checks until C5. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".SpDecodeApplication"
