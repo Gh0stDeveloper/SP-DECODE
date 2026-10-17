@@ -3,6 +3,7 @@ package com.ghostdeveloper.spdecode.cloud
 import android.content.Context
 import android.util.Base64
 import com.ghostdeveloper.spdecode.BuildConfig
+import com.ghostdeveloper.spdecode.parity.HcHccfgPort
 import com.google.android.play.core.integrity.IntegrityManagerFactory
 import com.google.android.play.core.integrity.IntegrityTokenRequest
 import kotlinx.coroutines.CancellationException
@@ -115,6 +116,31 @@ internal class CloudDecodeClient(context: Context) {
         if (text.length > 4 * 1024 * 1024) throw IOException("CLOUD_RESULT_TOO_LARGE")
         return Decoded(text,response.optInt("sourceBytes",0).takeIf { it > 0 })
     }
+
+    /**
+     * Server-side requirement probe: never decrypt HCCFG headers locally.
+     * Existing password/HWID dialog is opened only when the real Cloud worker
+     * returns a sanitized lock requirement; no result is stored for this probe.
+     */
+    suspend fun inspectHcRequirements(bytes:ByteArray):HcHccfgPort.Requirements? =
+        try {
+            decodeFile("hc",bytes)
+            null
+        }catch(failure:Failure) {
+            val flags=when(failure.code) {
+                "PASSWORD_REQUIRED"->true to false
+                "HWID_REQUIRED"->false to true
+                "HWID_PASSWORD_REQUIRED"->true to true
+                else->throw failure
+            }
+            HcHccfgPort.Requirements(
+                passwordRequired=flags.first,
+                hwidRequired=flags.second,
+                headerAuthenticated=false,
+                schema=0,
+                schedule="cloud",
+            )
+        }
 
     suspend fun decodeFile(format: String, bytes: ByteArray,
                            password: ByteArray? = null, hwid: String? = null): String {

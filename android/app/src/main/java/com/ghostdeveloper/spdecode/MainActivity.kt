@@ -379,7 +379,9 @@ class MainActivity : ComponentActivity() {
                 val name=withContext(Dispatchers.IO){displayName(uri)}
                 if(name.endsWith(".hc",ignoreCase=true)){
                     preview=withContext(Dispatchers.IO){readBounded(uri)}
-                    val requirements=HcHccfgPort.inspectRequirements(preview)
+                    val requirements=if(BuildConfig.SPDECODE_CLOUD_ENABLED)
+                        cloudClient.inspectHcRequirements(preview)
+                    else HcHccfgPort.inspectRequirements(preview)
                     if(requirements?.requiresCredentials==true) {
                         val credentials=if(requirements.passwordRequired &&
                             !requirements.hwidRequired) withContext(Dispatchers.IO){
