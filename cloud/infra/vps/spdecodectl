@@ -73,7 +73,8 @@ update(){
     return 1
   fi
   # Atomic deployment of the control CLI when its own source changes.
-  install -m 0755 "$REPO/cloud/infra/vps/spdecodectl" /usr/local/bin/spdecode
+  install -m 0755 "$REPO/cloud/infra/vps/spdecodectl" /usr/local/bin/spdecode.next
+  mv -f /usr/local/bin/spdecode.next /usr/local/bin/spdecode
   compose ps
 }
 set_env(){
@@ -171,7 +172,8 @@ case "${1:-help}" in
    clean_repo;git -C "$REPO" cat-file -e "$old^{commit}"
    git -C "$REPO" reset --hard "$old"
    deploy all
-   install -m 0755 "$REPO/cloud/infra/vps/spdecodectl" /usr/local/bin/spdecode;;
+   install -m 0755 "$REPO/cloud/infra/vps/spdecodectl" /usr/local/bin/spdecode.next
+  mv -f /usr/local/bin/spdecode.next /usr/local/bin/spdecode;;
  config)
    case "${2:-}" in
      set) [[ $# -eq 4 ]] || die "spdecode config set KEY VALUE";set_env "$3" "$4";;
