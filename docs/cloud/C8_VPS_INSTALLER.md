@@ -106,7 +106,7 @@ sudo spdecode update app feat/cloud-c8-vps-installer-updater \
 sudo spdecode android artifacts
 ```
 
-El compilador crea un Git worktree temporal, modifica `versionName`/`versionCode` solo en esa copia, incorpora tu dominio HTTPS compilado en `libspdecode.so`, ejecuta `:app:assembleRelease :app:bundleRelease` y verifica la firma APK con apksigner, alineación 16 KiB, firma AAB con jarsigner, escaneo C5 del APK y hashes SHA-256. Guarda los paquetes y manifiesto en `/opt/spdecode/artifacts/vVERSION-CODE/`. No sobreescribe versiones firmadas existentes.
+El compilador crea un Git worktree temporal, modifica `versionName`/`versionCode` solo en esa copia, incorpora tu dominio HTTPS compilado en `libspdecode.so`, ejecuta `:app:assembleRelease :app:bundleRelease` y verifica la firma APK con apksigner, alineación 16 KiB, firma AAB con jarsigner, escaneo C5 del APK y hashes SHA-256 (se aceptan únicamente los perfiles ART/dexopt generados por Android Gradle Plugin, además del catálogo público; nunca materiales de descifrado). Guarda los paquetes y manifiesto en `/opt/spdecode/artifacts/vVERSION-CODE/`. No sobreescribe versiones firmadas existentes.
 
 **NO se suben archivos automáticamente a Play Console**, **NO se publica una nueva versión pública** y **NO se fusiona con main**: el gate C7 continúa bloqueando producción hasta comprobar el servicio y Play Integrity reales. El AAB de este comando es un **artefacto de pruebas**, que puedes evaluar en un canal autorizado y cerrado una vez configurado Play Console. El script no asegura que un usuario pueda descifrar sin VPS ni Play Integrity real.
 
