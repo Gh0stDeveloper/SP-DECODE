@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "SP-DECODE Cloud API — C1 baseline",
-    "version": "0.1.0",
-    "description": "Protocol scaffold only. No decoding, uploads, sessions or jobs are operational. Android UI/UX is unchanged; native libspdecode.so comes in C4."
+    "title": "SP-DECODE Cloud API — C3 gated security contract",
+    "version": "0.3.0",
+    "description": "Gated by CLOUD_API_ENABLED plus server-side Google Play Integrity/Redis and private worker credentials. Without complete configuration all decoding and session operations return 503; Android transport libspdecode.so follows in C4."
   },
   "servers": [
     {
@@ -53,29 +53,21 @@
       "get": {
         "summary": "Cloud readiness (503 until C2/C3)",
         "responses": {
+          "200": {
+            "description": "Authenticated operation completed"
+          },
           "503": {
-            "description": "Workers disabled",
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "apiVersion": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string",
-                      "const": "not_ready"
-                    },
-                    "reason": {
-                      "type": "string"
-                    }
-                  }
+                  "$ref": "#/components/schemas/ErrorReply"
                 }
               }
             }
           }
-        }
+        },
+        "description": "C3 gate is disabled by default; success only after Play Integrity admission, Redis checks and private worker readiness."
       }
     },
     "/api/v1/capabilities": {
@@ -83,42 +75,20 @@
         "summary": "Advertise enabled capabilities only",
         "responses": {
           "200": {
-            "description": "Feature list is empty in C1; inventory is informational",
+            "description": "Authenticated operation completed"
+          },
+          "503": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "required": [
-                    "apiVersion",
-                    "status",
-                    "decodingEnabled",
-                    "enabledFormats"
-                  ],
-                  "properties": {
-                    "apiVersion": {
-                      "type": "string"
-                    },
-                    "status": {
-                      "type": "string",
-                      "const": "not_ready"
-                    },
-                    "decodingEnabled": {
-                      "type": "boolean",
-                      "const": false
-                    },
-                    "enabledFormats": {
-                      "type": "array",
-                      "maxItems": 0,
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
+                  "$ref": "#/components/schemas/ErrorReply"
                 }
               }
             }
           }
-        }
+        },
+        "description": "C3 gate is disabled by default; success only after Play Integrity admission, Redis checks and private worker readiness."
       }
     },
     "/api/v1/config": {
@@ -158,10 +128,73 @@
     "/api/v1/decode/file": {
       "post": {
         "summary": "Upload file for decoding",
-        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "description": "C3 gate is disabled by default; success only after Play Integrity admission, Redis checks and private worker readiness.",
         "responses": {
+          "200": {
+            "description": "Authenticated operation completed"
+          },
+          "400": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
           "503": {
-            "description": "Endpoint disabled in C1",
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
             "content": {
               "application/json": {
                 "schema": {
@@ -176,10 +209,73 @@
     "/api/v1/decode/text": {
       "post": {
         "summary": "Submit text protocol for decoding",
-        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "description": "C3 gate is disabled by default; success only after Play Integrity admission, Redis checks and private worker readiness.",
         "responses": {
+          "200": {
+            "description": "Authenticated operation completed"
+          },
+          "400": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
           "503": {
-            "description": "Endpoint disabled in C1",
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
             "content": {
               "application/json": {
                 "schema": {
@@ -212,10 +308,73 @@
     "/api/v1/decode/import/catalog": {
       "post": {
         "summary": "Process special NUR catalog",
-        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "description": "C3 gate is disabled by default; success only after Play Integrity admission, Redis checks and private worker readiness.",
         "responses": {
+          "200": {
+            "description": "Authenticated operation completed"
+          },
+          "400": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
           "503": {
-            "description": "Endpoint disabled in C1",
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
             "content": {
               "application/json": {
                 "schema": {
@@ -230,10 +389,53 @@
     "/api/v1/session": {
       "post": {
         "summary": "Create authenticated Android client session",
-        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "description": "C3 gate is disabled by default; success only after Play Integrity admission, Redis checks and private worker readiness.",
         "responses": {
+          "201": {
+            "description": "Session/challenge established"
+          },
+          "400": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
           "503": {
-            "description": "Endpoint disabled in C1",
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
             "content": {
               "application/json": {
                 "schema": {
@@ -316,6 +518,37 @@
           }
         }
       }
+    },
+    "/api/v1/session/challenge": {
+      "post": {
+        "summary": "Allocate a one-time Play Integrity classic nonce",
+        "description": "Rate-limited by trusted proxy IP. Challenge expires after 120s and is consumed atomically once.",
+        "responses": {
+          "201": {
+            "description": "Challenge created, { challengeId, nonce, expiresIn }"
+          },
+          "429": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized JSON error, including disabled/unavailable service.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -334,7 +567,10 @@
           },
           "status": {
             "type": "string",
-            "const": "unavailable"
+            "enum": [
+              "error",
+              "unavailable"
+            ]
           },
           "error": {
             "type": "object",
@@ -344,8 +580,7 @@
             ],
             "properties": {
               "code": {
-                "type": "string",
-                "const": "CLOUD_NOT_READY"
+                "type": "string"
               },
               "message": {
                 "type": "string"

@@ -1,4 +1,5 @@
 import { jsonReply, unavailable } from "./responses.mjs";
+import { settings } from "./c3-config.mjs";
 
 /** Liveness is not readiness: the Cloud API intentionally cannot decode in C1. */
 export function live() {
@@ -34,13 +35,14 @@ export function capabilities() {
 }
 
 export function clientConfig() {
+  const active = settings().configured;
   return jsonReply({
     apiVersion: "v1",
-    status: "not_ready",
+    status: active ? "configured" : "not_ready",
     transport: "https",
     androidNativeLibrary: "libspdecode.so",
     minimumClientVersion: null,
-    features: { decodeFiles: false, decodeTexts: false, importCloud: false, importCatalog: false },
+    features: { decodeFiles: active, decodeTexts: active, importCloud: false, importCatalog: active },
   });
 }
 
