@@ -1,0 +1,63 @@
+# C1 development topology. Not a public production deployment.
+services:
+  web:
+    build:
+      context: ./web
+    restart: unless-stopped
+    init: true
+    environment:
+      NODE_ENV: production
+      WORKER_INTERNAL_URL: http://decoder-worker:8787
+    ports:
+      # Bound to host loopback only; public HTTPS reverse proxy is a later phase.
+      - "127.0.0.1:3000:3000"
+    networks:
+      - edge
+      - private
+    depends_on:
+      decoder-worker:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: ["ALL"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+      - /app/.next/cache:size=32m,nosuid
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/v1/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 4
+      start_period: 30s
+
+  decoder-worker:
+    build:
+      context: ./workers/python
+    restart: unless-stopped
+    init: true
+    environment:
+      WORKER_BIND_HOST: 0.0.0.0
+      WORKER_PORT: "8787"
+    # Deliberately no host port, no credentials, no shared decoder volumes.
+    networks:
+      - private
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: ["ALL"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,noexec,nosuid
+    pids_limit: 64
+    mem_limit: 128m
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8787/health',timeout=2).read()"]
+      interval: 30s
+      timeout: 5s
+      retries: 4
+      start_period: 5s
+
+networks:
+  edge: {}
+  private:
+    internal: true
