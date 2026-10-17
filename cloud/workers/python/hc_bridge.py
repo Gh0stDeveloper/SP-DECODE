@@ -32,7 +32,15 @@ def main() -> int:
             return 2
         if password is None and hwid is None:
             # Existing legacy behaviour wins when no auth is required.
-            original = legacy_hc(raw)
+            try:
+                original = legacy_hc(raw)
+            except ValueError as error:
+                # The original noninteractive bot wrapper converts a missing
+                # HCCFG credential into ValueError; the Cloud HCCFG layer
+                # must report the precise original HCError instead.
+                if not str(error).startswith("HTTP Custom HCCFG: "):
+                    raise
+                original = None
             if isinstance(original, str) and original.strip():
                 sys.stdout.write(original + "\n")
                 return 0
