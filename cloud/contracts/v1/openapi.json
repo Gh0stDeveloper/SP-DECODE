@@ -1,0 +1,359 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SP-DECODE Cloud API — C1 baseline",
+    "version": "0.1.0",
+    "description": "Protocol scaffold only. No decoding, uploads, sessions or jobs are operational. Android UI/UX is unchanged; native libspdecode.so comes in C4."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:3000",
+      "description": "Local development only; production requires HTTPS"
+    }
+  ],
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Liveness (no decoder readiness implied)",
+        "responses": {
+          "200": {
+            "description": "Process alive",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "apiVersion",
+                    "status"
+                  ],
+                  "properties": {
+                    "apiVersion": {
+                      "type": "string",
+                      "const": "v1"
+                    },
+                    "status": {
+                      "type": "string",
+                      "const": "alive"
+                    },
+                    "service": {
+                      "type": "string"
+                    },
+                    "phase": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ready": {
+      "get": {
+        "summary": "Cloud readiness (503 until C2/C3)",
+        "responses": {
+          "503": {
+            "description": "Workers disabled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apiVersion": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "const": "not_ready"
+                    },
+                    "reason": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/capabilities": {
+      "get": {
+        "summary": "Advertise enabled capabilities only",
+        "responses": {
+          "200": {
+            "description": "Feature list is empty in C1; inventory is informational",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "apiVersion",
+                    "status",
+                    "decodingEnabled",
+                    "enabledFormats"
+                  ],
+                  "properties": {
+                    "apiVersion": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string",
+                      "const": "not_ready"
+                    },
+                    "decodingEnabled": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "enabledFormats": {
+                      "type": "array",
+                      "maxItems": 0,
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/config": {
+      "get": {
+        "summary": "Public non-secret client configuration",
+        "responses": {
+          "200": {
+            "description": "No auth or secret material",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "apiVersion": {
+                      "type": "string"
+                    },
+                    "androidNativeLibrary": {
+                      "type": "string",
+                      "const": "libspdecode.so"
+                    },
+                    "transport": {
+                      "type": "string",
+                      "const": "https"
+                    },
+                    "status": {
+                      "type": "string",
+                      "const": "not_ready"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/decode/file": {
+      "post": {
+        "summary": "Upload file for decoding",
+        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "responses": {
+          "503": {
+            "description": "Endpoint disabled in C1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/decode/text": {
+      "post": {
+        "summary": "Submit text protocol for decoding",
+        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "responses": {
+          "503": {
+            "description": "Endpoint disabled in C1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/decode/import/cloud": {
+      "post": {
+        "summary": "Import HTTP Injector Cloud reference",
+        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "responses": {
+          "503": {
+            "description": "Endpoint disabled in C1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/decode/import/catalog": {
+      "post": {
+        "summary": "Process special NUR catalog",
+        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "responses": {
+          "503": {
+            "description": "Endpoint disabled in C1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/session": {
+      "post": {
+        "summary": "Create authenticated Android client session",
+        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "responses": {
+          "503": {
+            "description": "Endpoint disabled in C1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs": {
+      "post": {
+        "summary": "Submit asynchronous decoding job",
+        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "responses": {
+          "503": {
+            "description": "Endpoint disabled in C1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/{id}": {
+      "get": {
+        "summary": "Retrieve or cancel job",
+        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "503": {
+            "description": "Endpoint disabled in C1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Retrieve or cancel job",
+        "description": "Reserved by C1; fails closed before body parsing or worker execution. Authentication/validation defined in C3.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "503": {
+            "description": "Endpoint disabled in C1",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorReply"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorReply": {
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "status",
+          "error"
+        ],
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "const": "v1"
+          },
+          "status": {
+            "type": "string",
+            "const": "unavailable"
+          },
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "const": "CLOUD_NOT_READY"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
