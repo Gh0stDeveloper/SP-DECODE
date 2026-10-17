@@ -17,11 +17,12 @@ class RedisFake{
   async expire(){return 1;}
   async ping(){return "PONG";}
   multi(){
+    const client=this;
     const commands=[];
     const multi={
       incr(k){commands.push(["incr",k]);return multi;},
       expire(k,n){commands.push(["expire",k,n]);return multi;},
-      async exec(){for(const [name,...args] of commands)await this[name](...args);return [];},
+      async exec(){for(const [name,...args] of commands)await client[name](...args);return [];},
     };
     return multi;
   }
