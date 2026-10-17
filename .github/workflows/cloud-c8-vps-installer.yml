@@ -90,3 +90,26 @@ jobs:
       - name: Destroy ephemeral upload key; never persist artifacts
         if: always()
         run: rm -f "$RUNNER_TEMP/ci-test-only.p12"
+
+  docker-boot:
+    name: C8 fresh-stack Docker Compose smoke (no real secrets)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose builds isolated worker and website
+        run: docker compose -f cloud/compose.yaml up -d --build
+      - name: Validate web, admin default deny and private worker topology
+        run: |
+          for i in $(seq 1 24); do
+            if curl --fail --silent http://127.0.0.1:3000/api/v1/health >/dev/null; then break; fi
+            sleep 3
+          done
+          curl --fail --silent http://127.0.0.1:3000/api/v1/health > /tmp/cloud-health.json
+          curl --fail --silent http://127.0.0.1:3000/ > /dev/null
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:3000/api/admin/session)" = 503
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' http://127.0.0.1:3000/api/v1/ready)" = 503
+          docker compose -f cloud/compose.yaml ps
+      - name: Always tear down containers
+        if: always()
+        run: docker compose -f cloud/compose.yaml down --remove-orphans
