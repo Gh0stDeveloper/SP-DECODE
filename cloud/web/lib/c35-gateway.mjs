@@ -4,6 +4,7 @@ import { settings } from "./c3-config.mjs";
 import { store, reserveSlot, releaseSlot } from "./c3-store.mjs";
 import { requireSession } from "./c3-session.mjs";
 import { enabled, notEnabled, failure, boundedBody, fetchWorker } from "./c3-gateway.mjs";
+import { maintenanceEnabled, recordWorkerResult } from "./c6-ops-store.mjs";
 import {
   isExternalImportError, parseEhiReference, ehiConfigured, nurConfigured,
   importEhiReference, downloadNur,
@@ -19,6 +20,7 @@ export async function externalImportRequest(request,kind,opts={}) {
   try {
     // Authorize before reading any uploaded body or opening external socket.
     redis=await (opts.storeProvider||store)();
+    if(await maintenanceEnabled(redis))return failure("SERVICE_UNAVAILABLE",503);
     claims=await requireSession(redis,request,settings());
     if (!claims) return failure("UNAUTHORIZED",401);
     if (claims.rateLimited) return failure("RATE_LIMITED",429);
@@ -37,10 +39,14 @@ export async function externalImportRequest(request,kind,opts={}) {
     const vendor=opts.vendor || {};
     if(kind==="ehi"){
       const ehi=await importEhiReference(body.reference,vendor);
-      return await fetchWorker("file",{format:"ehi",dataBase64:ehi.toString("base64")},settings(),opts);
+      const result=await fetchWorker("file",{format:"ehi",dataBase64:ehi.toString("base64")},settings(),opts);
+      try{await recordWorkerResult(redis,result.ok?"success":"failed");}catch{}
+      return result;
     }
     const catalog=await downloadNur(vendor);
-    return await fetchWorker("catalog",{dataBase64:catalog.toString("base64")},settings(),opts);
+    const result=await fetchWorker("catalog",{dataBase64:catalog.toString("base64")},settings(),opts);
+    try{await recordWorkerResult(redis,result.ok?"success":"failed");}catch{}
+    return result;
   }catch(error) {
     if (isExternalImportError(error)) return failure(error.code,error.status);
     if (error?.code==="INVALID_REQUEST")return failure("INVALID_REQUEST",400);

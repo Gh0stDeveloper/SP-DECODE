@@ -4,6 +4,7 @@ import { store, reserveSlot, releaseSlot } from "./c3-store.mjs";
 import { createChallenge, issueSession, requireSession } from "./c3-session.mjs";
 import { jsonReply, unavailable } from "./responses.mjs";
 import { ehiConfigured, nurConfigured } from "./c35-provider.mjs";
+import { maintenanceEnabled, recordWorkerResult } from "./c6-ops-store.mjs";
 
 const ERROR_MESSAGES = Object.freeze({
   INVALID_REQUEST:"Solicitud inválida.",
@@ -134,6 +135,7 @@ export async function decodeRequest(request,kind,options={}) {
   let redis,claims,lease=null;
   try{
     redis=await (options.storeProvider||store)();
+    if(await maintenanceEnabled(redis))return failure("SERVICE_UNAVAILABLE",503);
     claims=await requireSession(redis,request,cfg);
     if(!claims)return failure("UNAUTHORIZED",401);
     if(claims.rateLimited)return failure("RATE_LIMITED",429);
@@ -143,7 +145,9 @@ export async function decodeRequest(request,kind,options={}) {
     const requestId=randomUUID();
     if(!await reserveSlot(redis,claims.jti,requestId))return failure("RATE_LIMITED",429);
     lease=requestId;
-    return await fetchWorker(kind,payload,cfg,options);
+    const outcome=await fetchWorker(kind,payload,cfg,options);
+    try{await recordWorkerResult(redis,outcome.ok?"success":"failed");}catch{}
+    return outcome;
   }catch(error){
     if(error?.code==="INPUT_TOO_LARGE")return failure("INPUT_TOO_LARGE",413);
     if(error?.code==="INVALID_BASE64")return failure("INVALID_BASE64",400);
@@ -156,6 +160,7 @@ export async function challengeRequest(request,options={}) {
   if(!enabled())return notEnabled();
   try {
     const redis=await (options.storeProvider||store)();
+    if(await maintenanceEnabled(redis))return failure("SERVICE_UNAVAILABLE",503);
     const result=await createChallenge(redis,request);
     if(result.error)return failure(result.error,result.status);
     return jsonReply({apiVersion:"v1",...result},201);
@@ -165,6 +170,7 @@ export async function sessionRequest(request,options={}) {
   if(!enabled())return notEnabled();
   try{
     const redis=await (options.storeProvider||store)();
+    if(await maintenanceEnabled(redis))return failure("SERVICE_UNAVAILABLE",503);
     const data=await boundedBody(request,19000);
     const result=await issueSession(redis,request,data,settings(),options.verifyIntegrity);
     if(result.error)return failure(result.error,result.status);
@@ -204,6 +210,7 @@ export async function readinessRequest(options={}) {
   try {
     const redis=await (options.storeProvider||store)();
     if((await redis.ping())!=="PONG")throw Error("REDIS_OFFLINE");
+    if(await maintenanceEnabled(redis))throw Error("MAINTENANCE");
     if(process.env.WORKER_INTERNAL_URL!=="http://decoder-worker:8787")throw Error("WORKER_NOT_CONFIGURED");
     const worker=await (options.fetchImpl||fetch)("http://decoder-worker:8787/ready",{
       cache:"no-store",signal:AbortSignal.timeout(4000),redirect:"error",
