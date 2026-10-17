@@ -14,7 +14,7 @@ import subprocess
 import sys
 import tempfile
 
-ROOT=Path(__file__).resolve().parents[3]
+ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT))
 from tests.golden.a23_generators import SYNTHETIC_GENERATORS
 from tests.golden.a23_export import SUFFIX
