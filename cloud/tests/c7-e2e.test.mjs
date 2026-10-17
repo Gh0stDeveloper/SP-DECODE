@@ -215,6 +215,57 @@ test("C7 shared Redis concurrency lease blocks third overlapping request",async(
  held.splice(0).forEach(release=>release());
  assert.equal((await a).status,200);assert.equal((await b).status,200);
 });
+test("C7 actual protected HCCFG requires a password and returns complete JSON after auth",async()=>{
+ const redis=new RedisFake(),token=await bearer(redis);
+ const vector=vectors.extras.hc;
+ const payload={format:"hc",dataBase64:vector.dataBase64};
+ const before=await decodeRequest(send("/api/v1/decode/file",payload,token),"file",options(redis));
+ assert.equal(before.status,422);
+ assert.equal((await before.json()).error.code,"PASSWORD_REQUIRED");
+ const forged=await decodeRequest(send("/api/v1/decode/file",{
+  ...payload,credentials:{password:"wrong-synthetic-password"},
+ },token),"file",options(redis));
+ assert.equal(forged.status,422);
+ const response=await decodeRequest(send("/api/v1/decode/file",{
+  ...payload,credentials:vector.credentials,
+ },token),"file",options(redis));
+ assert.equal(response.status,200);
+ const decoded=await response.json();
+ assert.equal(decoded.rawText,vector.rawText);
+ assert.deepEqual(decoded.structuredJson,vector.structuredJson);
+ assert.equal(decoded.isPartial,false);
+});
+test("C7 actual text protocol preserves full structured JSON and text",async()=>{
+ const redis=new RedisFake(),token=await bearer(redis);
+ const vector=vectors.extras.text;
+ const response=await decodeRequest(send("/api/v1/decode/text",{
+  text:vector.input,
+ },token),"text",options(redis));
+ assert.equal(response.status,200);
+ const decoded=await response.json();
+ assert.equal(decoded.rawText,vector.rawText);
+ assert.deepEqual(decoded.structuredJson,vector.structuredJson);
+ assert.equal(decoded.isPartial,false);
+});
+test("C7 authenticated NUR server catalog is distinct from .solid and tampering fails",async()=>{
+ const redis=new RedisFake(),token=await bearer(redis);
+ const vector=vectors.extras.catalog;
+ const response=await decodeRequest(send("/api/v1/decode/import/catalog",{
+  dataBase64:vector.dataBase64,
+ },token),"catalog",options(redis));
+ assert.equal(response.status,200);
+ const decoded=await response.json();
+ assert.equal(decoded.rawText,vector.rawText);
+ assert.deepEqual(decoded.structuredJson,vector.structuredJson);
+ assert.equal(decoded.kind,"nur_catalog");
+ assert.equal(decoded.isPartial,false);
+ const damaged=Buffer.from(vector.dataBase64,"base64");
+ damaged[20]^=1;
+ const corrupted=await decodeRequest(send("/api/v1/decode/import/catalog",{
+  dataBase64:damaged.toString("base64"),
+ },token),"catalog",options(redis));
+ assert.equal(corrupted.status,422);
+});
 test("C7 maintenance closes API before dispatch and disables readiness",async()=>{
  const redis=new RedisFake(),token=await bearer(redis);
  await redis.set("spc6:maintenance","1");
