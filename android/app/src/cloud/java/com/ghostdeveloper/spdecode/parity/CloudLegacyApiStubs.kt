@@ -21,7 +21,7 @@ internal object NurTunnelPort { const val MAX_INPUT = 2*1024*1024 }
 
 /**
  * HCCFG metadata is obtained from the authenticated Cloud API in C5, never
- * by embedding protected AES/XChaCha/HKDF material in the APK.
+ * by embedding any protected cryptographic material in the APK.
  */
 internal object HcHccfgPort {
     data class Requirements(
