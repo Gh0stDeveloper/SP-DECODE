@@ -6,6 +6,7 @@
 !cloud/workers/python/Dockerfile
 !cloud/workers/python/engine.py
 !cloud/workers/python/server.py
+!cloud/workers/python/text_bridge.py
 !decoders/
 !decoders/**
 !spdecode/
