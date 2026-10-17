@@ -86,7 +86,7 @@ def _child_env(private_dir: str) -> dict[str, str]:
     }
 
 
-def decode_file(suffix: str, contents: bytes, *, timeout: int = TIMEOUT_SECONDS) -> dict:
+def decode_file(suffix: str, contents: bytes, *, timeout: int = TIMEOUT_SECONDS, credentials: dict | None = None) -> dict:
     """Execute one canonical file engine. The caller must authenticate first."""
     if not isinstance(suffix, str) or suffix not in load_file_engines():
         raise DecodeFailure("UNSUPPORTED_FORMAT")
@@ -97,7 +97,18 @@ def decode_file(suffix: str, contents: bytes, *, timeout: int = TIMEOUT_SECONDS)
     if not isinstance(timeout, int) or timeout < 1 or timeout > TIMEOUT_SECONDS:
         raise DecodeFailure("INVALID_REQUEST")
     engine = load_file_engines()[suffix]
-    runtime = sys.executable if engine["runtime"] == "python" else shutil.which(engine["runtime"])
+    if credentials is not None:
+        if suffix != "hc" or not isinstance(credentials, dict) or set(credentials) - {"password", "hwid"}:
+            raise DecodeFailure("CREDENTIALS_NOT_ALLOWED")
+        for name, maximum in (("password", 4096), ("hwid", 128)):
+            value = credentials.get(name)
+            if value is not None and (not isinstance(value, str) or not 0 < len(value) <= maximum):
+                raise DecodeFailure("INVALID_CREDENTIALS")
+    # HTTP Custom must also inspect HCCFG locks without sending passwords in
+    # command arguments. All other suffixes use their original script unchanged.
+    protected_hc = suffix == "hc"
+    source = str(Path(__file__).with_name("hc_bridge.py")) if protected_hc else engine["source"]
+    runtime = sys.executable if protected_hc or engine["runtime"] == "python" else shutil.which(engine["runtime"])
     if not runtime:
         raise DecodeFailure("ENGINE_UNAVAILABLE")
 
@@ -109,10 +120,10 @@ def decode_file(suffix: str, contents: bytes, *, timeout: int = TIMEOUT_SECONDS)
         with output_file.open("wb") as output:
             try:
                 proc = subprocess.Popen(
-                    [runtime, engine["source"], str(input_file)],
+                    [runtime, source, str(input_file)],
                     cwd=ROOT,
                     env=_child_env(folder),
-                    stdin=subprocess.DEVNULL,
+                    stdin=subprocess.PIPE if protected_hc else subprocess.DEVNULL,
                     stdout=output,
                     stderr=subprocess.DEVNULL,
                     close_fds=True,
@@ -122,7 +133,11 @@ def decode_file(suffix: str, contents: bytes, *, timeout: int = TIMEOUT_SECONDS)
             except OSError as error:
                 raise DecodeFailure("ENGINE_UNAVAILABLE") from error
             try:
-                returncode = proc.wait(timeout=timeout)
+                if protected_hc:
+                    proc.communicate(input=json.dumps(credentials or {}).encode("utf-8"), timeout=timeout)
+                    returncode = proc.returncode
+                else:
+                    returncode = proc.wait(timeout=timeout)
             except subprocess.TimeoutExpired as error:
                 os.killpg(proc.pid, signal.SIGKILL)
                 proc.wait()
@@ -131,7 +146,16 @@ def decode_file(suffix: str, contents: bytes, *, timeout: int = TIMEOUT_SECONDS)
             raw = stream.read(MAX_OUTPUT_BYTES + 1)
         if len(raw) > MAX_OUTPUT_BYTES:
             raise DecodeFailure("OUTPUT_TOO_LARGE")
-        if returncode != 0 or not raw.strip():
+        if returncode != 0:
+            if protected_hc and returncode == 3:
+                try:
+                    code = json.loads(raw.decode("utf-8")).get("workerError")
+                except (UnicodeError, ValueError, AttributeError):
+                    code = None
+                if code in ("PASSWORD_REQUIRED", "HWID_REQUIRED", "HWID_PASSWORD_REQUIRED", "AUTH_FAILED"):
+                    raise DecodeFailure(code)
+            raise DecodeFailure("DECODE_FAILED")
+        if not raw.strip():
             raise DecodeFailure("DECODE_FAILED")
         try:
             raw_text = raw.decode("utf-8")
