@@ -115,7 +115,8 @@ async function fetchWorker(kind,payload,cfg,{fetchImpl=fetch}={}) {
   }
   const code=decoded.error?.code;
   const recognized=Object.hasOwn(ERROR_MESSAGES,code) && !["INTEGRITY_REJECTED","UNAUTHORIZED"].includes(code);
-  return failure(recognized?code:"SERVICE_UNAVAILABLE",recognized?response.status:503);
+  const safeStatus = [400,401,403,413,422,429,503,504].includes(response.status) ? response.status : 503;
+  return failure(recognized?code:"SERVICE_UNAVAILABLE",recognized?safeStatus:503);
 }
 export async function decodeRequest(request,kind,options={}) {
   if(!enabled())return notEnabled();
@@ -164,12 +165,39 @@ export async function sessionRequest(request,options={}) {
     return failure("SERVICE_UNAVAILABLE",503);
   }
 }
+export async function capabilitiesRequest(options={}) {
+  if(!enabled())return notEnabled();
+  try{
+    const cfg=settings();
+    if(process.env.WORKER_INTERNAL_URL!=="http://decoder-worker:8787")throw Error("WORKER_NOT_CONFIGURED");
+    const response=await (options.fetchImpl||fetch)("http://decoder-worker:8787/internal/v1/capabilities",{
+      headers:{"X-SP-Worker-Token":cfg.workerToken},
+      cache:"no-store",redirect:"error",signal:AbortSignal.timeout(4000),
+    });
+    if(!response.ok)throw Error("WORKER_UNAVAILABLE");
+    const value=await response.json();
+    if(!Array.isArray(value.fileRoutes)||value.fileRoutes.length!==240 ||
+       value.exporterCertified!==false)throw Error("INVALID_CAPABILITIES");
+    return jsonReply({
+      apiVersion:"v1",status:"operational",phase:"C3",decodingEnabled:true,
+      enabledFormats:value.fileRoutes,
+      fileDecoderCatalog:{catalogRoutes:239,additionalSolidRoute:1,exporterVersionsCertified:0},
+      textDecodingEnabled:Boolean(value.textDecodingEnabled),
+      cloudImportsEnabled:false,nurCatalogEnabled:Boolean(value.nurCatalogEnabled),
+      note:"Rutas de ejecución disponibles; certificación de versiones reales pendiente.",
+    });
+  }catch{return failure("SERVICE_UNAVAILABLE",503);}
+}
 export async function readinessRequest(options={}) {
   if(!enabled())return jsonReply({apiVersion:"v1",status:"not_ready",reason:"CLOUD_SECURITY_GATE_DISABLED"},503);
   try {
     const redis=await (options.storeProvider||store)();
     if((await redis.ping())!=="PONG")throw Error("REDIS_OFFLINE");
     if(process.env.WORKER_INTERNAL_URL!=="http://decoder-worker:8787")throw Error("WORKER_NOT_CONFIGURED");
+    const worker=await (options.fetchImpl||fetch)("http://decoder-worker:8787/ready",{
+      cache:"no-store",signal:AbortSignal.timeout(4000),redirect:"error",
+    });
+    if(!worker.ok)throw Error("WORKER_NOT_READY");
     return jsonReply({apiVersion:"v1",status:"ready",note:"Service configured; individual decoding results are not exporter-certified."});
   }catch{return jsonReply({apiVersion:"v1",status:"not_ready",reason:"CLOUD_SECURITY_DEPENDENCY_UNAVAILABLE"},503);}
 }

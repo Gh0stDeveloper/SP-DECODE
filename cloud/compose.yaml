@@ -8,6 +8,15 @@ services:
     environment:
       NODE_ENV: production
       WORKER_INTERNAL_URL: http://decoder-worker:8787
+      CLOUD_API_ENABLED: ${CLOUD_API_ENABLED:-false}
+      CLOUD_WORKER_TOKEN: ${CLOUD_WORKER_TOKEN:-}
+      CLOUD_SESSION_SIGNING_KEY: ${CLOUD_SESSION_SIGNING_KEY:-}
+      CLOUD_REDIS_URL: redis://redis:6379
+      CLOUD_TRUST_PROXY: ${CLOUD_TRUST_PROXY:-false}
+      CLOUD_GOOGLE_PLAY_PACKAGE: ${CLOUD_GOOGLE_PLAY_PACKAGE:-}
+      CLOUD_GOOGLE_SERVICE_ACCOUNT_JSON: ${CLOUD_GOOGLE_SERVICE_ACCOUNT_JSON:-}
+      CLOUD_REQUIRE_LICENSED: ${CLOUD_REQUIRE_LICENSED:-true}
+      CLOUD_REQUIRE_STRONG_INTEGRITY: ${CLOUD_REQUIRE_STRONG_INTEGRITY:-false}
     ports:
       # Bound to host loopback only; public HTTPS reverse proxy is a later phase.
       - "127.0.0.1:3000:3000"
@@ -16,6 +25,8 @@ services:
       - private
     depends_on:
       decoder-worker:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     security_opt:
       - no-new-privileges:true
@@ -30,6 +41,25 @@ services:
       timeout: 5s
       retries: 4
       start_period: 30s
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    init: true
+    command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "48mb", "--maxmemory-policy", "noeviction"]
+    networks: [private]
+    # No external ports; no persisted challenges, sessions or credentials.
+    read_only: true
+    tmpfs:
+      - /data:size=64m,nosuid,noexec
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    mem_limit: 96m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   decoder-worker:
     build:
