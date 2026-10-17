@@ -1,4 +1,5 @@
 import java.io.File
+import java.net.URI
 import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.spec.GCMParameterSpec
@@ -106,6 +107,27 @@ internal object VaultBuildKey {
     }
 }
 
+val cloudOrigin=providers.environmentVariable("SPDECODE_CLOUD_API_BASE_URL").orNull.orEmpty().trim()
+val enableCloud=cloudOrigin.isNotEmpty()
+if(enableCloud) {
+    val parsed=URI(cloudOrigin)
+    require(parsed.scheme=="https" &&
+        parsed.rawUserInfo==null && parsed.port==-1 &&
+        parsed.rawQuery==null && parsed.rawFragment==null &&
+        parsed.path.orEmpty().isEmpty() &&
+        parsed.host!=null && parsed.host.contains(".") &&
+        parsed.host.all { it.isLetterOrDigit() || it=='.' || it=='-' } &&
+        !parsed.host.matches(Regex("[0-9.]+")) &&
+        !parsed.host.endsWith(".local",ignoreCase=true)) {
+        "SPDECODE_CLOUD_API_BASE_URL must be an HTTPS domain origin, without paths or credentials"
+    }
+    require(cloudOrigin == "https://" + parsed.host) {
+        "Use the normalized exact Cloud HTTPS origin only"
+    }
+}
+if(providers.environmentVariable("SPDECODE_CLOUD_RELEASE").orNull=="true") {
+    require(enableCloud) { "Production Cloud requires SPDECODE_CLOUD_API_BASE_URL" }
+}
 android {
     namespace = "com.ghostdeveloper.spdecode"
     // Only transformed assets are merged into the APK; canonical JSON inputs
@@ -120,9 +142,15 @@ android {
         versionCode = 25
         versionName = "1.1.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // A public API origin is not a secret; all server secrets stay in the VPS.
+        buildConfigField("boolean", "SPDECODE_CLOUD_ENABLED", enableCloud.toString())
+        buildConfigField("String", "SPDECODE_CLOUD_API_BASE_URL", "\"$cloudOrigin\"")
         resourceConfigurations += listOf("en", "es", "pt-rBR", "ar", "fa", "fr", "in", "ru", "de")
     }
     buildFeatures { compose = true; buildConfig = true }
+    externalNativeBuild {
+        cmake { path = file("src/main/cpp/CMakeLists.txt") }
+    }
     packaging {
         resources {
             // Bouncy Castle and jspecify both ship JVM 9 multi-release metadata;
@@ -184,6 +212,8 @@ dependencies {
     implementation(composeBom)
     implementation("androidx.activity:activity-compose:1.10.1")
     implementation("com.google.code.gson:gson:2.13.1")
+    // Classic Play Integrity nonce flow; the verdict is verified in C3 server-side.
+    implementation("com.google.android.play:integrity:1.6.0")
     // Lightweight Argon2id + XChaCha20-Poly1305 primitives for standard .ehi.
     implementation("org.bouncycastle:bcprov-jdk18on:1.86")
     implementation("androidx.activity:activity-ktx:1.10.1")
