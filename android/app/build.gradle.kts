@@ -128,12 +128,44 @@ if(enableCloud) {
 if(providers.environmentVariable("SPDECODE_CLOUD_RELEASE").orNull=="true") {
     require(enableCloud) { "Production Cloud requires SPDECODE_CLOUD_API_BASE_URL" }
 }
+// C5 Cloud build compiles a STRICT allowlisted copy of client-only sources.
+// Original decoders remain in git for legacy regression and the server, but
+// are not a Kotlin/Java input and cannot be recovered from a Cloud APK.
+val cloudSourceRoot = layout.buildDirectory.dir("generated/c5-client/java")
+val cloudAssetRoot = layout.buildDirectory.dir("generated/c5-client/assets")
+val prepareCloudOnlySources = tasks.register<Sync>("prepareCloudOnlySources") {
+    from("src/main/java") {
+        exclude("com/ghostdeveloper/spdecode/parity/**")
+        exclude("com/ghostdeveloper/spdecode/TextProtocolDecoder.kt")
+        exclude("com/ghostdeveloper/spdecode/TextPhaseGPort.kt")
+        exclude("com/ghostdeveloper/spdecode/HttpInjectorCloudPort.kt")
+        exclude("com/ghostdeveloper/spdecode/NurTunnelServerCatalog.kt")
+    }
+    // This catalog is public display metadata, not a decryption engine.
+    from("src/main/java/com/ghostdeveloper/spdecode/parity/AndroidDecoderCatalog.kt") {
+        into("com/ghostdeveloper/spdecode/parity")
+    }
+    from("src/cloud/java")
+    into(cloudSourceRoot)
+}
+val prepareCloudAssets = tasks.register<Sync>("prepareCloudAssets") {
+    // No encrypted vault files, generated runtime vault key, network provider
+    // endpoints, profile tables or other original decoder source materials.
+    from("src/main/assets/decoder_catalog.json")
+    into(cloudAssetRoot)
+}
+
 android {
     namespace = "com.ghostdeveloper.spdecode"
-    // Only transformed assets are merged into the APK; canonical JSON inputs
-    // stay available to offline source generators and Python parity checks.
-    sourceSets.getByName("main").assets.setSrcDirs(listOf(vaultPackagedAssets))
-    sourceSets.getByName("main").java.srcDir(vaultGeneratedKotlin)
+    if (enableCloud) {
+        // Cloud source inputs are isolated from all 107 local engine classes.
+        sourceSets.getByName("main").java.setSrcDirs(listOf(cloudSourceRoot))
+        sourceSets.getByName("main").assets.setSrcDirs(listOf(cloudAssetRoot))
+    } else {
+        // Non-distributed legacy baseline only, to protect historical CI.
+        sourceSets.getByName("main").assets.setSrcDirs(listOf(vaultPackagedAssets))
+        sourceSets.getByName("main").java.srcDir(vaultGeneratedKotlin)
+    }
     compileSdk = 35
     ndkVersion = "27.2.12479018"
     defaultConfig {
@@ -223,7 +255,7 @@ dependencies {
     // Classic Play Integrity nonce flow; the verdict is verified in C3 server-side.
     implementation("com.google.android.play:integrity:1.6.0")
     // Lightweight Argon2id + XChaCha20-Poly1305 primitives for standard .ehi.
-    implementation("org.bouncycastle:bcprov-jdk18on:1.86")
+    if (!enableCloud) implementation("org.bouncycastle:bcprov-jdk18on:1.86")
     implementation("androidx.activity:activity-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.0")
     implementation("androidx.datastore:datastore-preferences:1.1.7")
@@ -252,6 +284,9 @@ tasks.configureEach {
         (name.startsWith("merge") && name.endsWith("Assets")) ||
         (name.startsWith("compile") && name.endsWith("Kotlin")) ||
         name.startsWith("kaptGenerateStubs")) {
-        dependsOn(prepareSecureAssetVault)
+        if (enableCloud) {
+            dependsOn(prepareCloudOnlySources)
+            dependsOn(prepareCloudAssets)
+        } else dependsOn(prepareSecureAssetVault)
     }
 }
