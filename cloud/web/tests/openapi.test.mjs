@@ -9,7 +9,7 @@ const document = JSON.parse(readFileSync(path.resolve(directory, "../../contract
 
 test("all v1 OpenAPI contract paths are backed by Next.js route handlers", () => {
   assert.equal(document.openapi, "3.1.0");
-  assert.equal(Object.keys(document.paths).length, 11);
+  assert.equal(Object.keys(document.paths).length, 13);
   for (const [pathname, methods] of Object.entries(document.paths)) {
     const relative = pathname.replace(/^\/api\/v1\//, "").replace("{id}", "[id]");
     const routeFile = path.resolve(directory, "../app/api/v1", relative, "route.js");
@@ -20,12 +20,25 @@ test("all v1 OpenAPI contract paths are backed by Next.js route handlers", () =>
   }
 });
 
-test("every mutation endpoint documents only 503 in C1", () => {
+test("C3 contract documents success only where an authenticated service exists", () => {
   for (const [pathname, methods] of Object.entries(document.paths)) {
     for (const [method, operation] of Object.entries(methods)) {
       if (method === "post" || method === "delete" || pathname.includes("/jobs/")) {
-        assert.deepEqual(Object.keys(operation.responses), ["503"], pathname);
+        assert.ok(operation.responses["503"], pathname + ": must fail closed without credentials");
       }
     }
   }
+  assert.ok(document.paths["/api/v1/session/challenge"].post.responses["201"]);
+  assert.ok(document.paths["/api/v1/session"].post.responses["201"]);
+  for (const pathname of ["/api/v1/decode/file", "/api/v1/decode/text", "/api/v1/decode/import/catalog"]) {
+    assert.ok(document.paths[pathname].post.responses["200"], pathname);
+    assert.ok(document.paths[pathname].post.responses["401"], pathname);
+  }
+  for (const p of ["/api/v1/decode/import/cloud","/api/v1/decode/import/catalog/remote"]) {
+    assert.ok(document.paths[p].post.responses["200"],p);
+    assert.ok(document.paths[p].post.responses["401"],p);
+    assert.ok(document.paths[p].post.responses["502"],p);
+    assert.equal(document.paths[p].post.requestBody.required,true);
+  }
+  assert.deepEqual(Object.keys(document.paths["/api/v1/jobs"].post.responses), ["503"]);
 });
