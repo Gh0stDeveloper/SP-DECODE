@@ -8,6 +8,7 @@
 !cloud/workers/python/server.py
 !cloud/workers/python/text_bridge.py
 !cloud/workers/python/hc_bridge.py
+!cloud/workers/python/catalog_bridge.py
 !decoders/
 !decoders/**
 !spdecode/
