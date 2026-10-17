@@ -1,49 +1,62 @@
-# SP-DECODE Cloud — Android online backend (C1 → C2)
+# SP-DECODE Cloud — Backend Android & site (C0–C6)
 
-**C2 status:** private reference worker implemented. The Android UI and bot have not been changed. **No public decoding is enabled**: Next.js still returns `503 CLOUD_NOT_READY` on file/text/import/job/session routes until C3 security is completed.
+This directory contains the evolving **server-side architecture for SP-DECODE Android**, not a browser-based decoder. The Android UI is unchanged and the Python bot is not modified.
 
-## Architecture
+**State: development branch; no public release or production deployment.** Live processing needs real Google Play Integrity, HTTPS, a registered Android app, Redis and backend secrets. Existence of 240 catalog routes does not certify exporter-version compatibility.
 
-- `web/`: Next.js 16, Node.js 22 App Router; versioned public HTTP contract. Health, readiness, config and capabilities only.
-- `contracts/v1/openapi.json`: frozen **public** C1 routes (decoder requests still disabled).
-- `workers/python/server.py`: internal token-gated HTTP worker with file, text and encrypted NUR-catalog entrypoints.
-- `workers/python/engine.py`: isolated and bounded subprocess dispatcher for 239 Android file routes plus `.solid`, using the exact C0 map.
-- `workers/python/text_bridge.py`: direct import of source protocol modules without Telegram bot handlers.
-- `workers/python/hc_bridge.py`: HTTP Custom HCCFG password/HWID via stdin to original source.
-- `workers/python/catalog_bridge.py`: authenticated NUR server catalog processing; it **never fetches a URL**.
-- `compose.yaml`: development topology. API bound to localhost; worker is on Docker's internal network with non-root, no outbound Internet, read-only filesystem and resource limits.
+## Structure
 
-## Local verification
+| Directory | Responsibility |
+| --- | --- |
+| `web/app` | Next.js App Router public pages (`/`, `/features`, `/docs`, `/privacy`, `/status`) and private admin UI |
+| `web/app/api/v1` | Android-only C3/C3.5 decoding API, session challenges, health and capabilities |
+| `web/app/api/admin` | C6 operator login, session status, maintenance and logout |
+| `web/lib/c6-admin-auth.mjs` | Server-side scrypt password verification, signed cookies, CSRF and throttling |
+| `web/lib/c6-admin-api.mjs` | Private operations (status, read-only provider flags, maintenance) |
+| `web/lib/c6-ops-store.mjs` | Redis non-content aggregate metrics and maintenance flag |
+| `workers/python` | Private authenticated original Python/Node/PHP engine adapters |
+| `contracts/v1/openapi.json` | Public Android Cloud API contract |
+| `compose.yaml` | **Development-only** Docker topology: loopback web, private Redis and private worker |
 
-From the repo root (Python requirements, Node and PHP are required):
+## Site / operator setup
 
-```bash
-python -m pip install -r requirements.txt
-npm ci
-PYTHONPATH=. python scripts/cloud_c0_inventory.py --check
-PYTHONPATH=cloud/workers/python:. python -m unittest discover -s cloud/workers/python -p 'test_*.py' -v
-PYTHONPATH=cloud/workers/python:. python -m unittest tests.test_cloud_c2_golden tests.test_cloud_c2_text tests.test_cloud_c2_hc tests.test_cloud_c2_nur_catalog -v
+The site is informative and **never accepts decoder uploads via browser**. `/api/site/status` returns only the generic prelaunch state.
+
+By default, the admin UI is **disabled**. Operator access requires all of these server-only variables:
+
+- `CLOUD_ADMIN_ENABLED=true`
+- `CLOUD_TRUST_PROXY=true` and a correctly configured HTTPS reverse proxy that overwrites `X-Real-IP`
+- `CLOUD_ADMIN_PUBLIC_ORIGIN=https://<actual-hostname>`
+- `CLOUD_ADMIN_SESSION_KEY`: unique random secret, 32+ characters, not reused for API bearer/worker access
+- `CLOUD_ADMIN_PASSWORD_SCRYPT`: salted hash; generate with `node cloud/web/scripts/hash-admin-password.mjs` from stdin, never pass plaintext in CLI arguments
+- `CLOUD_REDIS_URL`: private Redis reachable from Next.js
+
+The login has IP/global attempt limits, 30-minute session, HMAC cookie `HttpOnly; Secure; SameSite=Strict`, Redis revocation and exact HTTPS Origin/CSRF checks. The UI does not contain secrets and does not permit changing decoder algorithms.
+
+**Maintenance controls:** The operator can temporarily set/clear `spc6:maintenance` in Redis; it rejects new decode/session requests. Development Redis deliberately has no persistence, so for deployment use `CLOUD_FORCE_MAINTENANCE=true` for an externally managed hard stop that the dashboard cannot override. Production should provision durable and HA operational controls.
+
+`CLOUD_PUBLIC_SITE_INDEX=false` disables search indexation until public launch. Site copy and privacy notice are provisional and need legal/operational review.
+
+## Development checks
+
+```sh
+cd cloud/web
+npm install --no-audit --no-fund
+npm test
+npm run build
+
+# From repository root:
 docker compose -f cloud/compose.yaml config --quiet
-docker compose -f cloud/compose.yaml build decoder-worker
 ```
 
-The full results appear in `.github/workflows/cloud-c2.yml`. The original scripts and existing tests are not rewritten.
+Relevant checks: `.github/workflows/cloud-c6.yml` plus C3, C2, C1, C4 and C5 checks. The C6 suite covers malicious origins, cookie tampering, session revocation, rate limits, maintenance, anonymous metrics and frontend compilation.
 
-## Internal worker authorization
+## Boundaries
 
-To enable internal development calls, generate and provision a random, server-only `CLOUD_WORKER_TOKEN` of at least 32 characters at runtime (not in git, Android or `libspdecode.so`). Pass it in the `X-SP-Worker-Token` header over the private Docker network. Without it all decode attempts are denied; public API is **still disabled** with or without this token.
+- The Android native HTTPS library is named **`libspdecode.so`**.
+- Server signing keys, vendor decryptors, provider URLs, passwords and Play service-account credentials **must never enter the APK, frontend bundle or logs**.
+- `CLOUD_API_ENABLED`, remote importer toggles and `CLOUD_ADMIN_ENABLED` are all disabled by default; never turn them on without provisioning server security and validating the deployment.
+- No production admin login should be exposed without additional reverse-proxy restrictions (VPN/IP allowlist, MFA/SSO), monitoring and legal documentation.
+- C7 and C8 cover device-to-server parity validation, integration stress, operations, release controls and rollback. C6 alone is **not** approval for production.
 
-Internal endpoints:
-
-- `GET /internal/v1/capabilities`
-- `POST /internal/v1/decode/file`: `{"format":"tls","dataBase64":"..."}` (only for synthetic/authorized samples); `{"credentials":{"password":"...","hwid":"..."}}` is allowed exclusively for `.hc`.
-- `POST /internal/v1/decode/text`: `{"text":"scheme://..."}`
-- `POST /internal/v1/decode/import/catalog`: `{"dataBase64":"..."}` for **already downloaded** encrypted NUR catalog bytes.
-
-**Never expose the worker port or use the internal token as a customer credential.** C3 must provide public authorization, upload limits, Play Integrity verification, rate limiting, SSRF-safe provider fetching, audit and non-retention policies before the Android app can be connected.
-
-The **official promotional website** is C6, and the native Android transport will be named **`libspdecode.so`** in C4. Permanent decoder keys and backend secrets belong on the server, not in compiled C++.
-
-Detailed docs: [C0 baseline](../docs/cloud/C0_BASELINE.md), [C1](../docs/cloud/C1_IMPLEMENTATION.md), [C2](../docs/cloud/C2_IMPLEMENTATION.md).
-
-**Current limitations:** no public auth/upload/decode, no HTTP Injector Cloud remote import, and no claim that a cataloged file route proves all vendor/exporter versions. Preserve the Android UI/UX and all result fields during C3–C4.
+Architecture history and detailed implementation: `docs/cloud/C0_BASELINE.md` through `docs/cloud/C6_IMPLEMENTATION.md`.
