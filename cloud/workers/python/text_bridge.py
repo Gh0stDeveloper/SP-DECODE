@@ -39,6 +39,20 @@ def dispatch(text: str) -> str | None:
         if lowered.startswith(prefix):
             from_module = importlib.import_module(module_name)
             return from_module.run(value.encode("utf-8"))
+    # Special Phase G protocols route to the same independent per-format source.
+    byte_handlers = (
+        (("izph://", "izphvpnpro://"), "decoders.Python.izph"),
+        (("wyrlite://", "wyrvpnlite://", "wyrl://"), "decoders.Python.wyrlite"),
+        (("wyrvpn://",), "decoders.Python.wyrvpn"),
+        (("intvpn://",), "decoders.Python.intvpn"),
+        (("slipnet-enc://",), "decoders.Python.slipnet"),
+        (("juanscript://", "mobi://"), "decoders.Python.juanscript"),
+        (("eut-settings://",), "decoders.Python.eut"),
+    )
+    for prefixes, module_name in byte_handlers:
+        if lowered.startswith(prefixes):
+            module = importlib.import_module(module_name)
+            return module.run(value.encode("utf-8"))
     # Source dispatchers perform strict checks of their own protocols.
     # Never try unrelated *file* keys against a text token.
     for module_name, function_name in HANDLERS:
