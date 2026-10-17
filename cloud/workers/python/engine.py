@@ -169,3 +169,64 @@ def decode_b64(suffix: str, encoded: str) -> dict:
     except (ValueError, base64.binascii.Error) as error:
         raise DecodeFailure("INVALID_BASE64") from error
     return decode_file(suffix, payload)
+
+
+def decode_text(text: str, *, timeout: int = TIMEOUT_SECONDS) -> dict:
+    """Run the dedicated source-derived text bridge in its own limited process."""
+    if not isinstance(text, str) or not text.strip() or len(text) > 250_000:
+        raise DecodeFailure("INVALID_INPUT")
+    if not isinstance(timeout, int) or timeout < 1 or timeout > TIMEOUT_SECONDS:
+        raise DecodeFailure("INVALID_REQUEST")
+    bridge = Path(__file__).with_name("text_bridge.py")
+    if not bridge.is_file():
+        raise DecodeFailure("ENGINE_UNAVAILABLE")
+    with tempfile.TemporaryDirectory(prefix="spdecode-c2-text-") as folder:
+        input_path = Path(folder) / "input.txt"
+        output_path = Path(folder) / "stdout"
+        input_path.write_text(text, encoding="utf-8")
+        input_path.chmod(0o600)
+        with output_path.open("wb") as output:
+            try:
+                proc = subprocess.Popen(
+                    [sys.executable, str(bridge), str(input_path)],
+                    cwd=ROOT,
+                    env=_child_env(folder),
+                    stdin=subprocess.DEVNULL,
+                    stdout=output,
+                    stderr=subprocess.DEVNULL,
+                    close_fds=True,
+                    start_new_session=True,
+                    preexec_fn=_child_limits,
+                )
+            except OSError as error:
+                raise DecodeFailure("ENGINE_UNAVAILABLE") from error
+            try:
+                returncode = proc.wait(timeout=timeout)
+            except subprocess.TimeoutExpired as error:
+                os.killpg(proc.pid, signal.SIGKILL)
+                proc.wait()
+                raise DecodeFailure("ENGINE_TIMEOUT") from error
+        with output_path.open("rb") as stream:
+            raw = stream.read(MAX_OUTPUT_BYTES + 1)
+        if len(raw) > MAX_OUTPUT_BYTES:
+            raise DecodeFailure("OUTPUT_TOO_LARGE")
+        if returncode != 0 or not raw.strip():
+            raise DecodeFailure("DECODE_FAILED")
+        try:
+            raw_text = raw.decode("utf-8")
+        except UnicodeDecodeError as error:
+            raise DecodeFailure("OUTPUT_INVALID_UTF8") from error
+        try:
+            structured = json.loads(raw_text)
+        except ValueError:
+            structured = None
+        return {
+            "apiVersion": "v1",
+            "status": "success",
+            "kind": "text",
+            "rawText": raw_text,
+            "structuredJson": structured,
+            "isPartial": False,
+            "warnings": [],
+            "exporterCertified": False,
+        }
