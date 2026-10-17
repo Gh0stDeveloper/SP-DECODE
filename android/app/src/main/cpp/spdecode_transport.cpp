@@ -3,9 +3,7 @@
 #include <cctype>
 #include <string>
 
-#ifndef SPDECODE_CLOUD_ORIGIN
-#define SPDECODE_CLOUD_ORIGIN ""
-#endif
+#include "cloud_origin.h"
 
 namespace {
 constexpr size_t kMaxRequestBytes = 12 * 1024 * 1024;
