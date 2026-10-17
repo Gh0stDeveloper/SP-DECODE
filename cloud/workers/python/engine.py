@@ -254,3 +254,51 @@ def decode_text(text: str, *, timeout: int = TIMEOUT_SECONDS) -> dict:
             "warnings": [],
             "exporterCertified": False,
         }
+
+
+def decode_catalog(contents: bytes, *, timeout: int = TIMEOUT_SECONDS) -> dict:
+    """NUR server catalog: authenticated input bytes, no URL fetching."""
+    if not isinstance(contents, bytes) or not contents:
+        raise DecodeFailure("INVALID_INPUT")
+    if len(contents) > MAX_INPUT_BYTES:
+        raise DecodeFailure("INPUT_TOO_LARGE")
+    bridge = Path(__file__).with_name("catalog_bridge.py")
+    if not bridge.is_file():
+        raise DecodeFailure("ENGINE_UNAVAILABLE")
+    with tempfile.TemporaryDirectory(prefix="spdecode-c2-catalog-") as folder:
+        source = Path(folder) / "catalog.enc"
+        output_file = Path(folder) / "stdout"
+        source.write_bytes(contents)
+        source.chmod(0o600)
+        with output_file.open("wb") as output:
+            try:
+                proc = subprocess.Popen(
+                    [sys.executable, str(bridge), str(source)],
+                    cwd=ROOT, env=_child_env(folder), stdin=subprocess.DEVNULL,
+                    stdout=output, stderr=subprocess.DEVNULL,
+                    close_fds=True, start_new_session=True, preexec_fn=_child_limits,
+                )
+            except OSError as error:
+                raise DecodeFailure("ENGINE_UNAVAILABLE") from error
+            try:
+                rc = proc.wait(timeout=timeout)
+            except subprocess.TimeoutExpired as error:
+                os.killpg(proc.pid, signal.SIGKILL)
+                proc.wait()
+                raise DecodeFailure("ENGINE_TIMEOUT") from error
+        if rc != 0:
+            raise DecodeFailure("DECODE_FAILED")
+        with output_file.open("rb") as stream:
+            raw = stream.read(MAX_OUTPUT_BYTES + 1)
+        if len(raw) > MAX_OUTPUT_BYTES:
+            raise DecodeFailure("OUTPUT_TOO_LARGE")
+        try:
+            text = raw.decode("utf-8")
+            structured = json.loads(text)
+        except (ValueError, UnicodeError) as error:
+            raise DecodeFailure("OUTPUT_INVALID") from error
+        return {
+            "apiVersion": "v1", "status": "success", "kind": "nur_catalog",
+            "rawText": text, "structuredJson": structured,
+            "isPartial": False, "warnings": [], "exporterCertified": False,
+        }
