@@ -24,8 +24,17 @@ const ERROR_MESSAGES = Object.freeze({
   EXPIRED_CHALLENGE:"El desafío expiró o ya fue utilizado.",
   INTEGRITY_REJECTED:"No se pudo verificar la integridad de la aplicación.",
   SERVICE_UNAVAILABLE:"Servicio temporalmente no disponible.",
+  INVALID_REFERENCE:"Referencia remota inválida.",
+  USER_CONSENT_REQUIRED:"Se requiere autorización expresa para importar.",
+  REMOTE_NOT_CONFIGURED:"Importación remota no configurada.",
+  REMOTE_NETWORK_DENIED:"Destino remoto no autorizado.",
+  REMOTE_PROVIDER_UNAVAILABLE:"El proveedor remoto no respondió.",
+  REMOTE_RESPONSE_INVALID:"El proveedor devolvió una respuesta inválida.",
+  REMOTE_INTEGRITY_FAILED:"Falló la integridad de la respuesta remota.",
+  REMOTE_TOO_LARGE:"El contenido remoto excede el límite.",
+  REMOTE_DECODER_FAILED:"No se pudo descifrar la configuración remota.",
 });
-function failure(code,status=400) {
+export function failure(code,status=400) {
   const message = ERROR_MESSAGES[code] || ERROR_MESSAGES.SERVICE_UNAVAILABLE;
   return jsonReply({apiVersion:"v1",status:"error",error:{code,message}},status,
     status===429?{"Retry-After":"60"}:{});
@@ -33,7 +42,7 @@ function failure(code,status=400) {
 export function enabled() { return settings().configured; }
 export function notEnabled() { return unavailable(); }
 
-async function boundedBody(request,maxBytes) {
+export async function boundedBody(request,maxBytes) {
   if (!request || request.headers.get("content-type")?.split(";")[0]?.trim().toLowerCase() !== "application/json")
     throw Object.assign(new Error("content type"),{code:"INVALID_REQUEST"});
   const advertised=request.headers.get("content-length");
@@ -90,7 +99,7 @@ function validatePayload(kind,payload) {
     encodedBytes(payload.dataBase64);
   } else throw Object.assign(new Error("kind"),{code:"INVALID_REQUEST"});
 }
-async function fetchWorker(kind,payload,cfg,{fetchImpl=fetch}={}) {
+export async function fetchWorker(kind,payload,cfg,{fetchImpl=fetch}={}) {
   const base=process.env.WORKER_INTERNAL_URL || "";
   // Not an arbitrary proxy. Only Docker service DNS, no client URL or egress.
   if(base!=="http://decoder-worker:8787")throw Error("UNSAFE_WORKER_ORIGIN");

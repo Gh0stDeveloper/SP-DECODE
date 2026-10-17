@@ -54,13 +54,13 @@ local limit = tonumber(ARGV[2])
 redis.call('ZREMRANGEBYSCORE', key, '-inf', tonumber(ARGV[3]))
 if redis.call('ZCARD', key) >= limit then return 0 end
 redis.call('ZADD', key, ARGV[4], value)
-redis.call('EXPIRE', key, 35)
+redis.call('EXPIRE', key, 60)
 return 1
 `;
 export async function reserveSlot(redis, jti, requestId) {
   return (await redis.eval(reserveScript, {
     keys: ["spc3:active:" + jti],
-    arguments: [requestId, "2", String(Date.now() - 35000), String(Date.now())],
+    arguments: [requestId, "2", String(Date.now() - 60000), String(Date.now())],
   })) === 1;
 }
 export async function releaseSlot(redis, jti, requestId) {

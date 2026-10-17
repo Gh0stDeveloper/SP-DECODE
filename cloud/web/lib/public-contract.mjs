@@ -1,5 +1,6 @@
 import { jsonReply, unavailable } from "./responses.mjs";
 import { settings } from "./c3-config.mjs";
+import { ehiConfigured, nurConfigured } from "./c35-provider.mjs";
 
 /** Liveness is not readiness: the Cloud API intentionally cannot decode in C1. */
 export function live() {
@@ -42,7 +43,7 @@ export function clientConfig() {
     transport: "https",
     androidNativeLibrary: "libspdecode.so",
     minimumClientVersion: null,
-    features: { decodeFiles: active, decodeTexts: active, importCloud: false, importCatalog: active },
+    features: { decodeFiles: active, decodeTexts: active, importCloud: active && ehiConfigured(), importCatalog: active, importNurRemote: active && nurConfigured() },
   });
 }
 
