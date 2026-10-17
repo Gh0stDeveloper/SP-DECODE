@@ -119,7 +119,7 @@ internal class CloudDecodeClient(context: Context) {
     suspend fun decodeFile(format: String, bytes: ByteArray,
                            password: ByteArray? = null, hwid: String? = null): String {
         if (bytes.isEmpty() || bytes.size > MAX_INPUT) throw IOException("CLOUD_INVALID_INPUT")
-        if (format.isBlank() || !format.matches(Regex("[a-z0-9._-]{1,64}")))
+        if (format.isBlank() || (!format.matches(Regex("[a-z0-9._-]{1,64}")) && format != "fɴ"))
             throw IOException("CLOUD_INVALID_FORMAT")
         if ((password != null || hwid != null) && format != "hc")
             throw IOException("CLOUD_CREDENTIALS_NOT_ALLOWED")
