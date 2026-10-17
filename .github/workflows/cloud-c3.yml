@@ -44,14 +44,17 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Verify Docker Compose
-        run: docker compose -f cloud/compose.yaml config --quiet
-      - name: Smoke-test private Redis with no published port
+      - name: Verify Docker Compose has no Redis host port
         run: |
-          docker compose -f cloud/compose.yaml up -d --no-deps redis
+          docker compose -f cloud/compose.yaml config --quiet
+          docker compose -f cloud/compose.yaml config --format json | python -c "import json,sys; data=json.load(sys.stdin); assert 'ports' not in data['services']['redis']"
+      - name: Smoke-test private Redis
+        run: |
+          docker compose -f cloud/compose.yaml up --wait -d --no-deps redis
           docker compose -f cloud/compose.yaml exec -T redis redis-cli ping | grep -Fx PONG
-          docker compose -f cloud/compose.yaml port redis 6379 | grep -q '^
-
+      - name: Redis diagnostics on failure
+        if: failure()
+        run: docker compose -f cloud/compose.yaml logs --tail=30 redis
       - name: Tear down
         if: always()
         run: docker compose -f cloud/compose.yaml down --remove-orphans
