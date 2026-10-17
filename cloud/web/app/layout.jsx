@@ -1,7 +1,8 @@
 import "./globals.css";
 import Link from "next/link";
 export const metadata={
-  metadataBase:new URL("https://spdecode.example.invalid"),
+  ...(process.env.CLOUD_SITE_PUBLIC_ORIGIN?.startsWith("https://") ?
+    {metadataBase:new URL(process.env.CLOUD_SITE_PUBLIC_ORIGIN)} : {}),
   title:{default:"SP-DECODE Cloud | Ghost Developer",template:"%s | SP-DECODE Cloud"},
   description:"Plataforma de descifrado remoto para Android. Consulta las funciones, la arquitectura, el estado del proyecto y la política de privacidad.",
   applicationName:"SP-DECODE Cloud",

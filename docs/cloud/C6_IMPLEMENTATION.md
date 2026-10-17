@@ -40,3 +40,7 @@ Para correr CI: `cd cloud/web && npm install && npm test && npm run build`; y `d
 - No fusionar a main ni publicar APK hasta superar los checks y estas validaciones.
 
 **El bot Python, los motores y los nueve archivos visuales Android de C0 permanecen intactos.**
+
+## Defensa operacional adicional
+
+`CLOUD_FORCE_MAINTENANCE=true` aplica un bloqueo persistente por configuración de despliegue incluso si Redis se reinicia; el panel no puede quitarlo y devuelve `MAINTENANCE_LOCKED` (409). La bandera normal Redis sigue siendo temporal; el administrador debe contar con acceso al entorno de despliegue para un cierre persistente. Los encabezados Next.js deniegan iframes, caché del panel e indexación administrativa.

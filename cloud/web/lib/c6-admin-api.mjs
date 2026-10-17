@@ -63,7 +63,7 @@ export async function statusRequest(request,options={}) {
       services:{apiConfigured:cfg.configured,redisConnected:ping==="PONG",
         workerReady,ehiImportConfigured:ehiConfigured(),
         nurCatalogImportConfigured:nurConfigured()},
-      maintenance,metrics,
+      maintenance,maintenanceLocked:process.env.CLOUD_FORCE_MAINTENANCE==="true",metrics,
       observation:"Counters are aggregate-only; no user content or keys are logged.",
     });
   }catch{return error("SERVICE_UNAVAILABLE",503);}
@@ -80,7 +80,10 @@ export async function maintenanceRequest(request,options={}) {
       return error("INVALID_REQUEST",400);
     await setMaintenance(redis,body.enabled);
     return api({maintenance:await maintenanceEnabled(redis)});
-  }catch{return error("SERVICE_UNAVAILABLE",503);}
+  }catch(error){
+    if(error?.message==="MAINTENANCE_LOCKED")return error("MAINTENANCE_LOCKED",409);
+    return error("SERVICE_UNAVAILABLE",503);
+  }
 }
 export async function logoutRequest(request,options={}) {
   const cfg=adminSettings();

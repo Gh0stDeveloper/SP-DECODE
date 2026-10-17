@@ -14,7 +14,13 @@ export async function GET(){
     if(await maintenanceEnabled(redis))
       return jsonReply({status:"maintenance",phase:"prelaunch"},200);
     if(await redis.ping()!=="PONG")throw Error("unavailable");
-    // C6 does not claim availability until C7 end-to-end validation.
+    // Test private worker readiness without exposing the internal topology.
+    if(process.env.WORKER_INTERNAL_URL!=="http://decoder-worker:8787")throw Error("unavailable");
+    const response=await fetch("http://decoder-worker:8787/ready",{
+      signal:AbortSignal.timeout(3500),redirect:"error",cache:"no-store",
+    });
+    if(!response.ok)throw Error("unavailable");
+    // C6 never claims production readiness before C7/C8.
     return jsonReply({status:"testing",phase:"prelaunch"},200);
   }catch {
     return jsonReply({status:"not_ready",phase:"prelaunch"},200);

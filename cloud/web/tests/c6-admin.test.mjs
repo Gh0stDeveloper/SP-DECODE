@@ -150,3 +150,17 @@ test("only anonymous daily success/failure totals enter Redis",async()=>{
   assert.deepEqual(stats,{window:"utc_today",successfulDecodes:2,failedDecodes:1});
   assert.equal([...redis.count.keys()].some(x=>x.includes("file")||x.includes("ip")||x.includes("token")),false);
 });
+
+test("deployment-enforced maintenance cannot be disabled from admin panel",async()=>{
+  const redis=new RedisFake(),args=redisFactory(redis);
+  const logged=await loginRequest(request("/api/admin/login",{password}),args);
+  const cookie=cookieOnly(logged);
+  process.env.CLOUD_FORCE_MAINTENANCE="true";
+  try{
+    assert.equal(await maintenanceEnabled(redis),true);
+    const r=await maintenanceRequest(request("/api/admin/maintenance",{enabled:false},cookie),args);
+    assert.equal(r.status,409);
+    assert.equal((await r.json()).error.code,"MAINTENANCE_LOCKED");
+    assert.equal(await maintenanceEnabled(redis),true);
+  }finally{delete process.env.CLOUD_FORCE_MAINTENANCE;}
+});

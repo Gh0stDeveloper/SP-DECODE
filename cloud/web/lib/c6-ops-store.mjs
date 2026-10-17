@@ -16,10 +16,12 @@ export async function opsStore() {
   return cache;
 }
 export const MAINTENANCE_KEY="spc6:maintenance";
-export async function maintenanceEnabled(redis) {
+export async function maintenanceEnabled(redis,env=process.env) {
+  if(env.CLOUD_FORCE_MAINTENANCE==="true")return true;
   return await redis.get(MAINTENANCE_KEY)==="1";
 }
-export async function setMaintenance(redis,enabled) {
+export async function setMaintenance(redis,enabled,env=process.env) {
+  if(!enabled && env.CLOUD_FORCE_MAINTENANCE==="true")throw Error("MAINTENANCE_LOCKED");
   if(enabled)await redis.set(MAINTENANCE_KEY,"1");
   else await redis.del(MAINTENANCE_KEY);
 }
