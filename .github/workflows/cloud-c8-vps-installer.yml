@@ -25,6 +25,8 @@ jobs:
           bash -n cloud/infra/vps/android-build.sh
       - name: Test nginx and install gates
         run: python3 -m unittest discover -s cloud/infra/vps/tests -p 'test_*.py' -v
+      - name: Verify release APK audit allowlist and legacy-engine rejection
+        run: python3 -m unittest tests.test_cloud_c8_apk_audit -v
       - name: Verify actual Docker Compose config
         run: docker compose -f cloud/compose.yaml config --quiet
       - name: Verify production gate stays blocked
