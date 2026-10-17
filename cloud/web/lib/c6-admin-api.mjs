@@ -80,8 +80,8 @@ export async function maintenanceRequest(request,options={}) {
       return error("INVALID_REQUEST",400);
     await setMaintenance(redis,body.enabled);
     return api({maintenance:await maintenanceEnabled(redis)});
-  }catch(error){
-    if(error?.message==="MAINTENANCE_LOCKED")return error("MAINTENANCE_LOCKED",409);
+  }catch(cause){
+    if(cause?.message==="MAINTENANCE_LOCKED")return error("MAINTENANCE_LOCKED",409);
     return error("SERVICE_UNAVAILABLE",503);
   }
 }
