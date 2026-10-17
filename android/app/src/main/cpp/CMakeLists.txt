@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(spdecode LANGUAGES CXX)
+add_library(spdecode SHARED spdecode_transport.cpp)
+set_target_properties(spdecode PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED YES)
+target_compile_options(spdecode PRIVATE -Wall -Wextra -Werror -fvisibility=hidden -fstack-protector-strong)
+target_link_options(spdecode PRIVATE -Wl,-z,relro,-z,now)
