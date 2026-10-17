@@ -44,6 +44,7 @@ services:
 
   redis:
     image: redis:7.4-alpine
+    user: "redis"
     restart: unless-stopped
     init: true
     command: ["redis-server", "--save", "", "--appendonly", "no", "--maxmemory", "48mb", "--maxmemory-policy", "noeviction"]
@@ -51,7 +52,7 @@ services:
     # No external ports; no persisted challenges, sessions or credentials.
     read_only: true
     tmpfs:
-      - /data:size=64m,nosuid,noexec
+      - /data:size=64m,nosuid,noexec,uid=999,gid=999,mode=0700
     cap_drop: ["ALL"]
     security_opt: ["no-new-privileges:true"]
     mem_limit: 96m
