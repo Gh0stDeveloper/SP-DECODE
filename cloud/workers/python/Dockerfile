@@ -1,0 +1,7 @@
+FROM python:3.12-slim
+WORKDIR /opt/spdecode
+COPY server.py /opt/spdecode/server.py
+USER 65532:65532
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 WORKER_BIND_HOST=0.0.0.0 WORKER_PORT=8787
+EXPOSE 8787
+CMD ["python", "-B", "server.py"]
